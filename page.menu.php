@@ -11,7 +11,7 @@ function MenuStart($clas='firstmain',$href='#',$labl='',$titl='') {  //  MUST be
   echo '    <ul>';
   echo '      <li class="'.$clas.'" style="color:black; width:20px; text-align:left;"><a href="'.$href.'" target="_self" style="background:#EEEEEE;" data-tiptxt="'.lang($titl).'">'.lang($labl).'</a> </li>';
 }
-function MenyBranch($clas='',$href='#',$labl='',$titl='',$more='') {
+function MenuBranch($clas='',$href='#',$labl='',$titl='',$more='') {
   if ($href=='../_base/page_Blindgyden.php') {$blnd='<i style="font-color:gray;">'; $obs='<small> '.lang('@påtænkt!').'</small>';} else {$blnd=''; $obs='';};
   if ($clas=='exit') /*(strpos($labl,'Log ud')>0)*/ {$bold='<span style="color:red; font-weight:600; left: -110px;">'; } else {$bold='';};
   if (strpos($href,'ttp' )>0) $targ='_blank'; else $targ='_self'; //  Test if http seems (externel/locale link?)
@@ -44,78 +44,78 @@ function Menu_Topdropdown($vis_finans=true, $vis_debitor=true, $vis_kreditor=tru
 global $Ødebug, $ØProgTitl, $_assets, $_base, $_config, $_debitor, $_exchange, $_finans, $_kreditor, $_lager, $_produktion, $_system, $_temp, $_userlib, $_xtra;  
     MenuStart($clas='firstmain',    $href='../_base/page_Hovedmenu.php',                $labl='@MENU:',               $titl='@Programmets hovedmenu');
     if ($vis_finans) {        
-      MenyBranch($clas='withsubmenu', $href='',                                           $labl='@FINANS',              $titl='@Administration af regnskab');
-      MenyBranch($clas='firstitem',   $href= $_finans.'page_Kladdeliste.php',             $labl='@Kasse kladder',       $titl='@Her kan du vælge kassekladde, og redigere den');
-      MenyBranch($clas='',            $href= $_finans.'page_Regnskab.php',                $labl='@Regnskab',            $titl='@Se det aktuelle regnskab her');
-      MenyBranch($clas='',            $href= $_finans.'page_Budget.php',                  $labl='@Budget',              $titl='@Se og rediger budget');
-      MenyBranch($clas='',            $href= $_system.'page_Kontoplan.php?chg=ok',        $labl='@Se kontoplan',        $titl='@Her kan du se den aktuelle kontoplan');
-      MenyBranch($clas='lastitem',    $href= $_finans.'page_Rapport-fin.php',             $labl='@Rapporter',           $titl='@Her vælger du hvad du vil se i en rapport');
+      MenuBranch($clas='withsubmenu', $href='',                                           $labl='@FINANS',              $titl='@Administration af regnskab');
+      MenuBranch($clas='firstitem',   $href= $_finans.'page_Kladdeliste.php',             $labl='@Kasse kladder',       $titl='@Her kan du vælge kassekladde, og redigere den');
+      MenuBranch($clas='',            $href= $_finans.'page_Regnskab.php',                $labl='@Regnskab',            $titl='@Se det aktuelle regnskab her');
+      MenuBranch($clas='',            $href= $_finans.'page_Budget.php',                  $labl='@Budget',              $titl='@Se og rediger budget');
+      MenuBranch($clas='',            $href= $_system.'page_Kontoplan.php?chg=ok',        $labl='@Se kontoplan',        $titl='@Her kan du se den aktuelle kontoplan');
+      MenuBranch($clas='lastitem',    $href= $_finans.'page_Rapport-fin.php',             $labl='@Rapporter',           $titl='@Her vælger du hvad du vil se i en rapport');
     }             
     if ($vis_debitor) {       
-    MenyBranch($clas='withsubmenu',   $href='',                                           $labl='@DEBITOR',             $titl='@Her finder du det, der angår dine Kunder');
-      MenyBranch($clas='firstitem',   $href= $_debitor.'page_Opretordre.php',             $labl='@Ny ordre...',         $titl='@Opret en ny salgs ordre...');
-      MenyBranch($clas='',            $href= $_debitor.'page_Ordreliste-deb.php',         $labl='@Salgs ordrer',        $titl='@Oversigt over ordrer og deres indhold');
-      MenyBranch($clas='',            $href= $_debitor.'page_Debitor.php',                $labl='@Kunde konti',         $titl='@Oversigt over kunder, og leverancer til disse');
-      MenyBranch($clas='lastitem',    $href= $_debitor.'page_Rapport-deb.php',            $labl='@Rapporter',           $titl='@Analyser af salg');
+    MenuBranch($clas='withsubmenu',   $href='',                                           $labl='@DEBITOR',             $titl='@Her finder du det, der angår dine Kunder');
+      MenuBranch($clas='firstitem',   $href= $_debitor.'page_Opretordre.php',             $labl='@Ny ordre...',         $titl='@Opret en ny salgs ordre...');
+      MenuBranch($clas='',            $href= $_debitor.'page_Ordreliste-deb.php',         $labl='@Salgs ordrer',        $titl='@Oversigt over ordrer og deres indhold');
+      MenuBranch($clas='',            $href= $_debitor.'page_Debitor.php',                $labl='@Kunde konti',         $titl='@Oversigt over kunder, og leverancer til disse');
+      MenuBranch($clas='lastitem',    $href= $_debitor.'page_Rapport-deb.php',            $labl='@Rapporter',           $titl='@Analyser af salg');
     }             
     if ($vis_kreditor) {        
-    MenyBranch($clas='withsubmenu',   $href=' ',                                          $labl='@KREDITOR',            $titl='@Her finder du det, der angår dine Leverandører');
-      MenyBranch($clas='firstitem',   $href= $_kreditor.'page_Ordreliste-kre.php',        $labl='@Nyt-indkøb...',       $titl='@Opret en ny købs ordre...');
-      MenyBranch($clas='',            $href= $_kreditor.'page_Ordreliste-kre.php',        $labl='@Købs ordrer',         $titl='@Oversigt over leverandører');
-      MenyBranch($clas='',            $href= $_kreditor.'page_Kreditor.php',              $labl='@Leverandør konti',    $titl='@Oversigt over kreditorer og oplysninger om disse');
-      MenyBranch($clas='lastitem',    $href= $_kreditor.'page_Rapport-kre.php',           $labl='@Rapporter',           $titl='@Analyser af køb');
+    MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@KREDITOR',            $titl='@Her finder du det, der angår dine Leverandører');
+      MenuBranch($clas='firstitem',   $href= $_kreditor.'page_Ordreliste-kre.php',        $labl='@Nyt-indkøb...',       $titl='@Opret en ny købs ordre...');
+      MenuBranch($clas='',            $href= $_kreditor.'page_Ordreliste-kre.php',        $labl='@Købs ordrer',         $titl='@Oversigt over leverandører');
+      MenuBranch($clas='',            $href= $_kreditor.'page_Kreditor.php',              $labl='@Leverandør konti',    $titl='@Oversigt over kreditorer og oplysninger om disse');
+      MenuBranch($clas='lastitem',    $href= $_kreditor.'page_Rapport-kre.php',           $labl='@Rapporter',           $titl='@Analyser af køb');
                 
     }             
     if ($vis_prodkt) {        
-      MenyBranch($clas='withsubmenu', $href=' ',                                          $labl='@PRODUKTION',          $titl='@Rutiner angående produktion');
-      MenyBranch($clas='lastitem',    $href= $_lager.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser over produktion');
+      MenuBranch($clas='withsubmenu', $href=' ',                                          $labl='@PRODUKTION',          $titl='@Rutiner angående produktion');
+      MenuBranch($clas='lastitem',    $href= $_lager.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser over produktion');
     }       
     if ($vis_lager) {       
-    MenyBranch($clas='withsubmenu',   $href=' ',                                          $labl='@LAGER',               $titl='@Rutiner angående lagerførte produkter');
-      MenyBranch($clas='firstitem',   $href= $_lager.'page_Varer.php',                    $labl='@Vare lager',          $titl='@Oversigt over salgsvarer, samt detaljer på varekort');
-      MenyBranch($clas='',            $href= $_lager.'page_Varemodtagelse.php',           $labl='@Vare modtagelse',     $titl='@Lister for varemodtagelse');
-      MenyBranch($clas='lastitem',    $href= $_lager.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser af varesalg m.v.');
+    MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@LAGER',               $titl='@Rutiner angående lagerførte produkter');
+      MenuBranch($clas='firstitem',   $href= $_lager.'page_Varer.php',                    $labl='@Vare lager',          $titl='@Oversigt over salgsvarer, samt detaljer på varekort');
+      MenuBranch($clas='',            $href= $_lager.'page_Varemodtagelse.php',           $labl='@Vare modtagelse',     $titl='@Lister for varemodtagelse');
+      MenuBranch($clas='lastitem',    $href= $_lager.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser af varesalg m.v.');
     }       
     if (true) {       
-    MenyBranch($clas='withsubmenu',   $href=' ',                                          $labl='@SYSTEM',              $titl='@Her indstiller du programmet og regnskabet');
-      MenyBranch($clas='firstitem',   $href= $_system.'page_Kontoplan.php?chg=no',        $labl='@Kontoplan',           $titl='@Her vedligeholder du den aktuelle kontoplan');
-      MenyBranch($clas='withsubmenu', $href=' ',                                          $labl='@Indstillinger &nbsp; =>', $titl='@Indstillinger for programmet');
-        MenyBranch($clas='firstitem', $href= $_system.'page_Valuta.php',                  $labl='@1. indstil-ofte',     $titl='@Her har du de hyppigst benyttede indstillinger');
-        MenyBranch($clas='',          $href= $_system.'page_Divsetup2.php',               $labl='@2. indstil-flere',    $titl='@Her har du de sjældnere benyttede indstillinger');
-        MenyBranch($clas='lastitem',  $href= $_system.'page_Tilvalgsetup3.php',           $labl='@3. indstil-extra',    $titl='@Her aktiverer og indstiller tilvalgs funktioner');
-      MenyBranch($clas='',            $href= $_system.'page_Backup.php',                  $labl='@Sikkerheds kopiering',$titl='@Her kan du sikre dig dine regnskabsdata, bilags filer og programinstallation');
-      MenyBranch($clas='',            $href= $_system.'page_Licens.php',                  $labl='@Om programmet',       $titl='@Her finder du oplysninger om programmet, og serveren det kører på');
-      MenyBranch($clas='lastitem',    $href= $_system.'page_Regnskabet.php',              $labl='@Om regnskabet',       $titl='@Her finder du oplysninger om regnskabet, som du aktuelt arbejder på');
+    MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@SYSTEM',              $titl='@Her indstiller du programmet og regnskabet');
+      MenuBranch($clas='firstitem',   $href= $_system.'page_Kontoplan.php?chg=no',        $labl='@Kontoplan',           $titl='@Her vedligeholder du den aktuelle kontoplan');
+      MenuBranch($clas='withsubmenu', $href=' ',                                          $labl='@Indstillinger &nbsp; =>', $titl='@Indstillinger for programmet');
+        MenuBranch($clas='firstitem', $href= $_system.'page_Valuta.php',                  $labl='@1. indstil-ofte',     $titl='@Her har du de hyppigst benyttede indstillinger');
+        MenuBranch($clas='',          $href= $_system.'page_Divsetup2.php',               $labl='@2. indstil-flere',    $titl='@Her har du de sjældnere benyttede indstillinger');
+        MenuBranch($clas='lastitem',  $href= $_system.'page_Tilvalgsetup3.php',           $labl='@3. indstil-extra',    $titl='@Her aktiverer og indstiller tilvalgs funktioner');
+      MenuBranch($clas='',            $href= $_system.'page_Backup.php',                  $labl='@Sikkerheds kopiering',$titl='@Her kan du sikre dig dine regnskabsdata, bilags filer og programinstallation');
+      MenuBranch($clas='',            $href= $_system.'page_Licens.php',                  $labl='@Om programmet',       $titl='@Her finder du oplysninger om programmet, og serveren det kører på');
+      MenuBranch($clas='lastitem',    $href= $_system.'page_Regnskabet.php',              $labl='@Om regnskabet',       $titl='@Her finder du oplysninger om regnskabet, som du aktuelt arbejder på');
     }       
     if ($add_on) {        
-    MenyBranch($clas='withsubmenu',   $href=' ',                                          $labl='@UDVIDELSER',          $titl='@Rutiner angående tilføjede program udvidelser');
-      MenyBranch($clas='firstitem',   $href= $_xtra.'page_Kasse.php',                     $labl='@Kasse system POS',    $titl='@xxx');
-      MenyBranch($clas='',            $href= $_xtra.'page_xxxxxxxxxxxxxx.php',            $labl='@xxxxx',               $titl='@xxx');
-      MenyBranch($clas='lastitem',    $href= $_xtra.'page_xxxxxxxxxxxxxx.php',            $labl='@xxxxx',               $titl='@xxx');
+    MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@UDVIDELSER',          $titl='@Rutiner angående tilføjede program udvidelser');
+      MenuBranch($clas='firstitem',   $href= $_xtra.'page_Kasse.php',                     $labl='@Kasse system POS',    $titl='@xxx');
+      MenuBranch($clas='',            $href= $_xtra.'page_xxxxxxxxxxxxxx.php',            $labl='@xxxxx',               $titl='@xxx');
+      MenuBranch($clas='lastitem',    $href= $_xtra.'page_xxxxxxxxxxxxxx.php',            $labl='@xxxxx',               $titl='@xxx');
     }
     if (true) {
-      MenyBranch($clas='withsubmenu', $href=' ',                                          $labl='@EKSTRA',              $titl='@Bogholderens redskaber');
-        MenyBranch($clas='firstitem', $href= $_assets.'Calculator/strimmelcalc.php?ttp',  $labl='@Strimmelregner',      $titl='@Start en simpel kalkulator');
-        MenyBranch($clas='',          $href= $_base.'page_Blindgyden.php',                $labl='@Notesblok',           $titl='@Start en simpel skrivemaskine');
-        MenyBranch($clas='',          $href= $_assets.'tfm\TFM-user.php?ttp',             $labl='@Fil-Manager',         $titl='@Browse/editere bruger filer.');
-        MenyBranch($clas='',          $href= $_base.'page_Tips.php',                      $labl='@Tips',                $titl=lang('@Her er der nyttige tips, til brugen af').$ØProgTitl);
-        MenyBranch($clas='',          $href= $_base.'_intro/intro.html',                  $labl='@Introduktion',        $titl='@Her redegøres for de kommende forbedringer i version 5.0 -'.$ØProgTitl);
-        MenyBranch($clas='',          $href= $_base.'page_News.php',                      $labl='@Nyheder',             $titl='@Her omtales nogle af de nyheder, der er tilføjet i den nye'.$ØProgTitl);
-        MenyBranch($clas='lastitem',  $href='http://www.ev-soft.dk/saldi-wiki/doku.php?id=saldi:manualen', 
+      MenuBranch($clas='withsubmenu', $href=' ',                                          $labl='@EKSTRA',              $titl='@Bogholderens redskaber');
+        MenuBranch($clas='firstitem', $href= $_assets.'Calculator/strimmelcalc.php?ttp',  $labl='@Strimmelregner',      $titl='@Start en simpel kalkulator');
+        MenuBranch($clas='',          $href= $_base.'page_Blindgyden.php',                $labl='@Notesblok',           $titl='@Start en simpel skrivemaskine');
+        MenuBranch($clas='',          $href= $_assets.'tfm\TFM-user.php?ttp',             $labl='@Fil-Manager',         $titl='@Browse/editere bruger filer.');
+        MenuBranch($clas='',          $href= $_base.'page_Tips.php',                      $labl='@Tips',                $titl=lang('@Her er der nyttige tips, til brugen af').$ØProgTitl);
+        MenuBranch($clas='',          $href= $_base.'_intro/intro.html',                  $labl='@Introduktion',        $titl='@Her redegøres for de kommende forbedringer i version 5.0 -'.$ØProgTitl);
+        MenuBranch($clas='',          $href= $_base.'page_News.php',                      $labl='@Nyheder',             $titl='@Her omtales nogle af de nyheder, der er tilføjet i den nye'.$ØProgTitl);
+        MenuBranch($clas='lastitem',  $href='http://www.ev-soft.dk/saldi-wiki/doku.php?id=saldi:manualen', 
                                                                                         $labl='@DokuWiki - Manual',   $titl=lang('@Manual, tips og anden hjælp finder du på').$ØProgTitl.lang('@-DokuWiki (åbner i nyt vindue)'));  
     }
     if ($Ødebug) { // Programmers tools:
-      MenyBranch($clas='withsubmenu', $href= ' ',                                         $labl='@TOOLS',               $titl='@Udviklerens redskaber');
-        MenyBranch($clas='firstitem', $href= $_assets.'tfm\tinyfilemanager.php?ttp',      $labl='@Fil-Manager',         $titl='@Browse/editere installationens filer. &#xa; For programmører!');
-        MenyBranch($clas='',          $href= $_base.'_tools/frasescann.php',              $labl='@Frase-skanning',      $titl='@Skanning efter danske fraser, som skal oversættes');
-        MenyBranch($clas='',          $href= $_base.'_tools/funcscann.php',               $labl='@Funktions-skanning',  $titl='@Skanning efter funktions navne, og parametre');
-        MenyBranch($clas='',          $href= $_base.'_tools/docscann.php',                $labl='@Ord-skanning...',     $titl='@Skanning efter et angivet ord, f.eks. $DocFil');
-        MenyBranch($clas='',          $href= '../modulscann.php',                         $labl='@Modul-skanning...',   $titl='@Skanning af alle primære htm/php-filer - vis status mv.');
-        MenyBranch($clas='',          $href= '../pladsforbrug.php',                       $labl='@Mappe-skanning...',   $titl='@Skanning af alle mappers størrelse');
-        MenyBranch($clas='lastitem',  $href= $_base.'page_Printlayout.php',               $labl='@Side test...',        $titl='@Test af sider under udvikling');
+      MenuBranch($clas='withsubmenu', $href= ' ',                                         $labl='@TOOLS',               $titl='@Udviklerens redskaber');
+        MenuBranch($clas='firstitem', $href= $_assets.'tfm\tinyfilemanager.php?ttp',      $labl='@Fil-Manager',         $titl='@Browse/editere installationens filer. &#xa; For programmører!');
+        MenuBranch($clas='',          $href= $_base.'_tools/frasescann.php',              $labl='@Frase-skanning',      $titl='@Skanning efter danske fraser, som skal oversættes');
+        MenuBranch($clas='',          $href= $_base.'_tools/funcscann.php',               $labl='@Funktions-skanning',  $titl='@Skanning efter funktions navne, og parametre');
+        MenuBranch($clas='',          $href= $_base.'_tools/docscann.php',                $labl='@Ord-skanning...',     $titl='@Skanning efter et angivet ord, f.eks. $DocFil');
+        MenuBranch($clas='',          $href= '../modulscann.php',                         $labl='@Modul-skanning...',   $titl='@Skanning af alle primære htm/php-filer - vis status mv.');
+        MenuBranch($clas='',          $href= '../pladsforbrug.php',                       $labl='@Mappe-skanning...',   $titl='@Skanning af alle mappers størrelse');
+        MenuBranch($clas='lastitem',  $href= $_base.'page_Printlayout.php',               $labl='@Side test...',        $titl='@Test af sider under udvikling');
     }
     if (true) {
-        MenyBranch($clas='exit',      $href='../_base/page_Startup.php', 
+        MenuBranch($clas='exit',      $href='../_base/page_Startup.php', 
                                     $labl='<i class="fas fa-sign-out-alt" style="font-size:16px; color: red; " ></i> '.lang('@Log ud'),  
                                     $titl=lang('@Forlad').$ØProgTitl.str_lf().lang('@i låst tilstand.'),$more=' style="background:white; width:70px; box-shadow:3px 3px 1px #EDEDED;" ');
     }
