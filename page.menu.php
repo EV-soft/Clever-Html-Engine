@@ -1,4 +1,4 @@
-<? $DocFile='../Proj1/page.menu.php';    $DocVers='5.0.0';    $DocRev1='2020-03-29';     $DocIni='evs';  $ModulNo=0;
+<? $DocFile='../Proj1/page.menu.php';    $DocVers='1.0.0';    $DocRev1='2020-03-30';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 
 // TopMenu-rutines: (used in Menu_Topdropdown )
