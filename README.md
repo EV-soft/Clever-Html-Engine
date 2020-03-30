@@ -13,4 +13,4 @@ Extended table functions with Mottie Tablesorter-system.
 Based on PHP7+, HTML5, CSS3.
 Source must be UTF-8, no tabs, indent: 4 chars
 
-More? Go on to a [demo](./Demo.page.php)
+More? Go on to a [demo](./Demo.page.html)
