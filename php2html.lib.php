@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-03-29';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-03-30';     $DocIni='evs';  $ModulNo=0;
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -295,29 +295,29 @@ function htm_Table(
     if ($Ønovice) {
       htm_sp(5);
       if ($SorterOn)  {echo $sor= iconButt($type='submit',$faicon='fas fa-sort',$id='',
-        $title= lang('@Klik på kolonne overskrifter, for at sortere data. Hold SHIFT og klik, for at sortere på flere kolonner.'),
+        $title= lang('@Click column headers to sort data. Hold SHIFT and click, to sort by multiple columns.'),
         $link='#',$action='',$akey='','12px',$labl='@Sortér?'); }
       if ($FilterOn)  {echo $fil= iconButt($type='submit',$faicon='fas fa-search-plus',$id='',
-        $title= lang('@Hold musen lige under tabellens overskrifts linie, så vises nogle indtastningsfelter. ').
-                lang('@Angiv her et søge udtryk, for kun at vise data, der svarer til udtrykket.'),
+        $title= lang('@Hold your mouse just below the table`s header line and some input fields will appear. ').
+                lang('@Enter a search term here to display only data that matches the term.'),
         $link='#',$action='',$akey='','12px',$labl='@Filtrér?'); }
       if ($FilterOn)  {echo $fil= iconButt($type='submit',$faicon='fas fa-search-minus',$id='',    //<button type="button" class="reset">lang('@Vis alt')</button>
-        $title= lang('@Nulstil filter, så alle data vises. Med ESC kan du nulstille søge-udtrykket, i det felt du står i.'),
+        $title= lang('@Reset filter so that all data is displayed. With ESC you can reset the search term in the field you are in.'),
         $link='#',$action='',$akey='','12px',$labl='@Vis alt!'); }
       if ($ModifyRec) {echo $ret= iconButt($type='submit',$faicon='fas fa-pen-square',$id='', 
-        $title= lang('@I nogle af denne tabels kolonner, kan du rette data. De er markeret med · i kolonne overskriften.').str_nl().
-                lang('@Kan tabellen ikke gemmes, skal rettelsen foregå på et detail-kort.'),
+        $title= lang('@In some of this table`s columns, you can correct data. They are marked with · in the column heading.').str_nl().
+                lang('@If the table cannot be saved, the correction must be done on a retail card.'),
         $link='#',$action='',$akey='','12px',$labl='@Rette?'); }
       if ($CreateRec) {echo $til= iconButt($type='submit',$faicon='fas fa-plus',$id='',       
-        $title= lang('@Vil du tilføje data: <br>Nederst i tabellen, findes felter du kan udfylde med nye data. ').
-                lang('@Klik på knappen "Opret" over sidste felt, for at gemme de nye data.'),
+        $title= lang('@Do you want to add data: <br>At the bottom of the table there are fields you can fill with new data. ').
+                lang('@Click the "Create" button above the last field to save the new data.'),
         $link='#',$action='',$akey='','12px',$labl='@Tilføj?'); }
       if (true)  {echo $fil= iconButt($type='submit',$faicon='fas fa-arrows-alt-h',$id='',     
-        $title= lang('@Flyt markør i tabeller:').'<br><data-yelllabl>'.lang('@Tab-tast').'</data-yelllabl> '.
-          lang('@springer til næste felt.').' <data-yelllabl>'.lang('@SHIFT Tab-tast').'</data-yelllabl> '.lang('@springer til forrige felt.').
-          ' <data-yelllabl>'.lang('@SPACE-tast').'</data-yelllabl> '.lang('@ruller side ned').
-          ' <data-yelllabl>'.lang('@SHIFT SPACE-tast').'</data-yelllabl> '.lang('@ruller side op').'<br>'.
-          lang('@Markøren skal stå i tabellen.')
+        $title= lang('@Move cursor in tables:').'<br><data-yelllabl>'.lang('@Tab-key').'</data-yelllabl> '.
+          lang('@jumps to the next field.').' <data-yelllabl>'.lang('@SHIFT Tab-key').'</data-yelllabl> '.lang('@skips to the previous field.').
+          ' <data-yelllabl>'.lang('@SPACE-key').'</data-yelllabl> '.lang('@scrolls side down').
+          ' <data-yelllabl>'.lang('@SHIFT SPACE-key').'</data-yelllabl> '.lang('@scrolls side up').'<br>'.
+          lang('@The cursor must be in the table.')
           /* .'  <br><data-yelllabl>'.lang('@CTRL Pil-taster').'</data-yelllabl> '.lang('@virker ikke. ' */
           ,$link='#',$action='',$akey='','12px',$labl='@Taster '); }
     }
@@ -518,8 +518,8 @@ function htm_Table(
                                ' width:98%; padding-left:2px; padding-right:2px;" /> ';
                           break;
             case 'data' : //  Vis og rediger data: 
-            case 'area' : if ($valu=='Nyt felt')  {  # Opret ny record
-                            echo '"> '.lang('@Nyt felt:').' <div style="margin-right:0; font-size:x-small">'.
+            case 'area' : if ($valu=='New field')  {  # Opret ny record
+                            echo '"> '.lang('@New field:').' <div style="margin-right:0; font-size:x-small">'.
                                  '<select class="styled-select" name="liste"> <option value=" " >-';
                               foreach ($ordlist as $rec) { 
                                 echo '<option label="'.$rec[2].'" value="'.$rec[1].'" '.$rec[3];  
@@ -533,13 +533,13 @@ function htm_Table(
                                  $txAlign.$inpBg.' width:98%; padding-left:2px; padding-right:2px;" /> ';
                           break;
             case 'keyn' : //  Valgbart, og redigerbart index
-                          echo '"><span style="font-size:small" title="'.lang('@Rækken er valgbar. Klik her for bearbejde rækkens felter').'">'.RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).'</span>';  
+                          echo '"><span style="font-size:small" title="'.lang('@The row is selectable. Click here to edit the row`s fields').'">'.RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).'</span>';  
                           break;
             case 'indx' : //  Valgbart, men ikke redigerbart index
                           //  < input type= "text" name="'.$tix.'Row'.$RowIx.'Col'.$ColIx.'[]" '.'value="'.$valu.'" /> 
                           //  echo '"><span style="font-size:small" title="'.lang('@Rækken er valgbar. Klik her for at vise alle felter').'">'.
                           //    RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).' <input type= "text" name="Row'.$RowIx.'Col'.$ColIx.'[]" '.'value="'.$valu.'" style="visibility: hidden; width:0; height:0;" /> </span>';  
-                          echo '"><span style="font-size:small" title="'.lang('@Rækken er valgbar. Klik her for bearbejde rækkens felter').'">'.
+                          echo '"><span style="font-size:small" title="'.lang('@The row is selectable. Click here to edit the row`s fields').'">'.
                                 RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).' </span>';  
                           break;
             case 'blnk' : //  Værdi vises som BLANK
@@ -562,20 +562,20 @@ function htm_Table(
     foreach ($RowSuff as $Suff) { dvl_pretty();
       if ($ModifyRec) {
         $output= $Suff[6];
-        if ($Suff[2]=='knap') { ## Specielle-knapper i RowSuffix:
+        if ($Suff[2]=='button') { ## Specielle-knapper i RowSuffix:
           $btnStyle= '" class="tooltip" style="height:20px; border:0; box-shadow:none; background-color:transparent;" ';
           $btnSuff= $ØTblIx.'_'.$RowIx. $btnStyle;
-          if ($Suff[0]=='@Slet')  { if ($Suff[3]=='dis') $dis= 'disabled'; else $dis= '';
+          if ($Suff[0]=='@Delete')  { if ($Suff[3]=='dis') $dis= 'disabled'; else $dis= '';
                                     $output='<button type= "submit" name="btn_del_'.$btnSuff.$dis.' >'.
-                                  Lbl_Tip($Suff[6],lang('@Slet pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Knap som ikke må slette, kan deaktivers
-          if ($Suff[0]=='@Skjul') { $output='<button type= "submit" name="btn_hid_'.$btnSuff.'>'.
-                                  Lbl_Tip($Suff[6],lang('@Skjul pos: ').$RowIx,'SW','0px'). '</button>'; }                // Records som ikke må slettes, kan skjules
-          if ($Suff[0]=='@Kopi')  { $output='<button type= "submit" name="btn_cpy_' .$btnSuff.'>'.
-                                  Lbl_Tip($Suff[6],lang('@Kopier pos: ').$RowIx,'SW','0px'). '</button>'; }
-          if ($Suff[0]=='@Omdøb') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
-                                  Lbl_Tip($Suff[6],lang('@Omdøb pos: ').$ØTblIx.'_'.$RowIx,'SW','0px'). '</button>'; } 
-           if ($Suff[0]=='@Vælg') { $output='<input type= "checkbox" name="btn_sel_'.$btnSuff.
-                                  Lbl_Tip($Suff[6],lang('@Vælg pos: ').$RowIx,'SW','0px'). ' />'; }
+                                  Lbl_Tip($Suff[6],lang('@Delete pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Knap som ikke må slette, kan deaktivers
+          if ($Suff[0]=='@Hide') { $output='<button type= "submit" name="btn_hid_'.$btnSuff.'>'.
+                                  Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                // Records som ikke må slettes, kan skjules
+          if ($Suff[0]=='@Copy')  { $output='<button type= "submit" name="btn_cpy_' .$btnSuff.'>'.
+                                  Lbl_Tip($Suff[6],lang('@Copy pos: ').$RowIx,'SW','0px'). '</button>'; }
+          if ($Suff[0]=='@Rename') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
+                                  Lbl_Tip($Suff[6],lang('@Rename pos: ').$ØTblIx.'_'.$RowIx,'SW','0px'). '</button>'; } 
+          if ($Suff[0]=='@Select') { $output='<input type= "checkbox" name="btn_sel_'.$btnSuff.
+                                  Lbl_Tip($Suff[6],lang('@Select pos: ').$RowIx,'SW','0px'). ' />'; }
         }
         echo '<td style="text-align:'.$Suff[4][0].'; width:'.$Suff[1].';" disabled >'.$output.'</td>';
       }
