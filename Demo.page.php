@@ -1,7 +1,7 @@
 <?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-03-30';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
-require_once ('page.menu.php');
+require_once ('menu.inc.php');
 //require_once ('translate.inc.php');
 htm_PagePrep('DEMO');
     echo '<div style="text-align:center;">php2html-Demo:';  htm_nl(2);
