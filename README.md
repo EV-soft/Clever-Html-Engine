@@ -13,5 +13,5 @@ Extended table functions with Mottie Tablesorter-system.
 Based on PHP7+, HTML5, CSS3.
 Source must be UTF-8, no tabs, indent: 4 chars
 
-<iframe width="11oopx" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" >
+<iframe width="800px" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" >
 </iframe>
