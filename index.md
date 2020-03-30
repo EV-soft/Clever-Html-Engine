@@ -16,3 +16,5 @@ Source must be UTF-8, no tabs, indent: 4 chars
 Look at the demo here:
 
 <iframe width="800px" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" > </iframe> 
+
+The demo runs on the development server which is why errors occur periodically!
