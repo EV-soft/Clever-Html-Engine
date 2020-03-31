@@ -24,23 +24,40 @@ Look at the demo here:
 For now INPUT has the following types:
 
 'date' : INPUT(type= 'date',
+
 'intg' : INPUT(type= 'number',
+
 'text' : INPUT(type= 'text',
 'dec0' : INPUT(type= 'text',		- output shown without decimals
+
 'dec1' : INPUT(type= 'text',		- output shown with 1 decimal
+
 'dec2' : INPUT(type= 'text',		- output shown with 2 decimals
+
 'num0' : INPUT(type= 'number',		- output shown without decimals
+
 'num1' : INPUT(type= 'number',  	- output shown with 1 decimal
+
 'num2' : INPUT(type= 'number',  	- output shown with 2 decimals
+
 'num3' : INPUT(type= 'number',		- output shown with 3 decimals
+
 'barc' : INPUT(type= 'text',		- output shown with font barcode
+
 'rado' : INPUT(type= 'radio',		- for one or multible radiofields
+
 'pass' : INPUT(type= 'password',
+
 'mail' : INPUT(type= 'email',
+
 'hidd' : INPUT(type= 'hidden',
+
 'area' : INPUT(type= 'textarea', 				(text-content)
+
 'html' : INPUT(type= '<div contenteditable',	(html-content)
+
 'chck' : INPUT(type= 'checkbox',	- for one or multible checkboxes
+
 'opti' : INPUT(type= 'option',		- Dropdown option-list
 
 
