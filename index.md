@@ -5,7 +5,7 @@ PHP to HTML generator.
 If you program html output in php, you can use this library's routines to generate the html code.
 	
 HTML elements INPUT / TABLE and others, generated from PHP-functions.
-all combined with: Label, ToolTip, Placeholder, dimensions and others.
+all combined with: Label, ToolTip, Placeholder, dimensions and more.
 
 Included translate system. Font-awesome icons.
 Extended table functions with Mottie Tablesorter-system.
@@ -17,7 +17,7 @@ The layout is compact with labels above fields, so it is suitable to narrow scre
 
 All labels with shaddow has a tooltip, shown at mouseover.
 
-Look at the demo here:
+Look and feel at the demo here:
 
 <iframe width="800px" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" > </iframe> 
 
@@ -39,7 +39,7 @@ For now INPUT has the following types:
 	'mail' : INPUT(type= 'email',
 	'hidd' : INPUT(type= 'hidden',
 	'area' : INPUT(type= 'textarea', 	- (text-content)
-	'html' : INPUT(type= '<div contenteditable',	(html-content)
+	'html' : INPUT(type= '<div contenteditable',	- (html-content)
 	'chck' : INPUT(type= 'checkbox',	- for one or multible checkboxes
 	'opti' : INPUT(type= 'option',		- Dropdown option-list
 
