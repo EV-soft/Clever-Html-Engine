@@ -103,7 +103,7 @@ htm_PagePrep('DEMO');
         htm_Input($type='mail',$name='mail',$valu='',$labl='Your account:',$titl='Demo of htm_Input Field type mail',$algn='left',$suff='',$disabl=false,$rows='3',$width='75%',$step='',$more='',$plho='@Email...');
         htm_Input($type='pass',$name='pass3',$valu='',$labl='Your password:',$titl='Demo of htm_Input Field type html',$algn='left',$suff='',$disabl=false,$rows='3',$width='75%',$step='',$more='',$plho='@Password...');
         $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
-        htm_Input($type='html',$name='text',$valu=$h,$labl='Hash:',$titl='Demo of htm_Input Field type html',$algn='left',$suff='',$disabl=false,$rows='2',$width='95%',$step='',$more='',$plho='@Account...');
+        //htm_Input($type='html',$name='text',$valu=$h,$labl='Hash:',$titl='Demo of htm_Input Field type html',$algn='left',$suff='',$disabl=false,$rows='2',$width='95%',$step='',$more='',$plho='@Account...');
         echo '<a href="'.$link.'" accesskey="'.$akey.'" '. Lbl_Tip('@Forgotten password ?','@Click to request a new password'). '</a>';
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$titl='Demo of htm_Input Field type intg: centered integer',$algn='center',$suff='',$disabl=false,$rows='3',$width='95%');
         htm_nl(0);
