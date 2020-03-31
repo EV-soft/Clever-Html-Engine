@@ -1010,7 +1010,7 @@ $('#smarttabel, #table0, #table1, #table2, #table3, #table4, #table5, #table6').
 
 
 function htm_PageFina() {
-    //include 'matomo.php';
+    include('.././spormig.php');
     htm_nl(3);
     echo '  </body>'; // Started in htm_PagePrep()
     echo '</html>';
