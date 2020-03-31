@@ -35,10 +35,10 @@ For now INPUT has the following types:
 	'num3' : INPUT(type= 'number',		- output shown with 3 decimals
 	'barc' : INPUT(type= 'text',		- output shown with barcode font
 	'rado' : INPUT(type= 'radio',		- for one or multible radiofields
-	'pass' : INPUT(type= 'password',
+	'pass' : INPUT(type= 'password',	- with strength-meter and show/hide password
 	'mail' : INPUT(type= 'email',
 	'hidd' : INPUT(type= 'hidden',
-	'area' : INPUT(type= 'textarea', 				(text-content)
+	'area' : INPUT(type= 'textarea', 	- (text-content)
 	'html' : INPUT(type= '<div contenteditable',	(html-content)
 	'chck' : INPUT(type= 'checkbox',	- for one or multible checkboxes
 	'opti' : INPUT(type= 'option',		- Dropdown option-list
