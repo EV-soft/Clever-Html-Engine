@@ -4,7 +4,7 @@ require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 //require_once ('translate.inc.php');
 htm_PagePrep('DEMO');
-    echo '<div style="text-align:center;">php2html-Demo:';  htm_nl(2);
+    echo '<div style="text-align:center;  background:#fffded;"><br>php2html-Demo:';  htm_nl(2);
     echo 'Examples of htm_Input():';    htm_nl(2);
     if (USEGRID) echo '<div class="grid-container" style="width: 400px; margin:auto;">';
     htm_Input($type='text',$name='text',$valu='',$labl='htm_Input(Text)',$titl='Demo of htm_Input Field type text');

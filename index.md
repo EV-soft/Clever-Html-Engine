@@ -13,6 +13,8 @@ Extended table functions with Mottie Tablesorter-system.
 Based on PHP7+, HTML5, CSS3.
 Source must be UTF-8, no tabs, indent: 4 chars
 
+The layout is compact with labels above fields, so it is suitable to narrow screens.
+
 Look at the demo here:
 
 <iframe width="800px" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" > </iframe> 
