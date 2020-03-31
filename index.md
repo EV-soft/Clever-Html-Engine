@@ -18,3 +18,5 @@ The layout is compact with labels above fields, so it is suitable to narrow scre
 Look at the demo here:
 
 <iframe width="800px" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" > </iframe> 
+
+The demo runs on the development server which is why errors occur periodically!
