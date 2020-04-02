@@ -22,6 +22,7 @@ Look and feel at the demo here:
 <iframe width="800px" height="800px" seamless frameborder="0" src="https://1331.dscloud.me/saldi-e/Proj1/Demo.page.php" > </iframe> 
 
 
+
 For now htm_Input() has the following types:
 
 	'date' : INPUT(type= 'date',
@@ -54,12 +55,12 @@ The parameters to htm_Input:
 		$labl='',           # Translated label above the input field
 		$titl='',           # Translated desctiption about the field
 		$algn='left',       # The alignment of input content Default: left
-		$suff='',           # A suffix (unit) to the content eg. currency or %
-		$disabl=false,      # Disable the field. Default: field is active
+		$unit='',           # A unit added to the content eg. currency or % ( prefix or suffix )
+		$disabl=false,      # Disable the field (Output only). Default: field is active
 		$rows='2',          # Number of rows in multiline input (eg. area/html) Default: 2
 		$width='',          # Width of the field-container
-		$step='',           # the value of stopup/stepdown for numbers
-		$more='',           # Give more (spcial) input attrib
+		$step='',           # the value of stepup/stepdown for numbers
+		$more='',           # Give more (special) input attrib
 		$plho='@Enter...',  # Translated placeholder shown when field is empty. Default: Enter...
 		$dataList=[]        # Data for "multi-list" (eg. options, checkbox, radiolist)
 	)

@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-03-30';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-01';     $DocIni='evs';  $ModulNo=0;
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -60,7 +60,9 @@ session_start();
 # CONSTANTS:
 define('DEBUG',false);              # Set to true to activate system debugging
 define('LABELPOS','LeftRight');     # LeftLeft LeftRight TopLeft TopRight (Pos Align)
-define('USEGRID',false); 
+define('USEGRID',true); 
+define ('ThousandsSeparator',' ');
+define ('DecimalSeparator',',');
 # GLOBALS:
 $ØblueColor= 'lightblue';
 
@@ -84,12 +86,12 @@ function htm_Input(
     $labl='',           # Translated label above the input field
     $titl='',           # Translated desctiption about the field
     $algn='left',       # The alignment of input content Default: left
-    $suff='',           # A suffix (unit) to the content eg. currency or %
+    $unit='',           # A unit added to the content eg. currency or % If in front: '<' it is added as a prefix, else a suffix
     $disabl=false,      # Disable the field. Default: field is active
     $rows='2',          # Number of rows in multiline input (eg. area/html) Default: 2
     $width='',          # Width of the field-container
-    $step='',           # the value of stopup/stepdown for numbers
-    $more='',           # Give more (spcial) input attrib
+    $step='',           # the value of stepup/stepdown for numbers
+    $more='',           # Give more (special) input attrib
     $plho='@Enter...',  # Translated placeholder shown when field is empty. Default: Enter...
     $dataList=[]        # Data for "multi-list" (eg. options, checkbox, radiolist)
 )
@@ -99,6 +101,7 @@ function htm_Input(
     $browser= get_browser_name($_SERVER['HTTP_USER_AGENT']);
     if ($browser=='Firefox') $topArea= '-20px'; else $topArea= '-14px';
     if ($width=='') $width= '200px';    // Default width
+if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
     switch ($type) {    # LABEL: Height and top: Offset (align label: left/center/right: change in CSS: Fieldstyle - text-align: xxx;)
         case 'rado' : $LablTip= Lbl_Tip($labl,$titl,'','13px;','-14px;');   break; 
         case 'area' : $LablTip= Lbl_Tip($labl,$titl,'','13px;',$topArea);   break; # Browser depended 
@@ -143,14 +146,17 @@ function htm_Input(
                                 $eventInvalid.' '.  $aktiv.$plh.' /> <label for="'.$name.'">'.$LablTip.'</label> </span>'; break;
                         
         case 'dec0'     : # quantity
-        case 'dec1'     : # Amount
-        case 'dec2'     : echo $inpType.'"text" '.  $more. $inpStyle. $inpIdNm. ';" value="'.number_format((float)$valu,(int)substr($type,3,1),',','.').$suff,'"  '. $str1; break; 
+        case 'dec1'     : # Amount -  // SPACE as thousands separator
+        case 'dec2'     : echo $inpType.'"text" '.  $more. $inpStyle. $inpIdNm. ';" value="'.$pref.number_format(
+							(float)$valu,(int)substr($type,3,1),DecimalSeparator,ThousandsSeparator).$suff,'"  '. $str1; break; 
         
         case 'num0'     :
         case 'num1'     :
         case 'num2'     :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
         case 'num3'     : echo '<span class="lablInput"> <input type="number" '.$more.' lang="en" '.$inpStyle. $inpIdNm.'" width="'.$width.'px;" step="'.$step.'" id="'.$name.
-                                '" name="'.$name.'" value="'.number_format((float)$valu,(int)substr($type,3,1),',','.').$suff,'" '.$eventInvalid.' '.$aktiv.$plh.$patt2.$name.'">'.$LablTip.'</label> </span>';  break; 
+                                '" name="'.$name.'" value="'.$pref,number_format(
+								(float)$valu,(int)substr($type,3,1),DecimalSeparator,ThousandsSeparator).$suff,'" '.$eventInvalid.' '.$aktiv.$plh.$patt2.$name.'">'.$LablTip.'</label> </span>';  break; 
+								// thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/
     
         case 'barc'     : echo $inpType.'"text" '.$more. $inpStyle.' font-family:barcode; font-size:19px;"'. $inpIdNm. ' value="'.$valu.'" '.
                                 $eventInvalid.' '.$aktiv.$plh.' /> <label for="'.$name.'" style="top: -54px;">'.$LablTip.'</label> </span>';  break; 
@@ -1509,8 +1515,8 @@ input { border: 0; }
 
 .grid-container {
   display: grid;
-  grid-template-columns: 180px 180px;
-  /* background-color: #2196F3; */
+  grid-template-columns: 35% 30% 35% ;
+  background-color: #fffded;
   padding: 10px;
   grid-gap: 10px;
   text-align: center;
@@ -1518,7 +1524,7 @@ input { border: 0; }
 
 .grid-item {
   /* background-color: rgba(255, 255, 255, 0.8); */
-  border: 1px solid rgba(100, 100, 150, 0.6);
+  /* border: 1px solid rgba(100, 100, 150, 0.6); */
   /* padding: 5px; */
   /* font-size: 30px; */
   /* text-align: center; */

@@ -1,24 +1,24 @@
-<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-03-30';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-04-01';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 //require_once ('translate.inc.php');
 htm_PagePrep('DEMO');
-    echo '<div style="text-align:center;  background:#fffded;"><br>php2html-Demo:';  htm_nl(2);
+    echo '<div style="text-align:center;"><br>php2html-Demo:';  htm_nl(2);
     echo 'Examples of htm_Input():';    htm_nl(2);
-    if (USEGRID) echo '<div class="grid-container" style="width: 400px; margin:auto;">';
+    if (USEGRID) echo '<div class="grid-container" style="width: 700px; margin:auto;">';
     htm_Input($type='text',$name='text',$valu='',$labl='htm_Input(Text)',$titl='Demo of htm_Input Field type text');
     htm_Input($type='date',$name='date',$valu='',$labl='htm_Input(Date)',$titl='Demo of htm_Input Field type date with browser popup selector');
     htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$titl='Demo of htm_Input Field type intg: centered integer',$algn='center');
     htm_nl(0);
-    htm_Input($type='dec0',$name='dec0',$valu='87654321',$labl='htm_Input(Dec0)',$titl='Demo of htm_Input Field type dec0: centered number with 0 decimals',$algn='center');
+    htm_Input($type='dec0',$name='dec0',$valu='87654321',$labl='htm_Input(Dec0)',$titl='Demo of htm_Input Field type dec0: centered number with 0 decimals',$algn='center',$unit=' %');
     htm_Input($type='dec1',$name='dec1',$valu='87654321',$labl='htm_Input(Dec1)',$titl='Demo of htm_Input Field type dec1: number with 1 decimal ');
-    htm_Input($type='dec2',$name='dec2',$valu='87654321',$labl='htm_Input(Dec2)',$titl='Demo of htm_Input Field type dec2: number with 2 decimal');
-    htm_Input($type='chck',$name='chck',$valu='',$labl='htm_Input(chck)',$titl='Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$suff='',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
+    htm_Input($type='dec2',$name='dec2',$valu='87654321',$labl='htm_Input(Dec2)',$titl='Demo of htm_Input Field type dec2: number with 2 decimal',$algn='center',$unit='<$ ');
+    htm_Input($type='chck',$name='chck',$valu='',$labl='htm_Input(chck)',$titl='Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$unit='',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
         ['Label1','@Details about label','checked'],
         ['Label2','@Details about label','checked']
     ]);
-    htm_Input($type='opti',$name='opti',$valu='87654321',$labl='htm_Input(opti)',$titl='Demo of htm_Input Field type opti: left aligned number with %-suffix',$algn='left',$suff=' %',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
+    htm_Input($type='opti',$name='opti',$valu='87654321',$labl='htm_Input(opti)',$titl='Demo of htm_Input Field type opti: left aligned number with %-unit',$algn='left',$unit=' %',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
     ['private','@Details about private'],
     ['proff','@Details about profession'],
     ['private','@Details about private','checked'],
