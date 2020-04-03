@@ -55,7 +55,7 @@ The parameters to htm_Input:
 		$labl='',           # Translated label above the input field
 		$titl='',           # Translated desctiption about the field
 		$algn='left',       # The alignment of input content Default: left
-		$unit='',           # A unit added to the content eg. currency or % ( prefix or suffix )
+		$unit='',           # A unit added to the content eg. currency or % (prefix or suffix)
 		$disabl=false,      # Disable the field (Output only). Default: field is active
 		$rows='2',          # Number of rows in multiline input (eg. area/html) Default: 2
 		$width='',          # Width of the field-container

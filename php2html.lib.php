@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-01';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-03';     $DocIni='evs';  $ModulNo=0;
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -31,12 +31,6 @@
 function htm_Input($type, $name, $value, $label, $title, $disabl, $rows, $width, $step, $more, $placeholder)    // function htm_CombList
                                     # Combined Input field
 
-function htm_CheckFlt($type, $name, $value, $label, $title, $disabl, $more, $newline)
-                                    # Combined Checkbox and label
-
-function htm_OptioFlt($type, $name, $value, $label, $title, $disabl, $optlist, $action, $events, $maxwd, $onForm, $newline) 
-                                    # Combined Optionfields and label
-
 function htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, &$tblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $CalledFrom, $Kriterie)    
                                     # Table with lots of functions (Create/Delete/Modify: record; Filter/Sort: rows; Striped rows)
 
@@ -65,6 +59,7 @@ define ('ThousandsSeparator',' ');
 define ('DecimalSeparator',',');
 # GLOBALS:
 $ØblueColor= 'lightblue';
+$ØTblIx= -1;
 
 function get_browser_name($user_agent) { # Call: get_browser_name($_SERVER['HTTP_USER_AGENT']);
     if     (strpos($user_agent, 'Opera') || strpos($user_agent, 'OPR/')) return 'Opera';
@@ -164,7 +159,7 @@ if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= 
         case 'rado'     : echo '<label for="'.$name.'">'.$LablTip.'</label>'.
                                 '<form action="">'.  // Qarn: Nestet form !
                                 '<span class="fieldContent" style="top: -14px;"><small>';
-                                foreach ($dataList as $rec) { // $dataList= [['Label','@ToolTip'],['Label','@ToolTip','checked'],['Label','@ToolTip'],...]
+                                foreach ($dataList as $rec) { // $dataList= [['Label','@ToolTip'],[0:'Label',1:'@ToolTip',2:'checked'],['Label','@ToolTip'],...]
                                     echo '<input type= "radio" name="'.$name.'" value="'.$rec[0].'" '.$rec[2].'/>'. lang($rec[1]).'<br>';
                                 }
                                 echo '</small></span> </form>';  break; 
@@ -199,7 +194,7 @@ if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= 
         case 'chck'     : echo '<label for="'.$name.'">'.$LablTip.'</label>'.
                                 '<form action="">'.  // Nestet form !
                                 '<span class="fieldContent" style="top: -14px;"><small>';
-                                foreach ($dataList as $rec) { // $dataList= [['@Label','@ToolTip'],['@Label','@ToolTip','checked'],['@Label','@ToolTip'],...]
+                                foreach ($dataList as $rec) { // $dataList= [['@Label','@ToolTip'],[0:'@Label',1:'@ToolTip',2:'checked'],['@Label','@ToolTip'],...]
                                     echo '<input type= "checkbox" name="'.$name.'" value="'.$rec[0].'" '.$rec[2].'/>'.  
                                     '<label for="'.$name.'" style="top: -2px;">'.Lbl_Tip($rec[0],$rec[1],'','11px; box-shadow:none; top: -3px').'</label>'.'<br>';
                                 }
@@ -209,7 +204,7 @@ if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= 
                                 '<span class="fieldContent" style="top: -14px; text-align: center;"><small>';
                                 echo '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.' style="width: 80%; max-width: '.$maxwd.'; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
                                 echo '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$titl.'"     selected="'.$valu.'"
-                                foreach ($dataList as $rec) { # $dataList= [[0:Label, 1:Tip, 2:value, 3:Action],[...]]
+                                foreach ($dataList as $rec) { # $dataList= [[0:value, 1:@ToolTip, 2:'checked',[...]]
                                     echo '<option '. /* .'label="'.lang($rec[2]).'" '. */ 'title="'.lang($rec[1]).'" value="'.$rec[0].'" '.$rec[3]; //  Firefox understøtter ikke Label !
                                     if ($rec[0]==$valu) echo ' selected ';
                                     echo '>'.$lbl=lang($rec[0]).'</option> ';
@@ -217,7 +212,7 @@ if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= 
                                 echo '</select>';
                                 echo '</small></span>';  break; 
     
-        default         : echo ' Illegal Type ! ';
+        default         : echo ' htm_Input(): Illegal Type ! ';
         dvl_pretty();
     }
     echo '</span>'; # :FIELD
@@ -264,7 +259,7 @@ function htm_Table(
   if ($FilterOn)  {$filt= ' filter-true '; }   else $filt= ' filter-false ';  //  filter-select
   if ($SorterOn)  {$sort= ' sorter-inputs '; } else $sort= ' sorter-false ';
   
-  $ØTblIx++;          //  0..7 på en page
+  $ØTblIx++;          //  0..7 on a page
   $tix= 'T'.$ØTblIx;  //  Tabel index for flere tabeller i samme vindue
   
   if (!function_exists('RowKlick')) {
@@ -363,7 +358,7 @@ function htm_Table(
           {$editmark= '·'; $lblsuff= str_nl().lang('@Can be edited !');} else {$editmark= ''; $lblsuff=''; }
         if ($kNo<=1) $tipplc='SO'; else if ($kNo=1) $tipplc='S'; else $tipplc='SW'; // Placering af tip 1. og 2. kolonne
         if ($kNo==count($RowBody)) $tipplc='SW';  //  Sidste kolonne
-        echo '<th class="'.$filt.$selt.$sort.$colfilt.'" data-placeholder= "Vis..." style="width:'.$Body[1].'; '.
+        echo '<th class="'.$filt.$selt.$sort.$colfilt.'" data-placeholder= "'.lang('@Show...').'" style="width:'.$Body[1].'; '.
              $ØHeaderFont.' text-align:center;">'.Lbl_Tip($Body[0].$editmark,$Body[5].$lblsuff,$tipplc,$h='0px').' </th>';  //  filter-select
   } }
   foreach ($RowSuff as $Suff) { dvl_pretty(); 
@@ -965,6 +960,7 @@ tfoot input {
 .tablesorter .tablesorter-filter {  /* Forebygger utilsigtet min-width af filter-felter */
     width: 100%;
 }
+
 </style>
 
 <style id=".'css'.">  /* wrapper of table  */ 

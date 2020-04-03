@@ -1,17 +1,17 @@
-<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-04-01';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-04-03';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 //require_once ('translate.inc.php');
 htm_PagePrep('DEMO');
     echo '<div style="text-align:center;"><br>php2html-Demo:';  htm_nl(2);
-    echo 'Examples of htm_Input():';    htm_nl(2);
+    echo 'Examples of htm_Input():';    						htm_nl(2);
     if (USEGRID) echo '<div class="grid-container" style="width: 700px; margin:auto;">';
     htm_Input($type='text',$name='text',$valu='',$labl='htm_Input(Text)',$titl='Demo of htm_Input Field type text');
     htm_Input($type='date',$name='date',$valu='',$labl='htm_Input(Date)',$titl='Demo of htm_Input Field type date with browser popup selector');
     htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$titl='Demo of htm_Input Field type intg: centered integer',$algn='center');
-    htm_nl(0);
-    htm_Input($type='dec0',$name='dec0',$valu='87654321',$labl='htm_Input(Dec0)',$titl='Demo of htm_Input Field type dec0: centered number with 0 decimals',$algn='center',$unit=' %');
+    
+	htm_Input($type='dec0',$name='dec0',$valu='87654321',$labl='htm_Input(Dec0)',$titl='Demo of htm_Input Field type dec0: centered number with 0 decimals',$algn='center',$unit=' %');
     htm_Input($type='dec1',$name='dec1',$valu='87654321',$labl='htm_Input(Dec1)',$titl='Demo of htm_Input Field type dec1: number with 1 decimal ');
     htm_Input($type='dec2',$name='dec2',$valu='87654321',$labl='htm_Input(Dec2)',$titl='Demo of htm_Input Field type dec2: number with 2 decimal',$algn='center',$unit='<$ ');
     htm_Input($type='chck',$name='chck',$valu='',$labl='htm_Input(chck)',$titl='Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$unit='',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
@@ -28,33 +28,35 @@ htm_PagePrep('DEMO');
     htm_Input($type='dec0',$name='dec0',$valu='87654321',$labl='htm_Input(Dec0)',$titl='Demo of htm_Input Field type dec0: left aligned number with %-suffix',$algn='left',$suff=' %',);
     htm_Input($type='dec1',$name='dec1',$valu='87654321',$labl='htm_Input(Dec1)',$titl='Demo of htm_Input Field type dec1: centered number with %-suffix',$algn='center',$suff=' %',);
     htm_Input($type='dec2',$name='dec2',$valu='87654321',$labl='htm_Input(Dec2)',$titl='Demo of htm_Input Field type dec2: right aligned number with %-suffix',$algn='right',$suff=' %',);
-    htm_nl(0);
-    htm_Input($type='num1',$name='numb',$valu='87654321',$labl='htm_Input(numb)',$titl='Demo of htm_Input Field type numb: number with 1 decimal',$algn='center');
+    
+	htm_Input($type='num1',$name='numb',$valu='87654321',$labl='htm_Input(numb)',$titl='Demo of htm_Input Field type numb: number with 1 decimal',$algn='center');
     htm_Input(      'num0',      'numb',      '87654321',      'htm_Input(numb)',     'Demo of htm_Input Field type numb: left-justified number',$algn='left');
     htm_Input($type='mail',$name='mail',$valu='',$labl='htm_Input(mail)',$titl='Demo of htm_Input Field type mail with syntax control');
     htm_Input($type='pass',$name='pass1',$valu='',$labl='htm_Input(pass)',$titl='Demo of htm_Input Field type pass with "hidden" output');
     htm_Input($type='barc',$name='barc',$valu='',$labl='htm_Input(barc)',$titl='Demo of htm_Input Field type barc: shown with font barcode',$algn='center');
     htm_Input($type='area',$name='area',$valu='',$labl='htm_Input(area)',$titl='Demo of htm_Input Field type area: Multi-line text',$disabl=false,$rows='3');
     htm_Input($type='html',$name='html',$valu='',$labl='htm_Input(html)',$titl='Demo of htm_Input Field type html: Multi-line formatted html-text',$disabl=false,$rows='3');
-    htm_Input($type='chck',$name='chck',$valu='',$labl='htm_Input(chck)',$titl='Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$suff='',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
+    
+	htm_Input($type='chck',$name='chck',$valu='',$labl='htm_Input(chck)',$titl='Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$suff='',$disabl=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$dataList= [
     ['private','@Details about private'],
     ['proff','@Details about profession'],
     ['private','@Details about private'],
     ['hobby','@Details about hobby','checked'],
     ['private','@Details about private'],
     ]);
-    htm_nl(0);
-    htm_Input($type='rado',$name='rado',$valu='',$labl='htm_Input(rado)',$titl='Demo of htm_Input Field type radio',$algn='left',$suff='',$disabl=false,$rows='2',$width='',$step='',$more='',$plho='Enter...',$dataList= [
+    
+	htm_Input($type='rado',$name='rado',$valu='',$labl='htm_Input(rado)',$titl='Demo of htm_Input Field type radio',$algn='left',$suff='',$disabl=false,$rows='2',$width='',$step='',$more='',$plho='Enter...',$dataList= [
     ['private','@private'],
     ['proff','@profession'],
     ['private','@private','checked'],
     ['hobby','@hobby'],
     ['private','@private'],
     ]);
-        if (USEGRID) echo '</div>'; // grid-container
+    if (USEGRID) echo '</div>'; // grid-container
     
     htm_nl(2);
-    echo 'Example of htm_Table():'; htm_nl(2);
+    echo 'Example of htm_Table():'; 
+	htm_nl(2);
     htm_Table(
         $TblCapt= array( #['0:Label',   '1:Width',    '2:Type',    '3:Format', '4:horAlgn',      '5:Tip',    '6:Content'],... // Gl: 0:Label 1:width 2:align 3:Type 4:title 5:Content
           ['<b>'.lang('@Inland').'</b>', '8%','show','left', '', '@VAT on India','@PURCHASE'],
@@ -81,6 +83,7 @@ htm_PagePrep('DEMO');
         $CalledFrom='',         // = __FUNCTION__
         $Kriterie= ['','']      # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
+	
     htm_nl(2);
     echo 'Example of htm_PanlHead():';  htm_nl(2);
     htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px)', $parms='', $icon='fas fa-database', $class='panelW560', $func='Undefined', $more='', $BookMark='../_base/page_Blindgyden.php');
