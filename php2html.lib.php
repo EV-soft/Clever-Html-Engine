@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-03';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-10';     $DocIni='evs';  $ModulNo=0;
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -55,11 +55,15 @@ session_start();
 define('DEBUG',false);              # Set to true to activate system debugging
 define('LABELPOS','LeftRight');     # LeftLeft LeftRight TopLeft TopRight (Pos Align)
 define('USEGRID',true); 
-define ('ThousandsSeparator',' ');
-define ('DecimalSeparator',',');
+define ('ThousandsSep',' ');
+define ('DecimalSep',',');
 # GLOBALS:
 $ØblueColor= 'lightblue';
 $ØTblIx= -1;
+$ØProgTitl= ' Demo';
+$Ødesigner= 'EV-soft';
+$GridOn= true;
+
 
 function get_browser_name($user_agent) { # Call: get_browser_name($_SERVER['HTTP_USER_AGENT']);
     if     (strpos($user_agent, 'Opera') || strpos($user_agent, 'OPR/')) return 'Opera';
@@ -73,13 +77,12 @@ function get_browser_name($user_agent) { # Call: get_browser_name($_SERVER['HTTP
 
 ### Functions:
 
-// Call: htm_Input($type='',$name='',$valu='',$labl='',$titl='',$algn='left',$suff='',$disabl=false,$rows='2',$width='',$step='',$more='',$plho='Enter...',$dataList=[])   # Inputfield and label
-function htm_Input(
+function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$unit='',$disa=false,$rows='2',$wdth='',$step='',$more='',$plho='@Enter...',$dataList=[] )
     $type='',           # text, date, ... Look at source !
     $name='',           # Set the fields name and id
     $valu='',           # The current content in input field
     $labl='',           # Translated label above the input field
-    $titl='',           # Translated desctiption about the field
+    $hint='',           # Translated desctiption about the field
     $algn='left',       # The alignment of input content Default: left
     $unit='',           # A unit added to the content eg. currency or % If in front: '<' it is added as a prefix, else a suffix
     $disabl=false,      # Disable the field. Default: field is active
@@ -89,136 +92,107 @@ function htm_Input(
     $more='',           # Give more (special) input attrib
     $plho='@Enter...',  # Translated placeholder shown when field is empty. Default: Enter...
     $dataList=[]        # Data for "multi-list" (eg. options, checkbox, radiolist)
-)
-{ global $ØblueColor;
-    dvl_pretty('htm_Input');
-    $labl= lang($labl);     $titl= lang($titl);
-    $browser= get_browser_name($_SERVER['HTTP_USER_AGENT']);
-    if ($browser=='Firefox') $topArea= '-20px'; else $topArea= '-14px';
-    if ($width=='') $width= '200px';    // Default width
-if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
-    switch ($type) {    # LABEL: Height and top: Offset (align label: left/center/right: change in CSS: Fieldstyle - text-align: xxx;)
-        case 'rado' : $LablTip= Lbl_Tip($labl,$titl,'','13px;','-14px;');   break; 
-        case 'area' : $LablTip= Lbl_Tip($labl,$titl,'','13px;',$topArea);   break; # Browser depended 
-        case 'opti' : $LablTip= Lbl_Tip($labl,$titl,'','13px;','-14px');    break; 
-        case 'chck' : $LablTip= Lbl_Tip($labl,$titl,'','13px;','-14px');    break; 
-        case 'pass' : $LablTip= Lbl_Tip($labl,$titl,'','13px;','-44px;');   break; 
-        default     : $LablTip= Lbl_Tip($labl,$titl,'','13px;');
-    }
-    $inpType=  '<span class="lablInput"> <input type= '; 
-    $inpIdNm=  ' id="'.$name.'" name="'.$name.'"';
-    $inpStyle= ' style="width: 97%; padding-top: 6px; text-align: '.$algn.'; '; 
+	) {
+	global $GridOn;
+	dvl_pretty('htm_Input_test');
+    $labl= lang($labl);     $hint= lang($hint);	// $labl= 'htm_INPUT('.$type.')';
+    if ($plho=='')	$plh=''; else $plh=' placeholder="'.lang($plho).'" ';
+    if ($wdth=='') 	$wdth= '200px';    // Default width
+	if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
+#GRID:
+    if ((USEGRID) and ($GridOn)) echo '<div class="grid-item">';
+#FIELD:
+	echo '<div class="inpField" id="inpBox" style="float: left; width: '.$wdth.'"> ';
+#INPUT:
+    $inpIdNm=  ' id="'.$name.'" name="'.$name.'" ';
+    $inpStyle= ' style="text-align: '.$algn.'; font-size:12px; '; 
     
     $patt1= ' pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" /> <label for="';
     $patt2= ' pattern="(\d{3})([\.])(\d{2})" />  <label for="';
     $eventInvalid= 'oninvalid="this.setCustomValidity(\''.lang('@Wrong data in ').lang($labl).' ! \')"';
     
-    if (gettype($valu)== 'Float') $type= 'number'; 
+    //if (gettype($valu)== 'Float') $type= 'number'; 
     if (!$disabl==true) $aktiv= ''; else $aktiv=' disabled ';
     if ($plho=='')   $plh='';    else $plh=' placeholder="'.lang($plho).'" ';
     
-    $str1= $eventInvalid.' '.$aktiv.$plh.$patt1.$name.'">'.$LablTip.'</label> </span>';
-    switch ($type) {     // INPFIELD: Dim/Offset
-        case 'area'     : 
-        case 'html'     : $fldStyle = 'height: '.(34+$rows*16).'px;'; break; 
-        case 'rado'     :
-        case 'chck'     : $fldStyle = 'height: '.(17+count($dataList)*17).'px;'; break; 
-        default         : $fldStyle = 'height: 32px; ';
-    }
-#GRID:
-    if (USEGRID) echo '<div class="grid-item">';
-#FIELD:
-    echo '<span class="fieldStyle" name="inpField" style="'.$fldStyle.' width: '.$width.';">';
-#INPUT & LABEL & TIP:   
+    $str1= $eventInvalid.' '.$aktiv.$plh.$patt1.$name.'">';
     switch ($type) {     
-        case 'date'     : echo $inpType.'"date" '.  $more. $inpStyle. $inpIdNm.'" value="'.$valu.
-                                '" placeholder ="yyyy-mm-dd" '.$aktiv.' /> <label for="'.$name.'">'.$LablTip.'</label> </span>'; break;
-    
-        case 'intg'     : echo $inpType.'"number" '.$more. $inpStyle. $inpIdNm. ' step:'.$step.
-                                '" value="'.$valu.'" '.$aktiv.$plh.' /> <label for="'.$name.'">'.$LablTip.'</label> </span>'; break;
-        
-        case 'text'     : echo $inpType.'"text" '.  $more. $inpStyle. $inpIdNm.'" '.$align.' value="'.$valu.'" '.
-                                $eventInvalid.' '.  $aktiv.$plh.' /> <label for="'.$name.'">'.$LablTip.'</label> </span>'; break;
-                        
-        case 'dec0'     : # quantity
-        case 'dec1'     : # Amount -  // SPACE as thousands separator
-        case 'dec2'     : echo $inpType.'"text" '.  $more. $inpStyle. $inpIdNm. ';" value="'.$pref.number_format(
-							(float)$valu,(int)substr($type,3,1),DecimalSeparator,ThousandsSeparator).$suff,'"  '. $str1; break; 
-        
-        case 'num0'     :
-        case 'num1'     :
-        case 'num2'     :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
-        case 'num3'     : echo '<span class="lablInput"> <input type="number" '.$more.' lang="en" '.$inpStyle. $inpIdNm.'" width="'.$width.'px;" step="'.$step.'" id="'.$name.
-                                '" name="'.$name.'" value="'.$pref,number_format(
-								(float)$valu,(int)substr($type,3,1),DecimalSeparator,ThousandsSeparator).$suff,'" '.$eventInvalid.' '.$aktiv.$plh.$patt2.$name.'">'.$LablTip.'</label> </span>';  break; 
-								// thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/
-    
-        case 'barc'     : echo $inpType.'"text" '.$more. $inpStyle.' font-family:barcode; font-size:19px;"'. $inpIdNm. ' value="'.$valu.'" '.
-                                $eventInvalid.' '.$aktiv.$plh.' /> <label for="'.$name.'" style="top: -54px;">'.$LablTip.'</label> </span>';  break; 
-        
-        case 'rado'     : echo '<label for="'.$name.'">'.$LablTip.'</label>'.
-                                '<form action="">'.  // Qarn: Nestet form !
-                                '<span class="fieldContent" style="top: -14px;"><small>';
-                                foreach ($dataList as $rec) { // $dataList= [['Label','@ToolTip'],[0:'Label',1:'@ToolTip',2:'checked'],['Label','@ToolTip'],...]
-                                    echo '<input type= "radio" name="'.$name.'" value="'.$rec[0].'" '.$rec[2].'/>'. lang($rec[1]).'<br>';
-                                }
-                                echo '</small></span> </form>';  break; 
-    
-        case 'pass'     : echo '<div style="text-align: left;">'.
-                                $inpType.'"password" '.$more. $inpIdNm.' style=" width: 67%;" value="'.$valu.'" '.$eventInvalid.' '.$aktiv.$plh.' onkeyup="getPassword('.$name.')" />'.
-                                iconButt($type='button',$faicon='far fa-eye', $title= lang('@Show/Hide password'),$id='tgl_'.$name, $link='',$action='onmousedown="togglePassword('.'tgl_'.$name.','.$name.')"',$akey='',$size='',$labl='').
-                                '</div>'.
-                                '<label for="'.$name.'" style="top: -40px;">'.$LablTip.'</label> ';
-                                $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
-                                echo
-                                '<meter id= "pwPoint'.$name.'" style="position:relative; height:6px; top:-33px; width:97%;" '.
-                                    'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
-                                    'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
-                                '</meter>';  break;
-    
-        case 'mail'     : echo $inpType.'"email" '.$more. $inpStyle. $inpIdNm.' value="'.$valu.'" '. $eventInvalid.' '. //  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                                $aktiv.$plh.' /> <label for="'.$name.'">'.$LablTip.'</label> </span>';  break; 
-    
-        case 'hidd'     : echo '<input type= "hidden" id="'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break; 
-        
-        case 'html'     : echo '<span class="lablInput" style="top: -17px;"> <small><div contenteditable="true" rows="'.$rows.'" id="'.$name.'" name="'.$name.
-                                '" style="line-height:100%; min-height: 34px; background-color: white; border: 1px solid lightgray; padding: 2px;" '. //  Som area, men med html-indhold
-                                $eventInvalid.' '.$aktiv.$plh.' data-placeholder="'.lang($plho).'" '.$more.' >'.$valu.'</div></small> <label for="'.$name.
-                                '" style="top: '.((2+$rows)*-16).'px;">'.$LablTip.'</label> </span>  <br/>';
-                                if ($disabl) echo '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';
-                                break; 
-    
-        case 'area'     : echo '<span class="lablInput"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.'" style="line-height:100%; width:97%; font-size: 1em;" '.
-                                $eventInvalid.' '.$aktiv.$plh.' '.$more.' >'.$valu.'</textarea>   <label for="'.$name.'">'.$LablTip.'</label> </span>  <br/>';  break; 
-        
-        case 'chck'     : echo '<label for="'.$name.'">'.$LablTip.'</label>'.
-                                '<form action="">'.  // Nestet form !
-                                '<span class="fieldContent" style="top: -14px;"><small>';
-                                foreach ($dataList as $rec) { // $dataList= [['@Label','@ToolTip'],[0:'@Label',1:'@ToolTip',2:'checked'],['@Label','@ToolTip'],...]
-                                    echo '<input type= "checkbox" name="'.$name.'" value="'.$rec[0].'" '.$rec[2].'/>'.  
-                                    '<label for="'.$name.'" style="top: -2px;">'.Lbl_Tip($rec[0],$rec[1],'','11px; box-shadow:none; top: -3px').'</label>'.'<br>';
-                                }
-                                echo '</small></span> </form>';  break; 
-    
-        case 'opti'     : echo '<label for="'.$name.'">'.$LablTip.'</label>'.
-                                '<span class="fieldContent" style="top: -14px; text-align: center;"><small>';
-                                echo '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.' style="width: 80%; max-width: '.$maxwd.'; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
-                                echo '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$titl.'"     selected="'.$valu.'"
-                                foreach ($dataList as $rec) { # $dataList= [[0:value, 1:@ToolTip, 2:'checked',[...]]
-                                    echo '<option '. /* .'label="'.lang($rec[2]).'" '. */ 'title="'.lang($rec[1]).'" value="'.$rec[0].'" '.$rec[3]; //  Firefox understøtter ikke Label !
-                                    if ($rec[0]==$valu) echo ' selected ';
-                                    echo '>'.$lbl=lang($rec[0]).'</option> ';
-                                }
-                                echo '</select>';
-                                echo '</small></span>';  break; 
-    
-        default         : echo ' htm_Input(): Illegal Type ! ';
+        case 'date' : echo '<input type= "date" '.  $more. $inpIdNm. $inpStyle.'" value="'.$valu. '" placeholder ="yyyy-mm-dd" '.$aktiv.' /> '; break;
+        case 'intg' : echo '<input type= "number" '.$more. $inpIdNm. $inpStyle.' step:'.$step. '" value="'.$valu.'" '.	$aktiv.$plh.' /> '; break;
+		case 'text' : echo '<input type= "text" '.  $more. $inpIdNm. $inpStyle.'" '.$align.' value="'.$valu.'" '. $eventInvalid.' '. $aktiv.$plh.' /> '; break;
+        case 'dec0' : # quantity
+        case 'dec1' : # Amount -  // SPACE as thousands separator
+        case 'dec2' : echo '<input type= "text" '.  $more. $inpIdNm. $inpStyle. ';" value="'.$pref.number_format((float)$valu,(int)substr($type,3,1),DecimalSep,ThousandsSep).$suff,'"  '. $str1; break; 
+        case 'num0' :
+        case 'num1' :
+        case 'num2' :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
+        case 'num3' : echo '<input type="number" '.$more.' lang="en" '. $inpIdNm. $inpStyle.'" width="'.$width.'px;" step="'.$step.'" id="'.$name.
+						'" name="'.$name.'" value="'.$pref,number_format((float)$valu,(int)substr($type,3,1),DecimalSep,ThousandsSep).$suff,'" '.$eventInvalid.' '.$aktiv.$plh.$patt2.$name.'">';  break; 
+						// thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
+        case 'barc' : echo '<input type= "text" '.	$more. $inpIdNm. $inpStyle.' font-family:barcode; font-size:19px;"'. ' value="'.$valu.'" '.
+						$eventInvalid.' '.$aktiv.$plh.' />';  break; 
+        case 'mail' : echo '<input type= '.'"email" '.$more. $inpIdNm. $inpStyle.' value="'.$valu.'" '. $eventInvalid.' '. //  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+						$aktiv.$plh.' /> <label for="'.$name.'">';  break; 
+
+        case 'pass' : echo '<span class="fieldContent" style="text-align: left;">'.
+						'<input type= "password" '.$more. $inpIdNm.' style="height: 22px; width: 67%; margin-top: -1px;" value="'.$valu.'" '.$eventInvalid.' '.$aktiv.$plh.' onkeyup="getPassword('.$name.')" />'.
+						iconButt($type='button',$faicon='far fa-eye', $title= lang('@Show/Hide password'),$id='tgl_'.$name, 
+								 $link='',$action='onmousedown="togglePassword('.'tgl_'.$name.','.$name.')"',$akey='',$size='',$lbl='');
+						$str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
+						echo '<meter id= "pwPoint'.$name.'" style="position:relative; height:6px; width:97%;" '.
+							'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
+							'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
+						'</meter>';	echo '</span>';	break;
+
+        case 'hidd' : echo '<input type= "hidden" id="'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break; 
+		
+        case 'area' : echo '<span class="fieldContent" > <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.'" style="line-height:100%; width:97%; font-size: 1em;" '.
+						$eventInvalid.' '.$aktiv.$plh.' '.$more.' >'.$valu.'</textarea> <label for="'.$name.'"><br>';  break; 
+
+        case 'html' : echo '<span class="fieldContent" style="top: -1px;"> <small><div contenteditable="true" rows="'.$rows.'" id="'.$name.'" name="'.$name.
+						'" style="background-color: white; line-height:100%; min-height: 34px; border: 1px solid lightgray; padding: 2px;" '. //  Som area, men med html-indhold
+						$eventInvalid.' '.$aktiv.$plh.' data-placeholder="'.lang($plho).'" '.$more.' >'.$valu.'</div></small> <br>';
+						if ($disabl) echo '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';	break; 
+
+        case 'chck' : echo '<form action="">'.  // Nestet form !
+							'<span class="fieldContent" ><small>';
+							foreach ($dataList as $rec) { // $dataList= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:'checked'], ['@Label','@ToolTip'],...]
+								echo '<input type= "checkbox" name="'.$rec[0].'" value="'.$rec[3].'" '.$rec[3].' style="width: 20px;"/>'.
+									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow:none; ').'</label><br>';
+							}	echo '</small></span> </form>';  break; 
+
+        case 'rado' : echo '<form action="">'.  // Warn: Nestet form !
+							'<span class="fieldContent" ><small>';
+							foreach ($dataList as $rec) { // $dataList= [['name','Label','@ToolTip'], [0:'name',1:'Label',2:'@ToolTip',3:'checked'], ['Label','@ToolTip'],...]
+								echo '<input type= "radio" id="'.$rec[0].'" name="'.$name.'" value="'.$rec[1].'" '.$rec[3].' style="width: 20px">'.
+									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'. lang($rec[2]).'</label><br>';
+							}	echo '</small></span> </form>';  break; 
+
+        case 'opti' : echo '<span class="fieldContent" style="background-color: white; top: 6px; text-align: center; border: 1px solid var(--FieldBord); border-radius:5px"><small>';
+							echo '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.' style="width: 80%; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
+							echo '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
+							foreach ($dataList as $rec) { # $dataList= [[0:value, 1:@ToolTip, 2:'checked', [...]]
+								echo '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[1]).'" value="'.$rec[0].'" '.$state=$rec[2]; //  Firefox does not support Label !
+								if ($rec[0]==$valu) echo ' selected ';
+								echo '>'.$lbl=lang($rec[0]).'</option> ';
+							}	echo '</select></small></span>';  break; 
+
+        default     : echo ' htm_Input(): Illegal Type ! ';
         dvl_pretty();
     }
-    echo '</span>'; # :FIELD
+
+# LABEL & TIP:   
+	echo '	<abbr class="hint"> ';
+	echo '		<label for="'.$name.'" style="font-size: 10px;"><div style="white-space: nowrap;">'.$labl.'</div></label> ';
+	if ($hint=='') $hint= '@There is no explanation !';
+	echo '		<data-hint>'.lang($hint).'</data-hint> ';
+	echo '	</abbr> ';
+	
+	echo '</div>'; # :FIELD
     
-    if (USEGRID) echo '</div>'; # :GRID
-} //  htm_Input
+	if ((USEGRID) and ($GridOn)) echo '</div>'; # :GRID
+} //  :htm_Input()
+
 
 function htm_Table(
     $TblCapt= array( #['0:Label',   '1:Width',    '2:Type',    '3:OutFormat', '4:horJust',      '5:Tip',    '6:placeholder', '7:Content';], ['Næste record']
@@ -598,7 +572,7 @@ function htm_Table(
 
 function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelWmax', $func='Undefined', $more='', $BookMark='../_base/page_Blindgyden.php')
 { # MUST be followed of htm_PanlFoot !
-  global $ØTitleColr, $ØPanlForm, $ØProgRoot, $ØPanelIx, $ØBodyBcgrd; 
+  global $ØTitleColr, $ØPanlForm, $ØProgRoot, $ØPanelIx, $ØBodyBcgrd, $GridOn; 
   $ØPanelIx++;
   echo '<script>';  //  Hide/show Panel-Body
   echo 'function PanelSwitch'.$ØPanelIx.'() {';
@@ -614,7 +588,8 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
   echo '    h.style.display = "block"; p.style.width = "100%"; $("table").trigger("applyWidgets");}'; //  $("table").trigger("applyWidgets"); Refresh de tidliger skjulte tablesorter objekter.
   echo '</script>';
   dvl_pretty('htm_PanlHead');
-  if ($capt=='') $Ph= 'height:0px;'; else $Ph= '';
+  $GridOn= false;
+ if ($capt=='') $Ph= 'height:0px;'; else $Ph= '';
   
   if ($frmName>'') { //  Without name form will not be created, so local forms can be used !
         $ØPanlForm= true;  
@@ -638,7 +613,7 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
         lang('@You can also help maintain help and guidance here as the WIKI is editable.').'"><img src= "'.$ØProgRoot.
         '_assets/images/wikilogo.png " alt="Wiki" style="width:20px;height:20px; margin-right:2px; float:right;" '.'> </a>';
         
-  echo  '<span class="'.$class.'" id="panel'.$ØPanelIx.'" '.$more.' style="position: relative; left: -6px;"> '.    //  Panel-start 
+  echo  '<span class="'.$class.'" id="panel'.$ØPanelIx.'" '.$more.' style="position: relative; left: -6px; background-color: #fffef4;"> '.    //  Panel-start 
         '<span class="panelTitl" style="'.$Ph.' color:'.$ØTitleColr.'; cursor:row-resize; text-align: left; display: inline-block;  min-height:26px;" '.
         'data-tiptxt="'. lang('@Click to open / close this panel').'" title="'. lang('@Click to open / close this panel').
         '" onclick= PanelSwitch'.$ØPanelIx.'(); >';  //  Panel-Header
@@ -652,12 +627,14 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
   //echo '</ div>'; //  Panel-Header
   echo '<span id="HideDiv'.$ØPanelIx.'" style="background:'.$ØBodyBcgrd.';">';   // Hide from here ! 
   if ($capt!='') echo '<hr class="style13" style="margin: 6px 6px 6px 0;"/>';
+  echo '<div class="pnlContent" style="text-align: center; margin: auto; width: min-content;">';
 } // htm_PanlHead - # Panelets < /Panel-span>, < /hiding> og < /form> er placeret i htm_PanlFoot, som skal kaldes til slut!
 
 function htm_PanlFoot( $pmpt='', $subm=false, $title='', $knapArt='save', $akey='', $simu=false, $frmName='') 
 { # MUST follow after htm_PanlHead and panel content !
   global $ØPanlForm;    dvl_pretty('htm_PanlFoot ');
   if ($title=='') {$title= '@Remember to save here if you fixed anything above, before leaving the window.'; $knapArt='save';}
+  echo '</div>';	// class="pnlContent" 
   if ($ØPanlForm)
     if ($subm==true) {
       echo '<hr class="style13" style= "height:4px;">'.
@@ -1062,7 +1039,9 @@ function Lbl_Tip($lbl,$tip,$plc='',$h='13px',$t='') { # Label with popup-tip / i
       default :  $class= 'LblTip_text';         # Plac. Over
     }
     if (strlen($tip.' ')<140) {$wdth='';} else {$wdth='style ="min-width: 380px;"';}
-    return '<span class="LblTip" style="height:'.$h.$t.'">'.ucfirst(lang($lbl).' ').'<span class="'.$class.'" '.$wdth.'>'.lang($tip).'</span></span>';
+	if ($tip=='') $tip=lang('@No details !'); 
+	$tip= '<span class="'.$class.'" '.$wdth.'>'.lang($tip).'</span>';
+    return '<span class="LblTip" style="height:'.$h.$t.'">'.ucfirst(lang($lbl).' ').$tip.'</span>';
   }
 }
 
@@ -1096,9 +1075,9 @@ function str_sp($rept=1)    {return str_repeat('&nbsp;',$rept);}
 
 
 if (!function_exists('lang')) {
-  function lang($FraseKey) {                         # lang() / trans() benyttes til sprogoversættelse af alle hard-codede program-tekster.
-  global $ØsprogTabl, $ØprogSprog,                   # Fraser med @-prefix er system-tekster, der kan omsættes til andet sprog.
-         $ØlanguageTable;                    # Vær opmærksom på at samme frase, ikke kaldes flere gange f.eks. i rutiner i underniveauer.
+  function lang($FraseKey) {                # lang() / trans() is used to translate all hard-coded program-text.
+  global $ØsprogTabl, $ØprogSprog,          # Strings in single quotes with @-prefix is system-text, that can be tranlated to another language.
+         $ØlanguageTable;                  	# Be aware that a string, will not be translated more than once ! opmærksom på at samme frase, ikke kaldes flere gange f.eks. i rutiner i underniveauer.
 if (!function_exists('found_index')) {
   function found_index($sprogDB, $field, $value) {
   if ($sprogDB)
@@ -1137,6 +1116,12 @@ if (!function_exists('found_index')) {
 
 function run_Script ($cmdStr) {
   echo "\n".'<script> '.$cmdStr.' </script>'."\n";
+}
+
+function update(&$id,$var_name) {
+	if (isset($_POST[$var_name]))  { $id = $_POST[$var_name]; }
+	 $id= 54321;
+	return $id;
 }
 
 } // End of group: GRANULES
@@ -1369,12 +1354,11 @@ $CSS_style = '
       transform: translate(0, 0);
     }
     
-    .fieldContent {
-        text-align: left; 
-        display: block; 
-        padding: 0 6px; 
-        position: relative;
-    }
+	::-webkit-input-placeholder { color: var(--grenColr1); font-size: 90%; }
+	:-moz-placeholder { color: var(--grenColr1); font-size: 90%; } /* Firefox 18- */
+	::-moz-placeholder { color: var(--grenColr1); font-size: 90%; }  /* Firefox 19+ */
+	:-ms-input-placeholder { color: var(--grenColr1); font-size: 90%; }
+	
     
     hr.style13 {
       height: 6px;
@@ -1486,21 +1470,110 @@ $CSS_style = '
     clear: both;
 }
 
+.fieldContent {
+        text-align: left; 
+        display: block; 
+        padding: 0 6px; 
+        position: relative;
+		background-color: white;
+		top: 3px; padding: 10px 10px 4px; 
+		margin: 3px; 
+		border: 1px solid var(--FieldBord); 
+		border-radius: 4px;
+	}
+    
 .fieldStyle,
 .tableStyle {
     display:inline-block; 
-    border: 1px solid var(--FieldBord); 
     border-radius: 5px;
-    background-color: var(--FieldBgrd); 
+    border: 1px solid var(--FieldBord); /* border: none; */
+    background-color: var(--FieldBgrd); /* background-color: transparent; */
     position: relative; 
     text-align: right;
-    margin:3px;
-    min-width: 150px;
-    padding:3px;
+    margin:3px;							/* margin: 0; */
+    padding:3px;						/* padding: 0; */
+ /* Minimalistic: - change here: */
+	background-color: transparent;
+	margin: 1px;
+	padding: 1px;
 }
+.lablInput input {
+      border: 0px solid var(--grColrLgt);
+ /* */
+}
+
+
 .fieldStyle {
     height: var(--FldHeight);
 }
+
+
+
+
+	.inpField {						/* The container for INPUT and LABEL: */
+		/* border: 1px solid #d3d3d357;  */
+		position: relative;
+		min-height: 38px;
+	}
+	.inpField input {				/* The INPUT-field: */
+		border: 1px solid var(--FieldBord);
+		border-radius: 5px;
+		font-size: 12px;
+		padding: 8px 6px 6px;
+		margin: 6px 1px 1px 1px;
+		width: 99%
+	 /* USER: text-align: center; */
+	}
+	.inpField label { 				/* The visibly LABEL: */
+	    padding: 0px 3px 1px 3px;
+		position: absolute;
+		top:  0px;
+		left: 0px;
+		width: 97%;
+		text-align: right;
+	}
+	.inpField label div {			/* The labels popup-HINT: */
+		border: solid 1px var(--FieldBord);
+		border-radius: 3px;
+		box-shadow: 2px 2px 1px var(--ButtnShad);  
+		background-color: #f1faff;
+		margin: auto;
+		width: min-content;
+		padding: 0 5px;
+	}
+
+	
+	/* "ToolTip" with html content (formattet with html tags): */
+	/* Example: <abbr class="hint">This activity will be open to registration on April 31st <data-hint>[ *the contents<b> you </b>would want to popup here* ]</data-hint></abbr> */
+		abbr.hint data-hint { display: none; }
+		abbr.hint:hover { cursor: pointer; }
+		abbr.hint:hover data-hint {
+			display: block; 
+			position: absolute; 	/* this will let you align the popup with flexibility */
+		/*	top: -30px; 			/* change this depending on how far from the top you want it to align */
+		/*	left: 20px; 			/* change this depending on how far from the left you want it align */
+			width: 190px; 			/* give this your own width */
+			border: solid 1px #aaa;
+			border-radius: 4px;
+			box-shadow: 3px 3px 3px var(--ButtnShad);  
+			overflow-wrap: break-word;
+			white-space: pre-line;
+
+			min-width: 160px;
+			background-color: var(--HintsBgrd);
+			color: var(--fltBgColr);
+			font-style:normal;
+			font-weight:400;
+			font-size: 12px;
+			text-align: center;
+			padding: 5px 3px;
+			z-index: 99999;
+		}
+
+
+
+
+
 
 .data-colrlabl {
     color: green;
@@ -1512,7 +1585,7 @@ input { border: 0; }
 .grid-container {
   display: grid;
   grid-template-columns: 35% 30% 35% ;
-  background-color: #fffded;
+  background-color: #fffef4;
   padding: 10px;
   grid-gap: 10px;
   text-align: center;
