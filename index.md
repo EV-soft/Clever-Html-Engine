@@ -1,7 +1,8 @@
 # php2html.lib
 Build html pages with php functions
 
-PHP to HTML generator.
+php2html.lib.php is a PHP library of functions that can generate HTML pages.
+
 If you program html output in php, you can use this library's routines to generate the html code.
 	
 HTML elements INPUT / TABLE and others, generated from PHP-functions.
