@@ -14,4 +14,4 @@ Extended table functions with Mottie Tablesorter-system.
 Based on PHP7+, HTML5, CSS3.
 Source must be UTF-8, no tabs, indent: 4 chars
 
-You can see a demo here: https://ev-soft.github.io/ 
+You can see a demo and try the functions here: https://ev-soft.github.io/ 
