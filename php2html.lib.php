@@ -54,27 +54,27 @@ function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$
     $hint='',           # Translated desctiption about the field
     $algn='left',       # The alignment of input content Default: left
     $unit='',           # A unit added to the content eg. currency or % If in front: '<' it is added as a prefix, else a suffix
-    $disa=false,      	# Disable the field. Default: field is active
+    $disa=false,        # Disable the field. Default: field is active
     $rows='2',          # Number of rows in multiline input (eg. area/html) Default: 2
     $wdth='',           # Width of the field-container
     $step='',           # the value of stepup/stepdown for numbers
     $more='',           # Give more (special / non system) input attrib
     $plho='@Enter...',  # Translated placeholder shown when field is empty. Default: Enter...
-    $list=[]        	# Data for "multi-list" (eg. options, checkbox, radiolist)
-	) {
-	global $GridOn;
-	$proc= true;		# Act as procedure: Echo result, or as function: Return string	dvl_pretty('htm_Input_test');
-	$result= '';
+    $list=[]            # Data for "multi-list" (eg. options, checkbox, radiolist)
+    ) {
+    global $GridOn;
+    $proc= true;        # Act as procedure: Echo result, or as function: Return string  dvl_pretty('htm_Input_test');
+    $result= '';
     $labl= lang($labl);     
-	if ($hint=='') $hint= '@There is no explanation !';
-	$hint= lang($hint);
-    if ($plho=='')	$plh=''; else $plh=' placeholder="'.lang($plho).'" ';
-    if ($wdth=='') 	$wdth= '200px';    // Default width
-	if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
+    if ($hint=='') $hint= '@There is no explanation !';
+    $hint= lang($hint);
+    if ($plho=='')  $plh=''; else $plh=' placeholder="'.lang($plho).'" ';
+    if ($wdth=='')  $wdth= '200px';    // Default width
+    if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
 #GRID:
     if ((USEGRID) and ($GridOn)) $result.= '<div class="grid-item">';
 #FIELD:
-	$result.= '<div class="inpField" id="inpBox" style="width: '.$wdth.'; margin: auto; display: inline-block;"> ';	// float: left; 
+    $result.= '<div class="inpField" id="inpBox" style="width: '.$wdth.'; margin: auto; display: inline-block;"> '; // float: left; 
 #INPUT:
     $inpIdNm=  ' id="'.$name.'" name="'.$name.'" ';
     $inpStyle= ' class="inpShade" style="text-align: '.$algn.'; font-size:12px; '; 
@@ -83,117 +83,119 @@ function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$
     //if (gettype($valu)== 'Float') $type= 'number'; 
     if ($disa==true) $aktiv=' disabled '; else $aktiv= ''; 
     if ($plho=='')   $plh='';    else $plh=' placeholder="'.lang($plho).'" ';
-	$top= '';
+    $top= '';
     
     switch ($type) {     
         case 'date' : $result.= '<input type= "date" '.  $inpIdNm. $more. $inpStyle. ' display:inline-block;'.'" value="'. $valu. '" placeholder ="yyyy-mm-dd" '. $aktiv.' /> '; break;
         case 'intg' : $result.= '<input type= "number" '.$inpIdNm. $more. $inpStyle. ' step:'. $step. '" value="'.$valu.'" '. $aktiv. $plh.' /> '; break;
-		case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $more. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh.' /> '; break;
+        case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $more. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh.' /> '; break;
         case 'dec0' : # quantity
         case 'dec1' : # Amount -  // SPACE as thousands separator
         case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. $more. ' value="'.$pref. number_format((float)$valu,(int)substr($type,3,1),DecimalSep,ThousandsSep).$suff. '" '. 
-						$inpStyle. '"'. $eventInvalid. $aktiv. $plh. ' pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" />';  break; 
+                        $inpStyle. '"'. $eventInvalid. $aktiv. $plh. ' pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" />';  break; 
         case 'num0' :
-        case 'num1' :	// thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
+        case 'num1' :   // thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
         case 'num2' :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
         case 'num3' : $result.= '<input type="number" '. $inpIdNm. $more.' lang="en" step="'.$step.'" value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. ' pattern="(\d{3})([\.])(\d{2})"'.
-						$inpStyle. '" />';  break; // No unit but with browser type check !
-        case 'barc' : $result.= '<input type= "text" '.	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh.
-						$inpStyle. ' font-family:barcode; font-size:19px;" class="inpShade"'. ' />';  break; 
-        case 'mail' : $result.= '<input type= "email" '. $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. 	// pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-						$inpStyle. '" />';  break; 
+                        $inpStyle. '" />';  break; // No unit but with browser type check !
+        case 'barc' : $result.= '<input type= "text" '. $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh.
+                        $inpStyle. ' font-family:barcode; font-size:19px;" class="inpShade"'. ' />';  break; 
+        case 'mail' : $result.= '<input type= "email" '. $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh.   // pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                        $inpStyle. '" />';  break; 
 
-        case 'link' : $result.= '<input type= "url" '.   $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="https?://.+". $aktiv. $plh.  	// pattern="^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?" 
-						$inpStyle. '" />';  break; 
+        case 'link' : $result.= '<input type= "url" '.   $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="https?://.+". $aktiv. $plh.   // pattern="^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?" 
+                        $inpStyle. '" />';  break; 
 
         case 'sear' : $result.= '<input type="search" '. $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
-						$inpStyle. '" />';  break; 
+                        $inpStyle. '" />';  break; 
 
-        case 'file' : $result.= '<input type= "file" '. 	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
-						$inpStyle. ' background-color: white;" />';  break; 
+        case 'file' : $result.= '<input type= "file" '.     $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+                        $inpStyle. ' background-color: white;" />';  break; 
 
-        case 'imag' : $result.= '<input type= "image" '.	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
-						$inpStyle. ' background-color: white; height: 18px;" />';  break; 
+        case 'imag' : $result.= '<input type= "image" '.    $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+                        $inpStyle. ' background-color: white; height: 18px;" />';  break; 
 
-        case 'time' : $result.= '<input type= "time" '. 	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
-						$inpStyle. '" />';  break; 
+        case 'time' : $result.= '<input type= "time" '.     $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+                        $inpStyle. '" />';  break; 
 
         case 'rang' : $result.= '<span class="fieldContent inpShade range-wrap" style="height: 28px;">'.
-							'<input class="range" type= "range" '.$inpIdNm. $more. ' value="'.$valu.'" '. $aktiv.  'onclick="setBubble('.$name.',\'bubble\')"'. $inpStyle. ' margin: 0; " /> '.
-							'<div class="bubble" style="font-size: 10px; top: -41px; position: relative; width: min-content; text-align: center; opacity: 80%;"> Min .. Val .. Max </div>'.  
-							'</span>';	break; 
+                            '<input class="range" type= "range" '.$inpIdNm. $more. ' value="'.$valu.'" '. $aktiv.  'onclick="setBubble('.$name.',\'bubble\')"'. $inpStyle. ' margin: 0; " /> '.
+                            '<div class="bubble" style="font-size: 10px; top: -41px; position: relative; width: min-content; text-align: center; opacity: 80%;"> Min .. Val .. Max </div>'.  
+                            '</span>';  break; 
 
         case 'butt' : $result.= '<span class="fieldContent inpShade" style="height: 28px;">'.
-							'<input type= "button" '. $inpIdNm. $more. ' value="'.$valu.'" '. $aktiv. 
-						$inpStyle. ' margin: 0; padding: 2px;" /> </span>';	break; // No functionality !
+                            '<input type= "button" '. $inpIdNm. $more. ' value="'.$valu.'" '. $aktiv. 
+                        $inpStyle. ' margin: 0; padding: 2px;" /> </span>'; break; // No functionality !
 
         case 'colr' : $result.= '<span class="fieldContent inpShade" style="height: 28px;">'.
-							'<input type= "color" '. $inpIdNm. $more. ' value="'.$valu.'" '. $aktiv. 
-						$inpStyle. ' margin: 0; padding: 2px;" /> </span>';	break; 
+                            '<input type= "color" '. $inpIdNm. $more. ' value="'.$valu.'" '. $aktiv. 
+                        $inpStyle. ' margin: 0; padding: 2px;" /> </span>'; break; 
 
         case 'pass' : $result.= '<span class="fieldContent inpShade" style="text-align: left; height: 34px;">'.
-							'<div style="white-space: nowrap;">'.
-							'<input type= "password" '. $inpIdNm. $more. ' style="height: 8px; width: 67%; margin-top: -1px; box-shadow: none;" value="'.$valu.'" '.$eventInvalid. $aktiv. $plh.' onkeyup="getPassword('.$name.')" />'.
-							iconButt($type='button',$faicon='far fa-eye-slash', $title= lang('@Show/Hide password'),$id='tgl_'.$name, 
-								 $link='',$action='onmousedown="togglePassword('.'tgl_'.$name.','.$name.')"',$akey='',$size='',$lbl='').
-							'</div>';
-							$str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
-							$result.= '<meter id= "pwPoint'.$name.'" style="position:relative; top:-8px; height:6px; width:97%;" '.
-								'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
-								'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
-							'</meter>';	$result.= '</span>';	break;
+                            '<div style="white-space: nowrap;">'.
+                            '<input type= "password" '. $inpIdNm. $more. ' style="height: 8px; width: 67%; margin-top: -1px; box-shadow: none;" value="'.
+                            $valu.'" '.$eventInvalid. $aktiv. $plh.' onkeyup="getPassword('.$name.')" />'.
+                            iconButt($type='button',$faicon='far fa-eye-slash', $title= lang('@Show/Hide password'),$id='tgl_'.$name, 
+                                 $link='',$action='onmousedown="togglePassword('.'tgl_'.$name.','.$name.')"',$akey='',$size='',$lbl='').
+                            '</div>';
+                            $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
+                            $result.= '<meter id= "pwPoint'.$name.'" style="position:relative; top:-8px; height:6px; width:97%;" '.
+                                'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
+                                'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
+                            '</meter>'; $result.= '</span>';    break;
 
-        case 'area' : $result.= '<span class="fieldContent inpShade" style="padding: 10px 4px 4px;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.'" style="width:97%; font-size: 1em; border: 1px solid lightgray; border-radius: 4px;" '.
-						$eventInvalid. $aktiv. $plh.' '.$more.' >'.$valu.'</textarea>'; $top=' top: -8px; ';  break; 
+        case 'area' : $result.= '<span class="fieldContent inpShade" style="padding: 10px 4px 4px;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.
+                        '" style="width:97%; font-size: 1em; border: 1px solid lightgray; border-radius: 4px;" '.
+                        $eventInvalid. $aktiv. $plh.' '.$more.' >'.$valu.'</textarea>'; $top=' top: -8px; ';  break; 
 
         case 'html' : $result.= '<span class="fieldContent inpShade" style="top: -1px; padding: 10px 4px 4px;"> <small><div contenteditable="true" rows="'.$rows.'" id="'.$name.'" name="'.$name.
-						'" style="background-color: white; min-height: 34px; border: 1px solid lightgray; padding: 2px; border-radius: 5px;" '. //  Som area, men med html-indhold
-						$eventInvalid. $aktiv. $plh.' data-placeholder="'.lang($plho).'" '. $more.' >'. $valu.'</div></small>';
-						if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>'; $top=' top: -8px; '; break; 
+                        '" style="background-color: white; min-height: 34px; border: 1px solid lightgray; padding: 2px; border-radius: 5px;" '. //  Som area, men med html-indhold
+                        $eventInvalid. $aktiv. $plh.' data-placeholder="'.lang($plho).'" '. $more.' >'. $valu.'</div></small>';
+                        if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>'; $top=' top: -8px; '; break; 
 
         case 'chck' : $result.= '<form action="">'.  // Nestet form !
-							'<span class="fieldContent inpShade" ><small>';
-							foreach ($list as $rec) { // $list= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:'checked'], ['@Label','@ToolTip'],...]
-								$result.= '<input type= "checkbox" name="'.$rec[0].'" value="'.$rec[3].'" '.$rec[3].' style="width: 20px;"/>'.
-									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow:none; ').'</label>';
-								if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
-							}	$result.= '</small></span> </form>';  break; 
+                            '<span class="fieldContent inpShade" ><small>';
+                            foreach ($list as $rec) { // $list= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:'checked'], ['@Label','@ToolTip'],...]
+                                $result.= '<input type= "checkbox" name="'.$rec[0].'" value="'.$rec[3].'" '.$rec[3].' style="width: 20px;"/>'.
+                                     '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow:none; ').'</label>';
+                                if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
+                            }   $result.= '</small></span> </form>';  break; 
 
         case 'rado' : $result.= '<form action="">'.  // Warn: Nestet form !
-							'<span class="fieldContent inpShade" ><small>';
-							foreach ($list as $rec) { // $list= [['name','Label','@ToolTip'], [0:'name',1:'Label',2:'@ToolTip',3:'checked'], ['Label','@ToolTip'],...]
-								$result.= '<input type= "radio" id="'.$rec[0].'" name="'.$name.'" value="'.$rec[1].'" '.$rec[3].' style="width: 20px">'.
-									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'. lang($rec[2]).'</label>';
-								if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
-							}	$result.= '</small></span> </form>';  break; 
+                            '<span class="fieldContent inpShade" ><small>';
+                            foreach ($list as $rec) { // $list= [['name','Label','@ToolTip'], [0:'name',1:'Label',2:'@ToolTip',3:'checked'], ['Label','@ToolTip'],...]
+                                $result.= '<input type= "radio" id="'.$rec[0].'" name="'.$name.'" value="'.$rec[1].'" '.$rec[3].' style="width: 20px">'.
+                                     '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'. lang($rec[2]).'</label>';
+                                if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
+                            }   $result.= '</small></span> </form>';  break; 
 
         case 'opti' : $result.= '<span class="fieldContent inpShade" style="background-color; white; top: 6px; text-align: center; border: 1px solid var(--FieldBord); border-radius:5px"><small>';
-							$result.= '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.'style="width: 80%; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
-							$result.= '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
-							foreach ($list as $rec) { # $list= [[0:name, 1:value, 2:@ToolTip, 3:'checked', [...]]
-								$result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2]).'" value="'.$rec[1].'" '.$state=$rec[3]; //  Firefox does not support Label !
-								if ($rec[1]==$valu) $result.= ' selected ';
-								$result.= '>'.$lbl=lang($rec[1]).'</option> ';
-							}	$result.= '</select></small></span>';  break; 
+                            $result.= '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.'style="width: 80%; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
+                            $result.= '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
+                            foreach ($list as $rec) { # $list= [[0:name, 1:value, 2:@ToolTip, 3:'checked', [...]]
+                                $result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2]).'" value="'.$rec[1].'" '.$state=$rec[3]; //  Firefox does not support Label !
+                                if ($rec[1]==$valu) $result.= ' selected ';
+                                $result.= '>'.$lbl=lang($rec[1]).'</option> ';
+                            }   $result.= '</select></small></span>';  break; 
 
         case 'hidd' : $result.= '<input type= "hidden" id="'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break; 
-		
+        
         default     : $result.= ' htm_Input(): Illegal Type ! ';
         dvl_pretty();
     }
 
 # LABEL & TIP:   
-//	$lblalign = 'margin-right: 	auto;';	// Align label Left
-//	$lblalign = 'margin: 		auto;';	// Align label Center
-	$lblalign = 'margin-left: 	auto;';	// Align label Right
-	$result.= '	<abbr class="hint"> ';
-	$result.= '		<label for="'.$name.'" style="font-size: 10px; '.$top.'"><div style="white-space: nowrap; '.$lblalign.'">'.$labl.'</div></label> ';
-	$result.= '		<data-hint style="top: 45px; left: 2px;">'.lang($hint).'</data-hint> ';
-	$result.= '	</abbr> ';
-	$result.= '</div>'; # :FIELD
+//  $lblalign = 'margin-right:  auto;'; // Align label Left
+//  $lblalign = 'margin:        auto;'; // Align label Center
+    $lblalign = 'margin-left:   auto;'; // Align label Right
+    $result.= ' <abbr class="hint"> ';
+    $result.= '     <label for="'.$name.'" style="font-size: 10px; '.$top.'"><div style="white-space: nowrap; '.$lblalign.'">'.$labl.'</div></label> ';
+    $result.= '     <data-hint style="top: 45px; left: 2px;">'.lang($hint).'</data-hint> ';
+    $result.= ' </abbr> ';
+    $result.= '</div>'; # :FIELD
     
-	if ((USEGRID) and ($GridOn)) $result.= '</div>'; # :GRID
-	if ($proc==true) echo $result; else return $result;
+    if ((USEGRID) and ($GridOn)) $result.= '</div>'; # :GRID
+    if ($proc==true) echo $result; else return $result;
 } # :htm_Input()
 
 
@@ -232,20 +234,20 @@ function htm_Table(
         ),
     $RowSuff= array( #['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horJust_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
         ),            # Felt 4: ($fieldModes), er sammensat af: [horJust, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
-    &$tblData,             # = array(),
-	$FilterOn= true,       # Ability to hide records that do not match filter // Does not work with hidd fields!
-	$SorterOn= true,       # Ability to sort records by column content
-	$CreateRec=true,       # Ability to create a record
-	$ModifyRec=true,       # Ability to select and change data in a row
-	$ViewHeight= '400px',  # The height of the visible part of the table's data
-	$CalledFrom='', 		// = __FUNCTION__ (debugging)
-	$Criterion= ['','']    # Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
-  )                       # Field 4: ($fieldModes), is composed of: [horJust, FieldBgColor, FieldStyle, SorterON, FilterON, SelectON, ]
-                          # 0:horJust - Arguments to .td: style="text-align:
-                          # 1:FieldBgColor - Arguments to .td: background-color: 
-                          # 2:FieldStyle - complete expression, e.g.: 'font-style:italic; '
-                          # 3:TdColor - like 1: but used for "row marking"
-                          # Only impact on Body areas.
+    &$tblData,              # = array(),
+    $FilterOn= true,        # Ability to hide records that do not match filter // Does not work with hidd fields!
+    $SorterOn= true,        # Ability to sort records by column content
+    $CreateRec=true,        # Ability to create a record
+    $ModifyRec=true,        # Ability to select and change data in a row
+    $ViewHeight= '400px',   # The height of the visible part of the table's data
+    $CalledFrom='',         # = __FUNCTION__ (debugging)
+    $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
+  )                         # Field 4: ($fieldModes), is composed of: [horJust, FieldBgColor, FieldStyle, SorterON, FilterON, SelectON, ]
+                            # 0:horJust - Arguments to .td: style="text-align:
+                            # 1:FieldBgColor - Arguments to .td: background-color: 
+                            # 2:FieldStyle - complete expression, e.g.: 'font-style:italic; '
+                            # 3:TdColor - like 1: but used for "row marking"
+                            # Only impact on Body areas.
 #!  FIXIT: Fixed/Sticky header only works on 1st table when there are several tables in the same window!
 #!         Zebra streaks (Update Issue!) Failure, as well as filter problems when hidden columns are also present.
 
@@ -570,7 +572,7 @@ function htm_Table(
                                     $output='<button type= "submit" name="btn_del_'.$btnSuff.$dis.' >'.
                                   Lbl_Tip($Suff[6],lang('@Delete pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Buttons that must not be deleted can be deactivated
           if ($Suff[0]=='@Hide') { $output='<button type= "submit" name="btn_hid_'.$btnSuff.'>'.
-                                  Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                	// Records that must not be deleted can be hidden
+                                  Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                   // Records that must not be deleted can be hidden
           if ($Suff[0]=='@Copy')  { $output='<button type= "submit" name="btn_cpy_' .$btnSuff.'>'.
                                   Lbl_Tip($Suff[6],lang('@Copy pos: ').$RowIx,'SW','0px'). '</button>'; }
           if ($Suff[0]=='@Rename') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
@@ -602,24 +604,24 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
   $ØPanelIx++;
   echo '<script>';  //  Hide/show Panel-Body
   echo 'function PanelSwitch'.$ØPanelIx.'() {
-			var h = document.getElementById("HideDiv'.$ØPanelIx.'");
-			var p = document.getElementById("panel'.$ØPanelIx.'");'.		// width = substr($class,-3).'px' panelW560
-			'if (h.style.display === "none") 
-				{ h.style.display = "block";  $("table").trigger("applyWidgets");} 
-				else { h.style.display = "none";} 
-		}'; //   
+            var h = document.getElementById("HideDiv'.$ØPanelIx.'");
+            var p = document.getElementById("panel'.$ØPanelIx.'");'.        // width = substr($class,-3).'px' panelW560
+            'if (h.style.display === "none") 
+                { h.style.display = "block";  $("table").trigger("applyWidgets");} 
+                else { h.style.display = "none";} 
+        }'; //   
   echo 'function PanelMinimize'.$ØPanelIx.'() {
-			var h = document.getElementById("HideDiv'.$ØPanelIx.'");  
-			var p = document.getElementById("panel'.$ØPanelIx.'");
-			h.style.display = "none";
-		}'; // p.style.width = "100%"; }';  //h.style.width = "480px"; }';
+            var h = document.getElementById("HideDiv'.$ØPanelIx.'");  
+            var p = document.getElementById("panel'.$ØPanelIx.'");
+            h.style.display = "none";
+        }'; // p.style.width = "100%"; }';  //h.style.width = "480px"; }';
   echo 'function PanelMaximize'.$ØPanelIx.'() {
-			var h = document.getElementById("HideDiv'.$ØPanelIx.'");  
-			var p = document.getElementById("panel'.$ØPanelIx.'");
-			h.style.display = "block"; 
-		'.// p.style.width = "100%"; 
-		'	$("table").trigger("applyWidgets");
-		}'; //  $("table").trigger("applyWidgets"); Refresh the erlier hidden tablesorter objects.
+            var h = document.getElementById("HideDiv'.$ØPanelIx.'");  
+            var p = document.getElementById("panel'.$ØPanelIx.'");
+            h.style.display = "block"; 
+        '.// p.style.width = "100%"; 
+        '   $("table").trigger("applyWidgets");
+        }'; //  $("table").trigger("applyWidgets"); Refresh the erlier hidden tablesorter objects.
   echo '</script>';
   dvl_pretty('htm_PanlHead');
   $GridOn= false;
@@ -657,7 +659,7 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
         'title="'. lang('@Click to close all panels').';" onclick= PanelMinimizeAll(); ></ic>';
   echo  '<ic class="fas fa-angle-double-down" style="width:12px; height:12px; margin-top:6px; margin-right:0px; float:right; cursor:zoom-in;" '.
         'title="'. lang('@Click to open all panels').';"  onclick= PanelMaximizeAll(); ></ic>';
-		 //  data-tiptxt virker ikke ovenfor, derfor: title !
+         //  data-tiptxt virker ikke ovenfor, derfor: title !
    */
   echo  $wikilnk;
   echo  '</span>'; // panelTitl
@@ -671,7 +673,7 @@ function htm_PanlFoot( $labl='', $subm=false, $title='', $buttonKind='save', $ak
 { # MUST follow after htm_PanlHead and panel content !
   global $ØPanlForm;    dvl_pretty('htm_PanlFoot ');
   if ($title=='') {$title= '@Remember to save here if you fixed anything above, before leaving the window.'; $buttonKind='save';}
-  echo '</div>';	// class="pnlContent" 
+  echo '</div>';    // class="pnlContent" 
   if ($ØPanlForm)
     if ($subm==true) {
       echo '<hr class="style13" style= "height:4px;">'.
@@ -690,17 +692,17 @@ function PanelInit() { $maxPaneler= 40;
     echo '<script>';
         echo 'function PanelMinimizeAll() {';
         for ($Ix=1; $Ix<=$maxPaneler; $Ix++) { echo '
-				var h = document.getElementById("HideDiv'.$Ix.'"); 
-				var p = document.getElementById("panel'.$Ix.'");';  
+                var h = document.getElementById("HideDiv'.$Ix.'"); 
+                var p = document.getElementById("panel'.$Ix.'");';  
                 echo ' h.style.display = "none"; p.style.width = "240px"; ';
             }
         echo ' }';
         echo 'function PanelMaximizeAll() {';
         for ($Ix=1; $Ix<=$maxPaneler; $Ix++) { echo ' 
-				var h = document.getElementById("HideDiv'.$Ix.'"); 
-				var p = document.getElementById("panel'.$Ix.'"); ';  
-				echo ' h.style.display = "block"; ';	// p.style.width = "100%"; ';}
-			}
+                var h = document.getElementById("HideDiv'.$Ix.'"); 
+                var p = document.getElementById("panel'.$Ix.'"); ';  
+                echo ' h.style.display = "block"; ';    // p.style.width = "100%"; ';}
+            }
         echo ' $("table").trigger("applyWidgets"); }';
     echo '</script>';
     //echo ' $("table").trigger("applyWidgets");';
@@ -741,20 +743,20 @@ function PanelBetjening() { // Pt. ikke i brug
 
 
 function htm_AcceptButt( # $labl='', $title='', $buttonKind='', $form='', $width='', $akey='', $proc=false, $tipplc='LblTip_text')
-	$labl='',               # The caption on the button
-	$title='',              # Hint about the button function
-	$buttonKind='',         # save, navi, goon, erase, create, home (Appearance)
-	$form='',               # A form Will be created, if a name is given
-	$width='',              # The width of the button
-	$akey='',               # Shortcut to activate the button
-	$proc=false,            # Act as procedure: Echo result, or as function: Return string
-	$tipplc='LblTip_text'	# Class for Placement of the tooltip
+    $labl='',               # The caption on the button
+    $title='',              # Hint about the button function
+    $buttonKind='',         # save, navi, goon, erase, create, home (Appearance)
+    $form='',               # A form Will be created, if a name is given
+    $width='',              # The width of the button
+    $akey='',               # Shortcut to activate the button
+    $proc=false,            # Act as procedure: Echo result, or as function: Return string
+    $tipplc='LblTip_text'   # Class for Placement of the tooltip
 )
 
 {global $ØShortKeys;
     dvl_pretty('htm_htm_AcceptButt');
     // Colors:
-	$ØButtnBgrd= '#44BB44';  /* LysGrøn   */     $ØButtnText= '#FFFFFF';   /* Hvid   */
+    $ØButtnBgrd= '#44BB44';  /* LysGrøn   */     $ØButtnText= '#FFFFFF';   /* Hvid   */
     $ØBtLnkBgrd= 'yellow';   /* '#FCFCCC';  */   $ØBtLnkText= '#000000';
     $ØTextLight= 'white';       $ØTextDark= 'black'; 
     $ØBtDelBgrd= 'Crimson ';    $ØBtDelText= $ØTextLight;   # Slet:RØD
@@ -765,7 +767,7 @@ function htm_AcceptButt( # $labl='', $title='', $buttonKind='', $form='', $width
     $ØBtNewBgrd= 'Orange';      $ØBtNewText= $ØTextDark;    # OpretNy:ORANGE
     $Ødimmed=    ' opacity:0.8;';
     // Initiate:
-	if ($form) {$name= $form; $form=' form="'.$form.'" ';} else {$name= '_none'; }
+    if ($form) {$name= $form; $form=' form="'.$form.'" ';} else {$name= '_none'; }
     if ($width) $width= ' width: '.$width.';';
   
 ## Shortcuts:
@@ -785,14 +787,14 @@ function htm_AcceptButt( # $labl='', $title='', $buttonKind='', $form='', $width
     default       : {$colors= ' background:'.$ØBtNavBgrd.'; color:'.$ØBtNavText.';'.$Ødimmed;}  $midn= $labl;          # navigate-Butt: GREEN
   }
 ## Function:
-	$result=  '<span class="center" style="height:25px; ">'; 
-	$result.= '<abbr class="hint"> ';
-	$result.= '  <button class="acceptbutt" '.$form.' type= "submit" name="btn_'.$midn.$name.'" id="btn_'.$midn.$name.
+    $result=  '<span class="center" style="height:25px; ">'; 
+    $result.= '<abbr class="hint"> ';
+    $result.= '  <button class="acceptbutt" '.$form.' type= "submit" name="btn_'.$midn.$name.'" id="btn_'.$midn.$name.
               '" style="'.$width. $colors.'" accesskey="'.$akey.'"> '. ucfirst(lang($labl)).
-			  '  </button>';
-	$result.= '  <data-hint>'.lang($title).$keytip.'</data-hint> ';
-	$result.= '</abbr> ';
-	$result.= '</span>';
+              '  </button>';
+    $result.= '  <data-hint>'.lang($title).$keytip.'</data-hint> ';
+    $result.= '</abbr> ';
+    $result.= '</span>';
   // if ($func!='rtrn') echo $result;
   // else return $result;
   if ($proc==true) echo $result; else return $result;
@@ -1020,39 +1022,39 @@ $('#smarttabel, #table0, #table1, #table2, #table3, #table4, #table5, #table6').
 
 
 #snackbar {
-	visibility: hidden;
-	width: min-content;
-	min-width: 250px;
-	margin-left: -125px;
-	/* background-color: #333; */
-	/* color: #fff; */
-	text-align: center;
-	border-radius: 6px;
-	padding: 16px;
-	position: fixed;
-	z-index: 1;
-	left: 50%;
-	bottom: 30px;
-	font-size: 14px; 
+    visibility: hidden;
+    width: min-content;
+    min-width: 250px;
+    margin-left: -125px;
+    /* background-color: #333; */
+    /* color: #fff; */
+    text-align: center;
+    border-radius: 6px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 14px; 
 }
 #snackbar.show { 
-	visibility: visible;
-	/* transition: visibility 2s, opacity 1.5s linear; */
-	transition: opacity 2s ease-out;
+    visibility: visible;
+    /* transition: visibility 2s, opacity 1.5s linear; */
+    transition: opacity 2s ease-out;
 }
 
 </style>
 
 ";
   
-	run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff') { 
-		var x = document.getElementById('snackbar'); 
-			x.innerHTML= txt;
-			x.className = 'show'; 
-			x.style.background = bgcolr;
-			x.style.color = fgcolr;
-			setTimeout(function(){ x.className = x.className.replace('show', ''); }, 5000); 
-		}");
+    run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff') { 
+        var x = document.getElementById('snackbar'); 
+            x.innerHTML= txt;
+            x.className = 'show'; 
+            x.style.background = bgcolr;
+            x.style.color = fgcolr;
+            setTimeout(function(){ x.className = x.className.replace('show', ''); }, 5000); 
+        }");
  
  ### ----------------------Library-fontawesome icons ----------------------
   //$source_Ajax = 'https://cdnjs.cloudflare.com/ajax/libs/'; 
@@ -1072,29 +1074,29 @@ $('#smarttabel, #table0, #table1, #table2, #table3, #table4, #table5, #table6').
 
 function htm_PageFina() {
     echo '<div id="snackbar">Short message</div>';
-	echo "
-	<script>	/* https://css-tricks.com/value-bubbles-for-range-inputs/ */
-		const allRanges = document.querySelectorAll(\".range-wrap\");
-		allRanges.forEach(wrap => {
-			const range = wrap.querySelector(\".range\");
-			const bubble = wrap.querySelector(\".bubble\");
-			range.addEventListener(\"input\", () => { setBubble(range, bubble); });
-			setBubble(range, bubble);
-		});
-		function setBubble(range, bubble) {
-			const val = range.value;
-			const min = range.min ? range.min : 0;
-			const max = range.max ? range.max : 100;
-			const pctVal = Number(((val - min) * 100) / (max - min));
-			bubble.innerHTML = min + '..' + '<b>' + val + '</b>' +'..' + max;
-			".
-			/* bubble.style.left = `calc(${pctVal}% + (${8 - pctVal * 0.15}px))`;  // Sorta magic numbers based on size of the native UI thumb */
-			"
-		}
-	</script>
-	";
-	
-	include('.././spormig.php');
+    echo "
+    <script>    /* https://css-tricks.com/value-bubbles-for-range-inputs/ */
+        const allRanges = document.querySelectorAll(\".range-wrap\");
+        allRanges.forEach(wrap => {
+            const range = wrap.querySelector(\".range\");
+            const bubble = wrap.querySelector(\".bubble\");
+            range.addEventListener(\"input\", () => { setBubble(range, bubble); });
+            setBubble(range, bubble);
+        });
+        function setBubble(range, bubble) {
+            const val = range.value;
+            const min = range.min ? range.min : 0;
+            const max = range.max ? range.max : 100;
+            const pctVal = Number(((val - min) * 100) / (max - min));
+            bubble.innerHTML = min + '..' + '<b>' + val + '</b>' +'..' + max;
+            ".
+            /* bubble.style.left = `calc(${pctVal}% + (${8 - pctVal * 0.15}px))`;  // Sorta magic numbers based on size of the native UI thumb */
+            "
+        }
+    </script>
+    ";
+    
+    include('.././spormig.php');
     htm_nl(3);
     echo '  </body>'; // Started in htm_PagePrep()
 
@@ -1145,8 +1147,8 @@ function Lbl_Tip($lbl,$tip,$plc='',$h='13px',$t='') { # Label with popup-tip / i
       default :  $class= 'LblTip_text';         # Plac. Over
     }
     if (strlen($tip.' ')<140) {$wdth='';} else {$wdth='style ="min-width: 380px;"';}
-	if ($tip=='') $tip=lang('@No details !'); 
-	$tip= '<span class="'.$class.'" '.$wdth.'>'.lang($tip).'</span>';
+    if ($tip=='') $tip=lang('@No details !'); 
+    $tip= '<span class="'.$class.'" '.$wdth.'>'.lang($tip).'</span>';
     return '<span class="LblTip" style="height:'.$h.$t.'">'.ucfirst(lang($lbl).' ').$tip.'</span>';
   }
 }
@@ -1170,7 +1172,7 @@ function htm_nl($rept=1)    {echo str_repeat('<br />',$rept);}
 function htm_lf($rept=1)    {echo str_repeat(' &#xa;',$rept);}  //  LineFeed
 function htm_sp($rept=1)    {echo str_repeat('&nbsp;',$rept);}
 
-function htm_space($wdt) 	{echo '<span style="width:'.$wdt.';"></span>';}
+function htm_space($wdt)    {echo '<span style="width:'.$wdt.';"></span>';}
 
 
 // String-funktions:
@@ -1184,7 +1186,7 @@ function str_sp($rept=1)    {return str_repeat('&nbsp;',$rept);}
 if (!function_exists('lang')) {
   function lang($FraseKey) {                # lang() / trans() is used to translate all hard-coded program-text.
   global $ØsprogTabl, $ØprogSprog,          # Strings in single quotes with @-prefix is system-text, that can be tranlated to another language.
-         $ØlanguageTable;                  	# Be aware that a string, will not be translated more than once ! opmærksom på at samme frase, ikke kaldes flere gange f.eks. i rutiner i underniveauer.
+         $ØlanguageTable;                   # Be aware that a string, will not be translated more than once ! opmærksom på at samme frase, ikke kaldes flere gange f.eks. i rutiner i underniveauer.
 if (!function_exists('found_index')) {
   function found_index($sprogDB, $field, $value) {
   if ($sprogDB)
@@ -1226,9 +1228,9 @@ function run_Script ($cmdStr) {
 }
 
 function update(&$id,$var_name) {
-	if (isset($_POST[$var_name]))  { $id = $_POST[$var_name]; }
-	 $id= 54321;
-	return $id;
+    if (isset($_POST[$var_name]))  { $id = $_POST[$var_name]; }
+     $id= 54321;
+    return $id;
 }
 
 function get_browser_name($user_agent) { # Call: get_browser_name($_SERVER['HTTP_USER_AGENT']);
@@ -1490,11 +1492,11 @@ $CSS_style = '
       transform: translate(0, 0);
     }
     
-	::-webkit-input-placeholder { color: var(--grenColr1); font-size: 90%; }
-	:-moz-placeholder { color: var(--grenColr1); font-size: 90%; } /* Firefox 18- */
-	::-moz-placeholder { color: var(--grenColr1); font-size: 90%; }  /* Firefox 19+ */
-	:-ms-input-placeholder { color: var(--grenColr1); font-size: 90%; }
-	
+    ::-webkit-input-placeholder { color: var(--grenColr1); font-size: 90%; }
+    :-moz-placeholder { color: var(--grenColr1); font-size: 90%; } /* Firefox 18- */
+    ::-moz-placeholder { color: var(--grenColr1); font-size: 90%; }  /* Firefox 19+ */
+    :-ms-input-placeholder { color: var(--grenColr1); font-size: 90%; }
+    
     
     hr.style13 {
       height: 6px;
@@ -1611,12 +1613,12 @@ $CSS_style = '
         display: block; 
         padding: 0 6px; 
         position: relative;
-		background-color: white;
-		top: 3px; padding: 10px 10px 4px; 
-		margin: 3px; 
-		border: 1px solid var(--FieldBord); 
-		border-radius: 4px;
-	}
+        background-color: white;
+        top: 3px; padding: 10px 10px 4px; 
+        margin: 3px; 
+        border: 1px solid var(--FieldBord); 
+        border-radius: 4px;
+    }
     
 .fieldStyle,
 .tableStyle {
@@ -1626,12 +1628,12 @@ $CSS_style = '
     background-color: var(--FieldBgrd); /* background-color: transparent; */
     position: relative; 
     /* text-align: right; */
-    margin:3px;							/* margin: 0; */
-    padding:3px;						/* padding: 0; */
+    margin:3px;                         /* margin: 0; */
+    padding:3px;                        /* padding: 0; */
  /* Minimalistic: - change here: */
-	background-color: transparent;
-	margin: 1px;
-	padding: 1px;
+    background-color: transparent;
+    margin: 1px;
+    padding: 1px;
 }
 .lablInput input {
       border: 0px solid var(--grColrLgt);
@@ -1645,84 +1647,84 @@ $CSS_style = '
 
 input[type=date]::-webkit-inner-spin-button,
 input[type=date]::-webkit-outer-spin-button {
-  -webkit-appearance: none;	/* Hide in Chrome */
+  -webkit-appearance: none; /* Hide in Chrome */
 }
 
 
-	.inpField {						/* The container for INPUT and LABEL: */
-		/* border: 1px solid #d3d3d357;  */
-		position: relative;
-		min-height: 38px;
-	}
-	.inpField input {				/* The INPUT-field: */
-		border: 1px solid var(--FieldBord);
-		border-radius: 5px;
-		font-size: 12px;
-		padding: 8px 0px 6px 6px;
-		margin: 6px 1px 1px 1px;
-		width: 91%
-	 /* USER: text-align: center; */
-	}
-	.inpField label { 				/* The visibly LABEL: */
-	    padding: 0px 0px 1px 3px;
-		position: absolute;
-		top:  0px;
-		left: 0px;
-		width: 94%;
-		text-align: right;
-	}
-	.inpField label div {			/* The labels popup-HINT: */
-		border: solid 1px var(--FieldBord);
-		border-radius: 3px;
-		box-shadow: 2px 2px 1px var(--ButtnShad);  
-		background-color: #f1faff;
-		/* margin: auto; */
-		width: min-content;
-		padding: 0 5px;
-	}
-	.inpShade {
-		box-shadow: 2px 3px 4px lightgray;
-		
-	}
-	
-	/* "ToolTip" with html content (formattet with html tags): */
-	/* Example: <abbr class="hint">This activity will be open to registration on April 31st <data-hint>[ *the contents<b> you </b>would want to popup here* ]</data-hint></abbr> */
-		abbr.hint data-hint { display: none; 
-		}
-		abbr.hint:hover { 
-			cursor: pointer; 
-		}
-		abbr.hint:hover data-hint {
-		/*  transition: 1s all ease;
-			transition-delay: 1s;
-			transition-property: display; */
-			display: block; 
-			position: absolute; 	/* this will let you align the popup with flexibility */
-		/*	top: -30px; 			/* change this depending on how far from the top you want it to align */
-		/*	left: 20px; 			/* change this depending on how far from the left you want it align */
-			width: 190px; 			/* give this your own width */
-			border: solid 1px #aaa;
-			border-radius: 4px;
-			box-shadow: 3px 3px 3px var(--ButtnShad);  
-			overflow-wrap: break-word;
-			white-space: pre-line;
-			min-width: 160px;
-			background-color: var(--HintsBgrd);
-			color: var(--fltBgColr);
-			font-style:normal;
-			font-weight:400;
-			font-size: 12px;
-			text-align: center;
-			padding: 5px 3px;
-			z-index: 99999;
-		}
+    .inpField {                     /* The container for INPUT and LABEL: */
+        /* border: 1px solid #d3d3d357;  */
+        position: relative;
+        min-height: 38px;
+    }
+    .inpField input {               /* The INPUT-field: */
+        border: 1px solid var(--FieldBord);
+        border-radius: 5px;
+        font-size: 12px;
+        padding: 8px 0px 6px 6px;
+        margin: 6px 1px 1px 1px;
+        width: 91%
+     /* USER: text-align: center; */
+    }
+    .inpField label {               /* The visibly LABEL: */
+        padding: 0px 0px 1px 3px;
+        position: absolute;
+        top:  0px;
+        left: 0px;
+        width: 94%;
+        text-align: right;
+    }
+    .inpField label div {           /* The labels popup-HINT: */
+        border: solid 1px var(--FieldBord);
+        border-radius: 3px;
+        box-shadow: 2px 2px 1px var(--ButtnShad);  
+        background-color: #f1faff;
+        /* margin: auto; */
+        width: min-content;
+        padding: 0 5px;
+    }
+    .inpShade {
+        box-shadow: 2px 3px 4px lightgray;
+        
+    }
+    
+    /* "ToolTip" with html content (formattet with html tags): */
+    /* Example: <abbr class="hint">This activity will be open to registration on April 31st <data-hint>[ *the contents<b> you </b>would want to popup here* ]</data-hint></abbr> */
+        abbr.hint data-hint { display: none; 
+        }
+        abbr.hint:hover { 
+            cursor: pointer; 
+        }
+        abbr.hint:hover data-hint {
+        /*  transition: 1s all ease;
+            transition-delay: 1s;
+            transition-property: display; */
+            display: block; 
+            position: absolute;     /* this will let you align the popup with flexibility */
+        /*  top: -30px;             /* change this depending on how far from the top you want it to align */
+        /*  left: 20px;             /* change this depending on how far from the left you want it align */
+            width: 190px;           /* give this your own width */
+            border: solid 1px #aaa;
+            border-radius: 4px;
+            box-shadow: 3px 3px 3px var(--ButtnShad);  
+            overflow-wrap: break-word;
+            white-space: pre-line;
+            min-width: 160px;
+            background-color: var(--HintsBgrd);
+            color: var(--fltBgColr);
+            font-style:normal;
+            font-weight:400;
+            font-size: 12px;
+            text-align: center;
+            padding: 5px 3px;
+            z-index: 99999;
+        }
 
 
 . acceptbutt {
-	margin: 1px 2px; 
-	padding: 2px 6px; 
-	height: 22px;
-	
+    margin: 1px 2px; 
+    padding: 2px 6px; 
+    height: 22px;
+    
 }
 
 
@@ -1760,7 +1762,7 @@ input { border: 0; }
 
 
 
-.range-wrap {	/* https://css-tricks.com/value-bubbles-for-range-inputs/ */
+.range-wrap {   /* https://css-tricks.com/value-bubbles-for-range-inputs/ */
   position: relative;
   /* margin: 0 auto 3rem; */
 }
