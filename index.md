@@ -59,6 +59,7 @@ For now htm_Input() has the following types:
 	'link' : INPUT(type= 'url',
 	'sear' : INPUT(type= 'search',
 	'file' : INPUT(type= 'file',
+	'imag' : INPUT(type= 'image',
 	'time' : INPUT(type= 'time',
 	'rang' : INPUT(type= 'range',
 	'butt' : INPUT(type= 'button',
@@ -95,15 +96,24 @@ The parameters to htm_Table:
 
 
 To create a HTML-page use this functions:
+
 	htm_PagePrep()						- Prepare output to a page
+
 	You can create:
+
 	htm_PageBody()						- Set body of a page
+
 	or just write php-code to 
+
 	echo output
+
 	htm_PageFina()						- Complete / finish the page
 	
 	
 To create a Panel there are functions:
+
 	htm_PanlHead()						- Start top of an avanced panel
+
 	htm_PanlFoot()						- Finish bottom of an avanced panel
+
 	
