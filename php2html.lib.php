@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-10';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-04-28';     $DocIni='evs';  $ModulNo=0;
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -24,28 +24,6 @@
     R𝖾𝗏𝗂𝗌𝗂𝗈𝗇𝗌 𝗅𝗈𝗀:
     2020-00-00 - evs  Initial
     
-
- 
-
-### The basic MAIN FUNCTIONS:
-function htm_Input($type, $name, $value, $label, $title, $disabl, $rows, $width, $step, $more, $placeholder)    // function htm_CombList
-                                    # Combined Input field
-
-function htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, &$tblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $CalledFrom, $Kriterie)    
-                                    # Table with lots of functions (Create/Delete/Modify: record; Filter/Sort: rows; Striped rows)
-
-function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelWmax', $func='Udefineret', $more='', $BookMark='../_base/page_Blindgyden.php') 
-                                    # Start top of an avanced panel
-
-function htm_PanlFoot( $labl='', $subm=false, $title='', $buttonKind='', $akey='', $simu=false, $frmName='') { # SKAL følge efter htm_Panl_Top !
-                                    # Finish bottom of an avanced panel
-
-function htm_PagePrep(){}           # Prepare output to a page
-
-function htm_PageBody(){}           # Set body of a page
-
-function htm_PageFoot(){}           # Start bottom of a page
-
 */
 
 
@@ -68,7 +46,7 @@ $GridOn= true;
 
 ### Functions:
 
-function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$unit='',$disa=false,$rows='2',$wdth='',$step='',$more='',$plho='@Enter...',$dataList=[] )
+function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$unit='',$disa=false,$rows='2',$wdth='',$step='',$more='',$plho='@Enter...',$list=[] )
     $type='',           # text, date, ... Look at source !
     $name='',           # Set the fields name and id
     $valu='',           # The current content in input field
@@ -76,16 +54,17 @@ function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$
     $hint='',           # Translated desctiption about the field
     $algn='left',       # The alignment of input content Default: left
     $unit='',           # A unit added to the content eg. currency or % If in front: '<' it is added as a prefix, else a suffix
-    $disabl=false,      # Disable the field. Default: field is active
+    $disa=false,      	# Disable the field. Default: field is active
     $rows='2',          # Number of rows in multiline input (eg. area/html) Default: 2
-    $width='',          # Width of the field-container
+    $wdth='',           # Width of the field-container
     $step='',           # the value of stepup/stepdown for numbers
     $more='',           # Give more (special / non system) input attrib
     $plho='@Enter...',  # Translated placeholder shown when field is empty. Default: Enter...
-    $dataList=[]        # Data for "multi-list" (eg. options, checkbox, radiolist)
+    $list=[]        	# Data for "multi-list" (eg. options, checkbox, radiolist)
 	) {
 	global $GridOn;
-	dvl_pretty('htm_Input_test');
+	$proc= true;		# Act as procedure: Echo result, or as function: Return string	dvl_pretty('htm_Input_test');
+	$result= '';
     $labl= lang($labl);     
 	if ($hint=='') $hint= '@There is no explanation !';
 	$hint= lang($hint);
@@ -93,98 +72,129 @@ function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$
     if ($wdth=='') 	$wdth= '200px';    // Default width
 	if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
 #GRID:
-    if ((USEGRID) and ($GridOn)) echo '<div class="grid-item">';
+    if ((USEGRID) and ($GridOn)) $result.= '<div class="grid-item">';
 #FIELD:
-	echo '<div class="inpField" id="inpBox" style="float: left; width: '.$wdth.'"> ';
+	$result.= '<div class="inpField" id="inpBox" style="width: '.$wdth.'; margin: auto; display: inline-block;"> ';	// float: left; 
 #INPUT:
     $inpIdNm=  ' id="'.$name.'" name="'.$name.'" ';
-    $inpStyle= ' style="text-align: '.$algn.'; font-size:12px; '; 
-    
-    $patt1= ' pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" /> <label for="';
-    $patt2= ' pattern="(\d{3})([\.])(\d{2})" />  <label for="';
-    $eventInvalid= 'oninvalid="this.setCustomValidity(\''.lang('@Wrong data in ').lang($labl).' ! \')"';
+    $inpStyle= ' class="inpShade" style="text-align: '.$algn.'; font-size:12px; '; 
+    $eventInvalid= ' oninvalid="this.setCustomValidity(\''.lang('@Wrong data in ').lang($labl).' ! \')" ';
     
     //if (gettype($valu)== 'Float') $type= 'number'; 
-    if ($disabl==true) $aktiv=' disabled '; else $aktiv= ''; 
+    if ($disa==true) $aktiv=' disabled '; else $aktiv= ''; 
     if ($plho=='')   $plh='';    else $plh=' placeholder="'.lang($plho).'" ';
 	$top= '';
     
     switch ($type) {     
-        case 'date' : echo '<input type= "date" '.  $more. $inpIdNm. $inpStyle.'" value="'.$valu. '" placeholder ="yyyy-mm-dd" '.$aktiv.' /> '; break;
-        case 'intg' : echo '<input type= "number" '.$more. $inpIdNm. $inpStyle.' step:'.$step. '" value="'.$valu.'" '.	$aktiv.$plh.' /> '; break;
-		case 'text' : echo '<input type= "text" '.  $more. $inpIdNm. $inpStyle.'" '.$align.' value="'.$valu.'" '. $eventInvalid.' '. $aktiv.$plh.' /> '; break;
+        case 'date' : $result.= '<input type= "date" '.  $inpIdNm. $more. $inpStyle. ' display:inline-block;'.'" value="'. $valu. '" placeholder ="yyyy-mm-dd" '. $aktiv.' /> '; break;
+        case 'intg' : $result.= '<input type= "number" '.$inpIdNm. $more. $inpStyle. ' step:'. $step. '" value="'.$valu.'" '. $aktiv. $plh.' /> '; break;
+		case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $more. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh.' /> '; break;
         case 'dec0' : # quantity
         case 'dec1' : # Amount -  // SPACE as thousands separator
-        case 'dec2' : echo '<input type= "text" '.  $more. $inpIdNm. $inpStyle. ';" value="'.$pref. number_format((float)$valu,(int)substr($type,3,1),DecimalSep,ThousandsSep).$suff,
-						'"  '. $eventInvalid.' '.$aktiv.$plh.$patt1.$name.'">'; break; 
+        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. $more. ' value="'.$pref. number_format((float)$valu,(int)substr($type,3,1),DecimalSep,ThousandsSep).$suff. '" '. 
+						$inpStyle. '"'. $eventInvalid. $aktiv. $plh. ' pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" />';  break; 
         case 'num0' :
-        case 'num1' :
+        case 'num1' :	// thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
         case 'num2' :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
-        case 'num3' : echo '<input type="number" '.$more.' lang="en" '. $inpIdNm. $inpStyle.'" width="'.$width.'px;" step="'.$step.'" id="'.$name.
-						'" name="'.$name.'" value="'.$valu.'" '.$eventInvalid.' '.$aktiv.$plh.$patt2.$name.'">';  break; // No unit but with browser type check !
-						// '" name="'.$name.'" value="'.$pref,number_format((float)$valu,(int)substr($type,3,1),DecimalSep,ThousandsSep).$suff,'" '.$eventInvalid.' '.$aktiv.$plh.$patt2.$name.'">';  break; 
-						// thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
-        case 'barc' : echo '<input type= "text" '.	$more. $inpIdNm. $inpStyle.' font-family:barcode; font-size:19px;"'. ' value="'.$valu.'" '.
-						$eventInvalid.' '.$aktiv.$plh.' />';  break; 
-        case 'mail' : echo '<input type= '.'"email" '.$more. $inpIdNm. $inpStyle.' value="'.$valu.'" '. $eventInvalid.' '. //  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-						$aktiv.$plh.' /> <label for="'.$name.'">';  break; 
+        case 'num3' : $result.= '<input type="number" '. $inpIdNm. $more.' lang="en" step="'.$step.'" value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. ' pattern="(\d{3})([\.])(\d{2})"'.
+						$inpStyle. '" />';  break; // No unit but with browser type check !
+        case 'barc' : $result.= '<input type= "text" '.	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh.
+						$inpStyle. ' font-family:barcode; font-size:19px;" class="inpShade"'. ' />';  break; 
+        case 'mail' : $result.= '<input type= "email" '. $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. 	// pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+						$inpStyle. '" />';  break; 
 
-        case 'pass' : echo '<span class="fieldContent" style="text-align: left;">'.
-						'<input type= "password" '.$more. $inpIdNm.' style="height: 22px; width: 67%; margin-top: -1px;" value="'.$valu.'" '.$eventInvalid.' '.$aktiv.$plh.' onkeyup="getPassword('.$name.')" />'.
-						iconButt($type='button',$faicon='far fa-eye', $title= lang('@Show/Hide password'),$id='tgl_'.$name, 
-								 $link='',$action='onmousedown="togglePassword('.'tgl_'.$name.','.$name.')"',$akey='',$size='',$lbl='');
-						$str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
-						echo '<meter id= "pwPoint'.$name.'" style="position:relative; height:6px; width:97%;" '.
-							'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
-							'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
-						'</meter>';	echo '</span>';	break;
+        case 'link' : $result.= '<input type= "url" '.   $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="https?://.+". $aktiv. $plh.  	// pattern="^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?" 
+						$inpStyle. '" />';  break; 
 
-        case 'hidd' : echo '<input type= "hidden" id="'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break; 
-		
-        case 'area' : echo '<span class="fieldContent" style="padding: 10px 4px 4px;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.'" style="width:97%; font-size: 1em; border-radius: 5px;" '.
-						$eventInvalid.' '.$aktiv.$plh.' '.$more.' >'.$valu.'</textarea>'; $top=' top: -8px; ';  break; 
+        case 'sear' : $result.= '<input type="search" '. $inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+						$inpStyle. '" />';  break; 
 
-        case 'html' : echo '<span class="fieldContent" style="top: -1px; padding: 10px 4px 4px;"> <small><div contenteditable="true" rows="'.$rows.'" id="'.$name.'" name="'.$name.
+        case 'file' : $result.= '<input type= "file" '. 	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+						$inpStyle. ' background-color: white;" />';  break; 
+
+        case 'imag' : $result.= '<input type= "image" '.	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+						$inpStyle. ' background-color: white; height: 18px;" />';  break; 
+
+        case 'time' : $result.= '<input type= "time" '. 	$inpIdNm. $more. ' value="'.$valu.'" '. $eventInvalid. $pattern="". $aktiv. $plh. 
+						$inpStyle. '" />';  break; 
+
+        case 'rang' : $result.= '<span class="fieldContent inpShade range-wrap" style="height: 28px;">'.
+							'<input class="range" type= "range" '.$inpIdNm. $more. ' value="'.$valu.'" '. $aktiv.  'onclick="setBubble('.$name.',\'bubble\')"'. $inpStyle. ' margin: 0; " /> '.
+							'<div class="bubble" style="font-size: 10px; top: -41px; position: relative; width: min-content; text-align: center; opacity: 80%;"> Min .. Val .. Max </div>'.  
+							'</span>';	break; 
+
+        case 'butt' : $result.= '<span class="fieldContent inpShade" style="height: 28px;">'.
+							'<input type= "button" '. $inpIdNm. $more. ' value="'.$valu.'" '. $aktiv. 
+						$inpStyle. ' margin: 0; padding: 2px;" /> </span>';	break; // No functionality !
+
+        case 'colr' : $result.= '<span class="fieldContent inpShade" style="height: 28px;">'.
+							'<input type= "color" '. $inpIdNm. $more. ' value="'.$valu.'" '. $aktiv. 
+						$inpStyle. ' margin: 0; padding: 2px;" /> </span>';	break; 
+
+        case 'pass' : $result.= '<span class="fieldContent inpShade" style="text-align: left; height: 34px;">'.
+							'<div style="white-space: nowrap;">'.
+							'<input type= "password" '. $inpIdNm. $more. ' style="height: 8px; width: 67%; margin-top: -1px; box-shadow: none;" value="'.$valu.'" '.$eventInvalid. $aktiv. $plh.' onkeyup="getPassword('.$name.')" />'.
+							iconButt($type='button',$faicon='far fa-eye-slash', $title= lang('@Show/Hide password'),$id='tgl_'.$name, 
+								 $link='',$action='onmousedown="togglePassword('.'tgl_'.$name.','.$name.')"',$akey='',$size='',$lbl='').
+							'</div>';
+							$str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
+							$result.= '<meter id= "pwPoint'.$name.'" style="position:relative; top:-8px; height:6px; width:97%;" '.
+								'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
+								'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
+							'</meter>';	$result.= '</span>';	break;
+
+        case 'area' : $result.= '<span class="fieldContent inpShade" style="padding: 10px 4px 4px;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.'" style="width:97%; font-size: 1em; border: 1px solid lightgray; border-radius: 4px;" '.
+						$eventInvalid. $aktiv. $plh.' '.$more.' >'.$valu.'</textarea>'; $top=' top: -8px; ';  break; 
+
+        case 'html' : $result.= '<span class="fieldContent inpShade" style="top: -1px; padding: 10px 4px 4px;"> <small><div contenteditable="true" rows="'.$rows.'" id="'.$name.'" name="'.$name.
 						'" style="background-color: white; min-height: 34px; border: 1px solid lightgray; padding: 2px; border-radius: 5px;" '. //  Som area, men med html-indhold
-						$eventInvalid.' '.$aktiv.$plh.' data-placeholder="'.lang($plho).'" '.$more.' >'.$valu.'</div></small>';
-						if ($disabl) echo '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';	$top=' top: -8px; '; break; 
+						$eventInvalid. $aktiv. $plh.' data-placeholder="'.lang($plho).'" '. $more.' >'. $valu.'</div></small>';
+						if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>'; $top=' top: -8px; '; break; 
 
-        case 'chck' : echo '<form action="">'.  // Nestet form !
-							'<span class="fieldContent" ><small>';
-							foreach ($dataList as $rec) { // $dataList= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:'checked'], ['@Label','@ToolTip'],...]
-								echo '<input type= "checkbox" name="'.$rec[0].'" value="'.$rec[3].'" '.$rec[3].' style="width: 20px;"/>'.
-									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow:none; ').'</label><br>';
-							}	echo '</small></span> </form>';  break; 
+        case 'chck' : $result.= '<form action="">'.  // Nestet form !
+							'<span class="fieldContent inpShade" ><small>';
+							foreach ($list as $rec) { // $list= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:'checked'], ['@Label','@ToolTip'],...]
+								$result.= '<input type= "checkbox" name="'.$rec[0].'" value="'.$rec[3].'" '.$rec[3].' style="width: 20px;"/>'.
+									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow:none; ').'</label>';
+								if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
+							}	$result.= '</small></span> </form>';  break; 
 
-        case 'rado' : echo '<form action="">'.  // Warn: Nestet form !
-							'<span class="fieldContent" ><small>';
-							foreach ($dataList as $rec) { // $dataList= [['name','Label','@ToolTip'], [0:'name',1:'Label',2:'@ToolTip',3:'checked'], ['Label','@ToolTip'],...]
-								echo '<input type= "radio" id="'.$rec[0].'" name="'.$name.'" value="'.$rec[1].'" '.$rec[3].' style="width: 20px">'.
-									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'. lang($rec[2]).'</label><br>';
-							}	echo '</small></span> </form>';  break; 
+        case 'rado' : $result.= '<form action="">'.  // Warn: Nestet form !
+							'<span class="fieldContent inpShade" ><small>';
+							foreach ($list as $rec) { // $list= [['name','Label','@ToolTip'], [0:'name',1:'Label',2:'@ToolTip',3:'checked'], ['Label','@ToolTip'],...]
+								$result.= '<input type= "radio" id="'.$rec[0].'" name="'.$name.'" value="'.$rec[1].'" '.$rec[3].' style="width: 20px">'.
+									 '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'. lang($rec[2]).'</label>';
+								if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
+							}	$result.= '</small></span> </form>';  break; 
 
-        case 'opti' : echo '<span class="fieldContent" style="background-color: white; top: 6px; text-align: center; border: 1px solid var(--FieldBord); border-radius:5px"><small>';
-							echo '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.' style="width: 80%; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
-							echo '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
-							foreach ($dataList as $rec) { # $dataList= [[0:name, 1:value, 2:@ToolTip, 3:'checked', [...]]
-								echo '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2]).'" value="'.$rec[1].'" '.$state=$rec[3]; //  Firefox does not support Label !
-								if ($rec[1]==$valu) echo ' selected ';
-								echo '>'.$lbl=lang($rec[1]).'</option> ';
-							}	echo '</select></small></span>';  break; 
+        case 'opti' : $result.= '<span class="fieldContent inpShade" style="background-color; white; top: 6px; text-align: center; border: 1px solid var(--FieldBord); border-radius:5px"><small>';
+							$result.= '<select class="styled-select" name="'.$name.'" '.$events.' '.$eventInvalid.'style="width: 80%; '.$colr.'" '.$aktiv.'> '; dvl_pretty();
+							$result.= '<option label="?" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
+							foreach ($list as $rec) { # $list= [[0:name, 1:value, 2:@ToolTip, 3:'checked', [...]]
+								$result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2]).'" value="'.$rec[1].'" '.$state=$rec[3]; //  Firefox does not support Label !
+								if ($rec[1]==$valu) $result.= ' selected ';
+								$result.= '>'.$lbl=lang($rec[1]).'</option> ';
+							}	$result.= '</select></small></span>';  break; 
 
-        default     : echo ' htm_Input(): Illegal Type ! ';
+        case 'hidd' : $result.= '<input type= "hidden" id="'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break; 
+		
+        default     : $result.= ' htm_Input(): Illegal Type ! ';
         dvl_pretty();
     }
 
 # LABEL & TIP:   
-	echo '	<abbr class="hint"> ';
-	echo '		<label for="'.$name.'" style="font-size: 10px; '.$top.'"><div style="white-space: nowrap;">'.$labl.'</div></label> ';
-	echo '		<data-hint>'.lang($hint).'</data-hint> ';
-	echo '	</abbr> ';
-	echo '</div>'; # :FIELD
+//	$lblalign = 'margin-right: 	auto;';	// Align label Left
+//	$lblalign = 'margin: 		auto;';	// Align label Center
+	$lblalign = 'margin-left: 	auto;';	// Align label Right
+	$result.= '	<abbr class="hint"> ';
+	$result.= '		<label for="'.$name.'" style="font-size: 10px; '.$top.'"><div style="white-space: nowrap; '.$lblalign.'">'.$labl.'</div></label> ';
+	$result.= '		<data-hint style="top: 45px; left: 2px;">'.lang($hint).'</data-hint> ';
+	$result.= '	</abbr> ';
+	$result.= '</div>'; # :FIELD
     
-	if ((USEGRID) and ($GridOn)) echo '</div>'; # :GRID
-} //  :htm_Input()
+	if ((USEGRID) and ($GridOn)) $result.= '</div>'; # :GRID
+	if ($proc==true) echo $result; else return $result;
+} # :htm_Input()
 
 
 
@@ -223,26 +233,27 @@ function htm_Table(
     $RowSuff= array( #['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horJust_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
         ),            # Felt 4: ($fieldModes), er sammensat af: [horJust, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
     &$tblData,             # = array(),
-    $FilterOn= true,       # Mulighed for at skjule records som ikke matcher filter   //  Virker ikke med hidd-felter!
-    $SorterOn= true,       # Mulighed for at sortere records efter kolonne indhold
-    $CreateRec=true,       # Mulighed for at oprette en record
-    $ModifyRec=true,       # Mulighed for at vælge og ændre data i en row
-    $ViewHeight= '400px',  # Højden af den synlige del af tabellens data
-    $CalledFrom='', //= __FUNCTION__
-    $Kriterie= ['','']    # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
-  )                       # Felt 4: ($fieldModes), er sammensat af: [horJust, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
-                          # 0:horJust - Argument(er) til .td: style="text-align:
-                          # 1:FeltBgColor - Argument(er) til .td: background-color: 
-                          # 2:FeltStyle - komplet udtryk, F.eks.: 'font-style:italic; '
-                          # 3:TdColor - som 1: men benyttes til "række-markering"
-                          # Kun påvirkning af Body-områder.
-#!  FIXIT: Fixed/Sticky header virker kun på 1. tabel, når der er flere tabeller i samme vindue!
-#!         Der forekommer også svigt af zebra-striber (Opdateringsproblem!), samt problemer med filter, når der er hidden kolonner.
+	$FilterOn= true,       # Ability to hide records that do not match filter // Does not work with hidd fields!
+	$SorterOn= true,       # Ability to sort records by column content
+	$CreateRec=true,       # Ability to create a record
+	$ModifyRec=true,       # Ability to select and change data in a row
+	$ViewHeight= '400px',  # The height of the visible part of the table's data
+	$CalledFrom='', 		// = __FUNCTION__ (debugging)
+	$Criterion= ['','']    # Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
+  )                       # Field 4: ($fieldModes), is composed of: [horJust, FieldBgColor, FieldStyle, SorterON, FilterON, SelectON, ]
+                          # 0:horJust - Arguments to .td: style="text-align:
+                          # 1:FieldBgColor - Arguments to .td: background-color: 
+                          # 2:FieldStyle - complete expression, e.g.: 'font-style:italic; '
+                          # 3:TdColor - like 1: but used for "row marking"
+                          # Only impact on Body areas.
+#!  FIXIT: Fixed/Sticky header only works on 1st table when there are several tables in the same window!
+#!         Zebra streaks (Update Issue!) Failure, as well as filter problems when hidden columns are also present.
 
 { global $ØblueColor, $ØLineBrun, $ØRollTabl, $ØHeaderFont, $ØIconStyle, $ØPanelIx, $ØTblIx, $ØrowCount, $Ønovice;
   $creaInpBg= 'LightYellow';
+  $ØBodyBcgrd= 'yellow';
   $valgbar= (($ModifyRec) and ($RowBody[0][2]=='indx'));
-  //if (!$tblData) {msg_Info('Ingen data','Data tabellen er tom! '); $tblData=[]; };  //  exit;
+  //if (!$tblData) {msg_Info ('No data', 'The data table is empty!'); $tblData=[]; };  //  exit;
   if (DEBUG) dvl_pretty('Start-htm_Table: '.$CalledFrom);
   if (!$valgbar) $RowSelect= '';
   else         { $RowSelect= '<span class="tooltip"><span style="font-size:115%;">&#x21E8;</span>'.
@@ -382,19 +393,19 @@ function htm_Table(
       $s2= $name='New_Row0Col'.$ColIx.'[]' ;
       if ($Body[6]=='@Numr...') $oblg= lang('@Mandatory'); else $oblg= '';
       if (($GLOBALS["Øshow"]>0) and ($Body[2]=='hidd')) $Body[2]= 'text';
-      switch ($Body[2]) {  # Specielle InpTyper:
-      case 'moms' : echo '<td'.$s1.htm_SelectStr($s2,$valu,MomsListe(),$bgclr.'width:45px; ').'</td>';  break;
-      case 'kont' : echo '<td'.$s1.htm_SelectStr($s2,$valu,KontListe(),$bgclr.'width:35px; ').'</td>';  break;
-      case 'valu' : echo '<td'.$s1.htm_SelectStr($s2,$valu,ValuListe(),$bgclr.'width:55px; ').'</td>';  break;
-      case 'stat' : echo '<td'.$s1.htm_SelectStr($s2,$valu,StatListe(),$bgclr.'width:65px; ').'</td>';  break;
-      case 'osta' : echo '<td'.$s1.htm_SelectStr($s2,$valu,OrdrStatu(),$bgclr.'width:70px; ').'</td>';  break;
-      case 'just' : echo '<td'.$s1.htm_SelectStr($s2,$valu,JustListe(),$bgclr.'width:35px; ').'</td>';  break;
-      case 'side' : echo '<td'.$s1.htm_SelectStr($s2,$valu,Side_List(),$bgclr.'width:35px; ').'</td>';  break;
-      case 'font' : echo '<td'.$s1.htm_SelectStr($s2,$valu,FontListe(),$bgclr.'width:75px; ').'</td>';  break;
-      case 'show' : //  Kun visning af data:
-      case 'indx' : echo '<td style="width:'.$Body[1].'; text-align:center">'.lang($Body[6]).'</td>';   break;  //  Show only:
-      case 'hidd' : echo '<td style="width:0; padding:0; display:none; '.$bord.'">  <input type= "hidden" name="Kol'.$ColIx.'[]" '.
-              'value="'.htmlentities(stripslashes(lang($valu))).'" style=" width:0; display:none;"/></td> '; break; //  Show nothing:
+      switch ($Body[2]) {  # Special InpTypes ("Lookup"):
+    # case 'moms' : echo '<td'.$s1.htm_SelectStr($s2,$valu,MomsListe(),$bgclr.'width:45px; ').'</td>';  break;
+    # case 'kont' : echo '<td'.$s1.htm_SelectStr($s2,$valu,KontListe(),$bgclr.'width:35px; ').'</td>';  break;
+    # case 'valu' : echo '<td'.$s1.htm_SelectStr($s2,$valu,ValuListe(),$bgclr.'width:55px; ').'</td>';  break;
+    # case 'stat' : echo '<td'.$s1.htm_SelectStr($s2,$valu,StatListe(),$bgclr.'width:65px; ').'</td>';  break;
+    # case 'osta' : echo '<td'.$s1.htm_SelectStr($s2,$valu,OrdrStatu(),$bgclr.'width:70px; ').'</td>';  break;
+    # case 'just' : echo '<td'.$s1.htm_SelectStr($s2,$valu,JustListe(),$bgclr.'width:35px; ').'</td>';  break;
+    # case 'side' : echo '<td'.$s1.htm_SelectStr($s2,$valu,Side_List(),$bgclr.'width:35px; ').'</td>';  break;
+    # case 'font' : echo '<td'.$s1.htm_SelectStr($s2,$valu,FontListe(),$bgclr.'width:75px; ').'</td>';  break;
+     case 'show' : //  Just show the data:
+     case 'indx' : echo '<td style="width:'.$Body[1].'; text-align:center">'.lang($Body[6]).'</td>';   break;  //  Show only
+     case 'hidd' : echo '<td style="width:0; padding:0; display:none; '.$bord.'">  <input type= "hidden" name="Kol'.$ColIx.'[]" '.
+              'value="'.htmlentities(stripslashes(lang($valu))).'" style=" width:0; display:none;"/></td> '; break; //  Show nothing
       //  text, indx, data, :
       default:      echo '<td style="width:'.$Body[1].';"> <input type="text" name="New_Row0Col'.$ColIx.'[]'.
               '" form="form_'.$ØPanelIx.'_'.$ØTblIx.'" style="width:94%; background:'.$creaInpBg.';" placeholder="'.$oblg.' ?..." value="" title="'.
@@ -480,14 +491,14 @@ function htm_Table(
             case 'bold' : echo '">'.'<input type= "checkbox" name="bold" value="" '.isbold($valu).' ';  break;
             case 'ital' : echo '">'.'<input type= "checkbox" name="ital" value="" '.isital($valu).' ';  break;
                           //  DropDown-selector:
-            case 'moms' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,MomsListe(),'width:45px; ');  break; 
-            case 'just' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,JustListe(),'width:35px; ');  break;
-            case 'side' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,Side_List(),'width:35px; ');  break;
-            case 'font' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,FontListe(),'width:75px; ');  break;
-            case 'kont' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,KontListe(),'width:35px; ');  break;
-            case 'valu' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,ValuListe(),'width:55px; ');  break;
-            case 'stat' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,StatListe(),'width:65px; ');  break;
-            case 'osta' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,OrdrStatu(),'width:70px; ');  break;  //  Ordre status
+        #   case 'moms' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,MomsListe(),'width:45px; ');  break; 
+        #   case 'just' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,JustListe(),'width:35px; ');  break;
+        #   case 'side' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,Side_List(),'width:35px; ');  break;
+        #   case 'font' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,FontListe(),'width:75px; ');  break;
+        #   case 'kont' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,KontListe(),'width:35px; ');  break;
+        #   case 'valu' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,ValuListe(),'width:55px; ');  break;
+        #   case 'stat' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,StatListe(),'width:65px; ');  break;
+        #   case 'osta' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,OrdrStatu(),'width:70px; ');  break;  //  Ordre status
             case 'sttu' : if ($Drow[9]!=' ')  echo '">'.lang(ListLookup(StatListe(),$search= '',$colsearch=1,$colresult=2)); 
                           else                echo '">'; break;
             case 'date' : if (($valu==' ') /* or ($valu==NULL) */) $clr= 'color: transparent; '; else $clr= '';  // Skjul browserens placeholder ved at angive SPACE
@@ -522,20 +533,20 @@ function htm_Table(
                                  'value="'.htmlentities(stripslashes(lang($valu))).'" placeholder="'.lang($Body[6]).'"'.
                                  $txAlign.$inpBg.' width:98%; padding-left:2px; padding-right:2px;" /> ';
                           break;
-            case 'keyn' : //  Valgbart, og redigerbart index
+            case 'keyn' : //  Selectable and editable index
                           echo '"><span style="font-size:small" title="'.lang('@The row is selectable. Click here to edit the row`s fields').'">'.RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).'</span>';  
                           break;
-            case 'indx' : //  Valgbart, men ikke redigerbart index
+            case 'indx' : //  Selectable but not editable index
                           //  < input type= "text" name="'.$tix.'Row'.$RowIx.'Col'.$ColIx.'[]" '.'value="'.$valu.'" /> 
                           //  echo '"><span style="font-size:small" title="'.lang('@Rækken er valgbar. Klik her for at vise alle felter').'">'.
                           //    RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).' <input type= "text" name="Row'.$RowIx.'Col'.$ColIx.'[]" '.'value="'.$valu.'" style="visibility: hidden; width:0; height:0;" /> </span>';  
                           echo '"><span style="font-size:small" title="'.lang('@The row is selectable. Click here to edit the row`s fields').'">'.
                                 RowKlick($ModifyRec,$valu,$RowIx,$ColIx,$tix,$CalledFrom).' </span>';  
                           break;
-            case 'blnk' : //  Værdi vises som BLANK
+            case 'blnk' : //  Value is displayed as BLANK
                           echo '"><span > </span>';  
                           break;
-            case 'hidd' : //  Skjulte data medtages som skjulte kolonner, for at have en komplet record (gør opdatering simplere):
+            case 'hidd' : //  Hidden data is included as hidden columns to have a complete record (simplifies updating):
                           echo 'width:0; padding:0; border:none; display:none;">  <input type= "hidden" name="'.$tix.'Row'.$RowIx.'Col'.$ColIx.'[]" '.  //   visibility:hidden;
                                'value="'.htmlentities(stripslashes(lang($valu))).'" '.$txAlign.$inpBg.' width:0;" /> ';
                           break;
@@ -543,7 +554,7 @@ function htm_Table(
             default   : { echo '"> <input type= "text" name="'.$tix.'Row'.$RowIx.'Col'.$ColIx.'[]"  form="form_'.$ØPanelIx.'_'.$ØTblIx.'" value="'.$valu.'" '.
                                'placeholder="'.lang($Body[6]).'"'.$txAlign.$inpBg.$fltStyl.' width:98%; font-style:inherit;" /> ';
                         }
-          }   // switch InputTyper
+          }   // :switch InputTypes
           echo '</td>'; //  tabelfelt slut
         }
       };  //  foreach $RowBody
@@ -552,14 +563,14 @@ function htm_Table(
     foreach ($RowSuff as $Suff) { dvl_pretty();
       if ($ModifyRec) {
         $output= $Suff[6];
-        if ($Suff[2]=='button') { ## Specielle-knapper i RowSuffix:
+        if ($Suff[2]=='button') { ## RowSuffix Special Buttons:
           $btnStyle= '" class="tooltip" style="height:20px; border:0; box-shadow:none; background-color:transparent;" ';
           $btnSuff= $ØTblIx.'_'.$RowIx. $btnStyle;
           if ($Suff[0]=='@Delete')  { if ($Suff[3]=='dis') $dis= 'disabled'; else $dis= '';
                                     $output='<button type= "submit" name="btn_del_'.$btnSuff.$dis.' >'.
-                                  Lbl_Tip($Suff[6],lang('@Delete pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Knap som ikke må slette, kan deaktivers
+                                  Lbl_Tip($Suff[6],lang('@Delete pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Buttons that must not be deleted can be deactivated
           if ($Suff[0]=='@Hide') { $output='<button type= "submit" name="btn_hid_'.$btnSuff.'>'.
-                                  Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                // Records som ikke må slettes, kan skjules
+                                  Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                	// Records that must not be deleted can be hidden
           if ($Suff[0]=='@Copy')  { $output='<button type= "submit" name="btn_cpy_' .$btnSuff.'>'.
                                   Lbl_Tip($Suff[6],lang('@Copy pos: ').$RowIx,'SW','0px'). '</button>'; }
           if ($Suff[0]=='@Rename') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
@@ -653,7 +664,7 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
   //echo '</ div>'; //  Panel-Header
   echo '<span id="HideDiv'.$ØPanelIx.'" style="background:'.$ØBodyBcgrd.';">';   // Hide from here ! 
   if ($capt!='') echo '<hr class="style13" style="margin: 6px 6px 6px 0;"/>';
-  echo '<div class="pnlContent" style="text-align: center; margin: auto; width: min-content;">';
+  echo '<div class="pnlContent" style="text-align: center; margin: auto;">'; // width: min-content;">';
 } // htm_PanlHead - # Panelets < /Panel-span>, < /hiding> og < /form> er placeret i htm_PanlFoot, som skal kaldes til slut!
 
 function htm_PanlFoot( $labl='', $subm=false, $title='', $buttonKind='save', $akey='', $simu=false, $frmName='') 
@@ -932,7 +943,7 @@ echo "
             { passInput.type = 'text';      togglePW.innerHTML = '<i class=\'far fa-eye\'>'; } else  
             { passInput.type = 'password';  togglePW.innerHTML = '<i class=\'far fa-eye-slash\'>'; }
     }
-      
+
 </script>
 
 <style>
@@ -1006,10 +1017,42 @@ $('#smarttabel, #table0, #table1, #table2, #table3, #table4, #table5, #table6').
   margin: 0;
   padding: 1px;
 }    
+
+
+#snackbar {
+	visibility: hidden;
+	width: min-content;
+	min-width: 250px;
+	margin-left: -125px;
+	/* background-color: #333; */
+	/* color: #fff; */
+	text-align: center;
+	border-radius: 6px;
+	padding: 16px;
+	position: fixed;
+	z-index: 1;
+	left: 50%;
+	bottom: 30px;
+	font-size: 14px; 
+}
+#snackbar.show { 
+	visibility: visible;
+	/* transition: visibility 2s, opacity 1.5s linear; */
+	transition: opacity 2s ease-out;
+}
+
 </style>
 
 ";
   
+	run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff') { 
+		var x = document.getElementById('snackbar'); 
+			x.innerHTML= txt;
+			x.className = 'show'; 
+			x.style.background = bgcolr;
+			x.style.color = fgcolr;
+			setTimeout(function(){ x.className = x.className.replace('show', ''); }, 5000); 
+		}");
  
  ### ----------------------Library-fontawesome icons ----------------------
   //$source_Ajax = 'https://cdnjs.cloudflare.com/ajax/libs/'; 
@@ -1028,9 +1071,33 @@ $('#smarttabel, #table0, #table1, #table2, #table3, #table4, #table5, #table6').
 
 
 function htm_PageFina() {
-    include('.././spormig.php');
+    echo '<div id="snackbar">Short message</div>';
+	echo "
+	<script>	/* https://css-tricks.com/value-bubbles-for-range-inputs/ */
+		const allRanges = document.querySelectorAll(\".range-wrap\");
+		allRanges.forEach(wrap => {
+			const range = wrap.querySelector(\".range\");
+			const bubble = wrap.querySelector(\".bubble\");
+			range.addEventListener(\"input\", () => { setBubble(range, bubble); });
+			setBubble(range, bubble);
+		});
+		function setBubble(range, bubble) {
+			const val = range.value;
+			const min = range.min ? range.min : 0;
+			const max = range.max ? range.max : 100;
+			const pctVal = Number(((val - min) * 100) / (max - min));
+			bubble.innerHTML = min + '..' + '<b>' + val + '</b>' +'..' + max;
+			".
+			/* bubble.style.left = `calc(${pctVal}% + (${8 - pctVal * 0.15}px))`;  // Sorta magic numbers based on size of the native UI thumb */
+			"
+		}
+	</script>
+	";
+	
+	include('.././spormig.php');
     htm_nl(3);
     echo '  </body>'; // Started in htm_PagePrep()
+
     echo '</html>';
 }
 
@@ -1103,6 +1170,8 @@ function htm_nl($rept=1)    {echo str_repeat('<br />',$rept);}
 function htm_lf($rept=1)    {echo str_repeat(' &#xa;',$rept);}  //  LineFeed
 function htm_sp($rept=1)    {echo str_repeat('&nbsp;',$rept);}
 
+function htm_space($wdt) 	{echo '<span style="width:'.$wdt.';"></span>';}
+
 
 // String-funktions:
 function str_bold($source,$result='',$tail='&nbsp;&nbsp;') {return $result.'<b>'.$source.'</b>'.$tail;}
@@ -1111,7 +1180,6 @@ function str_hr($c='#0')    {return '<hr style="color:'.$c.';"/>';}
 function str_nl($rept=1)    {return str_repeat('<br />',$rept);}
 function str_lf($rept=1)    {return str_repeat(' &#xa;',$rept);}  //  LineFeed in strngs:  &#010;  &#xa;  \n \u000A  \x0A  &#13;  %10%13  %0D%0A
 function str_sp($rept=1)    {return str_repeat('&nbsp;',$rept);}
-
 
 if (!function_exists('lang')) {
   function lang($FraseKey) {                # lang() / trans() is used to translate all hard-coded program-text.
@@ -1171,6 +1239,25 @@ function get_browser_name($user_agent) { # Call: get_browser_name($_SERVER['HTTP
     elseif (strpos($user_agent, 'Firefox')) return 'Firefox';
     elseif (strpos($user_agent, 'MSIE') ||  strpos($user_agent, 'Trident/7')) return 'Internet Explorer';
     return 'Other';
+}
+
+function htm_SelectStr($name,$valu,$optliste=[],$more='',$indiv=true) {
+    dvl_pretty();
+    if ($indiv) $Result= '<div style="margin-right:0;"> ';  else  $Result= ''; 
+    $Result.= '<select class="styled-select" id="'.$name.'" name="'.$name.
+              '" style="max-width:140px; background-color:transparent; '.$more.
+              '"> '."\n".'<option label="" value="" > - </option>';  //  selected disabled hidden
+    foreach ($optliste as $rec) { dvl_pretty();
+      $titl= tolk($rec[0]);
+    #+  if (strpos('KtInterval',' '.$more)>0) {if (strlen(' '.$titl)>15) {$titl= ':'.substr($titl,0,15).'...';}} 
+    #+  else {$titl= '';}
+      $Result.= "\n".'<option label="'.$rec[2].'" value="'.$rec[1].'" title="'.$titl.'"'; //  .$rec[3]
+        if ($rec[1]==$valu) $Result.= ' SELECTED ';
+      $Result.= '>'.$lbl=tolk($rec[2]).'</option> ';
+      }
+    $Result.= '</select>'; 
+    if ($indiv) {$Result.='</div> ';}
+    return($Result);
 }
 
 } // End of group: GRANULES
@@ -1556,7 +1643,10 @@ $CSS_style = '
     height: var(--FldHeight);
 }
 
-
+input[type=date]::-webkit-inner-spin-button,
+input[type=date]::-webkit-outer-spin-button {
+  -webkit-appearance: none;	/* Hide in Chrome */
+}
 
 
 	.inpField {						/* The container for INPUT and LABEL: */
@@ -1568,17 +1658,17 @@ $CSS_style = '
 		border: 1px solid var(--FieldBord);
 		border-radius: 5px;
 		font-size: 12px;
-		padding: 8px 6px 6px;
+		padding: 8px 0px 6px 6px;
 		margin: 6px 1px 1px 1px;
-		width: 99%
+		width: 91%
 	 /* USER: text-align: center; */
 	}
 	.inpField label { 				/* The visibly LABEL: */
-	    padding: 0px 3px 1px 3px;
+	    padding: 0px 0px 1px 3px;
 		position: absolute;
 		top:  0px;
 		left: 0px;
-		width: 97%;
+		width: 94%;
 		text-align: right;
 	}
 	.inpField label div {			/* The labels popup-HINT: */
@@ -1586,11 +1676,14 @@ $CSS_style = '
 		border-radius: 3px;
 		box-shadow: 2px 2px 1px var(--ButtnShad);  
 		background-color: #f1faff;
-		margin: auto;
+		/* margin: auto; */
 		width: min-content;
 		padding: 0 5px;
 	}
-
+	.inpShade {
+		box-shadow: 2px 3px 4px lightgray;
+		
+	}
 	
 	/* "ToolTip" with html content (formattet with html tags): */
 	/* Example: <abbr class="hint">This activity will be open to registration on April 31st <data-hint>[ *the contents<b> you </b>would want to popup here* ]</data-hint></abbr> */
@@ -1645,6 +1738,7 @@ input { border: 0; }
   display: grid;
   grid-template-columns: 35% 30% 35% ;
   background-color: LightYellow;
+  background-image: url("_background.png");
   padding: 10px;
   grid-gap: 10px;
   text-align: center;
@@ -1662,6 +1756,40 @@ input { border: 0; }
   content:attr(data-placeholder);
   color: var(--grenColr1); 
   font-size: 90%;
+}
+
+
+
+.range-wrap {	/* https://css-tricks.com/value-bubbles-for-range-inputs/ */
+  position: relative;
+  /* margin: 0 auto 3rem; */
+}
+.range {
+  width: 100%;
+}
+.bubble {
+  /* background: green; */
+  background: lightgray;
+  /* color: white; */
+  /* padding: 4px 12px; */
+  padding: 2px;
+  position: absolute;
+  border-radius: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bubble::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: lightgreen;
+  top: -1px;
+  left: 50%;
+}
+
+body {
+  margin: 2rem;
 }
 
 </style>
