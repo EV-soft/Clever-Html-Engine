@@ -84,6 +84,7 @@ The parameters to htm_Table:
             ),
         $RowSuff= array( # ['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horJust_mv]', '5:ColTip', '6:value!' ], ...
             ),
+        $TblNote= '',           # HTML-string
         &$tblData,              # = array(),
         $FilterOn= true,        # Ability to hide records that do not match filter // Does not work with hidd fields!
         $SorterOn= true,        # Ability to sort records by column content
