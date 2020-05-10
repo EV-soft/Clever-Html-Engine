@@ -1,24 +1,29 @@
-<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-04-28';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-05-10';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 //require_once ('menu.inc.php');
-//require_once ('translate.inc.php');
+require_once ('translate.inc.php');
 
   
 
 htm_PagePrep('DEMO');
-    echo '<div style="text-align:center;"><br>php2html-Demo:';  htm_nl(2);
+    echo '<div style="text-align: center;"><br>php2html-Demo:';  htm_nl(2);
 
-### Programmets hovedmenu:  
+### Program mainmenu:  
 //global $Øvis_finans, $Øvis_debitor, $Øvis_kreditor, $Øvis_prodkt, $Øvis_lager, $Øadd_on;
   //if ($vismenu and ($loggetind==true))
   //  {Menu_Topdropdown($Øvis_finans=true, $Øvis_debitor=true, $Øvis_kreditor=true, $Øvis_prodkt=true, $Øvis_lager=true, $Øadd_on); htm_nl(2); }  /* include $ØProgRoot."_base/htm_TopMenu-body.htm"; Erstattet af rutiner i out_base.php*/ 
 
     echo 'Examples of htm_Input():';                            htm_nl(2);
-    if (USEGRID) echo '<div class="grid-container" style="width: 700px; margin:auto;">';
-    
-    $vars= ['text','date','intg','dec0','dec1','dec2','chck','opti','num1','num0','mail','pass','barc','area','html','rado'];
-    foreach ($vars as $v) {$$v= update($$v,$v); };  // echo $v.':'.$$v.' ';};
+    if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto;">';
+
+## REMARK: scannSource() are only usefull, when rules like: 	$name='intg', $valu=$intg, - are used !
+## Can not be used when variables are in lists: 'chck' 'rado' 'opti'
+	$varId= scannSource('$name=',"'",[__FILE__]);	//	
+    foreach ($varId as $id) {$$id= postValue($$id,$id); }; // echo $id.':'.$$id.' ';};
+	
+	if (isset($_POST['name']))  { $namex = $_POST['name']; }
+	
     $date= date("Y-m-d");
 
     htm_Input($type='text',$name='text',$valu=$text, $labl='@htm_Input(Text)',$hint='@Demo of htm_Input Field type text');
@@ -52,7 +57,7 @@ htm_PagePrep('DEMO');
     htm_Input($type='html',$name='html',$valu='',       $labl='@htm_Input(html)',$hint='@Demo of htm_Input Field type html: Multi-line formatted html-text',$disa=false,$rows='3');
     htm_Input($type='area',$name='area',$valu='',       $labl='@htm_Input(area)',$hint='@Demo of htm_Input Field type area: Multi-line text',$disa=false,$rows='6');
     
-    htm_Input($type='chck',$name='chck',$valu='',$labl='@htm_Input(chck)',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$unit='',$disa=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$list= [
+    htm_Input($type='chck',$name='chck1',$valu='',$labl='@htm_Input(chck)',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',$algn='left',$unit='',$disa=false,$rows='3',$width='',$step='',$more='',$plho='Enter...',$list= [
     ['pos1','@private','@Details about private'],
     ['pos2','@proff','@Details about profession'],
     ['pos3','@private','@Details about private'],
@@ -95,7 +100,7 @@ htm_PagePrep('DEMO');
     //      ['@Pref',         '4%','butt','',['center'],'@Row prefix', '<ic class="fas fa-check" style="color:green; font-size:13px; "></ic>'],
             ),           // if (($ModifyRec) or ($RowBody[0][2]!='indx')) er 2% ColWidth benyttet til => butt
         $RowBody= array( #['0:ColLabl', '1:ColWidth', '2:InpType', '3:Format', '4:[horAlgn_mv]', '5:ColTip', '6:placeholder','7:default','8:select'], ['Næste record'],... # Generel struktur! 
-          ['@No.',          '4%','text','',['center'],'@Position number in the group','.No.'],
+          ['@No.',          '5%','text','',['center'],'@Position number in the group','.No.'],
           ['@Description', '20%','data','',['left'  ],'@Item Description. A descriptive text of your choice','@Enter text...'],
           ['@Account',      '6%','data','',['center'],'@The number in the statement of account to which the sales tax must be posted.','Account...'],
           ['@%-rate',       '6%','data','',['center'],'@VAT % rate','25 %...'],
@@ -104,7 +109,13 @@ htm_PagePrep('DEMO');
         $RowSuff= array( #['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horAlgn_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
           ['@Delete',       '4%','butt','',['center'],'@Click the red cross to delete a entry', '<ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>'],
         ),            # Felt 4: ($fieldModes), er sammensat af: [horAlgn, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
-        $tblData= array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], [['2'],[''],[''],[''],[''] ] ),       # = array(),
+        $TblNote= 	'<br><b>Notes about htm_Table:</b><br>
+					Records can be sorted, filtered, created, modifyed and more...<br>
+					The visibly rows can be scrolled in a window below the fixed header.
+					',
+		$tblData= array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], 
+						 [['2'],[''],[''],[''],[''] ], 
+						 [['3'],[''],[''],[''],[''] ] ),       # = array(),
         $FilterOn= true,        # Mulighed for at skjule records som ikke matcher filter   //  Virker ikke med hidd-felter!
         $SorterOn= true,        # Mulighed for at sortere records efter kolonne indhold
         $CreateRec=true,        # Mulighed for at oprette en record
@@ -116,15 +127,21 @@ htm_PagePrep('DEMO');
     
     htm_nl(2);
     echo 'Examples of foldable panel-system:';  htm_nl(2);
-    htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px) (click to close/open)', $parms='', $icon='fas fa-database', $class='panelW560', $func='Undefined', $more='', $BookMark='../_base/page_Blindgyden.php');
-        echo 'More examples of htm_Input():';   htm_nl(2);
-        htm_Input($type='pass',$name='pass2',$valu='',$labl='@htm_Input(pass)',$hint='Demo of htm_Input Field type password with "hidden" output',
+    htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px) (click to close/open)', $parms='', $icon='fas fa-database', $class='panelW560', $func='Undefined', $more='', 
+				$BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
+        // echo 'More examples of htm_Input():';   
+		htm_nl(2);
+		echo 'Panels are used to display a collection of input fields.<br>
+			  They are defined i 14 widths from 160 px to 1200 px.<br><br>
+			  The panel content can be displayed/hidden by clicking panel-header.';
+        htm_nl(2);
+		htm_Input($type='pass',$name='pass2',$valu='',$labl='@htm_Input(pass)',$hint='Demo of htm_Input Field type password with "hidden" output',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='95%');
         htm_Input($type='mail',$name='mail1',$valu='',$labl='@htm_Input(mail)',$hint='Demo of htm_Input Field type mail with syntax control',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='95%');
         htm_nl(2);
         htm_nl(2);
-        htm_Input($type='chck',$name='chck',$valu='',$labl='@htm_Input(chck)',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',
+        htm_Input($type='chck',$name='chck2',$valu='',$labl='@htm_Input(chck)',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='300px',$step='',$more='',$plho='Enter...',$list= [
         ['name1','Label1','@Details about label','checked'],
         ['name1','Label2','@Details about label','checked']
@@ -134,13 +151,14 @@ htm_PagePrep('DEMO');
     
     $GridOn= false;
     htm_nl(2);
-    htm_PanlHead($frmName='head1', $capt='@Example of login:', $parms='', $icon='fas fa-user-check', $class='panelW240', $func='Undefined', $more='', $BookMark='../_base/page_Blindgyden.php');
+    htm_PanlHead($frmName='head1', $capt='@Signup: <small>(Example)</small>', $parms='', $icon='fas fa-user-check', $class='panelW240', $func='Undefined', $more='', 
+				$BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
         //echo 'Example of login:'; htm_nl(2);
-        htm_Input($type='text',$name='text1',$valu='',$labl='@Financial Accounting',$hint='@The name of the accounting for wich you have access',
+        htm_Input($type='text',$name='text1',$valu=$text1,$labl='@Financial Accounting',$hint='@The name of the accounting for wich you have access',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='75%',$step='',$more='',$plho='@Account...');
-        htm_Input($type='mail',$name='mail2',$valu='',$labl='@Your account',$hint='@Type your email as your accont',
+        htm_Input($type='mail',$name='mail2',$valu=$mail2,$labl='@Your account',$hint='@Type your email as your accont',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='75%',$step='',$more='',$plho='@Email...');
-        htm_Input($type='pass',$name='pass3',$valu='',$labl='@Your password',$hint='@Type your password for your account',
+        htm_Input($type='pass',$name='pass3',$valu=$pass3,$labl='@Your password',$hint='@Type your password for your account',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='75%',$step='',$more='',$plho='@Password...');
         $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
         //htm_Input($type='html',$name='text',$valu=$h,$labl='Hash:',$hint='@Demo of htm_Input Field type html',$algn='left',$unit='',$disa=false,$rows='2',$width='95%',$step='',$more='',$plho='@Account...');
@@ -150,45 +168,61 @@ htm_PagePrep('DEMO');
     htm_PanlFoot( $labl='Login', $subm=true, $title='@Login with the given data', $buttonKind='', $akey='l', $simu=false, $frmName='');
     
     htm_nl(2);
-    htm_PanlHead($frmName='head2', $capt='@Contact info:', $parms='', $icon='fas fa-pen-square', $class='panelW240', $func='Undefined', $more='', $BookMark='../_base/page_Blindgyden.php');
+    htm_PanlHead($frmName='head2', $capt='@Contact info:', $parms='', $icon='fas fa-pen-square', $class='panelW240', $func='Undefined', $more='', 
+				$BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
         //echo 'Example of login:'; htm_nl(2);
         $wdh= '100%';
         $m= ' padding:0; test:99; ';
         $m= '';
         //echo '<span style="text-aling: center;">';
-        htm_Input($type='text',$name='name',$valu='',$labl='@Name', $hint='',
+        htm_Input($type='text',$name='name',$valu=$namex,$labl='@Name', $hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@The name...');
-        htm_Input($type='text',$name='stre',$valu='',$labl='@Street',   $hint='',
+        htm_Input($type='text',$name='stre',$valu=$stre,$labl='@Street',   $hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@Address 1...');
-        htm_Input($type='text',$name='plac',$valu='',$labl='@Place',    $hint='',
+        htm_Input($type='text',$name='plac',$valu=$plac,$labl='@Place',    $hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@Address 2...');
         
         $GridOn= false; // Without grid the following fields can be placed on a single row.
-        htm_Input($type='text',$name='zipp',$valu='',$labl='@ZIP',      $hint='',
-                    $algn='left',$unit='',$disa=false,$rows='3',$width='23%',$step='',$more=$m,$plho='@Code...');
-        htm_Input($type='text',$name='city',$valu='',$labl='@City', $hint='',
-                    $algn='left',$unit='',$disa=false,$rows='3',$width='73%',$step='',$more=$m,$plho='@Address town...');
+//        htm_Input($type='opti',$name='opti',$valu='87654321',$labl='@htm_Input(opti)',$hint='@Demo of htm_Input Field type opti: left aligned number with %-unit',$algn='left',$unit=' %',$disa=false,$rows='3',$width='',$step='',$more='',$plho='@Enter...',$list= [
+//    ['name1','private','@Details about private'],
+//    ['name2','proff','@Details about profession'],
+//    ['name3','private','@Details about private','checked'],
+//    ['name4','hobby','@Details about hobby'],
+//    ['name5','private','@Details about private'],
+//    ]);
+		htm_Input($type='opti',$name='zipp',$valu=$zipp,$labl='@ZIP',      $hint='',
+                    $algn='left',$unit='',$disa=false,$rows='3',$width='31%',$step='',$more=$m,$plho='@Code...',$list= [
+					['5000','5000','@5000'],
+					['6000','6000','@6000'],
+					['6050','6050','@6050','checked'],
+					['6080','6080','@6080'],
+					['7000','7000','@7000'],
+					]);
+        htm_Input($type='text',$name='city',$valu=$city,$labl='@City', $hint='',
+                    $algn='left',$unit='',$disa=false,$rows='3',$width='68%',$step='',$more=$m,$plho='@Address town...');
         //if (USEGRID) $GridOn= true;
         
-        htm_Input($type='text',$name='coun',$valu='',$labl='@Country',  $hint='',
+        htm_Input($type='text',$name='coun',$valu=$coun,$labl='@Country',  $hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@Country...');
-        htm_Input($type='area',$name='remk',$valu='',$labl='@Remark',   $hint='@Demo of htm_Input Field type area: Multi-line text',
+        htm_Input($type='area',$name='remk',$valu=$remk,$labl='@Remark',   $hint='@Demo of htm_Input Field type area: Multi-line text',
                     $algn='left',$unit='',$disa=false,$rows='1',$width=$wdh,$step='',$more=$m,$plho='@Remark?...');
-        htm_Input($type='text',$name='phon',$valu='',$labl='@Phone',    $hint='',
+        htm_Input($type='text',$name='phon',$valu=$phon,$labl='@Phone',    $hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@Phone number...');
-        htm_Input($type='text',$name='refe',$valu='',$labl='@Reference',$hint='',
+        htm_Input($type='text',$name='refe',$valu=$refe,$labl='@Reference',$hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@?...');
-        htm_Input($type='mail',$name='mail3',$valu='',$labl='@Email',   $hint='@Demo of htm_Input Field type mail',
+        htm_Input($type='mail',$name='mail3',$valu=$mail3,$labl='@Email',   $hint='@Demo of htm_Input Field type mail',
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@Email address...');
-        htm_Input($type='chck',$name='chck',$valu='',$labl='@Mailing',  $hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',
+		
+		if (isset($_POST['namechck']))  { $namechck = 'checked'; }        
+		htm_Input($type='chck',$name='chck3',$valu=$chck3,$labl='@Mailing',  $hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='80%',$step='',$more=$m,$plho='Enter...',
-        $list= [['name1','@Mailing active','@Use mail']]);
+        $list= [['namechck','@Mailing active','@Use mail',$namechck]]);
         
         $GridOn= false;
         htm_nl(1);
-        htm_Input($type='date',$name='datr',$valu=$date, $labl='@Created',$hint='@Demo of htm_Input Field type date with browser popup selector',
+        htm_Input($type='date',$name='datr',$valu=$datr, $labl='@Created',$hint='@Demo of htm_Input Field type date with browser popup selector',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='48%');
-        htm_Input($type='date',$name='dath',$valu=$date, $labl='@Changed',$hint='@Demo of htm_Input Field type date with browser popup selector',
+        htm_Input($type='date',$name='dath',$valu=$dath, $labl='@Changed',$hint='@Demo of htm_Input Field type date with browser popup selector',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='48%');
         //if (USEGRID) $GridOn= true;
         
@@ -198,6 +232,9 @@ htm_PagePrep('DEMO');
     htm_PanlFoot( $labl='Save', $subm=true, $title='@Save data in this panel', $buttonKind='', $akey='s', $simu=false, $frmName='');
     
     echo '</div>'; // DEMO
+	htm_nl(2);
+	// echo 'A look at the translate system:';	scannLngStrings();
 htm_PageFina();
     run_Script('toast("<b>'. lang('@You`re looking at a DEMO !'). '</b><br>'. lang('@It is a demonstration of the php2html-output.'). '","green","white")');
+
 ?>
