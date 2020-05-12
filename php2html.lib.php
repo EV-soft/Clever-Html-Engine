@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-05-10';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-05-12';     $DocIni='evs';  $ModulNo=0;
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -38,7 +38,7 @@ define ('DecimalSep',',');
 # GLOBALS:
 $ØblueColor= 'lightblue';
 $ØTblIx= -1;
-$ØProgTitl= ' Demo';
+$ØProgTitl= ' Develop';
 $Ødesigner= 'EV-soft';
 $GridOn= true;
 
@@ -140,7 +140,7 @@ function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$
                             '</div>';
                             $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
                             $result.= '<meter id= "pwPoint'.$name.'" style="position:relative; top:-13px; height:6px; width:97%;" '.
-                                'min="0" low="5" optimum="7" high="9" max="10" id="password-strength-meter" '.
+                                'min="0" low="6" optimum="7" high="9" max="10" id="password-strength-meter" '.
                                 'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
                             '</meter>'; $result.= '</span>';    break;
 
@@ -224,7 +224,7 @@ Layout of htm_Table:
 |         |                                                                                   |         |
 |         |                                    TABLE-FOOT                                     |         |
  -------------------------------------------------------------------------------------------------------
-|											   Table-Notes												|
+|                                              Table-Notes                                              |
  -------------------------------------------------------------------------------------------------------
 */
 function htm_Table(
@@ -236,7 +236,7 @@ function htm_Table(
         ),
     $RowSuff= array( #['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horJust_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
         ),            # Felt 4: ($fieldModes), er sammensat af: [horJust, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
-	$TblNote= '',			# HTML-string
+    $TblNote= '',           # HTML-string
     &$tblData,              # = array(),
     $FilterOn= true,        # Ability to hide records that do not match filter // Does not work with hidd fields!
     $SorterOn= true,        # Ability to sort records by column content
@@ -495,7 +495,7 @@ function htm_Table(
             case 'chck' : echo '">'.'<input type= "checkbox" name="chck" value="" '.$valu.' ';  break;
             case 'bold' : echo '">'.'<input type= "checkbox" name="bold" value="" '.isbold($valu).' ';  break;
             case 'ital' : echo '">'.'<input type= "checkbox" name="ital" value="" '.isital($valu).' ';  break;
-		##  Custom - DropDown-selector:
+        ##  Custom - DropDown-selector:
         #   case 'moms' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,MomsListe(),'width:45px; ');  break; 
         #   case 'just' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,JustListe(),'width:35px; ');  break;
         #   case 'side' : echo '">'.htm_SelectStr($name= $tix.'Row'.$RowIx.'Col'.$ColIx.'[]' ,$valu,Side_List(),'width:35px; ');  break;
@@ -563,40 +563,40 @@ function htm_Table(
       };  //  foreach $RowBody
 
 ### Table-BODY-RowSuffix:
-		foreach ($RowSuff as $Suff) { dvl_pretty();
-			if ($ModifyRec) {
-				$output= $Suff[6];
-				if ($Suff[2]=='button') { ## RowSuffix Special Buttons:
-				$btnStyle= '" class="tooltip" style="height:20px; border:0; box-shadow:none; background-color:transparent;" ';
-				$btnSuff= $ØTblIx.'_'.$RowIx. $btnStyle;
-				if ($Suff[0]=='@Delete')  { if ($Suff[3]=='dis') $dis= 'disabled'; else $dis= '';
-											$output='<button type= "submit" name="btn_del_'.$btnSuff.$dis.' >'.
-										Lbl_Tip($Suff[6],lang('@Delete pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Buttons that must not be deleted can be deactivated
-				if ($Suff[0]=='@Hide') { $output='<button type= "submit" name="btn_hid_'.$btnSuff.'>'.
-										Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                   // Records that must not be deleted can be hidden
-				if ($Suff[0]=='@Copy')  { $output='<button type= "submit" name="btn_cpy_' .$btnSuff.'>'.
-										Lbl_Tip($Suff[6],lang('@Copy pos: ').$RowIx,'SW','0px'). '</button>'; }
-				if ($Suff[0]=='@Rename') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
-										Lbl_Tip($Suff[6],lang('@Rename pos: ').$ØTblIx.'_'.$RowIx,'SW','0px'). '</button>'; } 
-				if ($Suff[0]=='@Select') { $output='<input type= "checkbox" name="btn_sel_'.$btnSuff.
-										Lbl_Tip($Suff[6],lang('@Select pos: ').$RowIx,'SW','0px'). ' />'; }
-				}
-				echo '<td style="text-align:'.$Suff[4][0].'; width:'.$Suff[1].';" disabled >'.$output.'</td>';
-			}
-		} 	//  ['@Slet',     '4%',         'text',         '',        'center',   '@Klik på rødt kryds for at slette  ', '<ic class="far fa-times-circle" style="color:red; font-size:13px;"></ic>']
-		//  ['0:ColLabl', '1:ColWidth', '2:InpType', '3:Format', '4:FeltJust', '5:ColTip', '6:value!     '            ]
+        foreach ($RowSuff as $Suff) { dvl_pretty();
+            if ($ModifyRec) {
+                $output= $Suff[6];
+                if ($Suff[2]=='button') { ## RowSuffix Special Buttons:
+                $btnStyle= '" class="tooltip" style="height:20px; border:0; box-shadow:none; background-color:transparent;" ';
+                $btnSuff= $ØTblIx.'_'.$RowIx. $btnStyle;
+                if ($Suff[0]=='@Delete')  { if ($Suff[3]=='dis') $dis= 'disabled'; else $dis= '';
+                                            $output='<button type= "submit" name="btn_del_'.$btnSuff.$dis.' >'.
+                                        Lbl_Tip($Suff[6],lang('@Delete pos: ').$RowIx.' ('.$dis.')','SW','0px'). '</button>'; }   // Buttons that must not be deleted can be deactivated
+                if ($Suff[0]=='@Hide') { $output='<button type= "submit" name="btn_hid_'.$btnSuff.'>'.
+                                        Lbl_Tip($Suff[6],lang('@Hide pos: ').$RowIx,'SW','0px'). '</button>'; }                   // Records that must not be deleted can be hidden
+                if ($Suff[0]=='@Copy')  { $output='<button type= "submit" name="btn_cpy_' .$btnSuff.'>'.
+                                        Lbl_Tip($Suff[6],lang('@Copy pos: ').$RowIx,'SW','0px'). '</button>'; }
+                if ($Suff[0]=='@Rename') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
+                                        Lbl_Tip($Suff[6],lang('@Rename pos: ').$ØTblIx.'_'.$RowIx,'SW','0px'). '</button>'; } 
+                if ($Suff[0]=='@Select') { $output='<input type= "checkbox" name="btn_sel_'.$btnSuff.
+                                        Lbl_Tip($Suff[6],lang('@Select pos: ').$RowIx,'SW','0px'). ' />'; }
+                }
+                echo '<td style="text-align:'.$Suff[4][0].'; width:'.$Suff[1].';" disabled >'.$output.'</td>';
+            }
+        }   //  ['@Slet',     '4%',         'text',         '',        'center',   '@Klik på rødt kryds for at slette  ', '<ic class="far fa-times-circle" style="color:red; font-size:13px;"></ic>']
+        //  ['0:ColLabl', '1:ColWidth', '2:InpType', '3:Format', '4:FeltJust', '5:ColTip', '6:value!     '            ]
     echo '</tr>';
     
-	} //  foreach $tblData
-	$_SESSION["ØrowCount"]['T'.$ØTblIx]= $RowIx;
-	
-	echo '    </tbody>';
-	echo '  </table>';
-	echo '</span>';	//  wrapper
-	echo $TblNote;
-	echo '</span>';	// tableStyle
+    } //  foreach $tblData
+    $_SESSION["ØrowCount"]['T'.$ØTblIx]= $RowIx;
+    
+    echo '    </tbody>';
+    echo '  </table>';
+    echo '</span>'; //  wrapper
+    echo $TblNote;
+    echo '</span>'; // tableStyle
 
-	if (DEBUG) dvl_pretty('End-htm_Table: '.$CalledFrom);
+    if (DEBUG) dvl_pretty('End-htm_Table: '.$CalledFrom);
 } // htm_Table
 
 
@@ -648,7 +648,7 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
   if (strpos($BookMark,'page_Blindgyden.php'))  $wikilnk=''; 
   else  $wikilnk= '<a href="'.$source.$BookMark.'" target="_blank" title="'.
         lang('@Online Help, Find relevant information for this panel, in Program wiki. ').
-		lang('@(When Wiki for '.$ØProgTitl.' '.lang('@is created...) ')).
+        lang('@(When Wiki for '.$ØProgTitl.' '.lang('@is created...) ')).
         lang('@You can also help maintain help and guidance here as the WIKI is editable.').'"><img src= "'.$ØProgRoot.
         '_assets/images/wikilogo.png " alt="Wiki" style="width:20px;height:20px; margin-right:2px; float:right;" '.'> </a>';
         
@@ -691,17 +691,17 @@ function htm_PanlFoot( $labl='', $subm=false, $title='', $buttonKind='save', $ak
 
  
 // JS functioner for Panel håndtering:
-function PanelInit() { $maxPaneler= 40;
+function PanelInit() { $maxPanels= 10;
     echo '<script>';
         echo 'function PanelMinimizeAll() {';
-        for ($Ix=1; $Ix<=$maxPaneler; $Ix++) { echo '
+        for ($Ix=1; $Ix<=$maxPanels; $Ix++) { echo '
                 var h = document.getElementById("HideDiv'.$Ix.'"); 
                 var p = document.getElementById("panel'.$Ix.'");';  
                 echo ' h.style.display = "none"; p.style.width = "240px"; ';
             }
         echo ' }';
         echo 'function PanelMaximizeAll() {';
-        for ($Ix=1; $Ix<=$maxPaneler; $Ix++) { echo ' 
+        for ($Ix=1; $Ix<=$maxPanels; $Ix++) { echo ' 
                 var h = document.getElementById("HideDiv'.$Ix.'"); 
                 var p = document.getElementById("panel'.$Ix.'"); ';  
                 echo ' h.style.display = "block"; ';    // p.style.width = "100%"; ';}
@@ -754,9 +754,8 @@ function htm_AcceptButt( # $labl='', $title='', $buttonKind='', $form='', $width
     $akey='',               # Shortcut to activate the button
     $proc=false,            # Act as procedure: Echo result, or as function: Return string
     $tipplc='LblTip_text'   # Class for Placement of the tooltip
-)
-
-{global $ØShortKeys;
+	) 
+{	global $ØShortKeys;
     dvl_pretty('htm_htm_AcceptButt');
     // Colors:
     $ØButtnBgrd= '#44BB44';  /* LysGrøn   */     $ØButtnText= '#FFFFFF';   /* Hvid   */
@@ -989,8 +988,8 @@ tfoot input {
     font-weight: bold;
     color: #000;
     /* background-color: #99bfe6; */
-	background-color: #eee;
-	border-collapse: collapse;
+    background-color: #eee;
+    border-collapse: collapse;
     padding: 2px;
     text-shadow: 0 1px 0 rgba(204, 204, 204, 0.7);
 }
@@ -1044,7 +1043,7 @@ $('#smarttabel, #table0, #table1, #table2, #table3, #table4, #table5, #table6').
     position: fixed;
     z-index: 1;
     left: 50%;
-    bottom: 30px;
+    top: 200px;
     font-size: 14px; 
 }
 #snackbar.show { 
@@ -1199,19 +1198,19 @@ function arrPrint($arr,$name='') {
 }
 
 function scannSource($prefix='$name=',$suffix="'",$files=[]) {
-	$echo= false;	if ($echo) echo '<br>'.$prefix.' <b>';
-	$result= [];	$lines = [];
-	foreach ($files as $fname) $lines = $lines + file($fname);
-	foreach ($lines as $aline => $line) {
-		$pos1= strpos($line,$prefix);
-		if (($pos1>0) and (strpos($line,'cannSource')==0)) {
-			$tag= substr($line,$pos1+2+strlen($prefix));
-			$len= strpos($tag,$suffix)+3;
-			$str= trim(substr($line,$pos1+strlen($prefix),$len),"'");
-			$result[]= $str;	$count++;	if ($echo) echo $str.', ';
-	}	}
-	if ($echo) { echo '</b> :COUNT: '.$count.' '.count($result).'<br>';	arrPrint($result,'result'); }
-	return $result;
+    $echo= false;   if ($echo) echo '<br>'.$prefix.' <b>';
+    $result= [];    $lines = [];
+    foreach ($files as $fname) $lines = $lines + file($fname);
+    foreach ($lines as $aline => $line) {
+        $pos1= strpos($line,$prefix);
+        if (($pos1>0) and (strpos($line,'cannSource')==0)) {
+            $tag= substr($line,$pos1+2+strlen($prefix));
+            $len= strpos($tag,$suffix)+3;
+            $str= trim(substr($line,$pos1+strlen($prefix),$len),"'");
+            $result[]= $str;    $count++;   if ($echo) echo $str.', ';
+    }   }
+    if ($echo) { echo '</b> :COUNT: '.$count.' '.count($result).'<br>'; arrPrint($result,'result'); }
+    return $result;
 }
 
 
@@ -1293,7 +1292,7 @@ function run_Script ($cmdStr) {
 
 function postValue(&$id,$varId) {
     if (isset($_POST[$varId]))  { $id = $_POST[$varId]; }
-    else $id= 54321;	// Default init in DEMO !
+    else $id= 54321;    // Default init in DEMO !
     return $id;
 }
 
@@ -1690,7 +1689,7 @@ $CSS_style = '
     border-radius: 5px;
     border: 1px solid var(--FieldBord); /* border: none; */
     background-color: var(--FieldBgrd); /* background-color: transparent; */
-	background-image: url(\'_background.png\');
+    background-image: url(\'_background.png\');
     position: relative; 
     /* text-align: right; */
     margin:3px;                         /* margin: 0; */
@@ -1749,10 +1748,10 @@ input[type=date]::-webkit-outer-spin-button {
     }
     .boxStyle, .inpField input {
         box-shadow: 3px 4px 2px lightgray;
-		border: 1px solid var(--grayColor);
+        border: 1px solid var(--grayColor);
         border-radius: 5px;
-		margin: 5px;
-		background-color: white;
+        margin: 5px;
+        background-color: white;
     }
     
     /* "ToolTip" with html content (formattet with html tags): */
