@@ -117,4 +117,8 @@ To create a Panel there are functions:
 
     htm_PanlFoot()                      - Finish bottom of an avanced panel
 
-    
+
+
+Here you will find the repository:    
+
+https://github.com/EV-soft/ev-soft.github.io
