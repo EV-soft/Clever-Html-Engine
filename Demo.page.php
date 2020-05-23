@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-05-12';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/Demo.page.php';    $DocVers='1.0.0';    $DocRev1='2020-05-17';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
@@ -14,7 +14,7 @@ htm_PagePrep('DEMO');
   if (($vismenu=true) and ($loggetind==true) or true)
     { Menu_Topdropdown(true); htm_nl(1); }
 
-    echo 'Examples of htm_Input():';                            htm_nl(2);
+    echo 'The collection of htm_Input():';                            htm_nl(2);
     if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto;">';
 
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
@@ -109,7 +109,7 @@ htm_PagePrep('DEMO');
         $RowSuff= array( #['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horAlgn_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
           ['@Delete',       '4%','butt','',['center'],'@Click the red cross to delete a entry', '<ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>'],
         ),            # Felt 4: ($fieldModes), er sammensat af: [horAlgn, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
-        $TblNote=   '<br><b>Notes about htm_Table:</b><br>
+        $TblNote=   '<br><b>Notes about htm_Table():</b><br>
                     Records can be sorted, filtered, created, modifyed and more...<br>
                     The visibly rows can be scrolled in a window below the fixed header.
                     ',
@@ -121,6 +121,7 @@ htm_PagePrep('DEMO');
         $CreateRec=true,        # Mulighed for at oprette en record
         $ModifyRec=true,        # Mulighed for at vælge og ændre data i en row
         $ViewHeight= '200px',   # Højden af den synlige del af tabellens data
+        $TblStyle= 'background-image: url(\'_background.png\');',
         $CalledFrom='',         // = __FUNCTION__
         $Kriterie= ['','']      # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
@@ -128,7 +129,7 @@ htm_PagePrep('DEMO');
     htm_nl(2);
     echo 'Examples of foldable panel-system:';  htm_nl(2);
     htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px) (click to close/open)', $parms='', $icon='fas fa-database', $class='panelW560', $func='Undefined', $more='', 
-                $BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
+                $BookMark='blindAlley.page.php',$panlBg='background-image: url(\'_background.png\');');
         // echo 'More examples of htm_Input():';   
         htm_nl(2);
         echo 'Panels are used to display a collection of input fields.<br>
@@ -147,12 +148,12 @@ htm_PagePrep('DEMO');
         ['name1','Label2','@Details about label','checked']
         ]);
         htm_nl(2);
-    htm_PanlFoot( $labl='Demo', $subm=false, $title='Buttom', $buttonKind='', $akey='', $simu=false, $frmName='');
+    htm_PanlFoot( $labl='Demo', $subm=false, $title='Buttom', $btnKind='', $akey='', $simu=false, $frmName='');
     
     $GridOn= false;
     htm_nl(2);
     htm_PanlHead($frmName='head1', $capt='@Signup: <small>(Example)</small>', $parms='', $icon='fas fa-user-check', $class='panelW240', $func='Undefined', $more='', 
-                $BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
+                $BookMark='blindAlley.page.php',$panlBg='background-image: url(\'_background.png\');');
         //echo 'Example of login:'; htm_nl(2);
         htm_Input($type='text',$name='text1',$valu=$text1,$labl='@Financial Accounting',$hint='@The name of the accounting for wich you have access',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='75%',$step='',$more='',$plho='@Account...');
@@ -165,11 +166,11 @@ htm_PagePrep('DEMO');
         echo '<br><br><a href="'.$link.'" accesskey="'.$akey.'"> '. Lbl_Tip('@Forgotten password ?','@Click to request a new password'). '</a>';
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field type intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');
         htm_nl(0);
-    htm_PanlFoot( $labl='Login', $subm=true, $title='@Login with the given data', $buttonKind='', $akey='l', $simu=false, $frmName='');
+    htm_PanlFoot( $labl='Login', $subm=true, $title='@Login with the given data', $btnKind='', $akey='l', $simu=false, $frmName='');
     
     htm_nl(2);
     htm_PanlHead($frmName='head2', $capt='@Contact info:', $parms='', $icon='fas fa-pen-square', $class='panelW240', $func='Undefined', $more='', 
-                $BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
+                $BookMark='blindAlley.page.php',$panlBg='background-image: url(\'_background.png\');');
         //echo 'Example of login:'; htm_nl(2);
         $wdh= '100%';
         $m= ' padding:0; test:99; ';
@@ -229,7 +230,7 @@ htm_PagePrep('DEMO');
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field type intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');
         htm_nl(0);
         //echo '</span>';
-    htm_PanlFoot( $labl='Save', $subm=true, $title='@Save data in this panel', $buttonKind='', $akey='s', $simu=false, $frmName='');
+    htm_PanlFoot( $labl='Save', $subm=true, $title='@Save data in this panel', $btnKind='', $akey='s', $simu=false, $frmName='');
     
     echo '</div>'; // DEMO
     htm_nl(2);

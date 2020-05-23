@@ -1,4 +1,4 @@
-<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-03-30';     $DocIni='evs';  $ModulNo=0;
+<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-05-23';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 
 /**
@@ -8,10 +8,10 @@
  */
 function scannLngStrings($code= 'de') {
     function scannfor($search, &$count, &$longest, &$total, &$arrStrings, $flag='') {
-      # Source files:
-      $lines = file(__FILE__);  // This file
-      // $lines = $lines + file($FM_AppConf['user_config_file_path']);
-      $lines = $lines + file('FFM-v3.0.a.php'); // Main file
+		# Source files:
+		$lines = file(__FILE__);  // This file: translate.inc.php
+		$files= ['php2html.lib.php','Demo.page.php','menu.inc.php'];    // Other files to scann
+		foreach ($files as $fname) $lines = $lines + file($fname);
         foreach ($lines as $aline => $line) {
           if ($a= strpos(' '.$line,$search)) {
               $str= $line;
@@ -27,7 +27,7 @@ function scannLngStrings($code= 'de') {
                  // $f= str_replace('<','&lt;',$f);         // Allow showing HTML tags
                  // $f= str_replace('>','&gt;',$f);         // $f = htmlspecialchars($f); ?
                  if (strpos($f, '$longest') == 0)           // Filter parameter for scannfor()
-                    $arrStrings[] = '"'.$flag.$f.'"';       // Can be used in CSV format "xx", "xx"
+                   $arrStrings[] = $flag.$f;
               }
             $count++; $total++;
           } }
@@ -39,7 +39,7 @@ function scannLngStrings($code= 'de') {
     $total= 0;    $count= 0;    $arrStrings= array();   $longest= 0;    $flag= ''; //'std: ';   // $flag: Prefix on key for sorting on kategory
     scannfor("lang('", $count, $longest, $total, $arrStrings, ''); //  'std: '); // lang(' = standard user interface
     scannfor("msg('", $count, $longest, $total, $arrStrings, ''); //  'sys: '); // msg(' = system messages
-    scannfor("ntf('", $count, $longest, $total, $arrStrings, ''); //  'sys: '); // fm_set_msg(sprintf('  = system messages
+    scannfor("ntf('", $count, $longest, $total, $arrStrings, ''); //  'sys: '); // set_msg(sprintf('  = system messages
     //scannfor("ert('", $count, $longest, $total, $arrStrings, ''); //  'sys: '); // alert('You..');  = system messages
     //scannfor("die('", $count, $longest, $total, $arrStrings, ''); //  'sys: ');
 
@@ -48,12 +48,12 @@ function scannLngStrings($code= 'de') {
     sort($arrStrings);
     
     echo '<p style="font-family:courier; font-size:11; ">';
-    $lngArr = fm_get_translations(['']);  //  All existing lng in FM_assets/.FM_translation.json
+    $lngArr = sys_get_translations(['']);  //  All existing lng in /sys_trans.json
     $lang= 'en';    //  System
     //$code= 'de';  //  Analyse
     $name= $lang_list[$code];
     switch (strtolower($code)) {
-        case 'en':      $nati = 'English'; echo '<br><br>English is in source-file, not in FM_assets/.FM_translation.json! It could, if you wish to modify it.<br>'; break;
+        case 'en':      $nati = 'English'; echo '<br><br>English is in source-files, not in .sys_trans.json! It could, if you wish to modify it.<br>'; break;
         case 'da':      $nati = 'Dansk'; break;
         case 'ru':      $nati = 'русский'; break;
         case 'it':      $nati = 'Italiano'; break;
@@ -85,7 +85,7 @@ function scannLngStrings($code= 'de') {
     //echo '<br>If some strings is in <span style="color:red;">red</span>, they are missing in the language translate.';
     echo '<br>If some strings are missing in the language translate, the english text will be shown with prefix ???:';
     echo '<br>Let your browser search and mark this prefix, to get overview';
-    echo '<br>To use your translate, the text should be copyed to the system-file: .FM_trans.json';
+    echo '<br>To use your translate, the text should be copyed to the system-file: .sys_trans.json';
     echo '<br>If you have a compleate translate, do share it on GITHUB<br><br>';
     echo '<span style="padding-left:55px;">KEY (english)</span>   <span style="margin-left:380px;">TRANSLATED</span><br>';
     echo '<textarea rows="30" id="EditText" name="EditText" style="line-height:100%; width:100%; white-space: pre; overflow-x: auto;" >';   // .$valu.'</textarea>';
@@ -99,12 +99,12 @@ function scannLngStrings($code= 'de') {
     echo $lf.'    "note": "'.date("Y-m-d").'",';
     echo $lf.'    "translation": {';
     $n = count($arrStrings)-1; $i= 0;   $miss = 0;
-    $googleFile = fopen(FM_SYST_PATH. "FFM_2Google.txt", "w");
+    $googleFile = fopen("sys_2Google.txt", "w");
     $lngArr['en']= [];  // Build translate table for english
     // @ini_set('display_errors', 0);  // Deactivate error messages here:
     foreach ($arrStrings as $str)
         if (strlen($str)>4) {
-        $str= trim(substr($str,1),'"');
+        $str= trim(substr($str,1),'@');
         $str= html_entity_decode(substr($str,strlen($flag)));
         $lngArr['en'][$str] = $str;
         $lngstr= @$lngArr[$code][$str];
@@ -120,22 +120,28 @@ function scannLngStrings($code= 'de') {
     //echo '</pre>';
     echo '</textarea><br>';
     $doSave= false;
-    echo lang('Edit in the above window, and save the content to file: ');
-    echo '<button type="button" data-title="'.lang('Save the content in edit-window to file (Inactive DEMO)').'" onclick="file_save($doSave= true;)">
+    echo lang('@Edit in the above window, and save the content to file: ');
+    echo '<button type="button" data-title="'.lang('@Save the content in edit-window to file (Inactive DEMO)').'" onclick="file_save($doSave= true;)">
              <span >SAVE</span>
-          </button>';
+          </button>'.
+		  ' Demo!';
     $workarea= $_POST['EditText'];
     if ($doSave == true)    // @FIXIT
     //if ((isset($workarea)) and (strlen($workarea)>10))
         { $f = fopen('new.json',"w");   
-            fwrite($f, $_POST['EditText']);  fclose($f); 
-            fm_set_msg('File Saved Successfully');
-            toast(lang('Saved in systemfile ').'new.json');
+            fwrite($f, $workarea);  fclose($f); 
+            set_msg('@File Saved Successfully');
+            toast(lang('@Saved in systemfile ').'new.json');
         }
-    echo '<br><br><b>A file with all keys: '.FM_assets.'FFM_2Google.txt has been created. You can use it in Google translate.</b><br>';
-    
+    echo '<br><br><b>A file with all keys: sys_2Google.txt has been created. You can use it in Google translate.</b><br>';
+	// $googleFile = fopen("sys_2Google.txt", "w");
+	$gog= file_get_contents ("sys_2Google.txt");
+	//foreach ($gog as $line) $string= $string + '<br>' + $line;
+    htm_Input($type='area',$name='goog',$valu=$gog,$labl='sys_2Google.txt',   $hint='@The newly generated file to Google-translate',
+                    $algn='left',$unit='',$disa=false,$rows='10',$width='900px',$step='',$more=$m,$plho='@Remark?...');
+        
     $i= 0;
-    echo '<br>Keys in language "'.$code.'" with string the same as the key (missing translate ?):<br>';
+    echo '<br><br>Keys in language "'.$code.'" with string the same as the key (missing translate ?):<br>';
     foreach ($lngArr[$code] as $key => $value) { 
         if (in_array($key,$lngArr[$code])) echo '<br>Same: '.$i++.' '.$key; 
     }
@@ -153,14 +159,15 @@ function scannLngStrings($code= 'de') {
     }
     if ($i==0) echo 'None<br>';
     
-    echo '<br><br><b>'.lang('Status:').' '. round(100-($miss/$n*100)). ' % '.lang('translated').' - '.lang('There are missing').': '.$miss.'</b>';
+    echo '<br><br><b>'.lang('@Status:').' '. round(100-($miss/$n*100)). ' % '.lang('@translated').' - '.lang('@There are missing').': '.$miss.'</b>';
     echo '<br><br>';
 } // scannLngStrings();
 
 
 function langList() {
     $lngLst= [];  $i= 0;
-    $lines = file('.FM_language-codes.csv');  //  source
+    //$lines = file('.sys_language-codes.csv');  //  source
+	$lines = [''];
         foreach ($lines as $aline => $line) {
           $code= substr($line,0,2);
           $lang= substr($line,3);
@@ -176,7 +183,7 @@ function langList() {
 function SelNew($langList) {
 //doDebug($langList,'$langList');
     echo '<div class="form-group row">'.
-         '    <label for="js-newLanguage" class="col-sm-3 col-form-label right" >'. 'Dont work yet! '.lang('Create new language').':</label>'.
+         '    <label for="js-newLanguage" class="col-sm-3 col-form-label right" >'. 'Dont work yet! '.lang('@Create new language').':</label>'.
          '    <div class="col-sm-5">'.
          '        <select class="form-control" id="js-newLanguage" name="js-newLanguage">';
                       function getSelected($l) { global $lang; return ($lang == $l) ? 'selected' : ''; }

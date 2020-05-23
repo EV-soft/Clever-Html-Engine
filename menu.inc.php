@@ -1,4 +1,4 @@
-<?php $DocFile='../Proj1/menu.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-05-12';     $DocIni='evs';  $ModulNo=0;
+<?php $DocFile='../Proj1/menu.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-05-23';     $DocIni='evs';  $ModulNo=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 
 
@@ -14,23 +14,23 @@ function MenuStart($clas='firstmain',$href='#',$labl='',$titl='') {  //  MUST be
   echo '      <li class="'.$clas.'" style="color:black; width:20px; text-align:left;"><a href="'.$href.'" target="_self" style="background:#EEEEEE;" title="'.lang($titl).'">'.lang($labl).'</a> </li>';
 }
 
-function MenuEnd() {global $ØProgRoot, $ØProgTitl, $Øprogvers, $Øcopydate, $Øcopyright, $Ødesigner;
+function MenuEnd() {global $ØProgRoot, $ØProgTitl, $Øprogvers, $Øcopydate, $Øcopyright, $Ødesigner, $Ølogo;
   echo '    </ul>';
   // echo Lbl_Tip($labl='@Local menu',$titl='@All paneles headlines, acts as local menu items in the actual window. Click the panel header to show / hide the panel`s contents.','SW').' ';
-  echo '<span style="text-align: right;" title="'.$ØProgTitl.' - Version '.$Øprogvers.' - Copyright '. $Øcopydate.' '.
-        $Øcopyright.' & '.lang('@Design: ').$Ødesigner.'" > <img src= "'.
-        $ØProgRoot.'21997911.png " alt="Logo" height="25" style="top:2px; position:absolute; padding-left: 20px;" >',$GLOBALS['smiley'],'</span>';
-  echo '  <br>';
+  echo '<span style="text-align: right;" title="'.
+        $ØProgTitl.' - Version '.$Øprogvers.' - Copyright '. $Øcopydate.' '.$Øcopyright.' - '.lang('@Design: ').$Ødesigner.
+        '" > <img src= "'. $ØProgRoot.$Ølogo.' " alt="Logo" height="25" style="top:2px; position:absolute; padding-left: 20px;" ></span><br>';
   echo '  </data-menu>';
   echo '</div>';
   echo "\n";
 }
 
-function MenuBranch($clas='',$href='#',$labl='',$titl='',$more='') {
-  if ($href=='./blindAlley.page.php') {$blnd='<i style="font-color:gray;">'; $obs='<small> '.lang('@contemplated!').'</small>';} else {$blnd=''; $obs='';};
-  if ($clas=='exit') /*(strpos($labl,'Log ud')>0)*/ {$bold='<span style="color:red; font-weight:600; left: -110px;">'; } else {$bold='';};
-  if (strpos($href,'ttp' )>0) $targ='_blank'; else $targ='_self'; //  Test if http seems (externel/locale link?)
-  $link= 'href="'.$href.'" target="'.$targ.'" title="'.strip_tags(lang($titl)).'" >'.$blnd.$bold.ucfirst(lang($labl));
+function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
+  if ($href=='blindAlley.page.php') {$blnd='<i style="font-color:gray;">'; $obs='<small> '.lang('@contemplated!').'</small>';} else {$blnd=''; $obs='';};
+  if ($clas=='exit')                {$bold='<span style="color:red; font-weight:600; left: -110px;">'; } else {$bold='';};
+  if (strpos($href,'ttp' )>0)       {$targ='_blank'; } else $targ='_self'; //  Test if http seems (externel/locale link?)
+  $link= 'href="'.$href.'" target="'.$targ.'" title="'.strip_tags(lang($titl)).'" >'.
+        '<data-ic class="'.$cssIcon.'" style="font-size:'.$size.'; color:'.$fg.'; "> </data-ic>&nbsp;'.$blnd.$bold.ucfirst(lang($labl));
   if ($bold!='') {$link.= '</span>'.$obs;}
   if ($blnd!='') {$link.= '</i>'.$obs;} else {$link.= $obs;}
   echo "\n\n";
@@ -45,84 +45,85 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$more='') {
   }
 }
 
-function Menu_Topdropdown($vis_finans=true, $vis_debitor=false, $vis_kreditor=false, $vis_prodkt=false, $vis_lager=false, $add_on=false) { //  Menu-placering/størrelse styres i MenuStart()
-global $Ødebug, $ØProgTitl, $_assets, $_base, $_config, $_debitor, $_exchange, $_finans, $_kreditor, $_lager, $_produktion, $_system, $_temp, $_userlib, $_xtra;  
+function Menu_Topdropdown($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) { //  Menu-placering/størrelse styres i MenuStart()
+global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;  
     MenuStart($clas='firstmain',    $href='#',                $labl='@MENU:',               $titl='@Main menu');
-    if ($vis_finans) {        
-      MenuBranch($clas='withsubmenu',   $href='Demo.page.php',                      $labl='@DEMO',              $titl='@Presentation of the system');
-      MenuBranch($clas='firstitem',     $href= $_finans.'Demo.page.php',            $labl='@Demo',              $titl='@Something about functions');
-      MenuBranch($clas='lastitem',      $href= $_finans.'blindAlley.page.php',      $labl='@Description',       $titl='@Something about the system');
-    }             
-    if ($vis_finans) {        
-      MenuBranch($clas='withsubmenu', $href='',                                     $labl='@MODULES',           $titl='@Information about php2html modules');
-      MenuBranch($clas='firstitem',   $href= $_finans.'input.page.php',             $labl='@htm_Input()',       $titl='@Something about function htm_Input()');
-      MenuBranch($clas='',            $href= $_finans.'table.page.php',             $labl='@htm_Table()',       $titl='@Something about function htm_Table()');
-      MenuBranch($clas='',            $href= $_finans.'panel.page.php',             $labl='@htm_Panel()',       $titl='@Something about function htm_Panel()');
-      MenuBranch($clas='lastitem',    $href= $_system.'pages.page.php',             $labl='@htm_Page...()',     $titl='@Something about function htm_Pagex()');
-    }               
-    if ($vis_finans) {        
-      MenuBranch($clas='withsubmenu', $href='',                                     $labl='@FILES',             $titl='@Information about php2html files');
-      MenuBranch($clas='firstitem',   $href= $_finans.'files.page.php',             $labl='@System files',      $titl='@Something about System files');
-      MenuBranch($clas='lastitem',    $href= $_system.'blindAlley.page.php',        $labl='@Support files',     $titl='@Something about Support files');
-    }               
-    if ($vis_finans) {          
-      MenuBranch($clas='withsubmenu',   $href='',                                   $labl='@TRANSLATE',         $titl='@Information about TRANSLATE module');
-      MenuBranch($clas='lastitem',      $href= $_finans.'blindAlley.page.php',      $labl='@Comming soon',      $titl='@?');
+    if ($showGroup1) {        
+      MenuBranch($clas='withsubmenu', $href='Demo.page.php',                    $labl='@DEMO',          $titl='@Presentation of the system');
+      MenuBranch($clas='firstitem',   $href= $folder1.'Demo.page.php',          $labl='@Demo',          $titl='@Something about functions', $icon='fas fa-info');
+      MenuBranch($clas='lastitem',    $href= $folder1.'blindAlley.page.php',    $labl='@Description',   $titl='@Something about the system', $icon='fas fa-info');
+    }                   
+    if ($showGroup1) {              
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
+      MenuBranch($clas='firstitem',   $href= $folder1.'input.page.php',         $labl='@htm_Input()',   $titl='@Something about function htm_Input()',  $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder1.'table.page.php',         $labl='@htm_Table()',   $titl='@Something about function htm_Table()',  $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder1.'panel.page.php',         $labl='@htm_Panel()',   $titl='@Something about function htm_Panel()',  $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder5.'pages.page.php',         $labl='@htm_Page...()', $titl='@Something about function htm_Pagex()',  $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder5.'navigate.page.php',      $labl='@Navigate',      $titl='@Tools related to navigating',           $icon='fas fa-cubes');
+      MenuBranch($clas='lastitem',    $href= $folder5.'other.page.php',         $labl='@Others',        $titl='@Other functions than above',            $icon='fas fa-cubes');
+    }                       
+    if ($showGroup1) {              
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@FILES',         $titl='@Information about php2html files');
+      MenuBranch($clas='firstitem',   $href= $folder1.'files.page.php',         $labl='@System files',  $titl='@Something about System files', $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder5.'support.page.php',       $labl='@Support files', $titl='@Something about Support files', $icon='fas fa-file');
+    }                       
+    if ($showGroup1) {                  
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
+      MenuBranch($clas='lastitem',    $href= $folder1.'translate.page.php',     $labl='@Description',   $titl='@About the language translate system', $icon='fas fa-info');
     }             
     MenuEnd();
-  //echo '<br>XXX';
 }
 
 /*
 // Example (Menu in danish): 
-function Menu_TopdropdownDK($vis_finans=true, $vis_debitor=true, $vis_kreditor=true, $vis_prodkt=false, $vis_lager=true, $add_on=false) { //  Menu-placering/størrelse styres i MenuStart()
-global $Ødebug, $ØProgTitl, $_assets, $_base, $_config, $_debitor, $_exchange, $_finans, $_kreditor, $_lager, $_produktion, $_system, $_temp, $_userlib, $_xtra;  
+function Menu_TopdropdownDK($showGroup1=true, $showGroup2=true, $showGroup3=true, $showGroup4=false, $showGroup5=true, $showGroup6=false) { //  Menu-placering/størrelse styres i MenuStart()
+global $Ødebug, $ØProgTitl, $_assets, $_base, $_config, $folder2, $_exchange, $folder1, $folder3, $folder4, $_produktion, $folder5, $_temp, $_userlib, $_xtra;  
     MenuStart($clas='firstmain',    $href='../_base/page_Hovedmenu.php',                $labl='@MENU:',               $titl='@Main menu');
-    if ($vis_finans) {        
+    if ($showGroup1) {        
       MenuBranch($clas='withsubmenu', $href='',                                           $labl='@FINANCE',             $titl='@Accounting Management');
-      MenuBranch($clas='firstitem',   $href= $_finans.'page_Kladdeliste.php',             $labl='@Cash register',       $titl='@Here you can select the cash register and edit it');
-      MenuBranch($clas='',            $href= $_finans.'page_Regnskab.php',                $labl='@Regnskab',            $titl='@Se det aktuelle regnskab her');
-      MenuBranch($clas='',            $href= $_finans.'page_Budget.php',                  $labl='@Budget',              $titl='@Se og rediger budget');
-      MenuBranch($clas='',            $href= $_system.'page_Kontoplan.php?chg=ok',        $labl='@Se kontoplan',        $titl='@Her kan du se den aktuelle kontoplan');
-      MenuBranch($clas='lastitem',    $href= $_finans.'page_Rapport-fin.php',             $labl='@Rapporter',           $titl='@Her vælger du hvad du vil se i en rapport');
+      MenuBranch($clas='firstitem',   $href= $folder1.'page_Kladdeliste.php',             $labl='@Cash register',       $titl='@Here you can select the cash register and edit it');
+      MenuBranch($clas='',            $href= $folder1.'page_Regnskab.php',                $labl='@Regnskab',            $titl='@Se det aktuelle regnskab her');
+      MenuBranch($clas='',            $href= $folder1.'page_Budget.php',                  $labl='@Budget',              $titl='@Se og rediger budget');
+      MenuBranch($clas='',            $href= $folder5.'page_Kontoplan.php?chg=ok',        $labl='@Se kontoplan',        $titl='@Her kan du se den aktuelle kontoplan');
+      MenuBranch($clas='lastitem',    $href= $folder1.'page_Rapport-fin.php',             $labl='@Rapporter',           $titl='@Her vælger du hvad du vil se i en rapport');
     }             
-    if ($vis_debitor) {       
+    if ($showGroup2) {       
     MenuBranch($clas='withsubmenu',   $href='',                                           $labl='@DEBTORS',             $titl='@Here you will find what concerns your Customers');
-      MenuBranch($clas='firstitem',   $href= $_debitor.'page_Opretordre.php',             $labl='@Ny ordre...',         $titl='@Opret en ny salgs ordre...');
-      MenuBranch($clas='',            $href= $_debitor.'page_Ordreliste-deb.php',         $labl='@Salgs ordrer',        $titl='@Oversigt over ordrer og deres indhold');
-      MenuBranch($clas='',            $href= $_debitor.'page_Debitor.php',                $labl='@Kunde konti',         $titl='@Oversigt over kunder, og leverancer til disse');
-      MenuBranch($clas='lastitem',    $href= $_debitor.'page_Rapport-deb.php',            $labl='@Rapporter',           $titl='@Analyser af salg');
+      MenuBranch($clas='firstitem',   $href= $folder2.'page_Opretordre.php',             $labl='@Ny ordre...',         $titl='@Opret en ny salgs ordre...');
+      MenuBranch($clas='',            $href= $folder2.'page_Ordreliste-deb.php',         $labl='@Salgs ordrer',        $titl='@Oversigt over ordrer og deres indhold');
+      MenuBranch($clas='',            $href= $folder2.'page_Debitor.php',                $labl='@Kunde konti',         $titl='@Oversigt over kunder, og leverancer til disse');
+      MenuBranch($clas='lastitem',    $href= $folder2.'page_Rapport-deb.php',            $labl='@Rapporter',           $titl='@Analyser af salg');
     }             
-    if ($vis_kreditor) {        
+    if ($showGroup3) {        
     MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@CREDITOR',            $titl='@Here you will find what concerns your suppliers');
-      MenuBranch($clas='firstitem',   $href= $_kreditor.'page_Ordreliste-kre.php',        $labl='@Nyt-indkøb...',       $titl='@Opret en ny købs ordre...');
-      MenuBranch($clas='',            $href= $_kreditor.'page_Ordreliste-kre.php',        $labl='@Købs ordrer',         $titl='@Oversigt over leverandører');
-      MenuBranch($clas='',            $href= $_kreditor.'page_Kreditor.php',              $labl='@Leverandør konti',    $titl='@Oversigt over kreditorer og oplysninger om disse');
-      MenuBranch($clas='lastitem',    $href= $_kreditor.'page_Rapport-kre.php',           $labl='@Rapporter',           $titl='@Analyser af køb');
+      MenuBranch($clas='firstitem',   $href= $folder3.'page_Ordreliste-kre.php',        $labl='@Nyt-indkøb...',       $titl='@Opret en ny købs ordre...');
+      MenuBranch($clas='',            $href= $folder3.'page_Ordreliste-kre.php',        $labl='@Købs ordrer',         $titl='@Oversigt over leverandører');
+      MenuBranch($clas='',            $href= $folder3.'page_Kreditor.php',              $labl='@Leverandør konti',    $titl='@Oversigt over kreditorer og oplysninger om disse');
+      MenuBranch($clas='lastitem',    $href= $folder3.'page_Rapport-kre.php',           $labl='@Rapporter',           $titl='@Analyser af køb');
                 
     }             
-    if ($vis_prodkt) {        
+    if ($showGroup4) {        
       MenuBranch($clas='withsubmenu', $href=' ',                                          $labl='@PRODUCTION',          $titl='@Production routines');
-      MenuBranch($clas='lastitem',    $href= $_lager.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser over produktion');
+      MenuBranch($clas='lastitem',    $href= $folder4.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser over produktion');
     }       
-    if ($vis_lager) {       
+    if ($showGroup5) {       
     MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@STORAGE',               $titl='@Routines regarding stocked products');
-      MenuBranch($clas='firstitem',   $href= $_lager.'page_Varer.php',                    $labl='@Vare lager',          $titl='@Oversigt over salgsvarer, samt detaljer på varekort');
-      MenuBranch($clas='',            $href= $_lager.'page_Varemodtagelse.php',           $labl='@Vare modtagelse',     $titl='@Lister for varemodtagelse');
-      MenuBranch($clas='lastitem',    $href= $_lager.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser af varesalg m.v.');
+      MenuBranch($clas='firstitem',   $href= $folder4.'page_Varer.php',                    $labl='@Vare lager',          $titl='@Oversigt over salgsvarer, samt detaljer på varekort');
+      MenuBranch($clas='',            $href= $folder4.'page_Varemodtagelse.php',           $labl='@Vare modtagelse',     $titl='@Lister for varemodtagelse');
+      MenuBranch($clas='lastitem',    $href= $folder4.'page_Beholdningsliste.php',         $labl='@Rapporter',           $titl='@Analyser af varesalg m.v.');
     }       
     if (true) {       
     MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@SYSTEM',              $titl='@Here you set the program and the accounts');
-      MenuBranch($clas='firstitem',   $href= $_system.'page_Kontoplan.php?chg=no',        $labl='@Kontoplan',           $titl='@Her vedligeholder du den aktuelle kontoplan');
+      MenuBranch($clas='firstitem',   $href= $folder5.'page_Kontoplan.php?chg=no',        $labl='@Kontoplan',           $titl='@Her vedligeholder du den aktuelle kontoplan');
       MenuBranch($clas='withsubmenu', $href=' ',                                          $labl='@Indstillinger &nbsp; =>', $titl='@Indstillinger for programmet');
-        MenuBranch($clas='firstitem', $href= $_system.'page_Valuta.php',                  $labl='@1. indstil-ofte',     $titl='@Her har du de hyppigst benyttede indstillinger');
-        MenuBranch($clas='',          $href= $_system.'page_Divsetup2.php',               $labl='@2. indstil-flere',    $titl='@Her har du de sjældnere benyttede indstillinger');
-        MenuBranch($clas='lastitem',  $href= $_system.'page_Tilvalgsetup3.php',           $labl='@3. indstil-extra',    $titl='@Her aktiverer og indstiller tilvalgs funktioner');
-      MenuBranch($clas='',            $href= $_system.'page_Backup.php',                  $labl='@Sikkerheds kopiering',$titl='@Her kan du sikre dig dine regnskabsdata, bilags filer og programinstallation');
-      MenuBranch($clas='',            $href= $_system.'page_Licens.php',                  $labl='@Om programmet',       $titl='@Her finder du oplysninger om programmet, og serveren det kører på');
-      MenuBranch($clas='lastitem',    $href= $_system.'page_Regnskabet.php',              $labl='@Om regnskabet',       $titl='@Her finder du oplysninger om regnskabet, som du aktuelt arbejder på');
+        MenuBranch($clas='firstitem', $href= $folder5.'page_Valuta.php',                  $labl='@1. indstil-ofte',     $titl='@Her har du de hyppigst benyttede indstillinger');
+        MenuBranch($clas='',          $href= $folder5.'page_Divsetup2.php',               $labl='@2. indstil-flere',    $titl='@Her har du de sjældnere benyttede indstillinger');
+        MenuBranch($clas='lastitem',  $href= $folder5.'page_Tilvalgsetup3.php',           $labl='@3. indstil-extra',    $titl='@Her aktiverer og indstiller tilvalgs funktioner');
+      MenuBranch($clas='',            $href= $folder5.'page_Backup.php',                  $labl='@Sikkerheds kopiering',$titl='@Her kan du sikre dig dine regnskabsdata, bilags filer og programinstallation');
+      MenuBranch($clas='',            $href= $folder5.'page_Licens.php',                  $labl='@Om programmet',       $titl='@Her finder du oplysninger om programmet, og serveren det kører på');
+      MenuBranch($clas='lastitem',    $href= $folder5.'page_Regnskabet.php',              $labl='@Om regnskabet',       $titl='@Her finder du oplysninger om regnskabet, som du aktuelt arbejder på');
     }       
-    if ($add_on) {        
+    if ($showGroup6) {        
     MenuBranch($clas='withsubmenu',   $href=' ',                                          $labl='@EXTENSIONS',          $titl='@Routines regarding added program extensions');
       MenuBranch($clas='firstitem',   $href= $_xtra.'page_Kasse.php',                     $labl='@Kasse system POS',    $titl='@xxx');
       MenuBranch($clas='',            $href= $_xtra.'page_xxxxxxxxxxxxxx.php',            $labl='@xxxxx',               $titl='@xxx');

@@ -1,14 +1,14 @@
-<?php   $DocFil= './Proj1/input.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-12';     $DocIni='evs';  $ModulNr=0;
+<?php   $DocFil= './Proj1/input.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-13';     $DocIni='evs';  $ModulNr=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 // require_once ('translate.inc.php');
 
-htm_PagePrep('input.page.php');
+htm_PagePrep($pageTitl='input.page.php', $ØPageImage='_background.png');
     Menu_Topdropdown(true); htm_nl(1);
 
     htm_nl(2);
-    if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto;">';
+    if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto; background-color: white; background-image: none;">';
 
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
 ## Can not be used when variables are in lists: 'chck' 'rado' 'opti'

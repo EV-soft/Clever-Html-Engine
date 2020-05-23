@@ -1,10 +1,10 @@
-<?php   $DocFil= './Proj1/table.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-12';     $DocIni='evs';  $ModulNr=0;
+<?php   $DocFil= './Proj1/table.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-13';     $DocIni='evs';  $ModulNr=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 // require_once ('translate.inc.php');
 
-htm_PagePrep('table.page.php');
+htm_PagePrep($pageTitl='table.page.php', $ØPageImage='_background.png');
     Menu_Topdropdown(true); htm_nl(1);
     echo '<div style="text-align: center;">';
     htm_Table(
@@ -37,6 +37,7 @@ htm_PagePrep('table.page.php');
         $CreateRec=true,        # Mulighed for at oprette en record
         $ModifyRec=true,        # Mulighed for at vælge og ændre data i en row
         $ViewHeight= '200px',   # Højden af den synlige del af tabellens data
+        $TblStyle= 'background-image: none;',
         $CalledFrom='',         // = __FUNCTION__
         $Kriterie= ['','']      # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );

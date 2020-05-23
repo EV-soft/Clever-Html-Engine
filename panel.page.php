@@ -1,24 +1,27 @@
-<?php   $DocFil= './Proj1/panel.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-12';     $DocIni='evs';  $ModulNr=0;
+<?php   $DocFil= './Proj1/panel.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-23';     $DocIni='evs';  $ModulNr=0;
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 // require_once ('translate.inc.php');
 
+### DATA-INIT/UPDATE:
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
 ## Can not be used when variables are in lists: 'chck' 'rado' 'opti'
     $varId= scannSource('$name=',"'",[__FILE__]);   //  
     foreach ($varId as $id) {$$id= postValue($$id,$id); }; // echo $id.':'.$$id.' ';};
-    if (isset($_POST['name']))  { $namex = $_POST['name']; }
+    if (isset($_POST['name']))  { $namex = $_POST['name']; }    // Special case !
 
-htm_PagePrep('panel.page.php');
+### PAGE-START:
+htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='_background.png');
     Menu_Topdropdown(true); htm_nl(1);
     echo '<div style="text-align: center;">';
     echo 'Examples of foldable panel-system:';  htm_nl(2);
     htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px) (click to close/open)', $parms='', $icon='fas fa-database', $class='panelW560', $func='Undefined', $more='', 
-                $BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
+                $BookMark='blindAlley.page.php');
         // echo 'More examples of htm_Input():';   
         htm_nl(2);
-        echo 'Panels are used to display a collection of input fields.<br>
+        echo 'Panels are used to display a collection of HTML-objects <br>
+              possibly with a common form and submit button.<br>
               They are defined i 14 widths from 160 px to 1200 px.<br><br>
               The panel content can be displayed/hidden by clicking panel-header.';
         htm_nl(2);
@@ -39,7 +42,7 @@ htm_PagePrep('panel.page.php');
     $GridOn= false;
     htm_nl(2);
     htm_PanlHead($frmName='head1', $capt='@Signup: <small>(Example)</small>', $parms='', $icon='fas fa-user-check', $class='panelW240', $func='Undefined', $more='', 
-                $BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
+                $BookMark='blindAlley.page.php');
         //echo 'Example of login:'; htm_nl(2);
         htm_Input($type='text',$name='text1',$valu=$text1,$labl='@Financial Accounting',$hint='@The name of the accounting for wich you have access',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='75%',$step='',$more='',$plho='@Account...');
@@ -56,8 +59,8 @@ htm_PagePrep('panel.page.php');
     
     htm_nl(2);
     htm_PanlHead($frmName='head2', $capt='@Contact info:', $parms='', $icon='fas fa-pen-square', $class='panelW240', $func='Undefined', $more='', 
-                $BookMark='../_base/page_Blindgyden.php',$panBg='background-image: url(\'_background.png\');');
-        //echo 'Example of login:'; htm_nl(2);
+                $BookMark='blindAlley.page.php');
+        //echo 'Example of login:'; htm_nl(2); 
         $wdh= '100%';
         $m= ' padding:0; test:99; ';
         $m= '';
@@ -70,13 +73,6 @@ htm_PagePrep('panel.page.php');
                     $algn='left',$unit='',$disa=false,$rows='3',$width=$wdh,$step='',$more=$m,$plho='@Address 2...');
         
         $GridOn= false; // Without grid the following fields can be placed on a single row.
-//        htm_Input($type='opti',$name='opti',$valu='87654321',$labl='@htm_Input(opti)',$hint='@Demo of htm_Input Field type opti: left aligned number with %-unit',$algn='left',$unit=' %',$disa=false,$rows='3',$width='',$step='',$more='',$plho='@Enter...',$list= [
-//    ['name1','private','@Details about private'],
-//    ['name2','proff','@Details about profession'],
-//    ['name3','private','@Details about private','checked'],
-//    ['name4','hobby','@Details about hobby'],
-//    ['name5','private','@Details about private'],
-//    ]);
         htm_Input($type='opti',$name='zipp',$valu=$zipp,$labl='@ZIP',      $hint='',
                     $algn='left',$unit='',$disa=false,$rows='3',$width='31%',$step='',$more=$m,$plho='@Code...',$list= [
                     ['5000','5000','@5000'],
@@ -118,6 +114,20 @@ htm_PagePrep('panel.page.php');
         //echo '</span>';
     htm_PanlFoot( $labl='Save', $subm=true, $title='@Save data in this panel', $buttonKind='', $akey='s', $simu=false, $frmName='');
     
+    htm_nl(2);
+    htm_PanlHead($frmName='', $capt='About creating panels:', $parms='', $icon='fas fa-info', $class='panelW480', $func='Undefined', $more='', 
+                $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
+    echo '<div style="text-align: left; margin: 20px;">
+To build a panel there are 2 functions: <br><br>
+<b>htm_PanlHead()</b> - prepares the start of a panel.<br>
+and: <br>
+<b>htm_PanlFoot()</b> - finalize the panel.     <br><br>
+In between, you add your content.             <br><br>
+<small>See the source in php2html.lib.php to manage the function parameters.</small>
+</div>';
+    htm_PanlFoot();
+    
     echo '</div>';
 htm_PageFina();
+### :PAGE_END
 ?>
