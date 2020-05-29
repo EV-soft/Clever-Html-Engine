@@ -1,4 +1,4 @@
-<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-05-23';     $DocIni='evs';  $ModulNo=0;
+<?   $DocFile='../Proj1/php2html.lib.php';    $DocVers='5.0.0';    $DocRev1='2020-05-29';     $DocIni='evs';  $ModulNo=0; ## File informative only
 
 #   PHP to HTML generator
 #   If you program html output in php, you can use this library's routines to generate the html code.
@@ -35,8 +35,6 @@ define('USEGRID',true);             # Use grid to place objects in rows / colums
 define ('ThousandsSep',' ');        # Used in number output
 define ('DecimalSep',',');          # Used in number output
 # GLOBALS:
-$ØblueColor= 'lightblue';
-$ØBodyBcgrd= 'Tan';
 $ØTblIx= -1;                        # Index for table-id to separate multible tables in one page
 $ØProgTitl= 'PHP2HTML';
 $Øcopyright='EV-soft';
@@ -44,7 +42,11 @@ $Øprogvers= 'Develop'.
 $Øcopydate= '2020-00-00';
 $Ødesigner= 'EV-soft';
 $Ølogo=     '21997911.png';
+
+$ØblueColor= 'lightblue';
+$ØBodyBcgrd= 'Tan';
 $ØTitleColr= 'green';               # Text-color in panel-head
+$ØPanelBgrd= 'white';               # Panels hideble background
 $GridOn= true;                      # Use grid to place objects in rows / colums
 
 # PATHS:
@@ -52,6 +54,8 @@ $ØProgRoot= './';                   # $ØProgRoot=   "./../";  // "../";       
 $_assets=     $ØProgRoot.'_assets/';   
 $_images=     $ØProgRoot.'_assets/images/';   
 $_base=   ''; 
+
+# MENU-folders:
 $folder1= ''; 
 $folder2= ''; 
 $folder3= ''; 
@@ -60,7 +64,7 @@ $folder5= '';
 
 
 
-### Functions:
+### FUNCTIONS:
 
 function htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$algn='left',$unit='',$disa=false,$rows='2',$wdth='',$step='',$more='',$plho='@Enter...',$list=[] )
     $type='',           # text, date, ... Look at source !
@@ -621,7 +625,7 @@ function htm_Table(
 
 function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelWmax', $func='Undefined', $more='', $BookMark='', $panlBg='background-color: white;')
 { # MUST be followed of htm_PanlFoot !
-    global $ØTitleColr, $ØPanlForm, $ØProgRoot, $_assets, $ØPanelIx, $ØBodyBcgrd, $GridOn; 
+    global $ØTitleColr, $ØPanlForm, $ØProgRoot, $_assets, $ØPanelIx, $ØPanelBgrd, $GridOn; 
     $ØPanelIx++;
     echo '<script>';  //  Hide/show Panel-Body
     echo 'function PanelSwitch'.$ØPanelIx.'() {
@@ -687,7 +691,7 @@ function htm_PanlHead($frmName='', $capt='', $parms='', $icon='', $class='panelW
     if ($wikilnk > '') echo  $wikilnk;
     echo  '</span>'; // panelTitl
     //echo '</ div>'; //  Panel-Header
-    echo '<span id="HideDiv'.$ØPanelIx.'" style="background:'.$ØBodyBcgrd.'; ">';   // Hide from here ! 
+    echo '<span id="HideDiv'.$ØPanelIx.'" style="background:'.$ØPanelBgrd.'; ">';   // Hide from here ! 
     if ($capt!='') echo '<hr class="style13" style="margin: 6px 6px 6px 0;"/>';
     echo '<div class="pnlContent" style="text-align: center; margin: auto; ">'; // width: min-content;">';
 } // htm_PanlHead - # Panelets < /Panel-span>, < /hiding> og < /form> er placeret i htm_PanlFoot, som skal kaldes til slut!

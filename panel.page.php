@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj1/panel.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-23';     $DocIni='evs';  $ModulNr=0;
+<?php   $DocFil= './Proj1/panel.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-29';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
@@ -15,27 +15,15 @@ require_once ('menu.inc.php');
 htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='_background.png');
     Menu_Topdropdown(true); htm_nl(1);
     echo '<div style="text-align: center;">';
-    echo 'Examples of foldable panel-system:';  htm_nl(2);
+    echo 'About the foldable panel-system:';  htm_nl(2);
     htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px) (click to close/open)', $parms='', $icon='fas fa-database', $class='panelW560', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php');
         // echo 'More examples of htm_Input():';   
-        htm_nl(2);
+        htm_nl(1);
         echo 'Panels are used to display a collection of HTML-objects <br>
               possibly with a common form and submit button.<br>
               They are defined i 14 widths from 160 px to 1200 px.<br><br>
               The panel content can be displayed/hidden by clicking panel-header.';
-        htm_nl(2);
-        htm_Input($type='pass',$name='pass2',$valu='',$labl='@htm_Input(pass)',$hint='Demo of htm_Input Field type password with "hidden" output',
-                    $algn='left',$unit='',$disa=false,$rows='3',$width='95%');
-        htm_Input($type='mail',$name='mail1',$valu='',$labl='@htm_Input(mail)',$hint='Demo of htm_Input Field type mail with syntax control',
-                    $algn='left',$unit='',$disa=false,$rows='3',$width='95%');
-        htm_nl(2);
-        htm_nl(2);
-        htm_Input($type='chck',$name='chck2',$valu='',$labl='@htm_Input(chck)',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',
-                    $algn='left',$unit='',$disa=false,$rows='3',$width='300px',$step='',$more='',$plho='Enter...',$list= [
-        ['name1','Label1','@Details about label','checked'],
-        ['name1','Label2','@Details about label','checked']
-        ]);
         htm_nl(2);
     htm_PanlFoot( $labl='Demo', $subm=false, $title='Buttom', $buttonKind='', $akey='', $simu=false, $frmName='');
     
@@ -58,7 +46,7 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='_background.png');
     htm_PanlFoot( $labl='Login', $subm=true, $title='@Login with the given data', $buttonKind='', $akey='l', $simu=false, $frmName='');
     
     htm_nl(2);
-    htm_PanlHead($frmName='head2', $capt='@Contact info:', $parms='', $icon='fas fa-pen-square', $class='panelW240', $func='Undefined', $more='', 
+    htm_PanlHead($frmName='head2', $capt='@Contact info: <small>(Example)</small>', $parms='', $icon='fas fa-pen-square', $class='panelW240', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php');
         //echo 'Example of login:'; htm_nl(2); 
         $wdh= '100%';
