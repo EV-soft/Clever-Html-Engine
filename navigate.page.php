@@ -1,8 +1,9 @@
-<?php   $DocFil= './Proj1/navigate.page.php';    $DocVer='5.0.0';    $DocRev='2020-05-29';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/navigate.page.php';    $DocVer='5.0.0';    $DocRev='2020-06-03';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 // require_once ('translate.inc.php');
+// require_once ('filedata.inc.php');
 
 htm_PagePrep($pageTitl='navigate.page.php', $ØPageImage='_background.png');
     Menu_Topdropdown(true); htm_nl(1);
@@ -13,7 +14,7 @@ htm_PagePrep($pageTitl='navigate.page.php', $ØPageImage='_background.png');
                 
     echo '<div style="text-align: left; margin: 20px;">
 To navigate in a program you can use:<br><br>
-TopMenu witch you can see at the top of all demo pages.<br>
+<b>Menu_Topdropdown()</b> witch you can see at the top of all demo pages.<br>
 You find it in the file: menu.inc.php <br>
 and it is called with Menu_Topdropdown() <br><br>
 Another button is <b>menuButt()</b> that can be used to link to subpages:<br><br>';
