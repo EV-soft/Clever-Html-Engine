@@ -1,4 +1,4 @@
-<? $DocFile='../Proj1/filedata.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-06-07';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../Proj1/filedata.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-07-03';     $DocIni='evs';  $ModulNo=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 
 /**
@@ -41,17 +41,17 @@ function WriteCSV($filepath='',$list=[]) {     // arr2CSV_file
  * @return array           Associative array of parsed CSV file.
  */
 function csv_parse($filepath, $options = array()) {
-	if ( ! is_readable($filepath)) return FALSE;
+    if ( ! is_readable($filepath)) return FALSE;
     $options = array_merge(array(   // Merge default options
-		'eol'       => "\n",
-		'delimiter' => ',',
-		'enclosure' => '"',
-		'escape'    => '\\',
-		'to_object' => FALSE,
+        'eol'       => "\n",
+        'delimiter' => ',',
+        'enclosure' => '"',
+        'escape'    => '\\',
+        'to_object' => FALSE,
     ), $options);
 # Read file, explode into lines
-	$string = file_get_contents($filepath);
-	$lines  = explode($options['eol'], $string);
+    $string = file_get_contents($filepath);
+    $lines  = explode($options['eol'], $string);
 # Read the first row, consider as field names
     $header = array_map('trim', explode($options['delimiter'], array_shift($lines)));
 # Build the associative array
@@ -72,34 +72,16 @@ function csv_parse($filepath, $options = array()) {
     return $csv;
 }
 
-function FileWrite_arr($filepath='',$arrName='', $list=[]) {
-    $fp = fopen($filepath, 'w');
-    if ($fp) {
-        fwrite($fp, $arrName.' = '."Array (\n");
-        foreach ($list as $index => $string) {
-            fwrite($fp, '  "'.$index.'" => "'.$string.'"');
-            fwrite($fp, "\n");
-        }
-        fwrite($fp, ")\n");
-        fclose($fp);
-    }
-    else echo ' FileWrite_arr:Error ';
+function FileWrite_arr($filepath='', $array=[]) {
+//  return file_put_contents($filepath, serialize($array));
+    return file_put_contents($filepath, json_encode($array));
 }
 
-function FileRead_arr($filepath=''){
-    parse_str(file_get_contents($filepath), $result);
-    return $result;
-    /*$fp = file($filepath);
-    if ($fp) {
-       // foreach($fp as $key=>$value) {
-       //     $elem = explode('] => "', $value);
-       //     if ($value!=NULL)
-       //     $result[$elem[0]]=$elem[1];
-       // }
-        return $result=file($filepath);
-    } 
-*/    
-    // else // echo ' FileRead_arr:Error ';
-    // run_Script('toast("<b>'. lang('@FileRead_arr:Error !'). '</b><br>'. lang('@The file could not open'). '","yellow","black")');
+function FileRead_arr($filepath='', &$array=[]) {
+//  $array = unserialize(file_get_contents($filepath));
+    $arr = json_decode(file_get_contents($filepath), true);
+    $array= $arr;
+    return $array;
 }
+
 ?>

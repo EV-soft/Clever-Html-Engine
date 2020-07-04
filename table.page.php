@@ -8,6 +8,8 @@ require_once ('menu.inc.php');
 htm_PagePrep($pageTitl='table.page.php', $ØPageImage='_background.png');
     Menu_Topdropdown(true); htm_nl(1);
     echo '<div style="text-align: center;">';
+    htm_PanlHead($frmName='head', $capt='htm_Table():', $parms='', $icon='fas fa-table', $class='panelW800', $func='Undefined', $more='', 
+                $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
     htm_Table(
         $TblCapt= array( #['0:Label',   '1:Width',    '2:Type',    '3:Format', '4:horAlgn',      '5:Tip',    '6:Content'],... // Gl: 0:Label 1:width 2:align 3:Type 4:title 5:Content
           ['<b>'.lang('@Inland').'</b>', '8%','show','left', '', '@VAT on India','@PURCHASE'],
@@ -42,6 +44,7 @@ htm_PagePrep($pageTitl='table.page.php', $ØPageImage='_background.png');
         $CalledFrom='',         // = __FUNCTION__
         $Kriterie= ['','']      # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
+    htm_PanlFoot();
     
     echo '</div>';
 htm_PageFina();

@@ -1,15 +1,13 @@
-<?php   $DocFil= './Proj1/input.page.php';    $DocVer='5.0.0';    $DocRev='2020-06-08';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/input.page.php';    $DocVer='1.0.0';    $DocRev='2020-06-14';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('php2html.lib.php');
 require_once ('menu.inc.php');
 // require_once ('translate.inc.php');
 // require_once ('filedata.inc.php');
 
-htm_PagePrep($pageTitl='input.page.php', $ØPageImage='_background.png');
+htm_PagePrep($pageTitl='input.page.php', $ØPageImage='_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
 
-    htm_nl(2);
-    if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto; background-color: white; background-image: none;">';
 
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
 ## Can not be used when variables are in lists: 'chck' 'rado' 'opti'
@@ -18,6 +16,10 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage='_background.png');
     if (isset($_POST['name']))  { $namex = $_POST['name']; }
     
     $date= date("Y-m-d");
+
+    htm_PanlHead($frmName='', $capt='The collection of htm_Input():', $parms='', $icon='fas fa-info', $class='panelW720', $func='Undefined', $more='', 
+                $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
+    if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto; background-color: white; background-image: none;">';
 
     htm_Input($type='text',$name='text',$valu=$text, $labl='@htm_Input(Text)',$llgn='',$hint='@Demo of htm_Input Field type text');
     htm_Input($type='date',$name='date',$valu=$date, $labl='@htm_Input(Date)',$llgn='',$hint='@Demo of htm_Input Field type date with browser popup selector');
@@ -33,9 +35,9 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage='_background.png');
     ['name4','hobby','@Details about hobby'],
     ['name5','private','@Details about private'],
     ]);
-    htm_Input($type='dec0',$name='dec0a',$valu='87654321',$labl='htm_Input(Dec0)',$llgn='',$hint='Demo of htm_Input Field type dec0: left aligned number with %-suffix',$algn='left',$unit=' %',);
-    htm_Input($type='dec1',$name='dec1a',$valu='87654321',$labl='htm_Input(Dec1)',$llgn='',$hint='Demo of htm_Input Field type dec1: centered number with %-suffix',$algn='center',$unit=' %',);
-    htm_Input($type='dec2',$name='dec2a',$valu='87654321',$labl='htm_Input(Dec2)',$llgn='',$hint='Demo of htm_Input Field type dec2: right aligned number with %-suffix',$algn='right',$unit=' %',);
+    htm_Input($type='dec0',$name='dec0a',$valu='87654321',$labl='htm_Input(Dec0)',$llgn='',$hint='Demo of htm_Input Field type dec0: left aligned number with %-suffix',$algn='left',$unit=' %');
+    htm_Input($type='dec1',$name='dec1a',$valu='87654321',$labl='htm_Input(Dec1)',$llgn='',$hint='Demo of htm_Input Field type dec1: centered number with %-suffix',$algn='center',$unit=' %');
+    htm_Input($type='dec2',$name='dec2a',$valu='87654321',$labl='htm_Input(Dec2)',$llgn='',$hint='Demo of htm_Input Field type dec2: right aligned number with %-suffix',$algn='right',$unit=' %');
     
     htm_Input($type='num1',$name='num1',$valu='87654321',$labl='@htm_Input(num1)',$llgn='',$hint='@Demo of htm_Input Field type numb: number with 1 decimal',$algn='center');
     htm_Input(      'num0',      'num0',      '87654321',      '@htm_Input(num0)',      'R',      '@Demo of htm_Input Field type numb: left-justified number',$algn='left');
@@ -83,7 +85,7 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage='_background.png');
     htm_Input($type='file',$name='file',$valu='',$labl='@htm_Input(file)',$llgn='',$hint='@Demo of htm_Input Field type file',$algn='left',$unit='',$disa=false,$rows='1',$width='',$step='',$more='');
     htm_Input($type='imag',$name='imag',$valu='',$labl='@htm_Input(imag)',$llgn='',$hint='@Demo of htm_Input Field type image',$algn='left',$unit='',$disa=false,$rows='1',$width='',$step='',$more='');
     if (USEGRID) echo '</div>'; // grid-container}
-    
+    htm_PanlFoot();
     
 htm_PageFina();
 ?>

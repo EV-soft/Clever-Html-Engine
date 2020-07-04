@@ -46,7 +46,8 @@ function scannLngStrings($code= 'dk') {
     $count= substr('00'.$count,-3);
     $arrStrings= array_unique($arrStrings, SORT_REGULAR); // Remove duplicates
     sort($arrStrings, SORT_STRING +SORT_FLAG_CASE);
-    $arrStrings= array_unique($arrStrings, SORT_REGULAR); // Remove duplicates
+    //$arrStrings= array_unique($arrStrings, SORT_REGULAR); // Remove duplicates
+
 # OUTPUT:
     echo '<p style="font-size:11; ">';
     $lngArr = sys_get_translations(['']);  //  All existing lng in /sys_trans.json
