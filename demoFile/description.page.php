@@ -1,13 +1,13 @@
-<?php   $DocFil= './Proj1/description.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-04';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/description.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-05';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
-require_once ('php2html.lib.php');
-require_once ('menu.inc.php');
+require_once ('../php2html.lib.php');
+require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
 // require_once ('filedata.inc.php');
 
 
 ### PAGE-START:
-htm_PagePrep($pageTitl='description.page.php', $ØPageImage='_background.png',$align='center');
+htm_PagePrep($pageTitl='description.page.php', $ØPageImage='../_background.png',$align='center',$PgInfo=lang('@page: System presentation'));
     Menu_Topdropdown(true); htm_nl(1);
     
     htm_PanlHead($frmName='', $capt='System description:', $parms='', $icon='fas fa-info', $class='panelW640', $func='Undefined', $more='', 
@@ -22,7 +22,7 @@ htm_PagePrep($pageTitl='description.page.php', $ØPageImage='_background.png',$a
         <i>Placeholder</i> - A visible text in input fields when the value is undetermined.<br>
         <i>Icon</i> - A graphic element that highlights the purpose.<br><br>
 
-        For data viewing and updating, an advanced table is offered with:<br>
+        For data viewing and editing, an advanced table is offered with:<br>
         Column wise: Filtering - Sorting<br>
         Row wise: Create - Change - Delete - Spec. Buttons<br>
         Fixed column headers<br>

@@ -1,11 +1,11 @@
-<?php   $DocFil= './Proj1/table.page.php';    $DocVer='5.0.0';    $DocRev='2020-06-03';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/table.page.php';    $DocVer='5.0.0';    $DocRev='2020-07-20';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
-require_once ('php2html.lib.php');
-require_once ('menu.inc.php');
+require_once ('../php2html.lib.php');
+require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
 // require_once ('filedata.inc.php');
 
-htm_PagePrep($pageTitl='table.page.php', $ØPageImage='_background.png');
+htm_PagePrep($pageTitl='table.page.php', $ØPageImage='../_background.png');
     Menu_Topdropdown(true); htm_nl(1);
     echo '<div style="text-align: center;">';
     htm_PanlHead($frmName='head', $capt='htm_Table():', $parms='', $icon='fas fa-table', $class='panelW800', $func='Undefined', $more='', 
@@ -35,14 +35,16 @@ htm_PagePrep($pageTitl='table.page.php', $ØPageImage='_background.png');
         $tblData= array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], 
                          [['2'],[''],[''],[''],[''] ], 
                          [['3'],[''],[''],[''],[''] ] ),       # = array(),
+        $fldNames=              # FieldNames in array returned on submit
+        ['f1','f2','f3','f4','f5'],
         $FilterOn= true,        # Mulighed for at skjule records som ikke matcher filter   //  Virker ikke med hidd-felter!
         $SorterOn= true,        # Mulighed for at sortere records efter kolonne indhold
         $CreateRec=true,        # Mulighed for at oprette en record
         $ModifyRec=true,        # Mulighed for at vælge og ændre data i en row
         $ViewHeight= '200px',   # Højden af den synlige del af tabellens data
         $TblStyle= 'background-image: none;',
-        $CalledFrom='',         // = __FUNCTION__
-        $Kriterie= ['','']      # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
+        $CalledFrom='',         # = __FUNCTION__ (debugging)
+        $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
     htm_PanlFoot();
     

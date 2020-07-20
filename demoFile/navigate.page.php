@@ -1,11 +1,11 @@
-<?php   $DocFil= './Proj1/navigate.page.php';    $DocVer='1.0.0';    $DocRev='2020-06-14';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/navigate.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-05';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
-require_once ('php2html.lib.php');
-require_once ('menu.inc.php');
+require_once ('../php2html.lib.php');
+require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
 // require_once ('filedata.inc.php');
 
-htm_PagePrep($pageTitl='navigate.page.php', $ØPageImage='_background.png',$align='center');
+htm_PagePrep($pageTitl='navigate.page.php', $ØPageImage='../_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
     
     htm_PanlHead($frmName='', $capt='Navigate functions:', $parms='', $icon='fas fa-info', $class='panelW480', $func='Undefined', $more='', 

@@ -1,12 +1,12 @@
-<?php   $DocFil= './Proj1/translate.page.php';    $DocVer='5.0.0';    $DocRev='2020-06-13';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/translate.page.php';    $DocVer='5.0.0';    $DocRev='2020-07-05';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
-require_once ('php2html.lib.php');
-require_once ('menu.inc.php');
-require_once ('translate.inc.php');
-require_once ('filedata.inc.php');
+require_once ('../php2html.lib.php');
+require_once ('../menu.inc.php');
+require_once ('../translate.inc.php');
+require_once ('../filedata.inc.php');
 
 
-htm_PagePrep($pageTitl='translate.page.php', $ØPageImage='_background.png',$align='center');
+htm_PagePrep($pageTitl='translate.page.php', $ØPageImage='../_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
     
     global $lang_list;
@@ -41,15 +41,15 @@ htm_PagePrep($pageTitl='translate.page.php', $ØPageImage='_background.png',$ali
                 $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
     echo '<div style="text-align: center; margin: 20px;">';  
     echo lang('The actual language is').'<b> '.$App_Conf['language'].' / '.$_SESSION['currLang']['native'].' </b><br><br>';
-    htm_Input($type='rado',$name='rado',$valu='',$labl='@Filter',$llgn='',$hint='@Hide some languages in the language selector <br> <b>DEMO yet !</b>',
-        $algn='left',$unit='',$disa=true,$rows='2',$width='110px',$step='',$more='',$plho='Enter...',
+    htm_Input($type='rado',$name='rado',$valu='',$labl='@Filter',$hint='@Hide some languages in the language selector <br> <b>DEMO yet !</b>',
+        $plho='Enter...',$width='110px',$algn='left',$unit='',$disa=true,$rows='2',$step='',$more='',
         $list= [
         ['All','All','@Show the complete list','checked'],
         ['Som','Some','@Hide all empty languages'],
         ]
     );
-    htm_Input($type='opti',$name='langu',$valu='dsads'/* $App_Conf['language'] */,$labl='@Select another language',$llgn='',$hint='@Select amongst installed languages',
-              $algn='left',$unit='',$disa=false,$rows='3',$width='200px',$step='',$more='',$plho='@Select...',$list= $SelList);
+    htm_Input($type='opti',$name='langu',$valu='dsads'/* $App_Conf['language'] */,$labl='@Select another language',$hint='@Select amongst installed languages',
+              $plho='@Sel...',$width='200px',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$ectlist= $SelList);
     echo '</div>';
     htm_PanlFoot($labl='Activate selected', $subm=true, $title='@Change language to the selected', $btnKind='save', $akey='', $simu=false, $frmName='lang');
     htm_nl(2);

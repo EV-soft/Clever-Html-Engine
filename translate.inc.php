@@ -1,4 +1,4 @@
-<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-06-08';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-07-19';     $DocIni='evs';  $ModulNo=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 require_once ('filedata.inc.php');
 
@@ -10,12 +10,22 @@ require_once ('filedata.inc.php');
  */
 function scannLngStrings($code= 'dk') {
     global $lang_list, $App_Conf;
-    function scannfor($searchPref, $searchSuff='', &$count, &$longest, &$total, &$arrStrings, $flag='') {
+    function scannfor($searchPref, $searchSuff='', &$count, &$longest, &$total, &$arrStrings, $flag='') { 
+        global $ØProgRoot;
         # Source files:
         $lines = file(__FILE__);  // This file: translate.inc.php
-        $files= ['php2html.lib.php','Demo.page.php','menu.inc.php','translate.page.php'];    // Other files to scann
-        foreach ($files as $fname) { $lines = array_merge($lines, file($fname));  /* echo ' '.count($lines); */ }
+        $files= [$ØProgRoot.'php2html.lib.php',
+                 $ØProgRoot.'menu.inc.php',
+                'translate.page.php',
+                # Other files to scann:
+                /* 'Demo.page.php', */
+                'CustomerOrder.page.php'
+            ];
+        foreach ($files as $fname) { $lin= file($fname); if ($lin) $lines = array_merge($lines, $lin);
+                                     else echo '<br>? FILE: <b>'.$fname.'</b>';        /* echo ' '.count($lines); */ }
         //arrPrint($lines,'$lines'); 
+        
+        # Process the files contents:
         foreach ($lines as $aline => $line) {
             if ($a= strpos(' '.$line,$searchPref)) {
                 $str= $line;
@@ -28,6 +38,7 @@ function scannLngStrings($code= 'dk') {
                         $arrStrings[] = $f; // = $flag.$f;  // Deactivate Flag
                 }
                 $count++; $total++;
+                //if ($searchPref=="'@") file_put_contents('TransList.txt','"'.$f.'":"",'.PHP_EOL, FILE_APPEND);
         }   }
     }
     function space($rept=1) { return str_repeat('&nbsp;',max(0,$rept)); }
@@ -128,8 +139,9 @@ function scannLngStrings($code= 'dk') {
                                  // $googleFile = fopen("sys_2Google.txt", "w");
                                  $gog= file_get_contents ("sys_2Google.txt");
                                  //foreach ($gog as $line) $string= $string + '<br>' + $line;
-    htm_Input($type='area',$name='goog',$valu=$gog,$labl='sys_2Google.txt',  $llgn='L', $hint='@The newly generated file to Google-translate',
-                    $algn='left',$unit='',$disa=false,$rows='10',$width='930px',$step='',$more=$m,$plho='@Empty !');
+    // htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$plho='@Enter...',$wdth='',$algn='left',$unit='',$disa=false,$rows='2',$step='',$more='',$list=[],$llgn='R' )
+    htm_Input($type='area',$name='goog',$valu=$gog,$labl='sys_2Google.txt',  $hint='@The newly generated file to Google-translate',$plho='@Empty !',
+                    $width='930px',$algn='left',$unit='',$disa=false,$rows='10',$step='',$more=$m, $llgn='L');
         
     $i= 0;
     echo '<br><br><b>Keys in language "'.$App_Conf['language'].' / '.$nati.'" with string the same as the key </b>(missing translate ?):<br>';

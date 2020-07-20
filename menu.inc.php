@@ -1,4 +1,4 @@
-<?php $DocFile='../Proj1/menu.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-07-04';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php $DocFile='../Proj1/menu.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-07-19';     $DocIni='evs';  $ModulNo=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
 
 
@@ -47,32 +47,32 @@ global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $f
  // MenuStart($clas='firstmain',      $href='#',                              $labl='@MENU:',         $titl='@Main menu');
     MenuStart($clas='firstmain',      $href='#',                              $labl='<b>PHP2HTML</b>',  $titl='@Demo of the php to html library');
     if ($showGroup1) {        
-      MenuBranch($clas='withsubmenu', $href= $folder1.'Demo.page.php',        $labl='@DEMO',          $titl='@Presentation of the system');
-      MenuBranch($clas='firstitem',   $href= $folder1.'Demo.page.php',        $labl='@Demo',          $titl='@Demonstarte some functions',           $icon='fas fa-info');
-      MenuBranch($clas='',            $href= $folder1.'CustomerOrder.page.php', $labl='@Example',       $titl='@Example of order creation',            $icon='fas fa-cubes');
-      MenuBranch($clas='lastitem',    $href= $folder1.'description.page.php', $labl='@Description',   $titl='@Something about the system',           $icon='fas fa-info');
+      MenuBranch($clas='withsubmenu', $href= $folder2.'Demo.page.php',          $labl='@DEMO',          $titl='@Presentation of the system');
+      MenuBranch($clas='firstitem',   $href= $folder2.'Demo.page.php',          $labl='@Demo',          $titl='@Demonstrate some functions',           $icon='fas fa-info');
+      MenuBranch($clas='',            $href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)',            $icon='fas fa-cubes');
+      MenuBranch($clas='lastitem',    $href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',           $icon='fas fa-info');
     }                      
     if ($showGroup1) {                 
-      MenuBranch($clas='withsubmenu', $href='',                               $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
-      MenuBranch($clas='firstitem',   $href= $folder1.'input.page.php',       $labl='@htm_Input()',   $titl='@Something about function htm_Input()', $icon='fas fa-cubes');
-      MenuBranch($clas='',            $href= $folder1.'table.page.php',       $labl='@htm_Table()',   $titl='@Something about function htm_Table()', $icon='fas fa-cubes');
-      MenuBranch($clas='',            $href= $folder1.'panel.page.php',       $labl='@htm_Panel()',   $titl='@Something about function htm_Panel()', $icon='fas fa-cubes');
-      MenuBranch($clas='',            $href= $folder5.'pages.page.php',       $labl='@Page layout',   $titl='@Something about Page and layout',      $icon='fas fa-cubes');
-      MenuBranch($clas='',            $href= $folder5.'navigate.page.php',    $labl='@Navigate',      $titl='@Tools related to navigating',          $icon='fas fa-cubes');
-      MenuBranch($clas='lastitem',    $href= $folder5.'other.page.php',       $labl='@Others',        $titl='@Other functions than above',           $icon='fas fa-cubes');
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
+      MenuBranch($clas='firstitem',   $href= $folder2.'input.page.php',         $labl='@htm_Input()',   $titl='@Something about function htm_Input()', $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder2.'table.page.php',         $labl='@htm_Table()',   $titl='@Something about function htm_Table()', $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder2.'panel.page.php',         $labl='@htm_Panel()',   $titl='@Something about function htm_Panel()', $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder2.'pages.page.php',         $labl='@Page layout',   $titl='@Something about Page and layout',      $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder2.'navigate.page.php',      $labl='@Navigate',      $titl='@Tools related to navigating',          $icon='fas fa-cubes');
+      MenuBranch($clas='lastitem',    $href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions than above',           $icon='fas fa-cubes');
     }                          
     if ($showGroup1) {                 
-      MenuBranch($clas='withsubmenu', $href='',                               $labl='@FILES',         $titl='@Information about php2html files');
-      MenuBranch($clas='firstitem',   $href= $folder1.'files.page.php',       $labl='@System files',  $titl='@Something about System files',         $icon='fas fa-file');
-      MenuBranch($clas='lastitem',    $href= $folder5.'support.page.php',     $labl='@Support files', $titl='@Something about Support files',        $icon='fas fa-file');
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@FILES',         $titl='@Information about php2html files');
+      MenuBranch($clas='firstitem',   $href= $folder2.'files.page.php',         $labl='@System files',  $titl='@Something about System files',         $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder2.'support.page.php',       $labl='@Support files', $titl='@Something about Support files',        $icon='fas fa-file');
     }                          
     if ($showGroup1) {                     
-      MenuBranch($clas='withsubmenu', $href= $folder1.'translate.page.php',   $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
-      MenuBranch($clas='lastitem',    $href= $folder1.'translate.page.php',   $labl='@Translate',   $titl='@About the language translate system',  $icon='fas fa-info');
+      MenuBranch($clas='withsubmenu', $href= $folder2.'translate.page.php',     $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
+      MenuBranch($clas='lastitem',    $href= $folder2.'translate.page.php',     $labl='@Translate',     $titl='@About the language translate system',  $icon='fas fa-info');
     }
     if ($showGroup1) {                     
-      MenuBranch($clas='withsubmenu', $href= $folder1.'functions.page.php',   $labl='@FUNCTIONS',     $titl='@Information about TRANSLATE module');
-      MenuBranch($clas='lastitem',    $href= $folder1.'functions.page.php',   $labl='@Overview',      $titl='@An overview over the system functions',  $icon='fas fa-info');
+      MenuBranch($clas='withsubmenu', $href= $folder2.'functions.page.php',     $labl='@FUNCTIONS',     $titl='@Information about TRANSLATE module');
+      MenuBranch($clas='lastitem',    $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions',  $icon='fas fa-info');
     }
     MenuEnd();
 }

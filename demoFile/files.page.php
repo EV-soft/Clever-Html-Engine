@@ -1,11 +1,11 @@
-<?php   $DocFil= './Proj1/files.page.php';    $DocVer='1.0.0';    $DocRev='2020-06-14';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/files.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-19';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
-require_once ('php2html.lib.php');
-require_once ('menu.inc.php');
+require_once ('../php2html.lib.php');
+require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
 // require_once ('filedata.inc.php');
 
-htm_PagePrep($pageTitl='files.page.php', $ØPageImage='_background.png',$align='center');
+htm_PagePrep($pageTitl='files.page.php', $ØPageImage='../_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
     htm_PanlHead($frmName='head', $capt='System-files', $parms='', $icon='fas fa-file', $class='panelW560', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php');
@@ -15,7 +15,7 @@ htm_PagePrep($pageTitl='files.page.php', $ØPageImage='_background.png',$align='
         NAME.KIND.TYP                <br>
          |    |    |                 <br>
          |    |    └─► File type: pdf/txt/json/png/php/...  <br>
-         |    └──────► Content kind: <i>lib</i>/<i>inc</i>/css/<b>page</b>/...  <br>
+         |    └──────► Content kind: <i>lib</i>/<i>inc</i><i>/min</i>/css/<b>page</b>/dat/...  <br>
          └───────────► File name: descriptive word     <br>
                                     <br>
     ','left',$marg='8px',$more='line-height: 0.6;');
