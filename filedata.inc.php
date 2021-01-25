@@ -1,5 +1,5 @@
-<? $DocFile='../Proj1/filedata.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-07-03';     $DocIni='evs';  $ModulNo=0; ## File informative only
-## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
+<? $DocFile='../Proj1/filedata.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-08-17';     $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 /**
  * Functions relatede to file transfer

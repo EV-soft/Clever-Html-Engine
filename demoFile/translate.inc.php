@@ -1,4 +1,4 @@
-<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2021-01-24';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2021-01-25';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 require_once ('filedata.inc.php');
@@ -13,15 +13,15 @@ function scannLngStrings($code= 'dk') {
     global $lang_list, $App_Conf;
     function scannfor($searchPref, $searchSuff='', &$count, &$longest, &$total, &$arrStrings, $flag='') { 
         // global $ØProgRoot;
-        $ØProgRoot= '../'; 
-        # Source files to scann:
+        $ØProgRoot= './../'; 
+        # Source files:
         $lines = file(__FILE__);  // This file: translate.inc.php
         $files= [$ØProgRoot.'php2html.lib.php',
             //   $ØProgRoot.'menu.inc.php',
                 $ØProgRoot.'translate.page.php',
                 # Other files to scann:
                 /* 'Demo.page.php', */
-                'CustomerOrder.page.php'
+            //  'CustomerOrder.page.php'
             //  $ØProgRoot.'folder-explorer.php'
             ];
         foreach ($files as $fname) { $lin= file($fname); if ($lin) $lines = array_merge($lines, $lin);
@@ -149,7 +149,7 @@ function scannLngStrings($code= 'dk') {
         
     $i= 0;
     echo '<br><br><b>Keys in language "'.$App_Conf['language'].' / '.$nati.'" with string the same as the key </b>(missing translate ?):<br>';
-    foreach ($lngArr[$code] ?? [] as $key => $value) { 
+    foreach ($lngArr[$code] as $key => $value) { 
         if (in_array($key,$lngArr[$code])) echo '<br>Same: '.$i++.' '.$key; 
     }
     if ($i==0) echo 'None<br>';
@@ -161,7 +161,7 @@ function scannLngStrings($code= 'dk') {
 
     $i= 0;
     echo '<br><b>Outdated keys in language "'.$App_Conf['language'].' / '.$nati.'" not used in this project</b> (maybe renamed key ?):</b><br>';
-    foreach ($lngArr[$code] ?? [] as $key => $value) {
+    foreach ($lngArr[$code] as $key => $value) {
        if (!in_array($key,$lngArr['en'])) echo '<br>Outd: '.$i++.' '.$key;
     }
     if ($i==0) echo 'None<br>';

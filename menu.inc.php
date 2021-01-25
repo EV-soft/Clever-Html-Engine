@@ -1,6 +1,13 @@
-<?php $DocFile='../Proj1/menu.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-07-19';     $DocIni='evs';  $ModulNo=0; ## File informative only
-## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
+<?php $DocFile='../Proj1/menu.inc.php';    $DocVers='1.0.0';    $DocRev1='2021-01-24';     $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
+
+# MENU-folders:
+$folder1= '';
+$folder2= '';
+$folder3= '';
+$folder4= '';
+$folder5= '';
 
 ## TopMenu-rutines: (used in Menu_Topdropdown )
 function MenuStart($clas='firstmain',$href='#',$labl='',$titl='') {  //  MUST be followed of MenuEnd()
@@ -28,7 +35,7 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
   if ($clas=='exit')                {$bold='<span style="color:red; font-weight:600; left: -110px;">'; } else {$bold='';};
   if (strpos($href,'ttp' )>0)       {$targ='_blank'; } else $targ='_self'; //  Test if http seems (externel/locale link?)
   $link= 'href="'.$href.'" target="'.$targ.'" title="'.strip_tags(lang($titl)).'" >'.
-        '<data-ic class="'.$cssIcon.'" style="font-size:'.$size.'; color:'.$fg.'; "> </data-ic>&nbsp;'.$blnd.$bold.ucfirst(lang($labl));
+        '<data-ic class="'.$cssIcon.'" style="font-size:'.($size ?? 12).'; color:'.($fg ?? '00').'; "> </data-ic>&nbsp;'.$blnd.$bold.ucfirst(lang($labl));
   if ($bold!='') {$link.= '</span>'.$obs;}
   if ($blnd!='') {$link.= '</i>'.$obs;} else {$link.= $obs;}
   echo "\n\n";
@@ -43,16 +50,17 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
 }
 
 function Menu_Topdropdown($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
-global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;  
+global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;
  // MenuStart($clas='firstmain',      $href='#',                              $labl='@MENU:',         $titl='@Main menu');
     MenuStart($clas='firstmain',      $href='#',                              $labl='<b>PHP2HTML</b>',  $titl='@Demo of the php to html library');
-    if ($showGroup1) {        
+    if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href= $folder2.'Demo.page.php',          $labl='@DEMO',          $titl='@Presentation of the system');
       MenuBranch($clas='firstitem',   $href= $folder2.'Demo.page.php',          $labl='@Demo',          $titl='@Demonstrate some functions',           $icon='fas fa-info');
-      MenuBranch($clas='',            $href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)',            $icon='fas fa-cubes');
-      MenuBranch($clas='lastitem',    $href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',           $icon='fas fa-info');
-    }                      
-    if ($showGroup1) {                 
+      MenuBranch($clas='',            $href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)', $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',           $icon='fas fa-info');
+      MenuBranch($clas='lastitem',    $href= $folder2.'PHP2HTML-intro.page.php',$labl='@Introduction',  $titl='@Introduction to the systems most usable modules', $icon='fas fa-info');
+    }
+    if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href='',                                 $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
       MenuBranch($clas='firstitem',   $href= $folder2.'input.page.php',         $labl='@htm_Input()',   $titl='@Something about function htm_Input()', $icon='fas fa-cubes');
       MenuBranch($clas='',            $href= $folder2.'table.page.php',         $labl='@htm_Table()',   $titl='@Something about function htm_Table()', $icon='fas fa-cubes');
@@ -60,17 +68,17 @@ global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $f
       MenuBranch($clas='',            $href= $folder2.'pages.page.php',         $labl='@Page layout',   $titl='@Something about Page and layout',      $icon='fas fa-cubes');
       MenuBranch($clas='',            $href= $folder2.'navigate.page.php',      $labl='@Navigate',      $titl='@Tools related to navigating',          $icon='fas fa-cubes');
       MenuBranch($clas='lastitem',    $href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions than above',           $icon='fas fa-cubes');
-    }                          
-    if ($showGroup1) {                 
+    }
+    if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href='',                                 $labl='@FILES',         $titl='@Information about php2html files');
       MenuBranch($clas='firstitem',   $href= $folder2.'files.page.php',         $labl='@System files',  $titl='@Something about System files',         $icon='fas fa-file');
       MenuBranch($clas='lastitem',    $href= $folder2.'support.page.php',       $labl='@Support files', $titl='@Something about Support files',        $icon='fas fa-file');
-    }                          
-    if ($showGroup1) {                     
+    }
+    if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href= $folder2.'translate.page.php',     $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
       MenuBranch($clas='lastitem',    $href= $folder2.'translate.page.php',     $labl='@Translate',     $titl='@About the language translate system',  $icon='fas fa-info');
     }
-    if ($showGroup1) {                     
+    if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href= $folder2.'functions.page.php',     $labl='@FUNCTIONS',     $titl='@Information about TRANSLATE module');
       MenuBranch($clas='lastitem',    $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions',  $icon='fas fa-info');
     }
@@ -78,20 +86,45 @@ global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $f
 }
 
 
+function Menu_TinyCloud($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
+global $Ødebug, $ØProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;
+ // MenuStart($clas='firstmain',      $href='#',                                $labl='@MENU:',         $titl='@Main menu');
+    MenuStart($clas='firstmain',      $href='#',                                $labl='<b>TinyCloud</b>', $titl='@A Demo');
+    
+      MenuBranch($clas='withsubmenu', $href= $folder2.'Demo.page.php',          $labl='@FINANCE',       $titl='@Presentation of the system');
+      MenuBranch($clas='firstitem',   $href= $folder2.'AccountPlan.page.php',   $labl='@Account Plan',  $titl='@TCA-Demonstrate some functions',        $icon='fas fa-info');
+      MenuBranch($clas='',            $href= $folder2.'Accounting.page.php',    $labl='@Accounting',    $titl='@TCA-demo (In danish)',                  $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder2.'journalEntry.page.php',  $labl='@Journal Entry', $titl='@-',                                     $icon='fas fa-file');
+      
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@DEBTOR',        $titl='@-');
+      MenuBranch($clas='firstitem',   $href= $folder2.'CustomerOrder.page.php', $labl='@Customer Order',$titl='@Example of order creation (In danish)', $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@KREDITOR',      $titl='@-');
+      MenuBranch($clas='firstitem',   $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='lastitem',    $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      
+      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@SETTINGS',      $titl='@-');
+      MenuBranch($clas='firstitem',   $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='lastitem',    $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+    MenuEnd();
+}
+
+
 ## Bottom-rutines: (used in Menu_Bottom)
 $arrHref= [ // href:             Labl:
-    [$folder1.'Demo.page.php','@Demo'],      
+    [$folder1.'Demo.page.php','@Demo'],
     [$folder1.'CustomerOrder.page.php','@Example'],
     [$folder1.'description.page.php','@Description'],
-    [$folder1.'input.page.php','@htm_Input()'],     
-    [$folder1.'table.page.php','@htm_Table()'],     
-    [$folder1.'panel.page.php','@htm_Panel()'],     
-    [$folder5.'pages.page.php','@Page layout'],     
-    [$folder5.'navigate.page.php','@Navigate'],  
-    [$folder5.'other.page.php','@Others'],     
-    [$folder1.'files.page.php','@System files'],     
-    [$folder5.'support.page.php','@Support files'],   
-    [$folder1.'translate.page.php','@Translate'], 
+    [$folder1.'input.page.php','@htm_Input()'],
+    [$folder1.'table.page.php','@htm_Table()'],
+    [$folder1.'panel.page.php','@htm_Panel()'],
+    [$folder5.'pages.page.php','@Page layout'],
+    [$folder5.'navigate.page.php','@Navigate'],
+    [$folder5.'other.page.php','@Others'],
+    [$folder1.'files.page.php','@System files'],
+    [$folder5.'support.page.php','@Support files'],
+    [$folder1.'translate.page.php','@Translate'],
     [$folder1.'functions.page.php','@Overview']
 ];
 
@@ -126,7 +159,7 @@ $CSS_system .= '
 --width120: 100px; /* var(--width120); */
 --width128: 100px; /* var(--width128); */
 }
-    
+
 section#container
 {   width: 1200px;   position: relative;   margin: 0 auto 0 auto;   text-align: left;}
 
@@ -241,12 +274,12 @@ section#container
 #wb_TopMenu
 {   position: absolute;   left: 0px;   top: 0px;   width: 1000px;   height: 20px;   z-index: 0;}
 
-@media screen and (max-width: 640px) { 
-  #wb_TopMenu { width: 140px; } 
-  #container { height: 140px; } 
+@media screen and (max-width: 640px) {
+  #wb_TopMenu { width: 140px; }
+  #container { height: 140px; }
 }
 
-/* 
+/*
 #all ul:hover a, #.parent.siblings:hover {
 opacity: 0.5; visibility: visible;
 }

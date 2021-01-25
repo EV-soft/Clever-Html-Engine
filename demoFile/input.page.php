@@ -1,12 +1,11 @@
-<?php   $DocFil= './Proj1/demoFile/input.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-20';     $DocIni='evs';  $ModulNr=0; ## File informative only
-## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
+<?php   $DocFil= './Proj1/demoFile/input.page.php';    $DocVer='1.0.0';    $DocRev='2021-01-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
+
+$GLOBALS["ØProgRoot"]= '../';
 require_once ('../php2html.lib.php');
 require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
 // require_once ('filedata.inc.php');
-
-htm_PagePrep($pageTitl='input.page.php', $ØPageImage='../_background.png',$align='center');
-    Menu_Topdropdown(true); htm_nl(1);
 
 
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
@@ -17,10 +16,16 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage='../_background.png',$alig
     
     $date= date("Y-m-d");
 
-    htm_PanlHead($frmName='', $capt='The collection of htm_Input():', $parms='', $icon='fas fa-info', $class='panelW720', $func='Undefined', $more='', 
+##### SCREEN OUTPUT:
+#!!!: Remember no OUTPUT to screen, before htm_PagePrep
+
+htm_PagePrep($pageTitl='input.page.php', $ØPageImage=$ØProgRoot.'_assets/images/_background.png',$align='center');
+    Menu_Topdropdown(true); htm_nl(1);
+
+    htm_PanlHead($frmName='test', $capt='The collection of htm_Input():', $parms='', $icon='fas fa-info', $class='panelW720', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
     if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto; background-color: white; background-image: none;">';
-
+    // htm_Input() Only $type is required - Defaults for all others!
     htm_Input($type='text',$name='text',$valu=$text, $labl='@htm_Input(Text)',$hint='@Demo of htm_Input Field type text',                                       $plho='',       $wdth='');
     htm_Input($type='date',$name='date',$valu=$date, $labl='@htm_Input(Date)',$hint='@Demo of htm_Input Field type date with browser popup selector',           $plho='',       $wdth='');
     htm_Input($type='intg',$name='intg',$valu=$intg, $labl='@htm_Input(Intg)',$hint='@Demo of htm_Input Field type intg: centered integer',                     $plho='',       $wdth='', $algn='center');
@@ -40,16 +45,16 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage='../_background.png',$alig
     htm_Input($type='dec2',$name='dec2a',$valu='87654321',$labl='htm_Input(Dec2)',$hint='Demo of htm_Input Field type dec2: right aligned number with %-suffix',$plho='',       $wdth='', $algn='right',$unit=' %');
     
     htm_Input($type='num1',$name='num1',$valu='87654321',$labl='@htm_Input(num1)',$hint='@Demo of htm_Input Field type numb: number with 1 decimal',            $plho='',       $wdth='', $algn='center');
-    htm_Input(      'num0',      'num0',      '87654321',      '@htm_Input(num0)',      '@Demo of htm_Input Field type numb: left-justified number and label',  $plho='',       $wdth='', $algn='left',$unit='',$disa=false,$rows='2',$step='',$more='',$list=[],$llgn='L', );
+    htm_Input(      'num0',      'num0',      '87654321',      '@htm_Input(num0)',      '@Demo of htm_Input Field type numb: left-justified number and label',  $plho='',       $wdth='', $algn='left',$unit='',$disa=false,$rows='2',$step='',$more='',$list=[],$llgn='L' );
     htm_Input($type='chck',$name='chck',$valu='', $labl='htm_Input(chck)',$hint='Demo of htm_Input Field type chck: Multi-line formatted chck-text',            $plho='Enter...', $wdth='', $algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list= [
         ['name1','@Label1','@Details about label1','checked'],
         //['name2','@Label2','@Details about label2','checked']
     ]);
-    htm_Input($type='mail',$name='mail',$valu='',       $labl='@htm_Input(mail)',$hint='@Demo of htm_Input Field type mail with syntax control');
+    htm_Input($type='mail',$name='mail',$valu='',       $labl='@htm_Input(mail)',$hint='@Demo of htm_Input Field type mail with syntax control',  $plho='aa@bb.dd');
     htm_Input($type='link',$name='link',$valu='',       $labl='@htm_Input(url)', $hint='@Demo of htm_Input Field type url with syntax control',                 $plho='https://...',$wdth='', $algn='left',$unit='',$disa=false,$rows='3',$step='',$more='');
     htm_Input($type='pass',$name='pas1',$valu='',       $labl='@htm_Input(pass)',$hint='@Demo of htm_Input Field type pass with "hidden" output',               $plho='Enter...',   $wdth='', $algn='left',$unit='');
     htm_Input($type='barc',$name='barc',$valu='BARCODE',$labl='@htm_Input(barc)',$hint='@Demo of htm_Input Field type barc: shown with font barcode',           $plho='',           $wdth='', $algn='center');
-    htm_Input($type='html',$name='html',$valu='',       $labl='@htm_Input(html)',$hint='@Demo of htm_Input Field type html: Multi-line formatted html-text',    $plho='Enter...',   $wdth='', $algn='left',$unit='',$disa=false,$rows='3');
+    htm_Input($type='html',$name='html',$valu='',       $labl='@htm_Input(html)',$hint='@Demo of htm_Input Field type html: Multi-line formatted html-text',    $plho='<div>...</div>',   $wdth='', $algn='left',$unit='',$disa=false,$rows='3');
     htm_Input($type='area',$name='area',$valu='',       $labl='@htm_Input(area)',$hint='@Demo of htm_Input Field type area: Multi-line text',                   $plho='Enter...',   $wdth='', $algn='left',$unit='',$disa=false,$rows='6');
         
     htm_Input($type='chck',$name='chck1',$valu='',$labl='@htm_Input(chck)',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',          $plho='Enter...',   $wdth='', $algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list= [
@@ -85,7 +90,8 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage='../_background.png',$alig
     htm_Input($type='file',$name='file',$valu='',$labl='@htm_Input(file)',$hint='@Demo of htm_Input Field type file',           $plho='',  $wdth='', $algn='left',  $unit='',$disa=false,$rows='1',$step='',$more='');
     htm_Input($type='imag',$name='imag',$valu='',$labl='@htm_Input(imag)',$hint='@Demo of htm_Input Field type image',          $plho='',  $wdth='', $algn='left',  $unit='',$disa=false,$rows='1',$step='',$more='');
     if (USEGRID) echo '</div>'; // grid-container}
-    htm_PanlFoot();
+    //htm_PanlFoot();
+    htm_PanlFoot($labl='@Save', $subm=true, $title='@Just demo !', $btnKind='save', $akey='', $simu=false, $frmName);
     
 htm_PageFina();
 ?>

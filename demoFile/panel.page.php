@@ -1,5 +1,7 @@
-<?php   $DocFil= './Proj1/demoFile/panel.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-20';     $DocIni='evs';  $ModulNr=0; ## File informative only
-## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
+<?php   $DocFil= './Proj1/demoFile/panel.page.php';    $DocVer='1.0.0';    $DocRev='2021-01-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
+
+$GLOBALS["ØProgRoot"]= '../';
 require_once ('../php2html.lib.php');
 require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
@@ -13,7 +15,7 @@ require_once ('../menu.inc.php');
     if (isset($_POST['name']))  { $namex = $_POST['name']; }    // Special case !
 
 ### PAGE-START:
-htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='../_background.png',$align='center');
+htm_PagePrep($pageTitl='panel.page.php', $ØPageImage= $ØProgRoot.'_assets/images/_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
     echo 'About the foldable panel-system:';  htm_nl(2);
     
@@ -42,7 +44,7 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='../_background.png',$alig
                   $plho='@Password...',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='');
         $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
         //htm_Input($type='html',$name='text',$valu=$h,$labl='Hash:',$hint='@Demo of htm_Input Field type html',$algn='left',$unit='',$disa=false,$rows='2',$width='95%',$step='',$more='',$plho='@Account...');
-        echo '<br><br><a href="'.$link.'" accesskey="'.$akey.'"> '. Lbl_Tip('@Forgotten password ?','@Click to request a new password'). '</a>';
+        echo '<br><br><a href="'.($link ?? '').'" accesskey="'.$akey.'"> '. Lbl_Tip('@Forgotten password ?','@Click to request a new password'). '</a>';
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field type intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');
     htm_PanlFoot( $labl='Login', $subm=true, $title='@Login with the given data', $buttonKind='save', $akey='l', $simu=false, $frmName='');
     htm_RowColNext($RowColWdth=280);
@@ -53,7 +55,7 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='../_background.png',$alig
         $m= ' padding:0; test:99; ';
         $m= '';
         //echo '<span style="text-aling: center;">';
-        htm_Input($type='text',$name='name',$valu=$namex,$labl='@Name', $hint='',
+        htm_Input($type='text',$name='name',$valu=$namex?? '' ,$labl='@Name', $hint='',
                   $plho='@The name...', $width=$wdh,$algn='left',$unit='',$disa=false,$rows='3',$step='',$more=$m);
         htm_Input($type='text',$name='stre',$valu=$stre,$labl='@Street',   $hint='',
                   $plho='@Address 1...',$width=$wdh,$algn='left',$unit='',$disa=false,$rows='3',$step='',$more=$m);
@@ -86,13 +88,13 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage='../_background.png',$alig
         if (isset($_POST['namechck']))  { $namechck = 'checked'; }        
         htm_Input($type='chck',$name='chck3',$valu=$chck3,$labl='@Mailing', $hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',
                   $plho='Enter...',$width=$wdh,$algn='left',$unit='',$disa=false,$rows='3',$step='',$more=$m,
-        $list= [['namechck','@Mailing active','@Use mail',$namechck]]);
+        $list= [['namechck','@Mailing active','@Use mail',$namechck ?? '']]);
         
         $GridOn= false;
         htm_nl(1);
-        htm_Input($type='date',$name='datr',$valu=$date, $labl='@Created',$hint='@Demo of htm_Input Field type date with browser popup selector',
+        htm_Input($type='date',$name='datr',$valu=$date ?? '', $labl='@Created',$hint='@Demo of htm_Input Field type date with browser popup selector',
                   $width='50%',$plho='',$algn='left',$unit='',$disa=false,$rows='3');
-        htm_Input($type='date',$name='dath',$valu=$date, $labl='@Changed',$hint='@Demo of htm_Input Field type date with browser popup selector',
+        htm_Input($type='date',$name='dath',$valu=$date ?? '', $labl='@Changed',$hint='@Demo of htm_Input Field type date with browser popup selector',
                   $plho='',$width='50%',$algn='left',$unit='',$disa=false,$rows='3');
         
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field type intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');

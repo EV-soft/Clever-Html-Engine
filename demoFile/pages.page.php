@@ -1,5 +1,7 @@
-<?php   $DocFil= './Proj1/demoFile/pages.page.php';    $DocVer='1.0.0';    $DocRev='2020-07-05';     $DocIni='evs';  $ModulNr=0; ## File informative only
-## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** 
+<?php   $DocFil= './Proj1/demoFile/pages.page.php';    $DocVer='1.0.0';    $DocRev='2021-01-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
+
+$GLOBALS["ØProgRoot"]= '../';
 require_once ('../php2html.lib.php');
 require_once ('../menu.inc.php');
 // require_once ('translate.inc.php');
@@ -11,7 +13,7 @@ require_once ('../menu.inc.php');
     foreach ($varId as $id) {$$id= postValue($$id,$id); }; // echo $id.':'.$$id.' ';};
     if (isset($_POST['name']))  { $namex = $_POST['name']; }
 
-htm_PagePrep($pageTitl='pages.page.php', $ØPageImage='../_background.png',$align='center');
+htm_PagePrep($pageTitl='pages.page.php', $ØPageImage=$ØProgRoot.'_assets/images/_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
     
     htm_RowColTop($RowColWdth=480);
