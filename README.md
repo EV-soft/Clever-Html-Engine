@@ -1,4 +1,4 @@
-# php2html.lib
+# php2html.lib = Clever-Html-engine
 Build html pages with php functions in the PHP2HTM library
 
 php2html.lib.php is a PHP library of functions that can generate HTML pages.
