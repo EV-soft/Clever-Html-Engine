@@ -1,4 +1,4 @@
-# php2html.lib
+# php2html.lib = Clever-Html-engine
 Build dynamic html pages with php functions.
 
 Dynamic PHP to HTML generator.
@@ -11,10 +11,10 @@ All combined with: Label, ToolTip/Hint, Placeholder, Dimensions, Colors and more
 Included translate system. Font-awesome icons.
 Extended table functions: sort, filter, zebra-stripe, fixed-header and more, with Mottie Tablesorter-system.
     
-Based on PHP7+, HTML5, CSS3.
+Based on PHP7+/PHP8, HTML5, CSS3.
 Source could be UTF-8, no tabs, indent: 4 chars
 
-The layout is compact with labels above fields, so it is suitable to narrow screens.
+The layout is compact with labels above fields, so it is suitable to narrow screens or windows.
 
 All shaded labels have a tooltip/hint, that appears when mouse is held over.
 
@@ -24,7 +24,7 @@ Minimum file needs: php2html.lib.php, menu.inc.php and some in _assets folders.
 
 Look and feel at the demo here:
 
-<iframe width="1000px" height="800px" seamless frameborder="0" src="https://ev-soft.work/p2h/demoFile/CustomerOrder.page.php" > </iframe> 
+<iframe width="1200px" height="800px" seamless frameborder="0" src="https://ev-soft.work/p2h/demoFile/CustomerOrder.page.php" > </iframe> 
 
 
 The parameters when calling htm_Input:
