@@ -8,19 +8,22 @@ ELEMENTS:
 Create HTML elements INPUT / CHECKBOX / RADIO-GROUP / TABLE and other usefull, from PHP-functions.
 All combined with: Label, ToolTip/Hint, Placeholder, Dimensions, Colors and more.
 
-Included translate system. Font-awesome icons.
+Included translate system, to all the user interface strings. 
+
+Font-awesome icons, to be shown with all labels.
+
 Extended table functions: sort, filter, zebra-stripe, fixed-header and more, with Mottie Tablesorter-system.
     
-Based on PHP7+/PHP8, HTML5, CSS3.
+Based on PHP7+/PHP8+, HTML5, CSS3.
 Source could be UTF-8, no tabs, indent: 4 chars
 
 The layout is compact with labels above fields, so it is suitable to narrow screens or windows.
 
 All shaded labels have a tooltip/hint, that appears when mouse is held over.
 
-Look at the xx.page.php files to see how it works.
+Look at the *.page.php files to see how it works.
 
-Minimum file needs: php2html.lib.php, menu.inc.php and some in _assets folders.
+Minimum file needs: php2html.lib.php, and a few in _assets folders, or from CDN-servers.
 
 Look and feel at the demo here:
 
@@ -125,4 +128,4 @@ To create a Panel there are functions:
 
 Here you will find the repository:    
 
-https://github.com/EV-soft/ev-soft.github.io
+https://github.com/EV-soft/Clever-Html-engine
