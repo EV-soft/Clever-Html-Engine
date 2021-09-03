@@ -1,4 +1,4 @@
-# php2html.lib = Clever-Html-engine
+# php2html.lib = Clever-Html-Engine
 Build html pages with php functions in the PHP2HTM library
 
 php2html.lib.php is a PHP library of functions that generates HTML pages and elements.
@@ -11,7 +11,7 @@ all combined with: **Label**, **ToolTip**, **Placeholder**, dimensions and other
 Included translate system. Font-awesome icons.
 Extended TABLE functions with Mottie Tablesorter-system.
 	
-Based on PHP7+/PHP8, HTML5, CSS3.
+Based on PHP7+/PHP8+, HTML5, CSS3.
 
 Source must be in UTF-8, no tabs, indent: 4 chars
 
