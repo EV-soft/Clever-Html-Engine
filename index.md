@@ -1,4 +1,4 @@
-# php2html.lib = Clever-Html-engine
+# php2html.lib = Clever-Html-Engine
 Build dynamic html pages with php functions.
 
 Dynamic PHP to HTML generator.
@@ -128,4 +128,4 @@ To create a Panel there are functions:
 
 Here you will find the repository:    
 
-https://github.com/EV-soft/Clever-Html-engine
+https://github.com/EV-soft/Clever-Html-Engine
