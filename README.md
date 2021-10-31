@@ -43,3 +43,5 @@ and looks like this:
 ![image](https://user-images.githubusercontent.com/21997911/131254454-3198a243-a1c3-4238-abe7-2fe46b232fc0.png)
     
 You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
+
+For visitors - Need no donation, but bug fixes are very very welcome.
