@@ -1,31 +1,35 @@
-<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2021-01-24';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../translate.inc.php';    $DocVer='1.1.0';    $DocRev='2021-11-01';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 require_once ('filedata.inc.php');
 
-$lang_list= [];
+$arrLang= [];
 /**
  * Scann sourcetxt for strings in func lang('') and others to translate:
  * @param string $code to analyse
  * @output to screen
  */
 function scannLngStrings($code= 'dk') {
-    global $lang_list, $App_Conf;
+    global $arrLang, $App_Conf;
     function scannfor($searchPref, $searchSuff='', &$count, &$longest, &$total, &$arrStrings, $flag='') { 
         // global $ØProgRoot;
-        $ØProgRoot= '../'; 
+        $ØProgRoot= '.././'; 
         # Source files to scann:
         $lines = file(__FILE__);  // This file: translate.inc.php
         $files= [$ØProgRoot.'php2html.lib.php',
-            //   $ØProgRoot.'menu.inc.php',
-                $ØProgRoot.'translate.page.php',
+                 $ØProgRoot.'menu.inc.php',
+                 $ØProgRoot.'translate.page.php',
                 # Other files to scann:
                 /* 'Demo.page.php', */
                 'CustomerOrder.page.php'
+            //  $ØProgRoot.'menu.inc.php'
             //  $ØProgRoot.'folder-explorer.php'
             ];
-        foreach ($files as $fname) { $lin= file($fname); if ($lin) $lines = array_merge($lines, $lin);
-                                     else echo '<br>? FILE: <b>'.$fname.'</b>';        /* echo ' '.count($lines); */ }
+        foreach ($files as $fname) { 
+            $lin= file($fname); 
+            if ($lin) $lines = array_merge($lines, $lin);
+            else echo '<br>? FILE: <b>'.$fname.'</b>';        /* echo ' '.count($lines); */ 
+        }
         //arrPrint($lines,'$lines'); 
         
         # Process the files contents:
@@ -67,16 +71,16 @@ function scannLngStrings($code= 'dk') {
     $lngArr = sys_get_translations(['']);  //  All existing lng in /sys_trans.json
     $lang= 'en';    //  System
     //$code= 'de';  //  Analyse
-    $name= $lang_list[$code] ?? '';
+    $name= $arrLang[$code] ?? '';
     $nati= ($_SESSION['currLang']['native'] ?? ''); // Update problem ! FIXIT
-    // $nati= $lang_list[$code]['native'];
+    // $nati= $arrLang[$code]['native'];
     // arrPrint($_SESSION['currLang'],'$_SESSION["currLang"]');
-    if(array_key_exists('en',$lang_list)) {echo 'Data: '.$lang_list['en']; }
+    if(array_key_exists('en',$arrLang)) {echo 'Data: '.$arrLang['en']; }
 
     echo '<br><b>The current strings to translate:</b>';
     echo '<br>Without duplicates - Total: '.count($arrStrings).' strings. The longest phrase is on '.$longest.' characters. <br>';
     //echo '<br>Nearly all user interface, can be translated. This page and a few error- and system messages is still only in english!  <br>';
-    echo '<br><b>Analysing - '.$App_Conf['language'].' / '.$nati./* array_search($lang_list,substr($App_Conf['language'],0,2)). */'</b>';
+    echo '<br><b>Analysing - '.$App_Conf['language'].' / '.$nati./* array_search($arrLang,substr($App_Conf['language'],0,2)). */'</b>';
     echo '<br>Below is the updated and sorted JSON code, that you can use to create/complete/maintain your language. <br>';
     echo '<br><b>How:</b>';
     echo '<br>Copy / Paste the list to your editor, and translate to your language. (UTF8 file-format!)';
@@ -143,9 +147,9 @@ function scannLngStrings($code= 'dk') {
                                  // $googleFile = fopen("sys_2Google.txt", "w");
                                  $gog= file_get_contents ("sys_2Google.txt");
                                  //foreach ($gog as $line) $string= $string + '<br>' + $line;
-    // htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$plho='@Enter...',$wdth='',$algn='left',$unit='',$disa=false,$rows='2',$step='',$more='',$list=[],$llgn='R' )
+    // htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$plho='@Enter...',$wdth='',$algn='left',$unit='',$disa=false,$rows='2',$step='',$attr='',$list=[],$llgn='R' )
     htm_Input($type='area',$name='goog',$valu=$gog,$labl='sys_2Google.txt',  $hint='@The newly generated file to Google-translate',$plho='@Empty !',
-                    $width='930px',$algn='left',$unit='',$disa=false,$rows='10',$step='',$more=$m ?? '', $llgn='L');
+                    $width='930px',$algn='left',$unit='',$disa=false,$rows='10',$step='',$attr=$m ?? '', $llgn='L');
         
     $i= 0;
     echo '<br><br><b>Keys in language "'.$App_Conf['language'].' / '.$nati.'" with string the same as the key </b>(missing translate ?):<br>';

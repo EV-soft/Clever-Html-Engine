@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj1/demoFile/other.page.php';    $DocVer='1.0.0';    $DocRev='2021-01-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/other.page.php';    $DocVer='1.1.0';    $DocRev='2021-11-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 $GLOBALS["ØProgRoot"]= '../';
@@ -19,7 +19,7 @@ htm_PagePrep($pageTitl='other.page.php', $ØPageImage=$ØProgRoot.'_assets/image
             <br><br>
             <b>htm_AcceptButt()</b> - a programmeble button. You give: <br>
             $labl           - The caption on the button               <br>
-            $title          - The description about actual function   <br>
+            $hint           - The description about actual function   <br>
             $btnKind        - The kind gives the color                <br>
             $form           - The form name on witch it could submit  <br>
             $width          - Width of the button                     <br>
@@ -27,8 +27,10 @@ htm_PagePrep($pageTitl='other.page.php', $ØPageImage=$ØProgRoot.'_assets/image
             $proc=false,    - Act as a procedure or a function        <br>
             $tipplc         - Placement of the popup tip              <br><br>
             <b>htm_IconButt()</b> - a general button with icon. <br><br>
+            <b>htm_ModalDialog()</b>    - A popup message, locks program and waits for a user response. <br>
+            <b>Pmnu_0() / Pmnu_00()</b> - A popup context menu system.  <br><br>
             A special group of functions:                             <br>
-            <b>dvl_</b> functions - relates to development (tools and design) <br>');
+            <b>dvl_</b> functions - relates to development (tools and design) <br><br>');
 
     htm_PanlFoot();
 

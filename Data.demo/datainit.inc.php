@@ -1,4 +1,4 @@
-<?php // /demoData/datainit.inc.php
+<?php // /Data.demo/datainit.inc.php
 
 function DEB_Grup () { return( [
 		['1', '@1. Danske debitorer',        '@1. Danske debitorer'],

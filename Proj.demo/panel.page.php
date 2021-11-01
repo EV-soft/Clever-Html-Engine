@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj1/demoFile/panel.page.php';    $DocVer='1.0.0';    $DocRev='2021-01-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/panel.page.php';    $DocVer='1.1.0';    $DocRev='2021-11-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 $GLOBALS["ØProgRoot"]= '../';
@@ -15,12 +15,12 @@ require_once ('../menu.inc.php');
     if (isset($_POST['name']))  { $namex = $_POST['name']; }    // Special case !
 
 ### PAGE-START:
-htm_PagePrep($pageTitl='panel.page.php', $ØPageImage= $ØProgRoot.'_assets/images/_background.png',$align='center');
+htm_Page_0($pageTitl='panel.page.php', $ØPageImage= $ØProgRoot.'_assets/images/_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
     echo 'About the foldable panel-system:';  htm_nl(2);
     
     htm_RowColTop($RowColWdth=1100);
-    htm_PanlHead($frmName='head', $capt='htm_PanlHead(W= 560px) (click to close/open)', $parms='', $icon='fas fa-info', $class='panelW560', $func='Undefined', $more='', 
+    htm_Panel_0($frmName='head', $capt='htm_Panel_0(W= 560px) (click to close/open)', $parms='', $icon='fas fa-info', $class='panelW560', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php');
         htm_nl(1);
         htm_TextDiv('Panels are used to display a collection of HTML-objects <br>
@@ -28,13 +28,13 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage= $ØProgRoot.'_assets/imag
               They are defined i 14 widths from 160 px to 1200 px.<br><br>
               The panel content can be displayed/hidden by clicking panel-header.','center');
         htm_nl(2);
-    htm_PanlFoot( $labl='Demo', $subm=false, $title='Buttom', $buttonKind='save', $akey='', $simu=false, $frmName='');
+    htm_Panel_00( $labl='Demo', $subm=false, $title='Buttom', $buttonKind='save', $akey='', $simu=false, $frmName='');
     htm_RowColBott();
     
     htm_RowColTop($RowColWdth=280);
     $GridOn= false;
     
-    htm_PanlHead($frmName='head1', $capt='@Signup: <small>(Example)</small>', $parms='', $icon='fas fa-user-check', $class='panelW280', $func='Undefined', $more='', 
+    htm_Panel_0($frmName='head1', $capt='@Signup: <small>(Example)</small>', $parms='', $icon='fas fa-user-check', $class='panelW280', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php');
         htm_Input($type='text',$name='text1',$valu=$text1,$labl='@Financial Accounting',$hint='@The name of the accounting for wich you have access',
                   $plho='@Account...',$width='75%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='');
@@ -46,10 +46,10 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage= $ØProgRoot.'_assets/imag
         //htm_Input($type='html',$name='text',$valu=$h,$labl='Hash:',$hint='@Demo of htm_Input Field type html',$algn='left',$unit='',$disa=false,$rows='2',$width='95%',$step='',$more='',$plho='@Account...');
         echo '<br><br><a href="'.($link ?? '').'" accesskey="'.$akey.'"> '. Lbl_Tip('@Forgotten password ?','@Click to request a new password'). '</a>';
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field type intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');
-    htm_PanlFoot( $labl='Login', $subm=true, $title='@Login with the given data', $buttonKind='save', $akey='l', $simu=false, $frmName='');
+    htm_Panel_00( $labl='Login', $subm=true, $title='@Login with the given data', $buttonKind='save', $akey='l', $simu=false, $frmName='');
     htm_RowColNext($RowColWdth=280);
     
-    htm_PanlHead($frmName='head2', $capt='@Contact info: <small>(Example)</small>', $parms='', $icon='fas fa-pen-square', $class='panelW280', $func='Undefined', $more='', 
+    htm_Panel_0($frmName='head2', $capt='@Contact info: <small>(Example)</small>', $parms='', $icon='fas fa-pen-square', $class='panelW280', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php');
         $wdh= '100%';
         $m= ' padding:0; test:99; ';
@@ -99,22 +99,22 @@ htm_PagePrep($pageTitl='panel.page.php', $ØPageImage= $ØProgRoot.'_assets/imag
         
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field type intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');
         //echo '</span>';
-    htm_PanlFoot( $labl='Save', $subm=true, $title='@Save data in this panel', $buttonKind='save', $akey='s', $simu=false, $frmName='xxx');
+    htm_Panel_00( $labl='Save', $subm=true, $title='@Save data in this panel', $buttonKind='save', $akey='s', $simu=false, $frmName='xxx');
     
     htm_RowColNext($RowColWdth=480);
-    htm_PanlHead($frmName='', $capt='How creating panels:', $parms='', $icon='fas fa-info', $class='panelW480', $func='Undefined', $more='', 
+    htm_Panel_0($frmName='', $capt='How creating panels:', $parms='', $icon='fas fa-info', $class='panelW480', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
     htm_TextDiv('To build a panel there are 2 functions: <br><br>
-        <b>htm_PanlHead()</b> - prepares the start of a panel.<br>
+        <b>htm_Panel_0()</b> - prepares the start of a panel.<br>
         and: <br>
-        <b>htm_PanlFoot()</b> - finalize the panel.     <br><br>
+        <b>htm_Panel_00()</b> - finalize the panel.     <br><br>
         In between, you add your content.             <br><br>
         <small>See the source in php2html.lib.php to manage the function parameters.</small>
         ');
-    htm_PanlFoot();
+    htm_Panel_00();
     htm_RowColBott();
     
     PanelOff($First=2,$Last=3); // Close panel 2 and 3 on page open
-htm_PageFina();
+htm_Page_00();
 ### :PAGE_END
 ?>

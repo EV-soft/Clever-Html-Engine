@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj1/demoFile/CustomerOrder.page.php';  $DocVer='1.0.0';  $DocRev='2021-01-25';   $DocIni='evs';  $ModulNr=0;
+<?php   $DocFil= './Proj1/demoFile/CustomerOrder.page.php';  $DocVer='1.0.0';  $DocRev='2020-08-17';   $DocIni='evs';  $ModulNr=0;
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 require_once ('../php2html.lib.php');
 require_once ('../menu.inc.php');

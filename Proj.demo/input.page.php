@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj1/demoFile/input.page.php';    $DocVer='1.0.0';    $DocRev='2021-01-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj1/demoFile/input.page.php';    $DocVer='1.0.0';    $DocRev='2020-11-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 $GLOBALS["ØProgRoot"]= '../';
@@ -22,7 +22,7 @@ require_once ('../menu.inc.php');
 htm_PagePrep($pageTitl='input.page.php', $ØPageImage=$ØProgRoot.'_assets/images/_background.png',$align='center');
     Menu_Topdropdown(true); htm_nl(1);
 
-    htm_PanlHead($frmName='test', $capt='The collection of htm_Input():', $parms='', $icon='fas fa-info', $class='panelW720', $func='Undefined', $more='', 
+    htm_PanlHead($frmName='test', $capt='The collection of htm_Input() variants:', $parms='', $icon='fas fa-info', $class='panelW720', $func='Undefined', $more='', 
                 $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
     if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto; background-color: white; background-image: none;">';
     // htm_Input() Only $type is required - Defaults for all others!
@@ -81,6 +81,7 @@ htm_PagePrep($pageTitl='input.page.php', $ØPageImage=$ØProgRoot.'_assets/image
     ['posta','happy','@Happy','checked'],
     ['postb','sorry','@Sorry'],
     ]);
+    htm_nl(2);
     htm_Input($type='colr',$name='colr',$valu='#0000ff',$labl='@htm_Input(colr)',$hint='@Demo of htm_Input Field type color',   $plho='',  $wdth='', $algn='left',  $unit='',$disa=false,$rows='1',$step='',$more='');
     htm_Input($type='butt',$name='butt',$valu='BUTTON',$labl='@htm_Input(butt)',$hint='@Demo of htm_Input Field type butt',     $plho='',  $wdth='', $algn='center',$unit='',$disa=false,$rows='1',$step='',$more='');
     htm_Input($type='sear',$name='sear',$valu='',$labl='@htm_Input(sear)',$hint='@Demo of htm_Input Field type search',         $plho='?', $wdth='', $algn='left',  $unit='',$disa=false,$rows='1',$step='',$more='');

@@ -1,0 +1,466 @@
+<!DOCTYPE html>     ###################################### - contextual.demo.html
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Contentual Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="contextual.theme.css">
+    <link rel="stylesheet" type="text/css" href="contextual.css">
+    <script src="contextual.js"></script>
+    <style>
+        * {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        body {
+            background: rgb(30, 30, 30);
+        }
+    </style>
+</head>
+
+<body>
+    <input type='button' id='textBtn' value='Left click context' />
+
+    <input type='button' id='contextBtn' value='Right click context' />
+
+    <script>
+        let parentControl = document.getElementById('textBtn');
+        parentControl.addEventListener('click', () => {
+            new Contextual({
+                isSticky: true,
+                width: '250px',
+                items: [
+                    {type: 'custom', markup: `<span>Custom item - add what you like</span>`},
+                    {type: 'multi', items: [
+                        {label: 'Copy', onClick: () => {console.log('Copy!')}},
+                        {label: 'Cut', onClick: () => {console.log('Cut!')}},
+                        {label: 'Paste', onClick: () => {console.log('Paste!')}},
+                    ]},
+                    {label: 'Button', onClick: () => {console.log('Item 1 clicked')}, shortcut: 'Ctrl+A'},
+                    {type: 'seperator'},
+                    {type: 'submenu', label: 'Sub menu', items: [
+                        {label: 'Subitem 1', onClick: () => {}},
+                        {label: 'Subitem 2', onClick: () => {}},
+                        {label: 'Subitem 3', onClick: () => {}},
+                    ]},
+                    {type: 'hovermenu', label: 'Hover menu', items: [
+                        {label: 'Subitem 1', onClick: () => {}},
+                        {label: 'Subitem 2', onClick: () => {}},
+                        {label: 'Subitem 3', onClick: () => {}},
+                    ]},
+                    {label: 'Disabled button', onClick: () => {}, shortcut: 'Ctrl+B', enabled: false},
+                ]
+            });
+        }, false);
+
+        let rightClickControl = document.getElementById('contextBtn');
+        rightClickControl.addEventListener('contextmenu', event => {
+            event.preventDefault();
+            //Add contextual menu here
+            new Contextual({
+                isSticky: false,
+                items: [
+                    {label: 'Item 1', onClick: () => {console.log('Item 1 clicked')}, shortcut: 'Ctrl+A'},
+                    {label: 'Item 2', onClick: () => {}, shortcut: 'Ctrl+B'},
+                    {type: 'seperator'},
+                    {label: 'Item 3', onClick: () => {}, shortcut: 'Ctrl+A'},
+                    {type: 'hovermenu', label: 'Hover menu', items: [
+                        {label: 'Subitem 1', onClick: () => {}},
+                        {label: 'Subitem 2', onClick: () => {}},
+                        {label: 'Subitem 3', onClick: () => {}},
+                    ]},
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>
+
+
+###################################### - contextual.js
+
+class Contextual{
+    /**
+     * Creates a new contextual menu
+     * @param {object} opts options which build the menu e.g. position and items
+     * @param {number} opts.width sets the width of the menu including children
+     * @param {boolean} opts.isSticky sets how the menu apears, follow the mouse or sticky
+     * @param {Array<ContextualItem>} opts.items sets the default items in the menu
+     */
+    constructor(opts){   
+        contextualCore.CloseMenu();
+
+        this.position = opts.isSticky != null ? opts.isSticky : false;
+        this.menuControl = contextualCore.CreateEl(`<ul class='contextualJs contextualMenu'></ul>`);
+        this.menuControl.style.width = opts.width != null ? opts.width : '200px';
+        opts.items.forEach(i => {
+            let item = new ContextualItem(i);
+            this.menuControl.appendChild(item.element);
+        });
+            
+        if(event != undefined){
+            event.stopPropagation()
+            document.body.appendChild(this.menuControl);
+            contextualCore.PositionMenu(this.position, event, this.menuControl);        
+        }
+
+        document.onclick = function(e){
+            if(!e.target.classList.contains('contextualJs')){
+                contextualCore.CloseMenu();
+            }
+        }    
+    }
+    /**
+     * Adds item to this contextual menu instance
+     * @param {ContextualItem} item item to add to the contextual menu
+     */
+    add(item){
+        this.menuControl.appendChild(item.element);
+    }
+    /**
+     * Makes this contextual menu visible
+     */
+    show(){
+        event.stopPropagation()
+        document.body.appendChild(this.menuControl);
+        contextualCore.PositionMenu(this.position, event, this.menuControl);    
+    }
+    /**
+     * Hides this contextual menu
+     */
+    hide(){
+        event.stopPropagation()
+        contextualCore.CloseMenu();
+    }
+    /**
+     * Toggle visibility of menu
+     */
+    toggle(){
+        event.stopPropagation()
+        if(this.menuControl.parentElement != document.body){
+            document.body.appendChild(this.menuControl);
+            contextualCore.PositionMenu(this.position, event, this.menuControl);        
+        }else{
+            contextualCore.CloseMenu();
+        }
+    }
+}  
+class ContextualItem{
+    element;
+    /**
+     * 
+     * @param {Object} opts
+     * @param {string} [opts.label]
+     * @param {string} [opts.type]
+     * @param {string} [opts.markup]
+     * @param {string} [opts.icon]
+     * @param {string} [opts.cssIcon]
+     * @param {string} [opts.shortcut]
+     * @param {void} [opts.onClick]
+     * @param {boolean} [opts.enabled]
+     * @param {Array<ContextualItem>} [opts.items]
+     * 
+     */
+    constructor(opts){
+        switch(opts.type){
+            case 'seperator':
+                this.seperator();
+                break;
+            case 'custom':
+                this.custom(opts.markup);
+                break;
+            case 'multi': 
+                this.multiButton(opts.items);
+                break;
+            case 'submenu':
+                this.subMenu(opts.label, opts.items, (opts.icon !== undefined ? opts.icon : ''), (opts.cssIcon !== undefined ? opts.cssIcon : ''), (opts.enabled !== undefined ? opts.enabled : true));
+                break;
+            case 'hovermenu': 
+                this.hoverMenu(opts.label, opts.items, (opts.icon !== undefined ? opts.icon : ''), (opts.cssIcon !== undefined ? opts.cssIcon : ''), (opts.enabled !== undefined ? opts.enabled : true));
+                break;
+            case 'normal':
+            default:
+                this.button(opts.label, opts.onClick, (opts.shortcut !== undefined ? opts.shortcut : ''), (opts.icon !== undefined ? opts.icon : ''), (opts.cssIcon !== undefined ? opts.cssIcon : ''), (opts.enabled !== undefined ? opts.enabled : true));       
+        }
+    }
+
+    button(label, onClick, shortcut = '', icon = '', cssIcon = '', enabled = true){
+        this.element = contextualCore.CreateEl( `
+            <li class='contextualJs contextualMenuItemOuter'>
+                <div class='contextualJs contextualMenuItem ${enabled == true ? '' : 'disabled'}'>
+                    ${icon != ''? `<img src='${icon}' class='contextualJs contextualMenuItemIcon'/>` : `<div class='contextualJs contextualMenuItemIcon ${cssIcon != '' ? cssIcon : ''}'></div>`}
+                    <span class='contextualJs contextualMenuItemTitle'>${label == undefined? 'No label' : label}</span>
+                    <span class='contextualJs contextualMenuItemTip'>${shortcut == ''? '' : shortcut}</span>
+                </div>
+            </li>`);               
+
+            if(enabled == true){
+                this.element.addEventListener('click', () => {
+                    event.stopPropagation();
+                    if(onClick !== undefined){ onClick(); }  
+                    contextualCore.CloseMenu();
+                }, false);
+            } 
+    }
+    custom(markup){
+        this.element = contextualCore.CreateEl(`<li class='contextualJs contextualCustomEl'>${markup}</li>`);
+    }
+    hoverMenu(label, items, icon = '', cssIcon = '', enabled = true){
+        this.element = contextualCore.CreateEl(`
+            <li class='contextualJs contextualHoverMenuOuter'>
+                <div class='contextualJs contextualHoverMenuItem ${enabled == true ? '' : 'disabled'}'>
+                    ${icon != ''? `<img src='${icon}' class='contextualJs contextualMenuItemIcon'/>` : `<div class='contextualJs contextualMenuItemIcon ${cssIcon != '' ? cssIcon : ''}'></div>`}
+                    <span class='contextualJs contextualMenuItemTitle'>${label == undefined? 'No label' : label}</span>
+                    <span class='contextualJs contextualMenuItemOverflow'>></span>
+                </div>
+                <ul class='contextualJs contextualHoverMenu'>
+                </ul>
+            </li>
+        `);
+
+        let childMenu = this.element.querySelector('.contextualHoverMenu'),
+        menuItem = this.element.querySelector('.contextualHoverMenuItem');
+
+        if(items !== undefined) {
+            items.forEach(i => {
+                let item = new ContextualItem(i);
+                childMenu.appendChild(item.element);
+            });
+        }
+        if(enabled == true){
+            menuItem.addEventListener('mouseenter', () => {
+
+            });
+            menuItem.addEventListener('mouseleave', () => {
+                
+            });
+        }
+    }
+    multiButton(buttons) {
+        this.element = contextualCore.CreateEl(`
+            <li class='contextualJs contextualMultiItem'>
+            </li>
+        `);
+        buttons.forEach(i => {
+            let item = new ContextualItem(i);
+            this.element.appendChild(item.element);
+        });
+    }
+    subMenu(label, items, icon = '', cssIcon = '', enabled = true){
+        this.element = contextualCore.CreateEl( `
+            <li class='contextualJs contextualMenuItemOuter'>
+                <div class='contextualJs contextualMenuItem ${enabled == true ? '' : 'disabled'}'>
+                    ${icon != ''? `<img src='${icon}' class='contextualJs contextualMenuItemIcon'/>` : `<div class='contextualJs contextualMenuItemIcon ${cssIcon != '' ? cssIcon : ''}'></div>`}
+                    <span class='contextualJs contextualMenuItemTitle'>${label == undefined? 'No label' : label}</span>
+                    <span class='contextualJs contextualMenuItemOverflow'>
+                        <span class='contextualJs contextualMenuItemOverflowLine'></span>
+                        <span class='contextualJs contextualMenuItemOverflowLine'></span>
+                        <span class='contextualJs contextualMenuItemOverflowLine'></span>
+                    </span>
+                </div>
+                <ul class='contextualJs contextualSubMenu contextualMenuHidden'>
+                </ul>
+            </li>`); 
+
+        let childMenu = this.element.querySelector('.contextualSubMenu'),
+            menuItem = this.element.querySelector('.contextualMenuItem');
+
+        if(items !== undefined) {
+            items.forEach(i => {
+                let item = new ContextualItem(i);
+                childMenu.appendChild(item.element);
+            });
+        }
+        if(enabled == true){
+            menuItem.addEventListener('click',() => {
+                menuItem.classList.toggle('SubMenuActive');
+                childMenu.classList.toggle('contextualMenuHidden');
+            }, false);
+        }
+    }
+    seperator(label, items) {
+        this.element = contextualCore.CreateEl(`<li class='contextualJs contextualMenuSeperator'><span></span></li>`);
+    }
+}
+
+const contextualCore = {
+    PositionMenu: (docked, el, menu) => {
+        if(docked){
+            menu.style.left = ((el.target.offsetLeft + menu.offsetWidth) >= window.innerWidth) ? 
+                ((el.target.offsetLeft - menu.offsetWidth) + el.target.offsetWidth)+"px"
+                    : (el.target.offsetLeft)+"px";
+
+            menu.style.top = ((el.target.offsetTop + menu.offsetHeight) >= window.innerHeight) ?
+                (el.target.offsetTop - menu.offsetHeight)+"px"    
+                    : (el.target.offsetHeight + el.target.offsetTop)+"px";
+        }else{
+            menu.style.left = ((el.clientX + menu.offsetWidth) >= window.innerWidth) ?
+                ((el.clientX - menu.offsetWidth))+"px"
+                    : (el.clientX)+"px";
+
+            menu.style.top = ((el.clientY + menu.offsetHeight) >= window.innerHeight) ?
+                (el.clientY - menu.offsetHeight)+"px"    
+                    : (el.clientY)+"px";
+        }
+    },
+    CloseMenu: () => {
+        let openMenuItem = document.querySelector('.contextualMenu:not(.contextualMenuHidden)');
+        if(openMenuItem != null){ document.body.removeChild(openMenuItem); }      
+    },
+    CreateEl: (template) => {
+        var el = document.createElement('div');
+        el.innerHTML = template;
+        return el.firstElementChild;
+    }
+};
+
+
+####################################### - contextual.css
+
+/* Main context menu outer */
+.contextualMenu{
+    font-size: 13px;
+    position: absolute;
+    padding: 8px 0;
+    background: var(--contextualMenuBg);
+    box-shadow: var(--contextualMenuShadow);
+    border-radius: var(--contextualMenuRadius);
+    margin:0;
+    list-style: none;
+    color: var(--contextualMenuText);
+}
+
+/* Menu seperator item */
+.contextualMenuSeperator{
+    display: block;
+    position: relative;
+    padding: 5px 5px;
+}
+    .contextualMenuSeperator span{
+        display: block;
+        width:100%;
+        height:1px;
+        background: var(--contextualSeperator);
+    }
+
+/* Default menu item */
+.contextualMenuItemOuter {
+    position: relative;
+}
+.contextualMenuItem{
+    display: block;
+    padding: 5px 8px;
+    cursor: default;
+}
+    .contextualMenuItem:hover{
+        background: var(--contextualHover);
+    }
+    .contextualMenuItemIcon{
+        float: left;
+        width:16px;
+        height: 16px;
+    }
+    .contextualMenuItemTitle{
+        text-align: left;
+        line-height: 16px;
+        display: inline-block;
+        padding: 0px 0px 0px 7px;
+    }
+    .contextualMenuItemTip{
+        float: right;
+        padding: 0px 0px 0px 50px;
+        text-align: right;
+        line-height: 16px;
+    }
+    .contextualMenuItemOverflow{
+        float: right;
+        width:16px;
+        height: 16px;
+        padding: 1px 0px 0px 7px;
+    }
+
+        .contextualMenuItemOverflow .contextualMenuItemOverflowLine{
+            display: block;
+            height: 1px;
+            margin: 3px 2px;
+            background: var(--contextualOverflowIcon);
+        }
+        .contextualMenuItemOverflow.hidden{
+            display: none;
+        }
+        
+    .contextualMenuItem.disabled{
+        opacity: 0.4;
+    }
+    .contextualMenuItem.disabled:hover{
+        background: none;
+    }
+
+/* Submenu item */ 
+.contextualSubMenu{
+    padding: 0;
+    margin: 0;
+    background: var(--contextualSubMenuBg);
+    border-radius: var(--contextualMenuRadius);
+    width: 100%;
+    height: auto;
+    max-height: 1000px;
+    transition: max-height 0.5s;
+    overflow: hidden;
+}
+    .contextualSubMenu .contextualMenuItem:hover{
+        background: var(--contextualHover);
+    }
+
+.contextualMenuHidden{
+    max-height: 0;
+}
+
+/* Multi item button */
+.contextualMultiItem{
+    display: flex;
+    position: relative;
+}
+    .contextualMultiItem .contextualMenuItemOuter{
+        flex: auto;
+        display: inline-block;
+    }
+
+/* Hover menu */
+.contextualHoverMenuOuter{
+    position: relative;
+}
+.contextualHoverMenuItem{
+    display: block;
+    padding: 5px 8px;
+    cursor: default;
+}
+.contextualHoverMenuItem.disabled{
+    opacity: 0.4;
+}
+.contextualHoverMenuItem.disabled:hover{
+    background: none;
+}
+.contextualHoverMenuItem:hover{
+    background: var(--contextualHover);
+}
+
+.contextualHoverMenuOuter > .contextualHoverMenu{
+    display: none;
+}
+.contextualHoverMenuOuter:hover > .contextualHoverMenu{
+    display: block;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background: var(--contextualMenuBg);
+    box-shadow: var(--contextualMenuShadow);
+    border-radius: var(--contextualMenuRadius);
+    padding: 8px 0;
+    width: 100%;
+    z-index: 1000;
+    list-style: none;
+}

@@ -1,4 +1,4 @@
-<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2021-01-25';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../Proj1/translate.inc.php';    $DocVers='1.0.0';    $DocRev1='2020-11-30';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 require_once ('filedata.inc.php');
