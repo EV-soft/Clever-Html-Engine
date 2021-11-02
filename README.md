@@ -41,7 +41,32 @@ When using PHP2HTML your code will be more compact, and easier to read.
 and looks like this:
 
 ![image](https://user-images.githubusercontent.com/21997911/131254454-3198a243-a1c3-4238-abe7-2fe46b232fc0.png)
-    
+
+
+
+<b>How to start your first project</b>
+
+Save system-files on your web-server in system-folder '{public-URL}/hello'
+
+Create project-folder '/world' and create the file: '{public-URL}/hello/world/first.page.php' with this content:
+<pre><code>< ? 
+$GLOBALS["ØProgRoot"]= '../';
+require_once ('../php2html.lib.php');
+htm_Page_0( $pageTitl='DEMO', $ØPageImage='../_accessories/_background.png',$align='center',$PgInfo=lang('@PHP2HTML: My first page'));
+    htm_Caption($labl='HELLO WORLD:',$style='color:#550000; font-weight:600; font-size: 18px;',$align='center',$hint='');
+    htm_nl(2);
+    htm_TextDiv($content='This page is build with HTM2PHP',$align='center',$marg='8px',$attr='width:300px; margin:auto; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; background-color: white; ');
+htm_Page_00()
+?>
+</code></pre>
+(Correct: '< ?' to '<?' in the first line)
+
+Now you can see the page in your browser at URL: '{public-URL}/hello/world/first.page.php'
+
+Advanced example - see files in folder: '{public-URL}/hello/Proj.demo/'
+ 
+<b>More information...</b>
+
 You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
 
 For visitors - Need no donation, but bug fixes are very very welcome.
