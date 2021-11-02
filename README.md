@@ -55,7 +55,7 @@ require_once ('../php2html.lib.php');
 htm_Page_0( $pageTitl='DEMO', $ØPageImage='../_accessories/_background.png',$align='center',$PgInfo=lang('@PHP2HTML: My first page'));
     htm_Caption($labl='HELLO WORLD:',$style='color:#550000; font-weight:600; font-size: 18px;',$align='center',$hint='');
     htm_nl(2);
-    htm_TextDiv($content='This page is build with HTM2PHP',$align='center',$marg='8px',$attr='width:300px; margin:auto; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; background-color: white; ');
+    htm_TextDiv($content='This page is build with PHP2HTML',$align='center',$marg='8px',$attr='width:300px; margin:auto; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; background-color: white; ');
 htm_Page_00()
 ?>
 </code></pre>
