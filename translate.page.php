@@ -23,7 +23,7 @@ htm_PagePrep($pageTitl='translate.page.php', $ØPageImage='_accessories/_backgro
         source after prefix: <b>lang(\'</b>  .. and with suffix: <b>\')</b><br>
         Other prefix: <b>mess(\'</b>    (See more in file translate.inc.php)<br><br>
         Strings without these prefixes must have prefix: \'@ so it can be found.<br><br>
-        All translated languages is defined in file: .sys_trans.json <br>
+        All translated languages is defined in file: _trans.sys.json <br> 
         If there are no translation, the english text will output with prefix @ removed
         <br><br>
         </div>';
