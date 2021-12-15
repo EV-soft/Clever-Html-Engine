@@ -27,7 +27,7 @@ Minimum file needs: php2html.lib.php, and a few in _assets folders, or from CDN-
 
 Look and feel at the demo here:
 
-<iframe width="1200px" height="800px" border= "2px solid #000" border-radius= "15px" overflow= "hidden" seamless frameborder="0" src="https://ev-soft.work/p2h/v1.1.0/Proj.demo/CustomerOrder.page.php" > </iframe> 
+<iframe style="width:1200px; height: 800px; border: 2px solid #000; border-radius:15px; overflow:hidden;" src="https://ev-soft.work/p2h/v1.1.0/Proj.demo/CustomerOrder.page.php" > </iframe> 
 
 The content of this frame is actually my test site, so it may contain future news!
 
