@@ -104,26 +104,22 @@ The parameters when calling htm_Table:
       ) 
 
 
-To create a HTML-page use this functions:
+To create a HTML-page use functions:
 
-    htm_Page_0() (htm_PagePrep())       - Prepare output to a page
+    htm_Page_0()      # Prepare output to a page
 
-    You can create:
+    You can create page content:
+    by calling htm_Functions()
+    or just write php-code to echo output
 
-    "htm_PageBody()"                    - Set body of a page
-
-    or just write php-code to 
-
-    echo output
-
-    htm_Page_00() (htm_PageFina())      - Complete / finish the page
+    htm_Page_00()     # Complete / finish the page
     
     
-To create a Panel there are functions:
+To create a Panel use functions:
 
-    htm_Panel_0() (htm_PanlHead())      - Start top of an avanced panel
+    htm_Panel_0()      # Start top of an advanced panel
 
-    htm_Panel_00() (htm_PanlFoot())     - Finish bottom of an avanced panel
+    htm_Panel_00()     # Finish bottom of an advanced panel
 
 
 
