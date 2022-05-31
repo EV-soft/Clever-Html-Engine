@@ -1,7 +1,7 @@
 # php2html.lib = Clever-Html-Engine
 The fast track to a good web application.
 
-php2html.lib.php is a PHP library of functions that generates HTML pages and elements.
+php2html.lib.php is a PHP library with functions that generates HTML pages and elements.
 
 If you program html output in php, you can use this library's routines to generate the html code.
 	
@@ -9,18 +9,23 @@ HTML elements INPUT / CHECKBOX / RADIO-GROUP / TABLE and many others, generated 
 all combined with: **Label**, **ToolTip**, **Placeholder**, dimensions and others.
 
 Included translate system. Font-awesome icons.
-Extended TABLE functions with Mottie Tablesorter-system.
+Extended TABLE functions based on Mottie Tablesorter-system.
 	
-Based on PHP7+/PHP8+, HTML5, CSS3.
+Standards: PHP7+/PHP8+, HTML5, CSS3.
 
-Source must be in UTF-8, no tabs, indent: 4 chars
+Source must be in UTF-8, with no tabs, indent: 4 chars
 
 When using PHP2HTML your code will be more compact, and easier to read.
 
 <i>As an example this height level PHP-code:</i>
 
+	PHP7:
     htm_Input($type='dec2',$name='dec2',$valu=$dec2, $labl='@htm_Input(Dec2)',
               $hint='@Demo of htm_Input Field type dec2: number with 2 decimal', $plho='', $wdth='',$algn='center',$unit='<$ ');
+
+	PHP8+:
+    htm_Input(type:'dec2',name:'dec2',valu:$dec2, labl:'@htm_Input(Dec2)',
+              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal',algn:'center',$unit='<$ ');
 
 
 <i>will generate this HTML-code:</i>
