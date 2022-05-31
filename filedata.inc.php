@@ -1,8 +1,8 @@
-<? $DocFile='../filedata.inc.php';    $DocVers='1.1.0';    $DocRev1='2021-11-01';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../filedata.inc.php';    $DocVers='1.2.0';    $DocRev1='2022-01-08';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 /**
- * Functions related to file transfer
+ * Functions relatede to file transfer
  * and converting
  * 
  */
@@ -72,24 +72,17 @@ function csv_parse($filepath, $options = array()) {
     return $csv;
 }
 
-function fromFile ($dPath, $arrNames) {
-    foreach ($arrNames as $aname) {
-        if (is_readable($dPath.$aname.'.dat.json'))  FileRead_arr($dPath.$aname.'.dat.json', $GLOBALS[$aname]);
-}}
+function FileWrite_arr($filepath='', $array=[]) {
+//  return file_put_contents($filepath, serialize($array));
+    return file_put_contents($filepath, json_encode($array));
+}
 
-/* */
 function FileRead_arr($filepath='', &$array=[]) {
 //  $array = unserialize(file_get_contents($filepath));
     $arr = json_decode(file_get_contents($filepath), true);
     $array= $arr;
     return $array;
 }
-
-function FileWrite_arr($filepath='', $array=[]) {
-//  return file_put_contents($filepath, serialize($array));
-    return file_put_contents($filepath, json_encode($array));
-}
-/* */
 
 
 # Exchange data between json-file and array:
@@ -100,7 +93,6 @@ function get_json($fname='DataFile.dat.json') {
 function put_json($fname='DataFile.dat.json',$recData) {
     return file_put_contents($fname, json_encode($recData,JSON_INVALID_UTF8_IGNORE));
 }
-
 
 
 ?>

@@ -1,35 +1,38 @@
-<? $DocFile='../translate.inc.php';    $DocVer='1.1.0';    $DocRev='2021-11-01';     $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
+<? $DocFile='../translate.inc.php';    $DocVers='1.2.0';    $DocRev1='2022-05-31';     $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
-require_once ('filedata.inc.php');
+$sys= $GLOBALS["gbl_ProgRoot"]= '../';
+require_once ($sys.'php2html.lib.php');
+require_once ($sys.'menu.inc.php');
+// require_once ($sys.'translate.inc.php');
+require_once ($sys.'filedata.inc.php');
 
-$arrLang= [];
+$lang_list= [];
 /**
  * Scann sourcetxt for strings in func lang('') and others to translate:
  * @param string $code to analyse
  * @output to screen
  */
 function scannLngStrings($code= 'dk') {
-    global $arrLang, $App_Conf;
+    global $lang_list, $App_Conf;
     function scannfor($searchPref, $searchSuff='', &$count, &$longest, &$total, &$arrStrings, $flag='') { 
-        // global $ØProgRoot;
-        $ØProgRoot= '.././'; 
+        $gbl_ProgRoot= './'; 
+        $sys_Root= '../';
         # Source files to scann:
         $lines = file(__FILE__);  // This file: translate.inc.php
-        $files= [$ØProgRoot.'php2html.lib.php',
-                 $ØProgRoot.'menu.inc.php',
-                 $ØProgRoot.'translate.page.php',
-                # Other files to scann:
-                /* 'Demo.page.php', */
+        $files= [$sys_Root.'php2html.lib.php',
+            //   $gbl_ProgRoot.'menu.inc.php',
+                $gbl_ProgRoot.'translate.page.php',
+        # Other project files to scann:
+                'Demo.page.php',
                 'CustomerOrder.page.php'
-            //  $ØProgRoot.'menu.inc.php'
-            //  $ØProgRoot.'folder-explorer.php'
+            //  $gbl_ProgRoot.'folder-explorer.php'
             ];
         foreach ($files as $fname) { 
             $lin= file($fname); 
             if ($lin) $lines = array_merge($lines, $lin);
-            else echo '<br>? FILE: <b>'.$fname.'</b>';        /* echo ' '.count($lines); */ 
-        }
+            else echo '<br>Not found FILE: <b>'.$fname.'</b>';        /* echo ' '.count($lines); */ 
+            }
         //arrPrint($lines,'$lines'); 
         
         # Process the files contents:
@@ -71,19 +74,19 @@ function scannLngStrings($code= 'dk') {
     $lngArr = sys_get_translations(['']);  //  All existing lng in /sys_trans.json
     $lang= 'en';    //  System
     //$code= 'de';  //  Analyse
-    $name= $arrLang[$code] ?? '';
+    $name= $lang_list[$code] ?? '';
     $nati= ($_SESSION['currLang']['native'] ?? ''); // Update problem ! FIXIT
-    // $nati= $arrLang[$code]['native'];
+    // $nati= $lang_list[$code]['native'];
     // arrPrint($_SESSION['currLang'],'$_SESSION["currLang"]');
-    if(array_key_exists('en',$arrLang)) {echo 'Data: '.$arrLang['en']; }
+    if(array_key_exists('en',$lang_list)) {echo 'Data: '.$lang_list['en']; }
 
     echo '<br><b>The current strings to translate:</b>';
     echo '<br>Without duplicates - Total: '.count($arrStrings).' strings. The longest phrase is on '.$longest.' characters. <br>';
     //echo '<br>Nearly all user interface, can be translated. This page and a few error- and system messages is still only in english!  <br>';
-    echo '<br><b>Analysing - '.$App_Conf['language'].' / '.$nati./* array_search($arrLang,substr($App_Conf['language'],0,2)). */'</b>';
+    echo '<br><b>Analysing - '.$App_Conf['language'].' / '.$nati./* array_search($lang_list,substr($App_Conf['language'],0,2)). */'</b>';
     echo '<br>Below is the updated and sorted JSON code, that you can use to create/complete/maintain your language. <br>';
     echo '<br><b>How:</b>';
-    echo '<br>Copy / Paste the list to your editor, and translate to your language. (UTF8 file-format!)';
+    echo '<br>Copy / Paste the string-list to your editor, and translate to your language. (UTF8 file-format!)';
     //echo '<br>If some strings is in <span style="color:red;">red</span>, they are missing in the language translate.';
     echo '<br>If some strings are missing in the language translate, the english text will be shown with prefix ???:';
     echo '<br>Let your browser search and mark this prefix, to get overview';
@@ -102,7 +105,8 @@ function scannLngStrings($code= 'dk') {
     echo $lf.'    "name": "'.  $name.'",';  //  .'{lngName: English}",';
     echo $lf.'    "native": "'.$nati.'",';  //  .'{lngName: Native}",';
     echo $lf.'    "author": "-auto from source-",';
-    echo $lf.'    "note": "'.date("Y-m-d").'",';
+    echo $lf.'    "note": "'.''.'",';       // setlocale(LC_TIME, 'da_DK','da','da_DK.utf8'); ?
+    echo $lf.'    "DateTime": "'.date("Y-m-d").'",';
     echo $lf.'    "translation": {';
     $n = count($arrStrings)-1; $i= 0;   $miss = 0;  $next= ',';
     $googleFile = fopen("sys_2Google.txt", "w");
@@ -147,20 +151,16 @@ function scannLngStrings($code= 'dk') {
                                  // $googleFile = fopen("sys_2Google.txt", "w");
                                  $gog= file_get_contents ("sys_2Google.txt");
                                  //foreach ($gog as $line) $string= $string + '<br>' + $line;
-    // htm_Input(# $type='',$name='',$valu='',$labl='',$hint='',$plho='@Enter...',$wdth='',$algn='left',$unit='',$disa=false,$rows='2',$step='',$attr='',$list=[],$llgn='R' )
-    htm_Input($type='area',$name='goog',$valu=$gog,$labl='sys_2Google.txt',  $hint='@The newly generated file to Google-translate',$plho='@Empty !',
-                    $width='930px',$algn='left',$unit='',$disa=false,$rows='10',$step='',$attr=$m ?? '', $llgn='L');
-        
+    
+    htm_Input($labl='sys_2Google.txt',$plho='@Empty !',$icon='',$hint='@The newly generated file to Google-translate',
+              $type= 'area',$name='goog',$valu=$gog,$form='',$wdth='930px',$algn='left',$attr=$m ?? '',$rtrn=false,$unit='',$disa=false,$rows='10');
+
     $i= 0;
     echo '<br><br><b>Keys in language "'.$App_Conf['language'].' / '.$nati.'" with string the same as the key </b>(missing translate ?):<br>';
     foreach ($lngArr[$code] ?? [] as $key => $value) { 
         if (in_array($key,$lngArr[$code])) echo '<br>Same: '.$i++.' '.$key; 
     }
     if ($i==0) echo 'None<br>';
-    
-    // doDebug($arrStrings,'$arrStrings','LINE: '.__LINE__);
-    // doDebug($lngArr['en'],'$lngArr["en"]','LINE: '.__LINE__);
-    // doDebug($lngArr['da'],'$lngArr["da"]','LINE: '.__LINE__);
     echo '<br><br>';
 
     $i= 0;
@@ -177,8 +177,7 @@ function scannLngStrings($code= 'dk') {
 
 function langList() {
     $lngLst= [];  $i= 0;
-    //$lines = file('.sys_language-codes.csv');  //  source
-                                 $lines = [''];
+    $lines = [''];  //$lines = file('.sys_language-codes.csv');  //  source
         foreach ($lines as $aline => $line) {
           $code= substr($line,0,2);
           $lang= substr($line,3);
@@ -187,10 +186,9 @@ function langList() {
     return $lngLst;
 }
 
-  $langList= langList();
+$langList= langList();
 
 function SelNew($langList) {
-//doDebug($langList,'$langList');
     echo '<div class="form-group row">'.
          '    <label for="js-newLanguage" class="col-sm-3 col-form-label right" >'. 'Dont work yet! '.lang('@Create new language').':</label>'.
          '    <div class="col-sm-5">'.
@@ -203,7 +201,6 @@ function SelNew($langList) {
          '    </div>'.
          '</div>';
 }
-
 
 
     // $ISO639= ReadCSV($filepath='ISO639-1.csv');

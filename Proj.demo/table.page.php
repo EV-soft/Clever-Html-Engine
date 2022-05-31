@@ -1,21 +1,30 @@
-<?php   $DocFil= './Proj1/demoFile/table.page.php';    $DocVer='1.1.0';    $DocRev='2021-11-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/table.page.php';    $DocVer='1.2.0';    $DocRev='2022-03-04';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
-$GLOBALS["ØProgRoot"]= '../';
-require_once ('../php2html.lib.php');
-require_once ('../menu.inc.php');
-// require_once ('translate.inc.php');
-// require_once ('filedata.inc.php');
+$sys= $GLOBALS["gbl_ProgRoot"]= '../';
+require_once ($sys.'php2html.lib.php');
+require_once ($sys.'menu.inc.php');
+// require_once ($sys.'translate.inc.php');
+// require_once ($sys.'filedata.inc.php');
+
+## Speedup page-loading, if some libraryes is not needed:
+//      ConstName:          ix:   LocalPath:                 CDN-path:
+define('LIB_JQUERY',        [1, '_assets/jquery/',          'https://cdnjs.cloudflare.com/ajax/libs/']);
+define('LIB_TABLESORTER',   [1, '_assets/tablesorter/js/',  'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
+define('LIB_POLYFILL',      [0, '_assets/',  '']);
+define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
+define('LIB_FONTAWESOME',   [0, '_assets/',  '']);
+// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
+
 
 $tblData= array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], 
                  [['2'],['@Input VAT'],['66201'],['25,00'],[''] ], 
                  [['3'],['@Input VAT'],['66202'],['25,00'],[''] ] );
                  
-    htm_Page_0($pageTitl='table.page.php', $ØPageImage=$ØProgRoot.'_assets/images/_background.png');
+    htm_Page_0($titl='table.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
     Menu_Topdropdown(true); htm_nl(1);
     echo '<div style="text-align: center;">';
-    htm_Panel_0($frmName='head', $capt='htm_Table():', $parms='', $icon='fas fa-table', $class='panelW800', $func='Undefined', $more='', 
-                $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
+    htm_Panel_0($capt= 'htm_Table():',$icon= 'fas fa-table',$hint= '',$form= 'head',$acti= '',$clas= 'panelW800',$wdth= '',$styl= 'background-color: white;',$attr= '');
     htm_Table(
         $TblCapt= array( # ['0:Label',   '1:Width',    '2:Type',    '3:Format', '4:horAlgn',      '5:Tip',    '6:Content'],... // Gl: 0:Label 1:width 2:align 3:Type 4:title 5:Content
           ['<b>'.lang('@Inland').'</b>', '8%','show','left', '', '@VAT on India','@PURCHASE'],
@@ -52,7 +61,6 @@ $tblData= array( [['1'],['@Input VAT'],['66200'],['25,00'],['']],
         $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
     htm_Panel_00( $labl='Save', $subm=true, $title='@Save data in this panel', $btnKind='save', $akey='s', $simu=false, $frmName='');
-    
     echo '</div>';
 htm_Page_00();
 ?>
