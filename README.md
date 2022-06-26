@@ -48,8 +48,19 @@ and looks like this:
 ![image](https://user-images.githubusercontent.com/21997911/131254454-3198a243-a1c3-4238-abe7-2fe46b232fc0.png)
 
 
+<h3><b>Integrated benefits of the system:</b></h3>
+<ul>
+<li>Advanced translation system</li>
+<li>Block-oriented provides compact code</li>
+<li>Possibility of Font-awesome Icons anywhere</li>
+<li>Tooltip for all html elements</li>
+<li>Compact layout with collapsible panels</li>
+<li>Option for user defined system blocks</li>
+<li>Advanced tables based on Mottie Table Sorter system</li>
+<li>Optional use of libraries locally or on the Web (CDN)</li>
+</ul>
 
-<b>How to start your first project</b>
+<h3><b>How to start your first project</b></h3>
 
 Save system-files on your web-server in system-folder '{public-URL}/hello'
 
@@ -70,8 +81,7 @@ Now you can see the page in your browser at URL: '{public-URL}/hello/world/first
 
 Advanced example - see files in folder: '{public-URL}/hello/Proj.demo/'
  
-<b>More information...</b>
+<h3><b>More information...</b></h3>
 
 You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
 
-For visitors - Need no donation, but bug fixes are very very welcome.
