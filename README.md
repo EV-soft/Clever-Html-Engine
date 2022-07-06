@@ -58,6 +58,8 @@ and looks like this:
 <li>Option for user defined system blocks</li>
 <li>Advanced tables based on Mottie Table Sorter system</li>
 <li>Optional use of libraries locally or on the Web (CDN)</li>
+<li>Narrow panels suitable for adaptive adaptation</li>
+<li>Easily enter dates with browsers date picker interface</li>
 </ul>
 
 <h3><b>How to start your first project</b></h3>
