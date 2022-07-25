@@ -87,3 +87,7 @@ Advanced example - see files in folder: '{public-URL}/hello/Proj.demo/'
 
 You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
 
+
+<h3><b>Demo:</b></h3>
+
+Want to try ? - Go to he full window demo: https://ev-soft.work/p2h/demo/Proj.demo/CustomerOrder.page.php
