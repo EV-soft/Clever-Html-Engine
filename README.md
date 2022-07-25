@@ -90,4 +90,4 @@ You can see descriptions and a demo and try the functions here: https://ev-soft.
 
 <h3><b>Demo:</b></h3>
 
-Want to try ? - Go to he full window demo: https://ev-soft.work/p2h/demo/Proj.demo/CustomerOrder.page.php
+Want to try ? - Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/demo/Proj.demo/CustomerOrder.page.php)
