@@ -11,7 +11,7 @@ all combined with: **Label**, **ToolTip**, **Placeholder**, dimensions and other
 Included translate system. Font-awesome icons.
 Extended TABLE functions based on Mottie Tablesorter-system.
 	
-Standards: PHP7+/PHP8+, HTML5, CSS3, jquery.
+Standards: PHP7+/PHP8+, HTML5, CSS3, JavaScript.
 
 Source must be in UTF-8, with no tabs, indent: 4 chars
 
