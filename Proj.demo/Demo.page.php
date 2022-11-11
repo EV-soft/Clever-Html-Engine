@@ -1,7 +1,8 @@
-<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.2.0';    $DocRev='2022-05-08';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.2.1';    $DocRev='2022-11-05';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+$gbl_ProgRoot= './../';
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
@@ -21,7 +22,11 @@ define('LIB_FONTAWESOME',   [2, '_assets/font-awesome6/6.1.1/',     'https://cdn
 $tblData=               # = array(),
         array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], 
                [['2'],[''],[''],[''],[''] ], 
-               [['3'],[''],[''],[''],[''] ] );
+               [['3'],[''],[''],[''],[''] ], 
+               [['4'],[''],[''],[''],[''] ], 
+               [['5'],[''],[''],[''],[''] ], 
+               [['6'],[''],[''],[''],[''] ], 
+               [['7'],[''],[''],[''],[''] ] );
 
 htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag= $bodybg,$gbl_Bord=true);
     echo '<div style="text-align: center;"><br><b>Clever-Html-Engine</b> / php2html-Demo:';  htm_nl(2);
@@ -39,7 +44,7 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
     if (isset($_POST['name']))  { $namex = $_POST['name']; } // Special case !
 
     $date= date("Y-m-d"); 
-    htm_Panel_0($capt= 'The variants of htm_Input():',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '640px',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg); /* ,$where='Undefined',$BookMark='' */
+    htm_Panel_0($capt= 'The variants of htm_Input():',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '640px',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);
     if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto;">';
     htm_nl();
     htm_Input($labl='@htm_Input(Text)',$plho='',$icon='',$hint='@Demo of htm_Input Field type text',                                        $type='text',$name='text',$valu=$text,$form='', $wdth='160px');
@@ -111,7 +116,7 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
     if (USEGRID) echo '</div>'; // grid-container}
     htm_Panel_00();
 
-    htm_Panel_0($capt= '@Example of htm_Table():',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW960',$wdth= '640px',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@Example of htm_Table():',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW960',$wdth= '640px',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
     htm_Table(
         $TblCapt= array( # ['0:Label',   '1:Width',    '2:Type',    '3:Format', '4:horAlgn',      '5:Tip',    '6:Content'],... // Gl: 0:Label 1:width 2:align 3:Type 4:title 5:Content
           ['<b>'.lang('@Inland').'</b>', '8%','show','left', '', '@VAT on Inland','@PURCHASE'],
@@ -148,7 +153,7 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
         $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
 
-        htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW960',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= 'margin:0;');
+        htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '@View part of the demo source-code. !',$form= '',$acti= '',$clas= 'panelW960',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= 'margin:0;');
         $strCode=
 <<< 'STRING'
 <?
@@ -158,7 +163,7 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
           ['@VAT (incoming): ', '34%','show','left', '', '','@The VAT you must return from the Tax Agency']
         ),
         $RowPref= array( # {'0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horAlgn_mv]', '5:ColTip'                                        ], ['Næste record'],... # Generel struktur!
-            ),           // if (($ModifyRec) or ($RowBody[0][2]!='indx')) er 2% ColWidth benyttet til => butt
+        ),
         $RowBody= array( # {'0:ColLabl', '1:ColWidth', '2:InpType', '3:Format', '4:[horAlgn_mv]', '5:ColTip', '6:placeholder','7:default','8:select'], ['Næste record'],... # Generel struktur! 
           ['@No.',          '5%','text','',['center'], 'f1', '@Position number in the group','.No.'],
           ['@Description', '20%','data','',['left'  ], 'f2', '@Item Description. A descriptive text of your choice','@Enter text...'],
@@ -169,7 +174,7 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
         $RowSuff= array( # {'0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horAlgn_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
           ['@Delete',       '4%','butt','',['center'],'@Click the red cross to delete a entry', '<ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>'],
         ),
-        $TblNote=   '<br><b>Notes about htm_Table():</b><br>
+        $TblNote=  '<br><b>Notes about htm_Table():</b><br>
                     Records can be sorted, filtered, created, modifyed and more...<br>
                     The visibly rows can be scrolled in a window below the fixed header.',
         $tblData,               # Data to be shown in the table
@@ -182,19 +187,19 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
         $CalledFrom='',
         $Criterion= ['','']
     ); // Uncomplete Code !
+
+## Example creating a panel in PHP8-syntax: 
+    htm_Panel_0(capt: '@PHP Source-code:',icon: 'fas fa-code',
+                hint: '@View part of the demo source-code. !',
+                clas: 'panelW960',styl: 'background-color: #121212;');
 ?>
+
 STRING
 ;
-        $string= highlight_string($strCode,true);
-        $strCode= highlight_words($string,  
-                            $wrds='$tblData labl capt body plho icon hint type name valu form subm acti clas wdth algn marg styl attr font colr fclr bclr bord llgn link targ akey kind rept rtrn', 
-                            $styl='color:red;');
-        htm_TextDiv($strCode);
 
+        htm_CodeDiv(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
         htm_Panel_00();
-    
-    htm_Panel_00();
-    
+
     htm_nl(2);
     echo 'Examples of Container-type elements:';  htm_nl(2);
     htm_Panel_0($capt= '@Containers',$icon= 'fas fa-database',$hint= '',$form= 'head',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: #f8f8f8;',$attr= '', $show=false, $head= $headbg);    
@@ -210,43 +215,62 @@ STRING
               ');
         htm_nl(1);
         
-        htm_Fieldset_0($caption='@Caption: ',$hint='@You can use hints',$icon='',$width='180px',$margin='',$attr='background-color:lightyellow',$rtrn=false);
+        htm_Fieldset_0($caption='@Caption: ',$hint='@You can use hints',$icon='',$wdth='180px',$margin='',$attr='background-color:lightyellow',$rtrn=false);
         echo 'You place your html-objects here inside fieldset-frames...<br>';
         htm_Fieldset_00($rtrn=false);
         
-        htm_Fieldset_0($caption='@Caption: ',$hint='@You can use hints',$icon='',$width='180px',$margin='',$attr='background-color:MintCream',$rtrn=false);
+        htm_Fieldset_0($caption='@Caption: ',$hint='@You can use hints',$icon='',$wdth='180px',$margin='',$attr='background-color:MintCream',$rtrn=false);
         echo 'You place your html-objects here inside fieldset-frames...<br>';
         htm_Fieldset_00($rtrn=false);
 
-    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW480',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= 'margin:0;' /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW480',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= 'margin:0;');
 
-str_Pars( <<< 'STRING'
-htm_Fieldset_0($capt='@Caption: ',$hint='@You can use hints',$icon='',$widt='180px',$marg='',$attr='background-color:MintCream',$rtrn=false); // htm_Fieldset_0() must be followed by htm_Fieldset_00() !
+
+$strCode= 
+<<< 'STRING'
+<? // PHP7-syntax:
+htm_Fieldset_0($capt='@Caption: ',
+               $hint='@You can use hints',$icon='',
+               $wdth='180px',$marg='',
+               $attr='background-color:MintCream',
+               $rtrn=false); 
+               // htm_Fieldset_0() must be followed by htm_Fieldset_00() !
+               
 STRING
-);
+;
 echo 'echo \'You place your html-objects here inside fieldset-frames...\';';
-str_Pars( <<< 'STRING'
-htm_Fieldset_00($rtrn=false);
-STRING
-); 
+
+        htm_CodeDiv(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
     htm_Panel_00();
     
         htm_nl(2);
-        htm_Field_0_00($labl='Label with hint',$hint='HINT for htm_Field_0_00()<br>
-        htm_Field_0_00($labl=\'Label with hint\',$hint=\'HINT for htm_Field_0_00()\',$icon=\'\',$name=\'fld\',$html=\'HTML-Content <br>in container htm_Field_0_00() <br>---\',$width=\'\',$margin=\'\',$ftop=\'\',$attr=\'\',$rtrn=false);',$icon='',$name='fld',
-        $html='HTML-Content <br>in container htm_Field_0_00() <br>---
-        ',$width='',$margin='',$ftop='',$llgn='C',$attr='',$boxstyl='',$rtrn=false);
+        // htm_Field_0_00(# $labl='',$body='',$icon='',$hint='',$name='fld',$wdth='',$styl='',$attr='',$llgn='C',$rtrn=false,$ftop='')
+        htm_Field_0_00($labl='Label with hint',$body='HTML-Content <br>in container htm_Field_0_00() <br>---
+        ',$icon='',$hint='Tip for htm_Field_0_00()<br>
+        htm_Field_0_00($labl=\'Label with hint\',$hint=\'HINT for htm_Field_0_00()\',$icon=\'\',$name=\'fld\',$html=\'HTML-Content <br>in container htm_Field_0_00() <br>---\',$width=\'\',$margin=\'\',$ftop=\'\',$attr=\'\',$rtrn=false);',
+        /* $icon='',$name='fld',
+        /* $html='HTML-Content <br>in container htm_Field_0_00() <br>---
+        ', */
+        $name='fld',$wdth='',$styl='',$attr='',$llgn='C',$rtrn=false,$ftop='');
         // echo 'CONTENT';
 
-    htm_Panel_0($capt= '@HP Source-code:',$icon= 'fas fa-code',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW480',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
 
-str_Pars( <<< 'STRING'
-htm_Field_0_00($labl=\'Label with hint\',
-$hint=\'HINT for htm_Field_0_00()\',$icon=\'\',$name=\'fld\',$html=\'HTML-Content <br>in container htm_Field_0_00() <br>---\',$width=\'\',
-$margin=\'\',$ftop=\'\',$attr=\'\',$rtrn=false);',$icon='',$name='fld',$html='HTML-Content <br>in container htm_Field_0_00() <br>---',$width='',
-$margin='',$ftop='',$attr='',$rtrn=false);
+$strCode= 
+<<< 'STRING'
+<? // PHP7-syntax:
+htm_Field_0_00($labl='Label with hint',
+               $hint='Tip for htm_Field_0_00()',
+               $icon='',$name='fld',
+               $html='HTML-Content <br>in container htm_Field_0_00() <br>---',
+               $wdth='',
+               $marg='',$ftop='',$attr='',
+               $rtrn=false);
+               
 STRING
-);
+; 
+
+        htm_CodeDiv(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
     htm_Panel_00();
         
         
@@ -261,20 +285,23 @@ STRING
         htm_wrapp_00();
         htm_nl(1);
 
-    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW480',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
 
-str_Pars( <<< 'STRING'
+
+$strCode= 
+<<< 'STRING'
+<? // PHP7-syntax:
 htm_wrapp_0($ViewHeight='60px'); // htm_wrapp_0() must be followed by htm_wrapp_00() !
-STRING
-);
-echo 'echo \'You place your html-objects here inside Wrapper-window...<br><br>
-        A Wrapper-window is a window with a fixed height<br>
-        in with you can scroll the content<br>
-        if it owerflow the window-height\';';
-str_Pars( <<< 'STRING'
+    echo 'You place your html-objects here inside Wrapper-window...<br><br>
+          A Wrapper-window is a window with a fixed height<br>
+          in with you can scroll the content<br>
+          if it owerflow the window-heigh';
 htm_wrapp_00();
+    
 STRING
-); 
+; 
+
+        htm_CodeDiv(/* highlight_words */(highlight_string(/* '<? '. */$strCode,true)));
     htm_Panel_00();
 
         htm_nl(2);
@@ -299,14 +326,18 @@ STRING
     
     $GridOn= false;
     htm_nl(2);
+    $ic= ''; // iconStack($cl1='fa-stack fa-2x',$cl2='fa-solid fa-square fa-stack-2',$cl3='fab fa-twitter fa-stack-1x fa-inverse',$rtrn=false)
     htm_Panel_0($capt= '@Signup: <small>(Example)</small>',$icon= 'fas fa-user-check',$hint= '',$form= 'head1',$acti= '',$clas= 'panelW240',$wdth= '640px',$styl= 'background-color: lightcyan;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
-        htm_Input($labl='@Financial Accounting',$plho='@Account...', $icon='',$hint='@The name of the accounting for wich you have access',$type='text',$name='text1',$valu=$text1,$form='',$wdth='75%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='');
+        htm_Input($labl='@Financial Accounting'.$ic,$plho='@Account...', $icon='',$hint='@The name of the accounting for wich you have access',$type='text',$name='text1',$valu=$text1,$form='',$wdth='75%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='');
         htm_Input($labl='@Your account',        $plho='@Email...',   $icon='',$hint='@Type your email as your accont',                     $type='mail',$name='mail2',$valu=$mail2,$form='',$wdth='75%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='');
-        htm_Input($labl='@Your password',       $plho='@Password...',$icon='',$hint='@Type your password for your account',                $type='pass',$name='pass3',$valu=$pass3,$form='',$wdth='70%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='');
+        htm_Input($labl='@Your password',       $plho='@Password...',$icon='',$hint='@Type your password for your account',                $type='pass',$name='pass3',$valu=$pass3,$form='',$wdth='70%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='',$list=[],$llgn='R',$bord='',$ftop='20px;');
                  // $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
-        htm_IconButt($type='button',$faicon='fas fa-key',$labl='@Forgotten password ?',$Hint='@Click to request a new password',$id='lost',$link='',$action='',$akey='',$size='14px',$fg='gray',$bg='white',$rtrn=false);
+                   # $labl='',$icon='',$hint='',$type='submit',$name='',$link='',$acti='',$font='32px',$fclr='gray',$bclr='white',$akey='',$rtrn=false
+        htm_IconButt($labl='@Forgotten password ?',$icon='fas fa-key',$hint='@Click to request a new password',$type='button',$name='lost',$link='',$acti='',$font='18px',$fclr='gray',$bclr='white',$akey='',$rtrn=false);
         htm_nl(0);
-    htm_Panel_00( $labl='Login', $subm=true, $Hint='@Login with the given data', $btnKind='navi', $akey='l', $simu=false, $frmName='');
+                
+    htm_Panel_00( $labl='Login', $icon='', $hint='@Login with the given data', $name='butt', $form='head1',$subm=true, $attr='', $akey='l', $kind='navi', $simu=false); 
+               // $labl='Login', $subm=true, $Hint='@Login with the given data', $btnKind='navi', $akey='l', $simu=false, $frmName='head1');
     
     htm_nl(2);
     htm_Panel_0($capt= '@Contact info:',$icon= 'fas fa-pen-square',$hint= '',$form= 'head2',$acti= '',$clas= 'panelW480',$wdth= '640',$styl= 'background-color: lightcyan;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
@@ -327,13 +358,13 @@ STRING
                     ]);
         htm_Input($labl='@City',     $plho='@Address town...', $icon='',$hint='',                                                   $type='text',$name='city', $valu=$city, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');        //if (USEGRID) $GridOn= true;
         htm_Input($labl='@Country',  $plho='@Country...',      $icon='',$hint='',                                                   $type='text',$name='coun', $valu=$coun, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-        htm_Input($labl='@Remark',   $plho='@Remark?...',      $icon='',$hint='@Demo of htm_Input Field type area: Multi-line text',$type='area',$name='remk', $valu=$remk, $form='',$wdth='92%' ,$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
+        htm_Input($labl='@Remark',   $plho='@Remark?...',      $icon='',$hint='@Demo of htm_Input Field type area: Multi-line text',$type='area',$name='remk', $valu=$remk, $form='',$wdth='100%' ,$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
         htm_Input($labl='@Phone',    $plho='@Phone number...', $icon='',$hint='',                                                   $type='text',$name='phon', $valu=$phon, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
         htm_Input($labl='@Reference',$plho='@?...',            $icon='',$hint='',                                                   $type='text',$name='refe', $valu=$refe, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
         htm_Input($labl='@Email',    $plho='@Email address...',$icon='',$hint='@Demo of htm_Input Field type mail',                 $type='mail',$name='mail3',$valu=$mail3,$form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
         
         if (isset($_POST['namechck']))  { $namechck = 'checked'; }
-        htm_Input($labl='@Mailing',  $plho='@?...',            $icon='',$hint='@Demo of htm_Input Field type chck',                 $type='chck',$name='chck3',$valu=$chck3,$form='',$wdth='80%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='',
+        htm_Input($labl='@Mailing',  $plho='@?...',            $icon='',$hint='@Demo of htm_Input Field type chck',                 $type='chck',$name='chck3',$valu=$chck3,$form='',$wdth='96%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='',
                   $list= [['namechck','@Mailing active','@Use mail',$namechck ?? '']]);
         
         $GridOn= false;
@@ -346,31 +377,28 @@ STRING
     htm_Panel_00( $labl='Save', $subm=true, $capt='@Save data in this panel', $btnKind='save', $akey='s', $simu=false, $frmName='');
     
     echo '</div>'; // DEMO
-    htm_nl(2);
+    
+    htm_nl(4);
+    htm_Panel_0($capt= '@User rights:',$icon= 'fas fa-pen-square',$hint= '@In this panel, you see a DEMO of the Multi-state button',$form= 'head3',$acti= '',$clas= 'panelW960',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
 
-
-
-    htm_nl(2);
-    htm_Panel_0($capt= '@User rights:',$icon= 'fas fa-pen-square',$hint= '@In this panel, you see a DEMO of the Multi-state button',$form= 'head3',$acti= '',$clas= 'panelW960',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg /* ,$where='Undefined',$BookMark='' */ );           
-
-    $task= [['@Chart of Accounts',      '@Struktur for regnskabet'],
-            ['@Account settings',       '@Angående regnskabet'],
-            ['@Journal Entry ',         '@Daglige posteringer'],
-            ['@Financial Accounting',   '@Bogførte posteringer'],
-            ['@Financial reports',      '@Regnskabs posteringer'],
-            ['@Debtor orders',          '@Kunde ordrer'],
-            ['@Debtor accounts',        '@Kunde konti'],
-            ['@Debtor reports',         '@Kunde oversigter'],
-            ['@Creditor orders',        '@Leverandør ordrer'],
-            ['@Creditor accounts',      '@Leverandør konti'],
-            ['@Creditor reports',       '@Leverandør oversigter'],
-            ['@Item stock',             '@Salgs produkter'],
-            ['@Product reception',      '@Ankommende produkter'],
-            ['@Product reception',      '@Produkt oversigter'],
-            ['@Production orders',      '@Bestillinger'],
-            ['@Program setting',        '@Setup af program og databaser'],
-            ['@Data backup',            '@Sikkerheds kopiering af program og databaser'],
-            ['@Security',               '@Administrer bruger rettigheder']
+    $task= [['@Chart of Accounts',      'Struktur for regnskabet'],
+            ['@Account settings',       'Angående regnskabet'],
+            ['@Journal Entry ',         'Daglige posteringer'],
+            ['@Financial Accounting',   'Bogførte posteringer'],
+            ['@Financial reports',      'Regnskabs posteringer'],
+            ['@Debtor orders',          'Kunde ordrer'],
+            ['@Debtor accounts',        'Kunde konti'],
+            ['@Debtor reports',         'Kunde oversigter'],
+            ['@Creditor orders',        'Leverandør ordrer'],
+            ['@Creditor accounts',      'Leverandør konti'],
+            ['@Creditor reports',       'Leverandør oversigter'],
+            ['@Item stock',             'Salgs produkter'],
+            ['@Product reception',      'Ankommende produkter'],
+            ['@Product reception',      'Produkt oversigter'],
+            ['@Production orders',      'Bestillinger'],
+            ['@Program setting',        'Setup af program og databaser'],
+            ['@Data backup',            'Sikkerheds kopiering af program og databaser'],
+            ['@Security',               'Administrer bruger rettigheder']
             ];
 
     $users = [
@@ -386,13 +414,12 @@ STRING
     echo '<style> table, th, td { border: none; border-collapse: collapse;} 
         td span { writing-mode: vertical-lr; transform: rotate(180deg); height: '.($w*7.5).'px; }
         </style>';
-
+        
     echo '<table style="margin: auto; font-size: smaller; "><tr style="padding:5px;">
     <td style="vertical-align: bottom;"><i>'.lang('@Name:').'</i></td> 
     <td style="vertical-align: bottom;"><i>'.lang('@Title:').'</i></td>';
     foreach ($task as $t) echo '<td><span style="padding:3px;" title="'.lang($t[1]).'">'.lang($t[0]).'</span></td>';
     echo '</tr>';
-    
     foreach ($users as $usr) { $i= 0;
         echo '<tr style="height: 22px;"><td style="height: 22px;"><a href="">'.$usr[0].'</a></td><td>'.$usr[1].'</td>';
         foreach ($usr[2] as $a)   echo '<td style="height: 22px; width: 22px; text-align: center;">'.htm_MultistateButt($name='ROW'.$i.'COL'.$i++, $valu= $a).'</td>';
@@ -415,7 +442,10 @@ STRING
     <td colspan="5">'.htm_MultistateButt($name='dontCare', $valu=3, '', false).' <small>: '. lang('@Full access').'</small></td>
     <td colspan="'.(count($task)-8).'" style="text-align:right;"><small>'.lang('@CLICK symbol to change').'</small>&nbsp;</td></tr>';
     echo '</table>';
+    
     echo '</span>';
+    htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'creat', rtrn:false, 
+                   tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Create new user<br>Cant create yet !","orange","black")');
     htm_MiniNote('This is an example using the multi-state button.');
     htm_nl(1);
     
@@ -432,7 +462,7 @@ STRING
         Pmnu_00();
 /* */
 
-    htm_Panel_0($capt= '@Popup menues:',$icon= 'fas fa-pen-square',$hint= '@HINT for this panel',$form= 'head4',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@Popup menues:',$icon= 'fas fa-pen-square',$hint= '@HINT for this panel',$form= 'head4',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
         htm_TextDiv($content= 'You can build popup-menues with the PHP2HTML-system.<br>
               Both left-click and context right-click triggered.<br><br>
               Here you can test it:');
@@ -497,7 +527,7 @@ STRING
     htm_nl();
     htm_Panel_00( $labl='', $icon='', $hint='', $name='', $form='sw', $subm=false, $attr='', $akey='s', $kind='save', $simu=false);
 
-    htm_Panel_0($capt= '@Toggleable Tabs:',$icon= 'fas fa-pen-square',$hint= '@HINT for this panel',$form= 'tb',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@Toggleable Tabs:',$icon= 'fas fa-pen-square',$hint= '@HINT for this panel',$form= 'tb',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg );           
 
     $strTabel= 'The function htm_Table() is a advanced module to show and input user data.<br>
             It has fixed (sticky) column headers, and Scrolling content-window.<br>
@@ -541,7 +571,7 @@ STRING
     htm_Panel_00( $labl='', $subm=false, $capt='@...', $btnKind='save', $akey='s', $simu=false, $frmName='tb');
 
 
-    htm_Panel_0($capt= '@Navigate functions:',$icon= 'fas fa-info',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0($capt= '@Navigate functions:',$icon= 'fas fa-info',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
     htm_TextDiv('To navigate in your project, you can use the Menu_Topdropdown() shown on top of all demo pages.<br>
                  You can also use various buttons for that...
     ');
@@ -576,4 +606,5 @@ htm_Page_00();
     run_Script('toast("<b>'. lang('@You`re looking at a DEMO !'). '</b><br>'. lang('@It is a demonstration of the php2html-output.'). '","green","white")');
 // phpinfo();
 // var_dump(opcache_get_status()['jit']);
+getState();
 ?>

@@ -1,7 +1,9 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.2.0';    $DocRev='2022-03-06';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.2.0';    $DocRev='2022-07-15';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2020 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+$gbl_ProgRoot= './../';
+
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
@@ -31,9 +33,72 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
             Likewise, popup user tips (hints/title) are consistently possible for all labels etc. <br>
             They are made visible by hovering the mouse. <br>
             ',$align='left',$marg='8px',$attr='font-weight: 600; text-align: center; color: #550000;');
-    htm_nl(2);
-    htm_Caption('<big>PHP2HTML - Introduction to the systems most used modules:</big>',$style='',$align='',$hint='@Example of user popup help/info'); 
 
+    htm_Panel_0($capt= '@Benefits:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
+		htm_TextDiv('<h4>Integrated benefits of the system:</h4><ul>
+            <li>Advanced <b>translation</b> system for the entire program interface <br> </li>
+            <li>Block-oriented provides <b>compact</b> code<br>                    </li>
+            <li>Possibility of Font-awesome <b>Icons</b> anywhere<br>              </li>
+            <li><b>Tooltip and placeholder</b> for all html elements<br>           </li>
+            <li>Compact <b>adaptive</b> layout with collapsible panels<br>         </li>
+            <li>Option for <b>user defined</b> system blocks that complements the system <br> </li>
+            <li>Advanced <b>tables</b> based on Mottie Table Sorter system<br>     </li>
+            <li>Optional use of <b>libraries</b> locally or on the Web (CDN)       </li>
+            <li>Narrow <b>panels</b> suitable for adaptive adaptation              </li>
+            <li>Easily enter dates with browsers <b>date picker</b> interface      </li>
+            <li>Compatible with <b>PHP 8.2</b>      </li>
+            <li>Provides a <b>clearer</b> code ....                                </li>
+            </ul>  
+		');
+	htm_Panel_00();
+
+    htm_Panel_0($capt= '@<small>System - </small>CODE EXAMPLE:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
+		htm_TextDiv('@Here is an example of how the system generates html code.<br>This compact height level code:');
+        $strCode= '<? // PHP code:
+htm_Input(type:\'dec2\',   name:\'dec2\', valu:0,
+          labl:\'@Amount\',wdth:\'150px\',algn:\'center\',unit:\'<$ \'
+          hint:\'@Demo of htm_Input Field Type dec2: number with 2 decimal <br>Unit: <$\');
+ ';
+        // esc_code();
+        $strCode= highlight_string($strCode,true);
+        // esc_code();
+        htm_CodeDiv(highlight_words($strCode));
+        htm_TextDiv('@will produce css-data and this html code:');
+$strCode= highlight_string('<? // HTML code:
+<div class="inpField" id="inpBox" style="margin: auto;  width: 150px; display: inline-block;"> 
+    <input type= "text"  id="dec2" name="dec2"  value="$ 0,00"  class="boxStyle" 
+        style="text-align: center; font-size: 14px; font-weight: 600; " 
+        oninvalid="this.setCustomValidity(\'Wrong or missing data in htm_Input(Dec2) ! \')" 
+        oninput="setCustomValidity(\'\')"  
+        placeholder="Enter..."  
+        pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" 
+    /> 
+    <abbr class= "hint">
+        <label for="dec2" style="font-size: 12px; ">
+            <div style="white-space: nowrap; margin-left: auto;">
+                Amount
+            </div>
+        </label>
+        <data-hint style="top: 45px; left: 2px;">
+            Demo of htm_Input Field Type dec2: number with 2 decimal <br>Unit: <$ 
+        </data-hint>
+    </abbr>
+</div>
+
+',true);
+// arrPretty($strCode,'$strCode');
+// arrPretty(preg_replace('/^<\?(.*)(\>)?$/s', '$1',$strCode),'$strCode'); // str_replace()  preg_replace("/<\?/", 'xxx',$strCode),'$strCode')  // 
+        htm_CodeDiv((preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "",$strCode)));
+        htm_TextDiv('@And here are the output:');
+        htm_Input(type:'dec2',name:'dec2',valu:'$dec2', labl:'@Amount',hint:'@Demo of htm_Input Field type dec2: number with 2 decimal',wdth:'150px',algn:'center',unit:'<$ ');
+        htm_TextDiv('@and it will have all the properties: <br> placeholder, validation, hint, colors, dimensions and much more...<br><br>
+                    As you can see, the source code is very compact. Less than 1/5 !
+                    <br>');
+    htm_Panel_00();
+
+    htm_nl(1);
+    htm_Caption('<big>PHP2HTML - Introduction to the systems most used modules:</big>',$style='',$align='',$hint='@Example of user popup help/info'); 
+    htm_nl(1);
     htm_Panel_0($capt= '@<small>Layout - </small>PAGE:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
 		htm_TextDiv('A page is a browser window with html objects.<br>
             It is build with two functions: htm_Page_0() and htm_Page_00()<br>
@@ -57,12 +122,12 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
 		');
 	htm_Panel_00();
 
-    htm_Panel_0($capt= '@<small>System - </small>NOTES:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
+    htm_Panel_0($capt= '@<small>System - </small>LAYOUT:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
 		htm_TextDiv('If you will not let panels fill the window-width, you can use the functions: htm_RowColxxx() to create a column layout.<br> 
             Example: htm_RowCol_0(<abbr class= "hint"><data-hint>htm_RowCol_0 ($wdth=240)</data-hint>Parameters</abbr>) and htm_RowCol_next(<abbr class= "hint"><data-hint>htm_RowCol_next($wdth=320)</data-hint>Parameters</abbr>) and htm_RowCol_00()
 		');
 	htm_Panel_00();
- 
+
     htm_Panel_0($capt= '@<small>System - </small>INPUT:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
 		htm_TextDiv('Input fields is the interface to interact with the users data of varies type.<br>
             It is build with function htm_Input()<br>
@@ -121,7 +186,7 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
 	htm_Panel_00();
     
     htm_RowCol_00();
-    PanelOff($First=1,$Last=7);
+    PanelOff($First=3,$Last=9);
 
 htm_Page_00();
 

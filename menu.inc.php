@@ -1,4 +1,4 @@
-<?php $DocFile0='../menu.inc.php';    $DocVers='1.2.0';    $DocRev1='2022-02-11';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php $DocFile0='../menu.inc.php';    $DocVers='1.2.0';    $DocRev1='2022-07-23';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 
@@ -51,8 +51,8 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
 
 function Menu_Topdropdown($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
 global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;
- // MenuStart($clas='firstmain',      $href='#',                              $labl='@MENU:',         $titl='@Main menu');
-    MenuStart($clas='firstmain',      $href='#',                              $labl='<b>PHP2HTML</b>',  $titl='@Demo of the php to html library');
+ // MenuStart($clas='firstmain',      $href='#',                               $labl='@MENU:',         $titl='@Main menu');
+    MenuStart($clas='firstmain',      $href='#',                               $labl='<b>PHP2HTML </b>',  $titl='@Demo of the php to html library');
     if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href= $folder2.'PHP2HTML-intro.page.php',$labl='@INTRODUCTION',  $titl='@Introduction to the systems most usable modules');
       MenuBranch($clas='firstitem',   $href= $folder2.'PHP2HTML-intro.page.php',$labl='@Introduction',  $titl='@Introduction to the systems most usable modules', $icon='fas fa-info');
@@ -88,25 +88,26 @@ global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3
 
 function Menu_TinyCloud($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
 global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;
+    $folder3= $folder3 ?? 'tca/';
  // MenuStart($clas='firstmain',      $href='#',                                $labl='@MENU:',         $titl='@Main menu');
     MenuStart($clas='firstmain',      $href='#',                                $labl='<b>TinyCloud</b>', $titl='@A Demo');
     
-      MenuBranch($clas='withsubmenu', $href= $folder2.'Demo.page.php',          $labl='@FINANCE',       $titl='@Presentation of the system');
-      MenuBranch($clas='firstitem',   $href= $folder2.'AccountPlan.page.php',   $labl='@Account Plan',  $titl='@TCA-Demonstrate some functions',        $icon='fas fa-info');
-      MenuBranch($clas='',            $href= $folder2.'Accounting.page.php',    $labl='@Accounting',    $titl='@TCA-demo (In danish)',                  $icon='fas fa-file');
-      MenuBranch($clas='lastitem',    $href= $folder2.'journalEntry.page.php',  $labl='@Journal Entry', $titl='@-',                                     $icon='fas fa-file');
+      MenuBranch($clas='withsubmenu', $href= $folder3.'Demo.page.php',          $labl='@FINANCE',       $titl='@Presentation of the system');
+      MenuBranch($clas='firstitem',   $href= $folder3.'accountPlan.page.php',   $labl='@Account Plan',  $titl='@TCA-Demonstrate some functions',        $icon='fas fa-info');
+      MenuBranch($clas='',            $href= $folder3.'Accounting.page.php',    $labl='@Accounting',    $titl='@TCA-demo (In danish)',                  $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder3.'journalEntry.page.php',  $labl='@Journal Entry', $titl='@-',                                     $icon='fas fa-file');
       
       MenuBranch($clas='withsubmenu', $href='',                                 $labl='@DEBTOR',        $titl='@-');
-      MenuBranch($clas='firstitem',   $href= $folder2.'CustomerOrder.page.php', $labl='@Customer Order',$titl='@Example of order creation (In danish)', $icon='fas fa-file');
-      MenuBranch($clas='lastitem',    $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='firstitem',   $href= $folder3.'CustomerOrder.page.php', $labl='@Customer Order',$titl='@Example of order creation (In danish)', $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder3.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
       
       MenuBranch($clas='withsubmenu', $href='',                                 $labl='@KREDITOR',      $titl='@-');
-      MenuBranch($clas='firstitem',   $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
-      MenuBranch($clas='lastitem',    $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='firstitem',   $href= $folder3.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='lastitem',    $href= $folder3.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
       
       MenuBranch($clas='withsubmenu', $href='',                                 $labl='@SETTINGS',      $titl='@-');
-      MenuBranch($clas='firstitem',   $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
-      MenuBranch($clas='lastitem',    $href= $folder0.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='firstitem',   $href= $folder3.'translate.page.php',     $labl='@Tranlate',      $titl='@-',         $icon='fas fa-question');
+      MenuBranch($clas='lastitem',    $href= $folder3.'',                       $labl='@-',             $titl='@-',         $icon='fas fa-question');
     MenuEnd();
 }
 
@@ -200,7 +201,7 @@ section#container
 #wb_TopMenu li:hover, #wb_TopMenu li a:hover
 {   position: relative;}
 #wb_TopMenu a.withsubmenu
-{   padding: 0 5px 0 5px;   width: var(--width128);}
+{   padding: 3px 5px 0 5px;   width: var(--width128);}
 #wb_TopMenu li:hover a.withsubmenu, #wb_TopMenu a.withsubmenu:hover
 {  background-image: none;
    background: -moz-linear-gradient(bottom,#C0C0C0 0%,#EEEEEE 100%);

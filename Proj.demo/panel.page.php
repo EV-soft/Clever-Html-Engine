@@ -152,21 +152,22 @@ htm_Page_0($titl='panel.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$D
         ');
         htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW480',$wdth= '',$styl= 'background-color: white;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );
 
-str_Pars( <<< 'STRING'
-htm_Panel_0($ViewHeight='60px'); // htm_Panel_0() must be followed by htm_Panel_00() !
-STRING
-);
-echo 'htm_TextDiv(\'To build a panel there are 2 functions: <br><br>
-        <b>htm_Panel_0()</b> - prepares the start of a panel.<br>
-        and: <br>
-        <b>htm_Panel_00()</b> - finalize the panel.     <br><br>
-        In between, you add your content.             <br><br>
-        <small>See the source in php2html.lib.php to manage the function parameters.</small>
-        \');';
-str_Pars( <<< 'STRING'
-htm_Panel_00();
-STRING
-); 
+    $strCode= "
+    htm_Panel_0(capt: '@PHP Source-code:',
+                icon: 'fas fa-code',
+                hint: '',
+                form: '',
+                acti: '',
+                clas: 'panelW480',
+                wdth: '',
+                styl: 'background-color: white;',
+                attr: '' 
+    );
+    // Placed here the panelcontent...
+    htm_Panel_00();
+    ";
+        htm_CodeDiv(highlight_words(highlight_string('<? '.$strCode,true)));
+
     htm_Panel_00();
     htm_Panel_00();
     htm_RowCol_00();
