@@ -1,8 +1,9 @@
 <?php // /Data.demo/datainit.inc.php
 
 function DEB_Grup () { return( [
-		['1', '@1. Danske debitorer',        '@1. Danske debitorer'],
-		['2', '@2. Europæiske debitorer',    '@2. Europæiske debitorer']
+		['1', '@1. Danske debitorer',           '@1. Danske debitorer'],
+		['2', '@2. Europæiske debitorer',       '@2. Europæiske debitorer'],
+		['3', '@3. Ikke europæiske debitorer',  '@3. Debitorer uden for EU']
 	]  );
 }
 function DEB_Betl () { return( [

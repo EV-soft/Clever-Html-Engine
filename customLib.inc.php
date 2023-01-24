@@ -1,4 +1,4 @@
-<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.2.1';  $DocRev='2022-11-05';  $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.2.2';  $DocRev='2022-12-26';  $DocIni='evs';  $ModulNo=0; ## File informative only
     # In this file you can add your global custom rules and values, for all pages in your project.
     # The file will be read by a require_once() in php2html.lib.php and html added to all page headers:
 
@@ -19,13 +19,13 @@ if ($darkTheme=false) {
     ini_set('highlight.html',    '#e90;');      // orange  #e90     'orange;');   
     ini_set('highlight.keyword', '#07a;');      // blue    #07a     'darkblue;'); 
     ini_set('highlight.string',  '#690;');      // green   #690     'darkgreen;');
-    ini_set('CODEBACKGROUND',    '#f4f4f4;');   // lysegrå #f4f4f4  'GhostWhite');
+    ini_set('CODEBACKGROUND',    '#f4f4f4;');   // lightgray #f4f4f4  'GhostWhite');
 }
 ## Hightlight - Custom word-list and custom style: 
 function highlight_words($text, $wrds='', $styl='',$patt='~\w+~') {
     $wrds.='labl capt body plho icon hint type name valu form subm acti clas wdth algn marg styl attr font colr fclr bclr llgn link targ akey kind  echo unit 
             disa rows step bord rtrn titl info inis gbl_imag gbl_bord simu clck vhgh stck cntx html butt mess tplc tsty';
-    if ($styl=='') $styl='color:'.'#a16802'.'; font-style:italic;';
+    if ($styl=='') $styl='color:'.'#550000'./* '#a16802'. */'; font-style:italic;';
     preg_match_all($patt, $wrds, $m);
     if(!$m) return $text;
     if ($styl>'') $styl= ' style="'.$styl.'" ';

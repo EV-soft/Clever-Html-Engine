@@ -1,4 +1,4 @@
-<?php $DocFile0='../menu.inc.php';    $DocVers='1.2.0';    $DocRev1='2022-07-23';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php $DocFile0='../menu.inc.php';    $DocVer='1.2.2';    $DocRev='2022-12-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 
@@ -58,6 +58,7 @@ global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3
       MenuBranch($clas='firstitem',   $href= $folder2.'PHP2HTML-intro.page.php',$labl='@Introduction',  $titl='@Introduction to the systems most usable modules', $icon='fas fa-info');
       MenuBranch($clas='',            $href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',           $icon='fas fa-info');
       MenuBranch($clas='',            $href= $folder2.'Demo.page.php',          $labl='@Demo',          $titl='@Demonstrate some functions',           $icon='fas fa-info');
+      MenuBranch($clas='',            $href= $folder2.'tinyEditor.page.php',    $labl='@Tiny Editor',   $titl='@Working with tiny Editor:', $icon='fas fa-info');
       MenuBranch($clas='lastitem',    $href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)', $icon='fas fa-cubes');
     }
     if ($showGroup1) {

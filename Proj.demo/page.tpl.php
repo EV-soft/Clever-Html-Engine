@@ -1,8 +1,9 @@
-<?php   $DocFile= './Proj.demo/page.tpl.php';    $DocVer='1.2.0';    $DocRev='2022-03-05';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/page.tpl.php';    $DocVer='1.2.0';    $DocRev='2022-07-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 ## .tpl.php - Temmplate file for *.page.php files....   - PHP8+ notation !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+$gbl_ProgRoot= './../';
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');

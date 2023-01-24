@@ -1,4 +1,4 @@
-<?   $DocFileLib='../php2html.lib.php';    $DocVers='1.2.1';    $DocRev1='2022-11-11';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<?   $DocFileLib='../php2html.lib.php';    $DocVer='1.2.2';    $DocRev='2023-01-22';      $DocIni='evs';  $ModulNo=0; ## File informative only
 
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -6,7 +6,9 @@
 #
 #   HTML elements INPUT / CHECKBOX / RADIO-GROUP / TABLE and others, generated from PHP-functions.
 #   Combined with: Label, ToolTip, Placeholder, dimensions and others.
-#   Incorporated translate system. Font-awesome icons.
+#   Multi language translate system. 
+#   Incorporated open source: Font-awesome icons.
+#   Incorporated open source: HTML-editor system. TinyMCE.
 #   Extended table functions (sort, filter, and much more) with jquery.tablesorter (Mottie Tablesorter-library).
 #
 #   Based on HTML5, CSS3, PHP7+ / PHP8+
@@ -18,7 +20,7 @@
  *           | |____   \  /       \__ \ (_) ) | | |_
  *           |______|   \/        (___)\___/|_|  \__)
  *
- */ $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE'; /*
+ */ $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE'; /*
 
     Created: 2020-02-29 evs - EV-soft
     Latest revision: see file 1. line: $DocRevi
@@ -65,12 +67,15 @@ if (is_readable('../project.init.php')) include('project.init.php'); else {
     $gbl_GridOn= true;                  # Use grid to place objects in rows / colums
     $gbl_progZoom = 'small';            # Global tag "font-scale"
 }
+$jsScripts= '';
 
 if (is_null($rowHtml ?? '')) $rowHtml= '';
 
 # PATHS:
 if ($GLOBALS["gbl_ProgRoot"] ?? '') $gbl_ProgRoot= $GLOBALS["gbl_ProgRoot"]; 
 else                             $gbl_ProgRoot=  './';  # $gbl_ProgRoot=   "./../";  // "../";  Relative in 1. subniveau    #-$gbl_ProgRoot= "./../../";   //  Relative in 2. subniveau
+$gbl_ProgRoot=   "./../"; 
+
 $_assets=     $gbl_ProgRoot.'_assets/';
 $_base=   '';
 
@@ -285,7 +290,6 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',type: 'text',name:
 
         case 'area' : $result.= ## TEXTAREA:
                         '<span class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px; margin: 0 10px;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.
-                        
                         '" style="width:97%; font-size: 1em; border: 1px solid lightgray; border-radius: 4px; '.$dataStyle.'" '.
                         $eventInvalid. $aktiv. $plh.' '.$attr.' >'.$valu.'</textarea>'; $top=' top: -8px; ';  break;
 
@@ -348,7 +352,7 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',type: 'text',name:
                         <div style="white-space: nowrap; '.$lblalign.'">'.$labl.'</div>
                    </label>'
                    : '').
-                   '<data-hint style="top: 45px; left: 2px;">'.lang($hint).($unit>'' ? (' <br>'.lang('@Unit: ').$unit) : '').'</data-hint>
+                   '<data-hint style="top: 45px; left: 2px;">'.lang($hint).($unit>'' ? (' <br>'.lang('@Unit: ').ltrim($unit,'<')) : '').'</data-hint>
                </abbr>'.($subm ?? '');
          $result.= '</div>'; # :FIELD
 
@@ -374,7 +378,7 @@ function htm_Caption(# labl:'',icon:'',hint:'',algn:'',styl:'color:#550000; font
             if ($hint>'') echo '<data-hint> '.lang($hint).' </data-hint>';
   echo '</abbr>';
 }
-function htm_TextDiv(# body,algn:'left',marg:'8px',styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white; ');
+function htm_TextDiv(# body, algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white; ');
     $body,          # string: Html-text inside div
     $algn='left',   # string: div-text alignment
     $marg='8px',    # string: div margin
@@ -1257,45 +1261,45 @@ function htm_Panel_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'panelW
     echo '<span class="'.$clas.'" id="panel'.$gbl_PanelIx.'"  style="position: relative; vertical-align: top; margin: 1px; margin-bottom: 8px; '.$styl.' '.$attr.'"> '.
             $formCrea.
             // PanelTop:
-            '<span id="phead'.$gbl_PanelIx.'"  style="display:inline-block; width: calc(100% - 4px); text-align: left; padding: 4px 0;'.$head.'">';
+            '<span id="phead'.$gbl_PanelIx.'"  style="display:inline-block; width: calc(100% - 0px); text-align: left; padding: 4px 0;'.$head.'">';
             if ($hint=='')   $hint= '@<b>TOGGLE:</b> Click icon or panel header-text to open / close <i>this</i> panel';
 
             // panelTitl:
             echo '<abbr class= "hint">'.
-                 '<span class= "panelTitl" style="'.$Ph.' color:'.$gbl_TitleColr.'; cursor:row-resize; text-align: left; min-height:26px; padding-right:calc(80% - 300px); display:inline;"'.
+                 '<span class= "panelTitl" style="'.$Ph.' color:'.$gbl_TitleColr.'; cursor:row-resize; text-align: left; min-height:26px; padding-right:calc(80% - 350px); display:inline;"'.
                     ' onclick= PanelSwitch'.$gbl_PanelIx.'(); > '. $prnHtml. '
                  </span>
                     <data-hint>'.lang($hint).' </data-hint></abbr>';
             // TOGGLE butt:
             if ($show==true) 
             echo '<abbr class= "hint">'.
-                    '<ic class="fas fa-arrows-alt-v" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:row-resize; font-size: 16px; " '.
+                    '<ic class="fas fa-arrows-alt-v" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:row-resize; font-size: 14px; " '.
                     ' onclick= PanelSwitch'.$gbl_PanelIx.'(); ></ic> 
                     <data-hint>'.lang('@<b>TOGGLE:</b> Click icon or panel header-text to open / close <i>this</i> panel').' </data-hint></abbr>';
             // WIDE butt:
             if ($show==true) 
             echo '<abbr class= "hint">
-                    <ic class="fa-solid fa-right-left" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:col-resize; font-size: 16px; " '.
+                    <ic class="fa-solid fa-right-left" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:col-resize; font-size: 14px; " '.
                     ' onclick= PanelWide'.$gbl_PanelIx.'(); ></ic>
                     <data-hint>'. lang('@<b>WIDE:</b> Click to maximize/normalize <i>this</i> panel width').'</data-hint></abbr>';
             // HEIGHT butt:
             if ($show==true) if (false) // if (class="wrapper")
                 // <script> const el = document.getElementById('panel'.$gbl_PanelIx.'');    el.closest('.wrapper');     el.find('.wrapper'): </script>
             echo '<abbr class= "hint">
-                    <ic class="fa-solid fa-right-left fa-rotate-90" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:s-resize; font-size: 16px; " '.
+                    <ic class="fa-solid fa-right-left fa-rotate-90" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:s-resize; font-size: 14px; " '.
                     ' onclick= WrapperHeight'.$gbl_PanelIx.'(); ></ic>
                     <data-hint>'. lang('@<b>HEIGHT:</b> Click to maximize/normalize <i>this</i> View height (Table/WrapperPanel)').'</data-hint></abbr>';
 
             // COLLAPSE butt:
             if ($show==true)
             echo '<abbr class= "hint">
-                    <ic class="fas fa-angle-double-up" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:zoom-out; font-size: 16px; " '.
+                    <ic class="fas fa-angle-double-up" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:zoom-out; font-size: 14px; " '.
                     ' onclick= PanelMinimizeAll(); ></ic>
                     <data-hint>'. lang('@<b>COLLAPSE:</b> Click to close <i>all</i> panels').';" </data-hint></abbr>';
             // EXPAND butt:
             if ($show==true)
             echo '<abbr class= "hint">
-                    <ic class="fas fa-angle-double-down" style="width:12px; height:12px; margin-top:6px; margin-right:0px; float:right; cursor:zoom-in; font-size: 16px; " '.
+                    <ic class="fas fa-angle-double-down" style="width:12px; height:12px; margin-top:6px; margin-right:0px; float:right; cursor:zoom-in; font-size: 14px; " '.
                     ' onclick= PanelMaximizeAll(); ></ic>
                     <data-hint>'. lang('@<b>EXPAND:</b> Click to open <i>all</i> panels').';" </data-hint></abbr>';
     echo '</span>';   // PanelTop
@@ -1915,17 +1919,19 @@ function htm_Tabs_0(# head:'', styl:'', rtrn:false)
 }
                 #$name, $labl='', $body='', $bclr='white', $style='text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;') 
 function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', bclr:'white')
-    $labl='',       # string: Label
+    $labl='',       # string: Tab Label
     $body='',       # string: Content on tab
     $name='',       # string: id
     $styl=          # string: Style
           'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;',
     $bclr='white'   # string: Background color
     ) 
-{   $GLOBALS['TabLabl'].= '
+    
+{   $b= 'small'; 
+    $GLOBALS['TabLabl'].= '
         <button class="tablinks" type="button" title="'.lang('@Show the Tab-content').'" 
         onclick="openTab(event, \''.$name.'\')" 
-        style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; ">'.lang($labl).'</button>';
+        style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; "><'.$b.'>'.lang($labl).'</'.$b.'></button>';
     $GLOBALS['TabBody'].= '
         <div id="'.$name.'" class="tabcontent" style="display: none; background-color:'.$bclr.'; '.$styl.' border-right: 2px solid #aaa;">'. lang($body).'</div>';
 }
@@ -2406,24 +2412,27 @@ function htm_Page_0(# titl:'', hint:'', info:'', inis:'', algn:'center', gbl_Ima
     $gbl_Bord=true      # bool:   Draw border around the page body-div
     ) 
 { # Prepare / initialize a page  # Must be followed of htm_Page_00() to finalise the page
-    global $gbl_ProgRoot, $CSS_system, $gbl_TitleColr, $panelCount, $gbl_Bord,$gbl_progZoom;
+    global $gbl_ProgRoot, $CSS_system, $gbl_TitleColr, $panelCount, $gbl_Bord,$gbl_progZoom, $jsScripts;
     $pageMess= '<b>ERROR:</b> ';
 // Library_state: 0:inactive - 1:Offline (from /_assets) - 2:Online (from CDN)
-// Libraryes: jQuery-latest, Dialog-polyfill, TableSorter, ContextMenu, (popMnu_) ctxP_ Menu
+// libraries: jQuery-latest, Dialog-polyfill, TableSorter, ContextMenu, (popMnu_) ctxP_ Menu
 
-/* in *.page.php files PLACE THE FOLLOWING LINES:
-## Handle libraryes to speedup page-loading, if some libraryes is not needed:
-//      ConstName:          ix:   LocalPath:                        CDN-path:
-define('LIB_JQUERY',        [1, '_assets/jquery/',                  'https://cdnjs.cloudflare.com/ajax/libs/']);
-define('LIB_TABLESORTER',   [1, '_assets/tablesorter/js/',          'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
-define('LIB_POLYFILL',      [0, '_assets/',  '']);  // Not in use           
-define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);  // Not in use       
-define('LIB_FONTAWESOME',   [1, '_assets/font-awesome5/5.15.4/',    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/']);
-define('LIB_SWITCHBOX',     [0, '_assets/',  '']);  // Not in use       
-define('LIB_POPUPSYSTEM',   [0, '_assets/',  '']);  // Not in use       
-// Set ix= 0:deactive  1:Local-source  2:WEB-source-CDN
- */
+/* in project.inc.php (globaly) or in *.page.php files (individualy) PLACE THE FOLLOWING LINES:
+## Library selector: Activate needed libraries.
+//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
+define('LIB_JQUERY',        [0, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/']);               // jquery/3.6.3/jquery.min.js
+define('LIB_JQUERYUI',      [0, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jqueryui/1.13.2/jquery-ui.min.js
+define('LIB_TABLESORTER',   [0, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);
+define('LIB_POLYFILL',      [0, '_assets/',  ' Not in use ']);      
+define('LIB_POPSCRIPTS',    [0, '_assets/',  ' Not in use ']);      
+define('LIB_FONTAWESOME',   [0, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
+define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/']);      // tinymce.min.js
+define('LIB_SWITCHBOX',     [0, '_assets/',  ' Not in use ']);
+define('LIB_POPUPSYSTEM',   [0, '_assets/',  ' Not in use ']);
+// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
+*/
 
+// <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     echo '
     <!DOCTYPE html>
     <html lang="da" dir="ltr">
@@ -2434,56 +2443,95 @@ define('LIB_POPUPSYSTEM',   [0, '_assets/',  '']);  // Not in use
     '<title>'.lang($titl).'</title>'. "\n";  
     dvl_pretty('htm_Page_0');
 
+
 ### ----------------------Library-dialog-polyfill-------------------------
- //   $path= $gbl_ProgRoot.'_assets/dialog-polyfill/';      // To get Firefox and other browsers to support <dialog>
- //   echo '<script src="'.$path.'dialog-polyfill.js"></script>';
- //   echo '<link rel="stylesheet" href="'.$path.'dialog-polyfill.css"/>';
- //   run_Script("var dialog = document.querySelector('dialog');
- //               dialogPolyfill.registerDialog(dialog);    // Now dialog always acts like a native <dialog>.
- //               dialog.showModal(); ");
+    if (defined('LIB_POLYFILL')) {
+        switch(LIB_POLYFILL[0]) {
+            case 0 : $path= '';                             break;  # Not active
+            case 1 : $path= $gbl_ProgRoot.LIB_POLYFILL[1];  break;  # Local-folder
+            case 2 : $path=               LIB_POLYFILL[2];  break;  # CDN-server  :https://
+           default : { $pageMess.= 'LIB_POLYFILL: illegal index ! '; }
+        }
+        if ($path > '') {
+            echo '<script src="'.$path.'dialog-polyfill.js"></script>';
+            echo '<link rel="stylesheet" href="'.$path.'dialog-polyfill.css"/>';
+            run_Script("var dialog = document.querySelector('dialog');
+                        dialogPolyfill.registerDialog(dialog);    // Now dialog always acts like a native <dialog>.
+                        dialog.showModal(); ");
+            
+            run_Script("function phpDialog(capt='CAPTION', content='Content') 
+                { var result= <?= htm_Dialog(capt, content); ? > return result; }");
+        //        { alert(\"<?php echo htm_Dialog(capt, content); ? >\"); }");
+            }
+    } else 
+    { define('LIB_POLYFILL', [0, '', '']); /* $pageMess.= ' dialog-polyfill is not loaded  ! <br>'; */ }
+/* 
+if (LIB_POLYFILL[0]==1) {
+    $path= $gbl_ProgRoot.'_assets/dialog-polyfill/';      // To get Firefox and other browsers to support <dialog>
+    echo '<script src="'.$path.'dialog-polyfill.js"></script>';
+    echo '<link rel="stylesheet" href="'.$path.'dialog-polyfill.css"/>';
+    run_Script("var dialog = document.querySelector('dialog');
+                dialogPolyfill.registerDialog(dialog);    // Now dialog always acts like a native <dialog>.
+                dialog.showModal(); ");
     
-   // run_Script("function phpDialog(capt='CAPTION', content='Content') 
-   //     { var result= <?= htm_Dialog(capt, content); ? > return result; }");
+    run_Script("function phpDialog(capt='CAPTION', content='Content') 
+        { var result= <?= htm_Dialog(capt, content); ? > return result; }");
 //        { alert(\"<?php echo htm_Dialog(capt, content); ? >\"); }");
+} */
+### ----------------------
 
 ### ----------------------Library-jQuery-------------------------
 ### jQuery-latest:  https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js
-//                ( https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js )
+//                  https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js 
 //                  https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
 //                  https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css
 //                                          _assets/jquery/*********************************
-    if (defined(LIB_JQUERY[0]) && array_key_exists(0, LIB_JQUERY))  {
-            if (LIB_JQUERY[0]>0) {
-                if (LIB_JQUERY[0]==1)  $path= $gbl_ProgRoot.LIB_JQUERY[LIB_JQUERY[0]];    # Local-folder
-                else                   $path= LIB_JQUERY[LIB_JQUERY[0]];               # CDN-server 
-            echo '<script src="'.$path.'jquery/3.6.0/jquery.js"></script>';                         //  latest // topic="Tablesorter-system" and Topmenu-system
-            echo '<script src="'.$path.'jqueryui/1.12.1/jquery-ui.min.js"></script>';               // <!-- jquery Dialog -->
-            echo '<link  href="'.$path.'jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet" />';    //  topic="jquery Dialog"> 
-        } else {
-            $pageMess.= ' jQuery is not loaded  ! <br>';
+
+    if (defined('LIB_JQUERY')) {
+        switch(LIB_JQUERY[0]) {
+            case 0 : $path= '';                             break;  # Not active
+            case 1 : $path= $gbl_ProgRoot.LIB_JQUERY[1];    break;  # Local-folder
+            case 2 : $path=               LIB_JQUERY[2];    break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery.min.js
+           default : { $pageMess.= 'LIB_JQUERY: illegal index ! '; }
         }
-    } 
-    else { // Old system:
-            $path= $gbl_ProgRoot.'_assets/jquery';
-            echo '<script src="'.$path.'/3/jquery-3.3.1.js"></script>';                         //  latest // topic="Tablesorter-system" and Topmenu-system
-            echo '  <link rel="stylesheet" href= "'.$path.'-ui/1.12.1/jquery-ui.css"/>';        //  topic="jquery Dialog"> 
-            echo '    <script src="'.$path.'-ui/1.12.1/external/jquery/jquery.js"></script>';   // <!-- jquery Dialog -->
-            echo '    <script src="'.$path.'-ui/1.12.1/jquery-ui.js"></script>             ';   // <!-- jquery Dialog -->
-    }
+        if ($path > '') {
+            echo '<script src="'.$path.'jquery.min.js"></script>';              //  topic="Tablesorter-system" and Topmenu-system      
+        } 
+    } else 
+    { define('LIB_JQUERY', [0, '', '']); $pageMess.= ' jQuery is not loaded  ! <br>'; }
+
+    if (defined('LIB_JQUERYUI')) {
+        switch(LIB_JQUERYUI[0]) {
+            case 0 : $path= '';                             break;  # Not active
+            case 1 : $path= $gbl_ProgRoot.LIB_JQUERYUI[1];  break;  # Local-folder
+            case 2 : $path=               LIB_JQUERYUI[2];  break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
+           default : { $pageMess.= 'LIB_JQUERYUI: illegal index ! '; }
+        }
+        if ($path > '') {
+        echo '<script src="'.$path.'jquery-ui.min.js"></script>';               //  topic="Tablesorter-system" and Topmenu-system
+        // echo '<link  href="'.$path.'jquery-ui.min.css" rel="stylesheet" />'; //  topic="jquery Dialog"> 
+        // 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/'
+        // echo '<link  href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.css" />';    // topic="jquery Dialog"> 
+        } 
+    } else 
+    { define('LIB_JQUERYUI', [0, '', '']); $pageMess.= ' jQuery-ui is not loaded  ! <br>'; }
+### ----------------------
 
 ### ----------------------Library-Tablesorter-------------------------
-    if (defined(LIB_TABLESORTER[0]) && array_key_exists(0, LIB_TABLESORTER))  {
-            if (LIB_TABLESORTER[0]>0) {
-                if (LIB_TABLESORTER[0]==1)  $path= $gbl_ProgRoot.LIB_TABLESORTER[LIB_TABLESORTER[0]];    # Local-folder
-                else                        $path= LIB_TABLESORTER[LIB_TABLESORTER[0]];               # CDN-server 
-            echo '<script src="'.$path.'jquery.tablesorter.js"></script>';                      // topic="Tablesorter-system" - required
-            echo '<script src="'.$path.'widgets/widget-cssStickyHeaders.min.js"></script>';     // topic="Tablesorter-system - parsers"
-            echo '<script src="'.$path.'parsers/parser-input-select.min.js"></script>';         // topic="Tablesorter-extra"
-            echo '<script src="'.$path.'jquery.tablesorter.widgets.js"></script>';
+    if (defined('LIB_TABLESORTER')) {
+        if (array_key_exists(0, LIB_TABLESORTER))
+            if (LIB_TABLESORTER[0]>0) {                                                 # if library activated
+                if (LIB_TABLESORTER[0]==1)  $path= $gbl_ProgRoot.LIB_TABLESORTER[1];    # Local-folder
+                else                        $path=               LIB_TABLESORTER[2];    # CDN-server 
+            echo '<script src="'.$path.'js/jquery.tablesorter.js"></script>';                      // topic="Tablesorter-system" - required
+            echo '<script src="'.$path.'js/widgets/widget-cssStickyHeaders.min.js"></script>';     // topic="Tablesorter-system - parsers"
+            echo '<script src="'.$path.'js/parsers/parser-input-select.min.js"></script>';         // topic="Tablesorter-extra"
+            echo '<script src="'.$path.'js/jquery.tablesorter.widgets.js"></script>';
             echo '<link  href="'.$path.'css/theme.blue.css" />';                                // topic="Tablesorter-system" (choose a theme file)
-        } else {
+        } /* else {
+            define('LIB_TABLESORTER',       [0, '', '']);
             $pageMess.= ' Tablesorter is not loaded ! <br>';
-        }
+        } */
     } 
     else {
 //$path= './../_assets/tablesorter/';
@@ -2502,9 +2550,9 @@ define('LIB_POPUPSYSTEM',   [0, '_assets/',  '']);  // Not in use
     $lateScripts= '';   // To be run before >/body>
 //    echo "//    echo "
 
-if (defined(LIB_FONTAWESOME[0]) && array_key_exists(0, LIB_FONTAWESOME) && (LIB_FONTAWESOME[0]==0) ) 
-    $jsScripts = ""; else
-    $jsScripts = "
+if (!(defined('LIB_FONTAWESOME[0]') && array_key_exists(0, LIB_FONTAWESOME) && (LIB_FONTAWESOME[0]==0) )) 
+    // $doNothing = ""; else
+    $jsScripts.= "
 <script>
     $(function () {
     /* $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({ */
@@ -2707,6 +2755,7 @@ if (defined(LIB_FONTAWESOME[0]) && array_key_exists(0, LIB_FONTAWESOME) && (LIB_
     }
 
 </script>"; // $jsScripts
+### ----------------------
 
 run_Script("
 /* https://css-tricks.com/value-bubbles-for-range-inputs/ */
@@ -2992,7 +3041,7 @@ $popScripts= "
 ";  // $popScripts
 
 
-// if (defined(LIB_SWITCHBOX{[0]) && array_key_exists(0, LIB_SWITCHBOX) && (LIB_SWITCHBOX[0]==0) ) 
+// if (defined('LIB_SWITCHBOX{[0]') && array_key_exists(0, LIB_SWITCHBOX) && (LIB_SWITCHBOX[0]==0) ) 
 //     $switchbox_style = ""; else
 $switchbox_style= "
     <style>
@@ -3122,7 +3171,7 @@ body {
 </script>
 
 
-<!-- if (defined(LIB_POPUPSYSTEM[0]) && array_key_exists(0, LIB_POPUPSYSTEM) && (LIB_POPUPSYSTEM[0]==0) ) 
+<!-- if (defined('LIB_POPUPSYSTEM[0]') && array_key_exists(0, LIB_POPUPSYSTEM) && (LIB_POPUPSYSTEM[0]==0) ) 
      $switchbox_style = ""; else -->
 
  <!-- Context menu system: -->
@@ -3769,27 +3818,47 @@ run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
     
 
 ### ----------------------Library-fontawesome icons ----------------------
-    if (defined(LIB_FONTAWESOME[0]) && array_key_exists(0, LIB_FONTAWESOME) )  {
-        if (LIB_FONTAWESOME[0]>0) {
-                // echo LIB_FONTAWESOME[1];
-                if (LIB_FONTAWESOME[0]==1)  $path= $gbl_ProgRoot.LIB_FONTAWESOME[LIB_FONTAWESOME[0]];   # Local-folder
-                else                        $path= LIB_FONTAWESOME[LIB_FONTAWESOME[0]];                 # CDN-server 
+    if (defined('LIB_FONTAWESOME') && array_key_exists(0, LIB_FONTAWESOME) )  {
+        if (LIB_FONTAWESOME[0]>0) {                                                     # if library activated
+                if (LIB_FONTAWESOME[0]==1)  $path= $gbl_ProgRoot.LIB_FONTAWESOME[1];    # Local-folder
+                else                        $path=               LIB_FONTAWESOME[2];    # CDN-server 
             echo '<link  href="'.$path.'css/all.min.css" rel="stylesheet" />';      // topic="fontawesome-system" (choose a theme file)
-        } else {
+        } /* else {
+            define('LIB_FONTAWESOME',       [0, '', '']);
             $pageMess.= ' Fontawesome is not loaded ! <br>';
-        }
-    } else {
-    echo '<script defer src="'.$gbl_ProgRoot.'_assets/font-awesome6/js/all.js"></script>'; 
-    echo '<link        href="'.$gbl_ProgRoot.'_assets/font-awesome6/css/all.css" rel="stylesheet">';
+        } */
+    } /* else {
+    echo '<script defer src="'.$gbl_ProgRoot.'_assets/font-awesome/latest/js/all.js"></script>'; 
+    echo '<link        href="'.$gbl_ProgRoot.'_assets/font-awesome/latest/css/all.css" rel="stylesheet">';
+    
     }
+     */
+### ----------------------
+
+
+### ----------------------Library-tinyMCE editor ----------------------
+    if (defined('LIB_TINYMCE')) {
+        if (array_key_exists(0, LIB_TINYMCE))
+        if (LIB_TINYMCE[0]>0) {                                             # if library activated
+            if (LIB_TINYMCE[0]==1)  $path= $gbl_ProgRoot.LIB_TINYMCE[1];    # Local-folder
+            else                    $path=               LIB_TINYMCE[2];    # CDN-server 
+            echo '<script src="'.   $path.'/tinymce.min.js" referrerpolicy="origin"></script>';
+    // } else { define('LIB_TINYMCE',       [0, '', '']); 
+        // $pageMess.= ' tinyMCE is not loaded ! <br>'; }
+    }
+    /* else {
+        // define('LIB_TINYMCE',       [0, '', '']);
+        /* $pageMess.= ' tinyMCE is not loaded ! <br>'; */
+    } 
+    ## Be aware tinyMCE has its own translate system !
+### ----------------------
+
 
     $gbl_PageLogo= ($gbl_ProgBase ?? './').'_accessories/21997911.png';
 
     echo $CSS_system;    // Activate the system style
-//  echo '<style type="text/css"> <!--  @font-face { font-family: barcode; src: url('.$gbl_ProgRoot.'_assets/fonts/barcode.ttf); } --> </style>';
     set_Style('type="text/css"', '<!--  @font-face { font-family: barcode; src: url('.$gbl_ProgRoot.'_accessories/barcode.ttf); } --> ');
     $bottLogo= ''; //'url('.$gbl_PageLogo.') right bottom/3% no-repeat,';
-//  echo '<style type="text/css"> body { background: '.$bottLogo.' url('.$gbl_Imag.') left top repeat; font-family: sans-serif;} </style>'; 
     set_Style('type="text/css"', 'body { left top no-repeat; background-size: 100% 100%; font-family: sans-serif; '.$attr.' url('.$gbl_Imag.')}');
     //$PgInfo= lang('@page: Customer-ORDER');
     if ($info>'')
@@ -3813,18 +3882,17 @@ run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
 
     echo $jsScripts;
     echo $popScripts;
-    if ($inis>'')
-        echo $inis;   // read CSS/js given in htm_Page_0 parameter
+    if ($inis>'')   echo $inis;   // read CSS/js given in htm_Page_0 parameter
+    if ($lateScripts > '') echo $lateScripts; // run_Script($lateScripts);
 
     echo "\n</head>\n
              <body>\n"; 
-    if ($pageMess > '<b>ERROR:</b> ')
-        echo $pageMess;
+    if ($pageMess > '<b>ERROR:</b> ') echo $pageMess;
     
     if ((isset($gbl_Imag)) and ($gbl_Imag>'')) $image= 'background-image: url(\''.$gbl_Imag.'\');'; else  $image= '';
-    echo '<div style="text-align: '.$algn.'; '.$image.'">';
+    echo '<div style="text-align: '.$algn.'; '.$image.'     margin: auto; ">';
     if ($gbl_Bord) 
-        echo '<div style="border: 2px solid #AAA; border-radius: 8px; overflow: hidden;" >'; // margin: 24px 4px 4px;
+        echo '<div style="border: 2px solid #AAA; border-radius: 8px; overflow: hidden; margin: auto;" >'; // margin: 24px 4px 4px;
 } // htm_Page_0()
 
 
@@ -3865,12 +3933,12 @@ function htm_Page_00()
         }
     </script>
     ';
-    if ($lateScripts > '') run_Script($lateScripts);
+    if ($lateScripts > '') echo $lateScripts; // run_Script($lateScripts);
     
     if (DEBUG) run_Script('header("Server-Timing: ".$Timers->getTimers()); ');
     $url= $gbl_ProgRoot.'../../spormig.php';
     if (is_readable($url)) { include($url); echo '+'; } else echo '-';
-            htm_nl(2);
+    htm_nl(2);
     echo "\n  </body>"; // Started in htm_Page_0()
     echo '</html><br>';
 }
@@ -4929,7 +4997,7 @@ if (is_readable($custFile= '../customLib.inc.php')) require_once($custFile);
 //      Remove unused functions in lib-file
 //      Save lib-file as optimized file .opt.
 
-// Regex: https://regexr.com/
+// Regex: https://regexr.com/       https://regex101.com/
 
 // upgrade function call to php8 notation for named variables:
 // '\$([A-z]{4})='  # Search for   '$xxxx='
@@ -5072,6 +5140,12 @@ v1.2.1:
 Fixed TogglePassword
 More function parameter rename and order change
 Minor changes
+
+
+###########
+v1.2.2:
+New: TinyMCE 6.x HTML-editor
+Some demo updated for PHP 8+ only
 
 
 */

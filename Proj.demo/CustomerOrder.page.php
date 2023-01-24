@@ -1,5 +1,5 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.2.1';    $DocRev='2022-07-23';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.2.2';    $DocRev='2023-01-19';   $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
@@ -10,14 +10,15 @@ require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php'); // sql_/dbi_-functions
 
-## Speedup page-loading, if some libraryes is not needed:
-//      ConstName:          ix:   Local-Path:                        CDN-path:
-define('LIB_JQUERY',        [2, '_assets/jquery/',                  'https://cdnjs.cloudflare.com/ajax/libs/']);
-define('LIB_TABLESORTER',   [2, '_assets/tablesorter/js/',          'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
-define('LIB_POLYFILL',      [0, '_assets/',  '']);
-define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
-define('LIB_FONTAWESOME',   [2, '_assets/font-awesome6/',           'https://cdnjs.cloudflare.com/ajax/libs/font-awesome6/']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries:
+//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
+define('LIB_JQUERY',        [1, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);   
+define('LIB_JQUERYUI',      [1, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);
+define('LIB_TABLESORTER',   [2, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
+define('LIB_FONTAWESOME',   [2, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
+define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/']); 
+define('LIB_POLYFILL',      [0, '_assets/',  ' Not in use ']);      
+// Set ix= 0:deactive  1:Local-source  2:WEB-source-CDN
 
 
 
@@ -653,7 +654,7 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
     htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
 
     htm_Panel_0( capt: '@Content of the order:'.$strOrder.' - '.$status, icon: 'fas fa-pen', hint: '',
-                 form: $f='content', acti: '', clas: 'panelWaut', wdth: '', styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '',head:$headbg);
+                 form: $f='content', acti: '', clas: 'panelW560', wdth: '', styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '',head:$headbg);
         global $ordrTotal;
         $link= '#';
         $ordrTotal= 0;
@@ -734,7 +735,7 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
 
 
 
-    htm_Panel_0( capt: '@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'panelWaut', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg);
+    htm_Panel_0( capt: '@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'panelW560', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg);
         $heading= [['@Pos.','center'],['@Item no.','center'],['@Quantity','right'],['@Unit','left'],['@Description','left'],['@VAT','center'],
                    ['@Price','right'],['@%','right'],['@Total','right'],['@Currency','center']];
         $body= '<small>Preview:<br><table style="margin: 0 auto; width:700px;"><thead>';

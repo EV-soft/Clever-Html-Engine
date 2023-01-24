@@ -1,0 +1,224 @@
+:KtNr	Kontonavn	Type	Moms	ΣFra-Kt	V-Kurs	Saldo	Genvej	Status
+10	RESULTATOPGØRELSE	H		0	100	0	G 	Aktiv
+100	OMSÆTNING:	H		0	100	0	 	Aktiv
+1000	Udført arbejde	D	S1	0	100	0	U	Aktiv
+1100	Varesalg DK	D	S1	0	100	0	S	Aktiv
+1200	Salg af ydelser indenfor EU	D		0	100	0	Y	Aktiv
+1220	Salg af varer indenfor EU	D		0	100	0	G	Aktiv
+1250	Salg af ydelser udenfor EU	D		0	100	0	G	Aktiv
+1270	Salg af varer udenfor EU	D		0	100	0	G	Aktiv
+1290	Salg af varer og ydelser udenfor EU	Z		1250	100	0	G	Aktiv
+1300	Fragt ydet	D	S1	0	100	0	F	Aktiv
+1800	Igangværende arbejder	D		0	100	0	I	Aktiv
+1900	Tab på debitorer	D	S1	0	100	0	T	Aktiv
+1950	OMSÆTNING I ALT	Z		100	100	0	G	Aktiv
+2000	VARIABLE OMKOSTNINGER:	H		0	100	0	 	Aktiv
+2001	VAREFORBRUG:	H		0	100	0	 	Aktiv
+2050	Ydelseskøb i DK	D	K1	0	100	0	k	Aktiv
+2100	Varekøb i DK	D	K1	0	100	0	V	Aktiv
+2300	Fragt modtaget	D	K1	0	100	0	f	Aktiv
+2400	Leje driftsmidler	D	K1	0	100	0	D	Aktiv
+2500	Forbrug egne varer	D	K1	0	100	0	E	Aktiv
+2600	Lagerregulering	D		0	100	0	 	Aktiv
+2700	Køb af ydelser i EU	D	Y1	0	100	0	G	Aktiv
+2720	Køb af ydelser udenfor EU	D	Y1	0	100	0	G	Aktiv
+2800	Køb af varer i EU	D	E1	0	100	0	G	Aktiv
+2820	Varekøb udenfor EU	D	E1	0	100	0	G	Aktiv
+2850	VAREFORBRUG I ALT	Z		2000	100	0	G	Aktiv
+2899	FREMMED ARBEJDE	H		0	100	0	G	Aktiv
+2900	Fremmed arbejde	D	K1	0	100	0	G	Aktiv
+3000	VAREFORBRUG OG FREMMEDE ARBEJDE	Z		2000	100	0	G	Aktiv
+3500	DÆKNINGSBIDRAG I	Z		1	100	0	G	Aktiv
+4099	LØNNINGER:	H		0	100	0	G	Aktiv
+4100	Løn, A-indkomst	D		0	100	0	G	Aktiv
+4110	Medarbejder ATP	D		0	100	0	G	Aktiv
+4120	Medarbejder pension	D		0	100	0	G	Aktiv
+4125	Bruttoløn	Z		4100	100	0	G	Aktiv
+4130	Bidragsfri A-indkomst	D		0	100	0	G	Aktiv
+4140	Særlig indkomst	D		0	100	0	G	Aktiv
+4150	Personalegoder	D		0	100	0	G	Aktiv
+4160	Tillæg	D		0	100	0	G	Aktiv
+4170	Optjent SH (søgne-/hellligdagsbetaling)	D		0	100	0	G	Aktiv
+4200	Feriepenge brutto	D		0	100	0	G	Aktiv
+4205	AM-indkomst	D		0	100	0	G	Aktiv
+4210	Virksomhed ATP	D		0	100	0	G	Aktiv
+4220	Virksomhed pension	D		0	100	0	G	Aktiv
+4230	DA Barsel	D		0	100	0	G	Aktiv
+4240	Refusion sygedagpenge	D		0	100	0	G	Aktiv
+4249	LØNNINGER I ALT	Z		4000	100	0	G	Aktiv
+4250	DÆKNINGSBIDRAG II	Z		1	100	0	G	Aktiv
+4308	Øvrige omkostninger:	H		0	100	0	G	Aktiv
+4309	Øvrige personaleomkostninger:	H		0	100	0	G	Aktiv
+4310	Arbejdstøj	D		0	100	0	G	Aktiv
+4320	AER/AES/ATP-fib	D		0	100	0	G	Aktiv
+4330	Personaleforsikringer	D		0	100	0	G	Aktiv
+4340	Uddannelsesudgifter	D		0	100	0	G	Aktiv
+4350	Diverse udgifter	D		0	100	0	G	Aktiv
+4950	PERSONALEOMK. I ALT	Z		4308	100	0	G	Aktiv
+5000	LØN OG PERSONALE I ALT	Z		4100	100	0	G	Aktiv
+5099	LOKALEOMKOSTNINGER:	H		0	100	0	G	Aktiv
+5100	Husleje	D	K1	0	100	0	G	Aktiv
+5200	El, varme m.v.	D	K1	0	100	0	G	Aktiv
+5250	Elafgift	D		0	100	0	G	Aktiv
+5260	Privat andel el	D	K1	0	100	0	G	Aktiv
+5300	Varme	D		0	100	0	G	Aktiv
+5360	Privat andel varme	D		0	100	0	G	Aktiv
+5400	Rengøring og dekoration	D	K1	0	100	0	G	Aktiv
+5500	Reparation og vedligeholdelse	D	K1	0	100	0	G	Aktiv
+5600	LOKALEOMKOSTNINGER I ALT	Z		5100	100	0	G	Aktiv
+5899	SALGSOMKOSTNINGER:	H		0	100	0	G	Aktiv
+5900	Annoncer & reklame	D	K1	0	100	0	G	Aktiv
+5910	Dekoration	D	K1	0	100	0	G	Aktiv
+5930	Rejseudgifter	D		0	100	0	G	Aktiv
+5940	Konferencer	D		0	100	0	G	Aktiv
+5950	Messer	D	K1	0	100	0	G	Aktiv
+5960	Pakkeporto	D		0	100	0	G	Aktiv
+5989	REPRÆSENTATION:	H		0	100	0	G	Aktiv
+5990	Repræsentation, restaurant	D		0	100	0	G	Aktiv
+6000	Repræsentation, gaver og blomst.	D		0	100	0	G	Aktiv
+6010	Repræsentation, diverse	D		0	100	0	G	Aktiv
+6020	Ej fradragsberett. andel	D		0	100	0	G	Aktiv
+6030	REPRÆSENTATION I ALT	Z		5980	100	0	G	Aktiv
+6040	SALGSOMKOSTNINGER I ALT	Z		5900	100	0	G	Aktiv
+6099	ADMINISTRATION:	H		0	100	0	G	Aktiv
+6100	Advokat og revisor	D	K1	0	100	0	G	Aktiv
+6150	Bogføringsassistance	D	K1	0	100	0	G	Aktiv
+6200	Konsulentbistand	D	K1	0	100	0	G	Aktiv
+6300	Avishold	D		0	100	0	G	Aktiv
+6400	Kontingenter m/moms	D	K1	0	100	0	G	Aktiv
+6450	Kontingenter u/moms	D		0	100	0	G	Aktiv
+6800	Erhvervsforsikringer	D		0	100	0	G	Aktiv
+6900	Fragt & kørsel	D	K1	0	100	0	G	Aktiv
+7000	Kontorartikler & tryksager	D	K1	0	100	0	G	Aktiv
+7200	Porto & gebyrer	D		0	100	0	G	Aktiv
+7400	Småanskaffelser	D	K1	0	100	0	G	Aktiv
+7600	Telefoni	D	K1	0	100	0	G	Aktiv
+7640	Privat andel telefon mv.	D		0	100	0	G	Aktiv
+7650	Internet og webhotel	D	K1	0	100	0	G	Aktiv
+7700	Vedligehold driftsmidler	D	K1	0	100	0	G	Aktiv
+7750	Leje af driftsmidler	D	K1	0	100	0	G	Aktiv
+7800	Diverse inkl. moms	D	K1	0	100	0	G	Aktiv
+7900	Diverse ekskl. moms	D		0	100	0	G	Aktiv
+7940	Øredifferencer	D		0	100	0	G	Aktiv
+7950	Reg. kassedifferencer	D		0	100	0	G	Aktiv
+7960	Valutadifferencer	D		0	100	0	G	Aktiv
+8000	ADMINISTRATION I ALT	Z		6100	100	0	G	Aktiv
+8299	KØRSEL:	H		0	100	0	G	Aktiv
+8300	Udbetalte kilometerpenge	D		0	100	0	G	Aktiv
+8400	Brændstof	D		0	100	0	G	Aktiv
+8500	Vedligeholdelse	D		0	100	0	G	Aktiv
+8600	Vægtafgift & forsikringer	D		0	100	0	G	Aktiv
+8700	Afskrivning	D		0	100	0	G	Aktiv
+8800	Privat andel autodrift	D		0	100	0	G	Aktiv
+8950	Øvrig personbefordring	D		0	100	0	G	Aktiv
+8960	KØRSEL I ALT	Z		8300	100	0	G	Aktiv
+8980	Øvrige omkosninger i alt:	Z		4500	100	0	G	Aktiv
+9000	RESULTAT FØR AFSKRIVNINGER	Z		1	100	0	G	Aktiv
+9099	AFSKRIVNINGER:	H		0	100	0	G	Aktiv
+9100	Småanskaffelser	D	K1	0	100	0	G	Aktiv
+9200	Driftsmidler	D		0	100	0	G	Aktiv
+9250	Immaterielle anlægsaktiver	D		0	100	0	G	Aktiv
+9300	Lejede lokaler	D		0	100	0	G	Aktiv
+9500	Indgået på tidligere afskrevne f	D		0	100	0	G	Aktiv
+9550	AFSKRIVNINGER I ALT	Z		9100	100	0	G	Aktiv
+9600	RESULTAT FØR FINANSIERING	Z		1	100	0	G	Aktiv
+9799	RENTEINDTÆGTER M.V.:	H		0	100	0	G	Aktiv
+9800	Bank & giro	D		0	100	0	G	Aktiv
+9850	Renteindtægter diverse	D		0	100	0	G	Aktiv
+9870	RENTEINDTÆGTER M.V. I ALT	Z		9800	100	0	G	Aktiv
+9899	RENTEUDGIFTER M.V.:	H		0	100	0	G	Aktiv
+9900	Bankrenter	D		0	100	0	G	Aktiv
+9950	Leverandører m.v.	D		0	100	0	G	Aktiv
+9960	FRADRAGSBERETTIGEDE RENTEUDGIFTE	Z		9900	100	0	G	Aktiv
+9990	Ikke-fradragsberettigede renter	D		0	100	0	G	Aktiv
+10000	RENTEUDGIFTER M.V. I ALT	Z		9900	100	0	G	Aktiv
+11000	RESULTAT I ALT	Z		1	100	0	G	Aktiv
+20000	------------------------------------------------------------	X		0	100	0	G	Aktiv
+49996	STATUS	H		0	100	0	G	Aktiv
+49997	AKTIVER:	H		0	100	0	G	Aktiv
+49998	IMMATERIELLE ANLÆGSAKTIVER	H		0	100	0	G	Aktiv
+49999	(Patenter, rettigheder, goodwill, udviklingsprojekter under udførelse mv.)	H		0	100	0	G	Aktiv
+50800	Immaterielle anlægsaktiver primo	S		0	100	0	G	Aktiv
+50810	Forbedringer i året	S		0	100	0	G	Aktiv
+50820	Salg i året	S		0	100	0	G	Aktiv
+50830	Tilgang i året	S		0	100	0	G	Aktiv
+50840	Årets afskrivninger	S		0	100	0	G	Aktiv
+50850	IMMATERIELLE ANLÆGSAKTIVER I ALT	Z		50790	100	0	G	Aktiv
+50898	MATERIELLE ANLÆGSAKTIVER	H		0	100	0	G	Aktiv
+50899	(Inventar, bygninger, maskiner mv.)	H		0	100	0	G	Aktiv
+50900	Driftmiddelsaldo primo	S		0	100	0	G	Aktiv
+50910	Tilgang i året drift/inventar	S	K1	0	100	0	G	Aktiv
+50920	Afgang i året drift/inventar	S		0	100	0	G	Aktiv
+50930	Årets afskrivninger	S		0	100	0	G	Aktiv
+51995	Anlægsaktiver	Z		50000	100	0	G	Aktiv
+55099	OMSÆTNINGSAKTIVER:	H		0	100	0	G	Aktiv
+55100	Varebeholdning	S		0	100	0	G	Aktiv
+55995	Varebeholdning	Z		55000	100	0	G	Aktiv
+56099	TILGODEHAVENDER	H		0	100	0	G	Aktiv
+56100	Debitorer, ubetalte fakturaer	S		0	100	0	G	Aktiv
+56150	Efterposteringer	S		0	100	0	G	Aktiv
+56295	Tilgode for salg	Z		56000	100	0	G	Aktiv
+56300	Deposita	S		0	100	0	G	Aktiv
+56500	Forudbetalte omkostninger	S		0	100	0	G	Aktiv
+56995	Andre tilgodehavender	Z		56300	100	0	G	Aktiv
+56999	Tilgodehavender	Z		56000	100	0	G	Aktiv
+57999	LIKVIDEBEHOLDNINGER	H		0	100	0	G	Aktiv
+58000	Bank	S		0	100	0	G	Aktiv
+58100	Giro	S		0	100	0	G	Aktiv
+58200	Kasse	S		0	100	0	G	Aktiv
+58998	Likvide beholdninger i alt	Z		58000	100	0	G	Aktiv
+58999	OMSÆTNINGSAKTIVER I ALT	Z		55099	100	0	G	Aktiv
+59999	AKTIVER I ALT	Z		50000	100	0	G	Aktiv
+60498	PASSIVER	H		0	100	0	G	Aktiv
+60499	EGENKAPITAL	H		0	100	0	G	Aktiv
+60500	Egenkapitalkonto primo	S		0	100	0	G	Aktiv
+60800	Årets resultat	R		11000	100	0	G	Aktiv
+60900	Overført fra tidligere år	S		0	100	0	G	Aktiv
+62000	Mellemregning	S		0	100	0	G	Aktiv
+62010	B-skat	S		0	100	0	G	Aktiv
+62020	Restskat	S		0	100	0	G	Aktiv
+62100	Hævet kontant i virksomheden	S		0	100	0	G	Aktiv
+62200	Indskudt kontant i virksomheden	S		0	100	0	G	Aktiv
+62300	Ikke fradragsberettigede udgift.	S		0	100	0	G	Aktiv
+62400	Privat andel autodrift	S		0	100	0	G	Aktiv
+62500	Privat andel telefon	S		0	100	0	G	Aktiv
+62600	75% andel repræsentation	S		0	100	0	G	Aktiv
+62995	Egenkapital	Z		60000	100	0	G	Aktiv
+62999	LANGFRISTET GÆLD (over 1 år)	H		0	100	0	G	Aktiv
+63000	Banklån	S		0	100	0	G	Aktiv
+63099	LANGFRISTET GÆLD I ALT	Z		63000	100	0	G	Aktiv
+64097	KORTFRISTET GÆLD (under 1 år)	H		0	100	0	G	Aktiv
+64098	SKYLDIGE OMKOSTNINGER	H		0	100	0	G	Aktiv
+64099	Løn	H		0	100	0	G	Aktiv
+64100	Nettoløn	S		0	100	0	G	Aktiv
+64110	A conto-udbetaling af løn	S		0	100	0	G	Aktiv
+64150	Skyldig A-skat, personale	S		0	100	0	G	Aktiv
+64160	Skyldigt arbejdsmarkedsbidrag	S		0	100	0	G	Aktiv
+64165	Skyldig SP (særlig pension)	S		0	100	0	G	Aktiv
+64170	Skyldig ATP	S		0	100	0	G	Aktiv
+64190	Feriepenge hensat	S		0	100	0	G	Aktiv
+64195	Feriepenge udbetalt	S		0	100	0	G	Aktiv
+64200	Skyldig pension, gruppeliv	S		0	100	0	G	Aktiv
+64210	Skyldig SH (søgne-/helligdage)	S		0	100	0	G	Aktiv
+64300	Løn ialt	Z		64000	100	0	G	Aktiv
+65000	Forudbetalinger	H			100	0	G	Aktiv
+65050	Forudbetalt fra kunder	S		0	100	0	G	Aktiv
+65095	Forudbetalinger i alt	Z		65000	100	0	G	Aktiv
+65100	Kreditorer, ubetalte regninger	S		0	100	0	G	Aktiv
+65200	Kreditor efterpostering	S		0	100	0	G	Aktiv
+65995	Kreditorer	Z		65100	100	0	G	Aktiv
+65999	SKYLDIGE OMKOSTNINGER I ALT	Z		64098	100	0	G	Aktiv
+66099	SKYLDIG MOMS	H		0	100	0	G	Aktiv
+66100	Salgsmoms	S		0	100	0	G	Aktiv
+66150	Moms af varekøb i udlandet	S		0	100	0	G	Aktiv
+66155	Moms af ydelseskøb i udlandet med omvendt betalingspligt	S		0	100	0	G	Aktiv
+66160	Olieafgift	S		0	100	0	G	Aktiv
+66170	Elafgift	S		0	100	0	G	Aktiv
+66180	Vandafgift	S		0	100	0	G	Aktiv
+66200	Købsmoms	S		0	100	0	G	Aktiv
+66900	Momsafregning	S		0	100	0	G	Aktiv
+66950	Skyldig moms i alt	Z		66100	100	0	G	Aktiv
+67000	KORTFRISTET GÆLD I ALT	Z		64100	100	0	G	Aktiv
+72000	PASSIVER I ALT	Z		60500	100	0	G	Aktiv
+99995	Ukendte poster	S		0	100	0	G	Aktiv
+99999	Balancekontrol	Z		50000	100	0	G	Aktiv

@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVer='1.2.1';    $DocRev='2022-10-07';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= 'project.init.php';    $DocVers='1.2.1';    $DocRev='2022-12-18';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** 
 #  This file is included from start of php2html.lib.php
 
@@ -30,5 +30,5 @@
     $gbl_PanelBgrd= 'transparent';      # Panels hideble background
     $gbl_GridOn= true;                  # Use grid to place objects in rows / colums
     $gbl_progZoom = 'small';            # Global tag "font-scale"
-    $GLOBALS["gbl_ProgRoot"]= '../';
+    $GLOBALS["gbl_ProgRoot"]= './';
 ?>

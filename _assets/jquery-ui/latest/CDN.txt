@@ -1,0 +1,5 @@
+Related constant in php2html.lib.php: 'LIB_JQUERYUI'
+
+Source: https://cdnjs.com/libraries/jqueryui
+File: jquery-ui.min.js
+

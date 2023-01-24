@@ -1,0 +1,3 @@
+Related constant in php2html.lib.php: 'LIB_JQUERY'
+
+Source: https://cdnjs.com/libraries/jquery

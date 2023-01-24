@@ -1,4 +1,4 @@
-﻿<?php   $DocFile= '\p2h\v1.2.0\funcscann.php';    $DocVer='1.0.0';    $DocRev='2022-05-31';     $DocIni='evs';  $ModulNr=0; ## File informative only
+﻿<?php   $DocFile= '\p2h\v1.2.0\funcscann.php';    $DocVer='1.2.2';    $DocRev='2022-12-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
 #  $d = dir("../../saldi-e/'");  ## saldi-e\_base\_tools\funcscann.php   ~/.rcinfo
 #  $d = basename('./saldi-e');
   $d = dir("../../");  //    var_dump($d);
@@ -76,7 +76,10 @@
                 $infoline= substr($line,6);
                 $a= strpos($infoline,"'")+1;
                 $b= strpos($infoline,"';");
-                $c= strpos($infoline,'$DocVer')+10;
+                if (strpos($infoline,'$DocVers') > 0) 
+                    $c= strpos($infoline,'$DocVers')+10; 
+                else
+                    $c= strpos($infoline,'$DocVer' )+10;
                 $d= strpos($infoline,'$DocRev')+10;
                 $file= substr($infoline,$a,$b-$a);
                 $vers= substr($infoline,$c,5);
@@ -89,14 +92,14 @@
             if ($p<6) { //  PLACED at start of line!
                 if ($s=strpos($line,"{")) $funcN= ' '.substr($line,$p,$s-$p); 
                 else                      $funcN= ' '.substr($line,$p);
-                $funcN= str_replace('(','</b>(<i>',$funcN);                 // Add format code
-                $funcN= '<b>'.substr($funcN,strlen($searchWord)).'</i>';    // Add format code
+                $funcN= str_replace('(','</b></strong><(<i>',$funcN);                             // Add format code
+                $funcN= '<strong style="font-size: 16px;">'.substr($funcN,strlen($searchWord)).'</i>';  // Add format code
                 
                 $lno= $LinNo;
                 $lno= str_pad($lno,5,' ',STR_PAD_LEFT);
                 $str= "<pre>
 ".'  '.$sourceFile.str_repeat(" ",max(16-strlen($dir.$sourceFile),0)).
-' <small><i>'.$lno.':</i></small> '.$funcN.'</b></i></pre>';
+' <small><i>'.$lno.':</i></small> '.$funcN.'</i></pre>';
               echo $str; //.' '.substr($str,42);
               $arrFunctions[]= [
                   'key' => strtoupper(substr($str,42,strpos($str,'(')-42)),

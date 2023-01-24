@@ -1,7 +1,605 @@
-<?php $DocFil='./Proj1/demoFile/CustomerOrder.page.php';$DocVer='1.0.0';$DocRev='2020-07-17';$DocIni='evs';$ModulNr=0;require_once('../php2html.lib.php');require_once('../menu.inc.php');function DEB_Kateg(){return([ ['priv','@privat','@private'],['prof','@erhverv','@professional'],]);}function DEB_Grup(){return([ ['1','@1. Danske debitorer','@1. Danske debitorer'],['2','@2. Europæiske debitorer','@2. Europæiske debitorer'] ]);}function DEB_Betl(){return([ ['1','@Kontant','@Kontant'],['2','@Efterkrav','@Efterkrav'],['3','@Forud','@Forud'],['4','@Kreditkort','@Kreditkort'],['5','@Lb. måned','@Lb. Md.'],['6','@Konto','@Konto'] ]);}function DEB_Frist(){return([ ['0','@Straks','@Betaling øjeblikkelig' ],['8','@8 dage','@Betaling inden 8 dage' ],['14','@14 dage','@Betaling inden 14 dage'],['30','@30 dage','@Betaling inden 30 dage'] ]);}function DEB_Dok(){return([ ['pdf','@PDF-fil','@Fil i pdf-format' ],['email','@email','@Elektronisk forsendelse'],['ioubl','@OIOUBL','@Elektronisk fakturering'],['pbs','@PBS','@PBS faktura' ] ]);}function CVR_Land(){return([ ['dk','@Danmark','@Søg i dansk register','checked'],['no','@Norge','@Søg i norsk register',''] ]);}function CVR_Liste(){return([ ['search','@Generelt','@Generel søgning: (ikke telf.)',''],['vat','@CVR','@Centralt Virksomheds Registernr',''],['produ','@P-enh.','@Produktionsenhed-nr',''],['phone','@Telefon','@Telefonnummer',''],['name','@Firma','@Firma navn','checked'] ]);}function refresh($name){if(isset($_POST[$name])){$_SESSION[$name]=$$name=htmlspecialchars($_POST[$name]);return $$name;}}function set_FormVars($names){foreach($names as $name)$$name=refresh($name);}function get_FormVars($names){foreach($names as $name)$$name=$_SESSION[$name];}function dev_show(){if($GLOBALS["Ødebug"]){echo 'SESSIONS variablers indhold: ';vis_data($_SESSION);}}arrPrint($_POST,'$_POST');function form2arr(&$arr,$checks=[]){$result=[];foreach($_POST as $key=>$val){if(substr($key,0,4)!='btn_')$result[$key]=$val;}$arr=$result;}function tabl2arr(&$arr,$firstId){$arrTmp=[];$result=[];foreach($_POST as $key=>$val){if(substr($key,0,4)!='btn_')$arrTmp[$key]=$val;}for($i=0;$i<count($arrTmp[$firstId]);$i++){foreach($arrTmp as $key=>$val){switch($key){case 'ord_total':case 'total':case 'price':$val=str_replace([" ","."],["",""],$val);break;}$arrRow[$key]=$val[$i];}$result[]=$arrRow;}$arr=$result;}function fromFile($dPath,$arrNames){foreach($arrNames as $aname){if(is_readable($dPath.$aname.'.dat.json'))FileRead_arr($dPath.$aname.'.dat.json',$GLOBALS[$aname]);}}$test=false;$KIS=false;$dPath='../demoData/';$bytes=0;if(isset($_POST['btn_sav_orders' ])){tabl2arr($arrOrders,'ord_id');$bytes+=FileWrite_arr($dPath.$filepath='arrOrders.dat.json',$arrOrders);}if(isset($_POST['btn_sav_content' ])){tabl2arr($arrContent,'post');$bytes+=FileWrite_arr($dPath.$filepath='arrContent.dat.json',$arrContent);}if(isset($_POST['btn_sav_customr' ])){form2arr($arrCustomr);$bytes+=FileWrite_arr($dPath.$filepath='arrCustomr.dat.json',$arrCustomr);}if(isset($_POST['btn_sav_billing' ])){form2arr($arrBilling);$bytes+=FileWrite_arr($dPath.$filepath='arrBilling.dat.json',$arrBilling);}if(isset($_POST['btn_sav_deliver' ])){form2arr($arrDeliver);$bytes+=FileWrite_arr($dPath.$filepath='arrDeliver.dat.json',$arrDeliver);}if(isset($_POST['btn_sav_conditi' ])){form2arr($arrConditi);$bytes+=FileWrite_arr($dPath.$filepath='arrConditi.dat.json',$arrConditi);}if(isset($_POST['btn_sav_mailinv' ])){form2arr($arrMailing);$bytes+=FileWrite_arr($dPath.$filepath='arrMailing.dat.json',$arrMailing);}if(isset($_POST['btn_sav_contact' ])){form2arr($arrContact);$bytes+=FileWrite_arr($dPath.$filepath='arrContact.dat.json',$arrContact);}if(isset($_POST['btn_sav_custFld' ])){form2arr($arrCustfld);$bytes+=FileWrite_arr($dPath.$filepath='arrCustfld.dat.json',$arrCustfld);}if(isset($_POST['btn_sav_cvrform' ])){}if(isset($_POST['btn_sav_language'])){$lang=$_POST['language'];}if(isset($_POST['btn_cre_contact' ])){}if(isset($_POST['btn_era_contact' ])){}if(isset($_POST['btn_goo_doLookup'])){}if(isset($_POST['btn_cre_doInvo' ])){}if(isset($_POST['btn_cre_doNote' ])){}if(isset($_POST['btn_hom_doCredit'])){}if(isset($_POST['btn_era_doErase' ])){}$arrNames=['arrCustomr','arrBilling','arrDeliver','arrConditi','arrMailing','arrContact','arrCustfld','arrOrders','arrContent'];fromfile($dPath,$arrNames);htm_PagePrep($pageTitl='OrderCreate.page.php',$ØPageImage='../_background.png',$align='center',$PgInfo=lang('@Example: Customer-ORDER'),$PgHint=lang('Tip: Toggle fullscreen-mode with function key: F11'));Menu_Topdropdown(true);htm_nl(1);if($test)echo '<pre>'.$log.'</pre>'.'<br>Saved: '.$bytes.' bytes to data-files.<br>';htm_Caption($labl='Tiny-Cloud-Accounting',$style='color:'.$ØTitleColr.'; font-weight:600; font-size: 18px;',$align='center');htm_nl(1);htm_PanlHead($frmName='orders',$capt=lang('@Find existing order:'),$parms='',$icon='fas fa-search',$class='panelW960',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: rgba(240, 240, 240, 0.80);');htm_Table($TblCapt=array(['@Oprettede','Width','html','OutFormat','horJust','Tip','placeholder','@Kundeordrer']),$RowPref=array(),$RowBody=array(['@id','8%','show','',['center'],'@id nummer vedligeholdt af systemet','..auto..'],['@Ordre','9%','indx','',['center'],'@Ordre nummer','@Numr...'],['@Ordre dato','4%','date','',['left' ],'@Ordre dato','YYYY-MM-DD'],['@Lev. dato','4%','date','',['left' ],'@Leverings dato','YYYY-MM-DD'],['@Konto','8%','text','',['center'],'@Debitor konto nummer','@Kont...'],['@Firma navn','34%','text','',['left' ],'@Firma navn','@Firm...'],['@Sælger','7%','text','',['left' ],'@Sælger','@Sælg...'],['@Beløb','11%','text','2d',['right' ],'@Ordre sum','@Beløb...'],['@Status','9%','osta','',['left' ],'@Status','@Status...']),$RowSuff=array(),$TblNote='',$TblData=$arrOrders,$fldNames=['ord_id','ord_ix','ord_date','del_date','ord_acco','ord_name','ord_sell','ord_total','ord_stat'],$FilterOn=true,$SorterOn=true,$CreateRec=false,$ModifyRec=true,$ViewHeight='200px',$TblStyle='',$CalledFrom=__FUNCTION__);htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='',$capt=lang('@Create new or modify order:'),$parms='',$icon='fas fa-plus',$class='panelW960',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: rgba(240, 240, 240, 0.80);');htm_PanlHead($frmName='customr',$capt=lang('Customer:'),$parms='',$icon='fas fa-user',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_Input($type='text',$name='custkont',$valu=$arrCustomr[$name],$labl='@kunde nr.',$hint='@Kundenr: Kan ikke rettes, kun nyoprettes. Systemet styrer dette',$plho='@Konto',$width='50%');htm_Input($type='opti',$name='custopsl',$valu=$arrCustomr[$name],$labl='@Kundeopslag',$hint='@Her vælges hvilken eksisterende kunde der skal benyttes',$plho='',$width='50%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[]);htm_Input($type='rado',$name='custkate',$valu=$arrCustomr[$name],$labl='@Kundetype',$hint='@Kunde kategori',$plho='',$width='100%',$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='required',$list=DEB_Kateg());htm_Input($type='text',$name='cust_cvr',$valu=$arrCustomr[$name],$labl='@CVR',$hint='@CVR - Virksomheds ID.',$plho='@kun erhverv !',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid green;');htm_Input($type='text',$name='cust_ean',$valu=$arrCustomr[$name],$labl='@EAN',$hint='@EAN - Elektronisk-betalings ID',$plho='@kun erhverv !',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid green;');htm_Input($type='text',$name='custbreg',$valu=$arrCustomr[$name],$labl='@Bank reg.',$hint='@Bank reg.',$plho='Reg...',$width='33%');htm_Input($type='text',$name='custbkto',$valu=$arrCustomr[$name],$labl='@Bank konto',$hint='@Bank konto',$plho='Konto...',$width='66%');htm_Input($type='text',$name='custinst',$valu=$arrCustomr[$name],$labl='@Institution',$hint='@Supplerende oplysning',$plho='@kun erhverv !',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid green;');htm_Input($type='text',$name='custansv',$valu=$arrCustomr[$name],$labl='@Kundeansvarlig',$hint='@Kundeansvarlig',$plho='@Ansv...',$width='100%');htm_Input($type='text',$name='custlang',$valu=$arrCustomr[$name],$labl='@Faktureringssprog',$hint='@Sproget som skal benyttes på faktura udskrifter',$plho='@hvis sproget ikke er dansk',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='R',$bord='border: 1px solid green;');htm_Input($type='text',$name='custhome',$valu=$arrCustomr[$name],$labl='@Hjemmeside',$hint='@Kundens hjemmeside',$plho='@kun erhverv !',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid green;');htm_MiniNote('@Orange felter er obligatoriske.');htm_MiniNote('@Grønne felter - begrænset anvendelse.');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='billing',$capt=lang('Billing:'),$parms='',$icon='fas fa-pen',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_Input($type='area',$name='billoref',$valu=$arrBilling[$name],$labl='@Order info',$hint='@@Systemfield: Auto fill out, when order is created/saved',$plho='@Order:... Date:...',$width='100%',$algn='left',$unit='',$disa=true,$rows='1');htm_Input($type='text',$name='billnavn',$valu=$arrBilling[$name],$labl='@Customer name',$hint='@Angiv Kunde navn',$plho='@Name...',$width='100%',$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='required');htm_Input($type='text',$name='billaddr',$valu=$arrBilling[$name],$labl='@Customer address',$hint='@Angiv Faktura adresse',$plho='@Adress...',$width='100%',$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='required');htm_Input($type='text',$name='billsted',$valu=$arrBilling[$name],$labl='@Customer place',$hint='@Angiv Faktura Sted',$plho='@Place...');htm_Input($type='text',$name='billponr',$valu=$arrBilling[$name],$labl='@Postnr',$hint='@Postnr',$plho='@Pnr...',$width='30%',$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='required');htm_Input($type='text',$name='billbynv',$valu=$arrBilling[$name],$labl='@Faktura By',$hint='@Faktura by',$plho='@Bynavn...',$width='68%',$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='required');htm_Input($type='text',$name='billland',$valu=$arrBilling[$name],$labl='@Faktura Land',$hint='@Faktura Land',$plho='@Land...');htm_hr($ØTitleColr.'; height: 2px');htm_Input($type='text',$name='billtelf',$valu=$arrBilling[$name],$labl='@Telefon(er)',$hint='@Telefon, mobil, fax',$plho='@Phone...',$width='100%',$$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='required');htm_Input($type='text',$name='bill_att',$valu=$arrBilling[$name],$labl='@Attention',$hint='@Attention - Kundens kontakt',$plho='@Att...');htm_Input($type='text',$name='billrekv',$valu=$arrBilling[$name],$labl='@Réquisition number',$hint='@Reference til bestilling',$plho='@Requ...');htm_Input($type='text',$name='billmail',$valu=$arrBilling[$name],$labl='@Kundens Email adresse',$hint='@Faktura Land',$plho='@Mail...');htm_Input($type='text',$name='billnote',$valu=$arrBilling[$name],$labl='@Bemærkninger',$hint='@Noter angående kunden',$plho='@Bem...');if(isset($_POST['use_mail'])){$use_mail='checked';}htm_Input($type='chck',$name='use_mail',$valu=$arrBilling[$name],$labl='@Mailing',$hint='@Send faktura med mail',$plho='@Enter...',$width='50%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[['use_mail','@Use mail','@Mailing active',$namechck]]);htm_Input($type='date',$name='ordrdato',$valu=$arrBilling[$name],$labl='@Ordre Dato',$hint='@Dato for ordrens oprettelse',$plho='@Date...',$width='50%');htm_Input($type='date',$name='faktdato',$valu=$arrBilling[$name],$labl='@Faktura Dato',$hint='@Fakturerings dato',$plho='@Date...',$width='50%');htm_Input($type='date',$name='gen_fakt',$valu=$arrBilling[$name],$labl='@Genfakturering',$hint='@Genfakturerings dato',$plho='@Date...',$width='50%');htm_MiniNote('@Orange felter er obligatoriske.');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='deliver',$capt=lang('Delivery:'),$parms='',$icon='fas fa-truck',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_Input($type='chck',$name='sameaddr',$valu=$arrDeliver[$name],$labl='@Leveres til faktura-adresse',$hint='@Afmærk her, hvis leverings adresse er den samme som faktura adresse',$plho='',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[['sameaddr','@Same address','@Automatic fillout with the same address as faktura',$namechck]]);htm_Input($type='text',$name='deliname',$valu=$arrDeliver[$name],$labl='@Modtager navn',$hint='@Angiv Modtager Navn',$plho='Navn',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid blue;');htm_Input($type='text',$name='deliaddr',$valu=$arrDeliver[$name],$labl='@Leverings adresse',$hint='@Angiv Leverings Adresse',$plho='Addr..',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid blue;');htm_Input($type='text',$name='deliplac',$valu=$arrDeliver[$name],$labl='@Leverings Sted',$hint='@Angiv Leverings Sted, suplement til adresse',$plho='Sted...',$width='100%');htm_Input($type='text',$name='deli_zip',$valu=$arrDeliver[$name],$labl='@Postnr',$hint='@Angiv Leverings Kunde postnr',$plho='Pnr..',$width='30%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid blue;');htm_Input($type='text',$name='delicity',$valu=$arrDeliver[$name],$labl='@Leverings by',$hint='@Angiv Leveringsstedets Bynavn',$plho='By..',$width='68%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='',$bord='border: 1px solid blue;');htm_Input($type='text',$name='delicoun',$valu=$arrDeliver[$name],$labl='@Leverings Land',$hint='@Angiv Leverings Land',$plho='Land...');htm_hr($ØTitleColr.'; height: 2px');htm_Input($type='text',$name='deliphon',$valu=$arrDeliver[$name],$labl='@Telefon(er)',$hint='@Angiv Modtagers Telefon',$plho='Telf..');htm_Input($type='text',$name='delikont',$valu=$arrDeliver[$name],$labl='@Kontaktperson på leverings adressen',$hint='@Angiv Kontaktpersons Navn',$plho='Navn...');htm_Input($type='mail',$name='delimail',$valu=$arrDeliver[$name],$labl='@Modtagerens Email adresse',$hint='@Angiv Modtagers Email adresse',$plho='Mail...');htm_Input($type='text',$name='shipmeth',$valu=$arrDeliver[$name],$labl='@Fragtmetode.',$hint='@Angiv Forsendelses oplysninger. Hvordan/med hvem er pakken sendt?',$plho='Forsend...');htm_Input($type='area',$name='delinote',$valu=$arrDeliver[$name],$labl='@Noter til fragtmand',$hint='@Noter angående pakkens levering',$plho='',$width='100%',$algn='left',$unit='',$disa=false,$rows='1',$step='',$more='');htm_Input($type='chck',$name='shipped_',$valu=$arrDeliver[$name],$labl='@Status',$hint='@Når ydelsen er afsendt kan beløb indløses',$plho='@Enter...',$width='50%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[['shipped_','@Er afsendt','@Klar til indløsning',$shipped_]]);htm_Input($type='date',$name='lev_dato',$valu=$arrDeliver[$name],$labl='@Leverings Dato',$hint='@evt. forsendelses dato',$plho='Dato...',$width='50%',);$delName=$arrDeliver['deliname'];$delAddr=$arrDeliver['deliaddr'];$delPlac=$arrDeliver['deliplac'];$del_Zip=$arrDeliver['deli_zip'];$delCity=$arrDeliver['delicity'];htm_LinkButt($labl='@Adresse på kort',$gotoLink='https://krak.dk/'.$arrDeliver['deliname'].'+'.$arrDeliver['deliaddr'].'+'.$arrDeliver['deli_zip'].'+'.$arrDeliver['delicity'].'/personer',$hint='@Vis adresse på kort',$target='_blank');htm_AcceptButt($labl='@Følgeseddel',$hint='@Vis følgeseddel for leverancen',$btnKind='search',$frmName='deliver',$width='',$akey='l',$proc=true,$tipplc='LblTip_text',$tipstyl='',$clickFunction="toast(\"<b>DEMO:</b><br>$delName <br>$delAddr <br>$delPlac <br>$del_Zip - $delCity\",\"lightyellow\",\"black\")");htm_MiniNote('@Blå felter Benyttes til kort-opslag.');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);if($KIS!=true){htm_PanlHead($frmName='conditi',$capt=lang('Conditions:'),$parms='',$icon='far fa-credit-card',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_Input($type='opti',$name='debigrup',$valu=$arrConditi[$name],$labl='@Debitorgruppe',$hint='@Vælg hvilken gruppe kunden tilhører',$plho='',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$optlist=DEB_Grup());htm_Input($type='opti',$name='betaling',$valu=$arrConditi[$name],$labl='@Betalings metode',$hint='@Hvordan skal der betales',$plho='',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$optlist=DEB_Betl());htm_Input($type='opti',$name='betfrist',$valu=$arrConditi[$name],$labl='@Betalings frist',$hint='@Hvor lang frist er der til betaling',$plho='',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$optlist=DEB_Frist(),$action='');htm_Input($type='opti',$name='print_to',$valu=$arrConditi[$name],$labl='@Udskriv til',$hint='@Vælg på hvilken måde skal dokumentet udskrives, gemmes eller sendes.',$plho='',$width='68%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$optlist=DEB_Dok());htm_Input($type='text',$name='kunderef',$valu=$arrConditi[$name],$labl='@Kundens referance',$hint='@f.eks. Rekvisitions NR',$plho='Ref...',$width='100%');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='mailinv',$capt=lang('Mail-invoice:'),$parms='',$icon='fas fa-envelope',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_Input($type='text',$name='mailemne',$valu=$arrMailing[$name],$labl='@Mail emne',$hint='@Angiv Mail emne',$plho='@Vedr...');htm_Input($type='area',$name='mailtext',$valu=$arrMailing[$name],$labl='@Mail tekst',$hint='@Angiv Mail tekst',$plho='@Besked...');htm_Input($type='file',$name='mailvedh',$valu=$arrMailing[$name],$labl='@Mail bilag',$hint='@Angiv Vedhæftet fil',$plho='@Bilag...');htm_Input($type='text',$name='mail__cc',$valu=$arrMailing[$name],$labl='@Kopi til',$hint='@Angiv mail-adresse, som skal modtage en kopi af afsendt mail',$plho='Copy...');htm_Input($type='text',$name='mail__bc',$valu=$arrMailing['mail__bc'],$labl='@Blind-kopi til',$hint='@Angiv mail-adresse, som skal modtage en BC-kopi (skjult) af afsendt mail',$plho='BCopy...');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='contact',$capt=lang('Person contact:'),$parms='',$icon='fas fa-phone-square',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');function ContaktPers($arrCont,$value,$no=''){htm_Input($type='text',$name='indx'."[$no]",$valu=$no,$labl='@No.',$hint='@Nummer styrer rækkefølgen af posterne',$plho='@auto',$width='15%',$algn='center',$unit='',$disa=false,$rows='3',$step='1',$more='');htm_Input($type='text',$name='name'."[$no]",$valu=$value['name' ],$labl='@Kontakt person',$hint='@Angiv Kontakt person',$plho='@Kont...',$width='50%');htm_Input($type='text',$name='titel'."[$no]",$valu=$value['titel' ],$labl='@Titel',$hint='@Angiv personens titel',$plho='@Titl...',$width='35%');htm_Input($type='text',$name='phone'."[$no]",$valu=$value['phone' ],$labl='@Telefon',$hint='@Angiv Telefon',$plho='@Tlf...',$width='50%');htm_Input($type='text',$name='mobil'."[$no]",$valu=$value['mobil' ],$labl='@Mobil',$hint='@Angiv Mobilnr. eller lokalnr',$plho='@Mobil/lok...',$width='50%',$algn='left',$unit='',$disa=false,$rows='3','','');htm_Input($type='mail',$name='email'."[$no]",$valu=$value['email' ],$labl='@E-mail',$hint='@Angiv E-mail',$plho='@Mail...',$width='80%');htm_Input($type='area',$name='remark'."[$no]",$valu=$value['remark'],$labl='@Bemærkning',$hint='@Angiv bemærkning til kontakten, f.eks. rolle (direktør/sekretær/chauffør)',$plho='@Note...',$width='80%',$algn='left',$unit='',$disa=false,$rows='1');htm_hr('lightgray');htm_AcceptButt($labl='@Slet',$hint='@Fjern denne kontakt person <br>(DEMO yet !)',$btnKind='erase',$frmName='contact_'.$no,$width='',$akey='',$proc=true,$tipplc='',$tipstyl='position: absolute; bottom: 8px;',$clickFunction='toast("Remove contact<br>Cant do it yet !","lightyellow","black")');htm_hr('green'.'; height: 2px');htm_nl(1);}arrPrint($arrContact,'$arrContact');$nr=0;if($arrContact)foreach($arrContact as $arrCont=>$value){ContaktPers($arrCont,$value,$no=$nr++);}else htm_Caption('@Ingen oprettede kontakter.');htm_AcceptButt($labl='@Opret Ny',$hint='@Opret en ny kontakt <br>(DEMO yet !)',$btnKind='create',$frmName='contact',$width='',$akey='',$proc=true,$tipplc='',$tipstyl='position: absolute; bottom: 8px;',$clickFunction='toast("Create contact<br>Cant do it yet !","lightyellow","black")');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);$content='<small><b>Opslag i CVR-registret</b> (kun erhverv)<br>
-			Hent eller kontroller med data i det offentlige virksomhedsregister.<br>
-			Data leveres af CVR API<br> </small>';htm_PanlHead($frmName='cvrform',$capt=lang('CVR-lookup:'),$parms='',$icon='fas fa-database',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_TextDiv($content,$align='left',$marg='8px',$more='');set_FormVars(['cvrLand','cvrKode','cvrSoeg']);get_FormVars(['cvrLand','cvrKode','cvrSoeg']);$cvrLand=$_SESSION['cvrLand'];if(!$cvrLand)$cvrLand='dk';$cvrKode=$_SESSION['cvrKode'];if(!$cvrKode)$cvrKode='search';$cvrSoeg=$_SESSION['cvrSoeg'];if(($cvrLand)and($cvrKode)and($cvrSoeg)){$url='https://cvrapi.dk/api?'.$cvrKode.'='.$cvrSoeg.'&country='.$cvrLand;$content=file_get_contents($url,false,stream_context_create(['http'=>['user_agent'=>'any']]));$svar=json_decode($content,true);if($svar['vat']){$cvrDiv='';$cvrNumm=$svar['vat'];$cvrNavn=$svar['name'];$cvrAddr=$svar['address'];$cvrPost=$svar['zipcode'];$cvrBy=$svar['city'];$cvrTelf=$svar['phone'];if($svar['email']){$cvrDiv.=lang('@Mail').': '.$svar['email'].'&#xa;';}if($svar['fax']){$cvrDiv.=lang('@Fax ').': '.$svar['fax'].'&#xa;';}if($svar['cityname']){$cvrDiv.=lang('@Sted').': '.$svar['cityname'].'&#xa;';}if($svar['companydesc']){$cvrDiv.=lang('@Type').': '.$svar['companydesc'].'&#xa;';}$ix=0;while($svar['owners'][$ix]['name']){$cvrDiv.=lang('@Ejer').': '.$svar['owners'][$ix]['name'].'&#xa;';$ix++;}$ix=0;while($svar['productionunits'][$ix]['pno']){$cvrDiv.=lang('@P-nr').': '.$svar['productionunits'][$ix]['pno'].'&#xa;';$ix++;}}}htm_Input($type='opti',$name='cvrLand',$valu=$cvrLand='dk',$labl='@Lands-register',$hint='@I hvilket land vil du søge?',$plho='',$width='50%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$optlist=CVR_Land(),$llgn='R',$bord='border: 1px solid green;');htm_Input($type='opti',$name='cvrKode',$valu=$cvrKode='search',$labl='@Søg efter',$hint='@Hvad kender du?',$plho='',$width='50%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$optlist=CVR_Liste(),$llgn='R',$bord='border: 1px solid green;');htm_Input($type='text',$name='cvrSoeg',$valu=$cvrSoeg,$labl='@CVR/P-enh./Telf/Navn',$hint='@Indtast her, data eller firma navn, som du vil søge efter',$plho='@Kun erhverv !',$width='100%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[],$llgn='R',$bord='border: 1px solid green;');htm_MiniNote('@Grønne felter er grundlag for opslag i CVR');htm_hr('lightgray');htm_AcceptButt($labl='@Søg',$hint='@Start søgning  i CVR-registret',$btnKind='create',$frmName='cvrform',$width='',$akey='s',$proc=true);htm_hr('green');htm_TextDiv($content=lang('Register data:'),$align='left',$marg='8px',$more='');htm_Input($type='text',$name='cvrNumm',$valu=$cvrNumm,$labl='@CVR-nummer',$hint='@Hentet i CVR-registret',$plho='@CVR...',$width='33%');htm_Input($type='text',$name='cvrNavn',$valu=$cvrNavn,$labl='@Firmanavn',$hint='@Hentet i CVR-registret',$plho='@Navn...',$width='66%');htm_Input($type='text',$name='cvrTelf',$valu=$cvrTelf,$labl='@Telefon',$hint='@Hentet i CVR-registret',$plho='@Telf...',$width='33%');htm_Input($type='text',$name='cvrAddr',$valu=$cvrAddr,$labl='@Adresse',$hint='@Hentet i CVR-registret',$plho='@Addr...',$width='66%');htm_Input($type='text',$name='cvrPost',$valu=$cvrPost,$labl='@Postnr.',$hint='@Hentet i CVR-registret',$plho='@Post...',$width='33%');htm_Input($type='text',$name='cvrBy',$valu=$cvrBy,$labl='@Bynavn',$hint='@Hentet i CVR-registret',$plho='@By...',$width='66%');htm_AcceptButt('@Benyt',lang('@Benyt de viste data i din registrering af ').$hvem.'. <br>'.lang('@Advarsel: Evt. tidligere data overskrives! (Felter uden indhold, påvirker ikke ekst. data)'.'<br>Virker ikke endnu'),$btnKind='save',$frmName='cvrform',$width='',$akey='b',$proc=true);htm_Input($type='area',$name='cvrDiv',$valu=$cvrDiv,$labl='@Andet',$hint='@Hentet i CVR-registret, diverse supplerende data',$plho='@Diverse...',$width='100%');htm_PanlFoot($labl='@Gem',$subm=false,$title='',$btnKind='save',$akey='',$simu=false,$frmName);$custFld=[ ['@Ekstra Felt 1','@Ekstra - Udfyld Felt 1','@Felt 1...'],['@Ekstra Felt 2','@Ekstra - Udfyld Felt 2','@Felt 2...'],['@Ekstra Felt 3','@Ekstra - Udfyld Felt 3','@Felt 3...'],['@Ekstra Felt 4','@Ekstra - Udfyld Felt 4','@Felt 4...'],['@Ekstra Felt 5','@Ekstra - Udfyld Felt 5','@Felt 5...'] ];htm_PanlHead($frmName='extra',$capt=lang('Extra fields:'),$parms='',$icon='fas fa-plus',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white;');htm_Input($type='text',$name='felt1',$valu=$arrCustfld['felt1'],$labl=lang($custFld[0][0]),$hint=lang($custFld[0][1]),$plho=lang($custFld[0][2]),$width='66%');htm_Input($type='text',$name='felt2',$valu=$arrCustfld['felt2'],$labl=lang($custFld[1][0]),$hint=lang($custFld[1][1]),$plho=lang($custFld[1][2]),$width='66%');htm_Input($type='text',$name='felt3',$valu=$arrCustfld['felt3'],$labl=lang($custFld[2][0]),$hint=lang($custFld[2][1]),$plho=lang($custFld[2][2]),$width='66%');htm_Input($type='text',$name='felt4',$valu=$arrCustfld['felt4'],$labl=lang($custFld[3][0]),$hint=lang($custFld[3][1]),$plho=lang($custFld[3][2]),$width='66%');htm_Input($type='text',$name='felt5',$valu=$arrCustfld['felt5'],$labl=lang($custFld[4][0]),$hint=lang($custFld[4][1]),$plho=lang($custFld[4][2]),$width='66%');htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);}htm_PanlHead($frmName='',$capt='',$parms='',$icon='',$class='panelW280',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: white; visibility: hidden;');htm_PanlFoot();htm_PanlFoot($labl='',$subm=false,$title='');htm_PanlHead($frmName='content',$capt=lang('@Content of the order:'),$parms='',$icon='fas fa-plus',$class='panelW960',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: rgba(240, 240, 240, 0.80);');$link='#';htm_Table($TblCapt=array(),$RowPref=array(),$RowBody=array(['@Pos.','5%','indx','',['center'],'@Pos. nr tildeles automatisk','...pos...'],['@Varenr','8%','text','',['center'],'@Varenummer for ydelsen','Varenr...'],['@Antal','3%','text','',['center'],'@Mængden angivet som antal ','@Antal...'],['@Enhed','6%','text','',['left' ],'@Enheds betegnelse ','@Enh...'],['@Beskrivelse','30%','text','',['left' ],'@Beskrivelse af varen/ydelsen ','@Besk...'],['@Moms%','5%','text','',['center'],'@Moms pct.sats ','@Moms...'],['@À pris','8%','text','2d',['center'],'@Enhedspris ','@Pris...'],['@Rabat%','6%','text','1d',['right' ],'@Rabat procent','@Rabat...'],['@Ialt','10%','calc','2d',['right' ],'@Kalkuleret beløb for den aktuelle postering. ',''],['@Valuta','5%','text','',['center'],'@Valutakode for den valuta, som er benyttet på specifikationen.','DKK'],['@Forfald','9%','hidd','',['center'],'@Beløbets forfalds dato','forf.dato'],),$RowSuff=array(['@Fortryd','2%','text','',['center'],lang('@Fortryd postering! <br>Tilbagefør beløbet ved at klikke på ikonen.').' '.lang('@Er ordren faktureret, kan posten tilbageføres, indtil ordren er bogført. Derefter skal det ske ved at kreditere kunden!'),'<a href='.$link.'><ic class="fas fa-undo" style="font-size:14px; color:red;" title="'.lang('@Tilbagefør denne postering, f.eks. fortryd rykkergebyr').'"></ic></a>'],['@Flyt','2%','text','',['center'],'@Flyt en post op eller ned.','<a href='.$link.'><ic class="fas fa-arrows-alt-v" style="font-size:14px; color:green;" title="'.lang('@Virker ikke endnu').'"></ic></a>']),$TblNote='<small>Denne tabel indeholder eksempel på automatisk kalkulation:<br>$ialt= ($DataRow[2]*$DataRow[6])*(100-$DataRow[7])/100*(100+$DataRow[5])/100;</small>',$data=$arrContent,$fldNames=['post','product','numb','unit','description','vat','price','discount','total','currency','duedate'],$FilterOn=false,$SorterOn=false,$CreateRec=true,$ModifyRec=true,$ViewHeight='250px',$CalledFrom=__FUNCTION__);htm_PanlFoot($labl='@Gem',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='handling',$capt=lang('Handling the order:'),$parms='',$icon='fas fa-check',$class='panelW960',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: lightgray;');htm_nl(1);htm_Input($type='text',$name='ordr',$valu=$xx='0000',$labl='<b>'.lang('@Ordre:').'</b>',$hint='@Systemfelt: Ordre nummer',$plho='',$width='100px',$algn='left',$unit='',$disa=true,$rows='1',$step='',$more='');htm_Input($type='text',$name='cust',$valu='Customer',$labl='<b>'.lang('@Kunde:').'</b>',$hint='@Systemfelt: Kunden navn',$plho='',$width='400px',$algn='left',$unit='',$disa=true,$rows='1',$step='',$more='');htm_Input($type='dec2',$name='totl',$valu=0,$labl='<b>'.lang('@Total:').'</b>',$hint='@Systemfelt: Beløb inkl. moms',$plho='',$width='120px',$algn='center',$unit=' DKK ',$disa=true,$rows='1',$step='',$more='');htm_nl(2);htm_AcceptButt('@Opret / opdater',lang('@Gem ordren'),$btnKind='save',$frmName='handling',$width='120px',$akey='',$proc=true,$tipplc='LblTip_text',$tipstyl='position: absolute; bottom: 50px;');htm_nl(2);htm_AcceptButt('@Opslag',lang('@Gennemsøg andre eksisterende ordrer'),$btnKind='goon',$frmName='doLookup',$width='120px',$akey='',$proc=true,$tipplc='LblTip_text',$tipstyl='position: absolute; bottom: 50px;',$clickFunction='toast("Opslag<br>Cant search yet !","orange","black")');htm_AcceptButt('@Dan Følgeseddel',lang('@Lav følgeseddel til ordrens forsendelse'),$btnKind='create',$frmName='doNote',$width='120px',$akey='',$proc=true,$tipplc='LblTip_text',$tipstyl='position: absolute; bottom: 50px;',$clickFunction='toast("Dan følgeseddel<br>Cant create yet !","orange","black")');htm_AcceptButt('@Dan Faktura',lang('@Lav faktura for (den gemte !) ordre'),$btnKind='create',$frmName='doInvo',$width='120px',$akey='',$proc=true,$tipplc='LblTip_text',$tipstyl='position: absolute; bottom: 50px;',$clickFunction='toast("Dan faktura<br>Cant create yet !","orange","black")');htm_AcceptButt('@Kreditér',lang('@Nulstil ved at kreditére ordren - hvis den er faktureret'),$btnKind='home',$frmName='doCredit',$width='120px',$akey='',$proc=true,$tipplc='LblTip_text',$tipstyl='position: absolute; bottom: 50px;',$clickFunction='toast("Kreditér<br>Cant do it yet !","orange","black")');htm_AcceptButt('@Slet',lang('@Slet ordren - forudsat faktura ikke er dannet'),$btnKind='erase',$frmName='doErase',$width='120px',$akey='',$proc=true,$tipplc='LblTip_text',$tipstyl='position: absolute; bottom: 50px;',$clickFunction='toast("Slet<br>Cant erase yet !","orange","black")');htm_nl(2);htm_PanlFoot();htm_nl(1);htm_PanlHead($frmName='language',$capt='Settings:',$parms='',$icon='fas fa-wrench',$class='panelW320',$func='Undefined',$more='',$BookMark='blindAlley.page.php');htm_TextDiv(lang('@Change the language for this page:<br>'));global $lang;htm_Input($type='opti',$name='language',$valu=$lang,$labl='@Select language',$hint='@Select among installed languages',$plho='',$width='50%',$algn='left',$unit='',$disa=false,$rows='3',$step='',$more='',$list=[['en','@English','@Select english language'],['fr','@French','@Select french language'],['de','@German','@Select german language'],['da','@Dansk','@Select danish language']]);htm_TextDiv('Note: The translate is not complete !<br> Only the Panel-headers will change.<br>');htm_PanlFoot($labl='@Gem og benyt',$subm=true,$title='',$btnKind='save',$akey='',$simu=false,$frmName);htm_PanlHead($frmName='',$capt='Info about this page:',$parms='',$icon='fas fa-info',$class='panelW320',$func='Undefined',$more='',$BookMark='blindAlley.page.php',$panlBg='background-color: lightyellow; ');htm_TextDiv('This is a demo under development !<br>
-			It stores data to JSON text files.<br>
-			No connection to a SQL-database.<br>
-			There is also a lack of functionality.<br>
-		');htm_PanlFoot();if($KIS!=true){if($bytes==0){PanelOff($First=5,$Last=11);PanelOff($First=14,$Last=15);PanelOff($First=1,$Last=1);}}htm_PageFina();?>
+<?php  $DocFil= './Proj.demo/CustomerOrder.page.php';  $DocVer='1.2.0';  $DocRev='2022-06-22';  $DocIni='evs';  $ModulNr=0;
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+$sys= $GLOBALS["gbl_ProgRoot"]= '../';
+require_once ($sys.'php2html.lib.php');
+require_once ($sys.'menu.inc.php');
+require_once ($sys.'filedata.inc.php');
+define('LIB_JQUERY',  [1, '_assets/jquery/',  'https://cdnjs.cloudflare.com/ajax/libs/']);
+define('LIB_TABLESORTER',  [1, '_assets/tablesorter/js/',  'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
+define('LIB_POLYFILL',  [0, '_assets/',  '']);
+define('LIB_POPSCRIPTS',  [0, '_assets/',  '']);
+define('LIB_FONTAWESOME',  [1, '_assets/font-awesome6/',  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome6/']);
+require_once('../Data.demo/datainit.inc.php');
+function refresh($name) {if (isset($_POST[$name]))  {$_SESSION[$name]= $$name= htmlspecialchars($_POST[$name]); return $$name; } }
+function set_FormVars ($names) { foreach ($names as $name) $$name= refresh($name); }
+function get_FormVars ($names) { foreach ($names as $name) $$name= $_SESSION[$name] ?? ''; }
+function dev_show() { if ($GLOBALS["Ødebug"]) {echo 'SESSIONS variablers indhold: ';  vis_data($_SESSION);} }
+function indxCheck(&$arrData,$name,$pref='') {
+$id= -1;  $arrTemp= [];
+if ($arrData)
+foreach ($arrData as $rec) {
+if ($rec[$name]=='') {$id= $id+1; $rec[$name]=$pref.$id; } else $id= $rec[$name];
+$arrTemp[]= $rec;
+} $arrData= $arrTemp;
+}
+global $lang;
+$test= false;
+$KIS = false;
+$debug= false;
+if ($test) arrPrint($_POST,'$_POST');
+function SqlCreateTable($tblName,$arrName) {
+form2arr($arrName);
+$keys= array_keys($arrName);
+sql_modify('DROP TABLE IF EXISTS `'.$tblName.'`;');
+$strSQL=  'CREATE TABLE `'.$tblName.'` (
+`id` serial NOT NULL';
+$i= count($keys);
+if ($i >0) $strSQL.= ',';
+foreach ($keys as $k) {
+$i--;
+$strSQL.= '`'.$k.'` VARCHAR(255) COMMENT "AutoComment"';
+if ($i>0) $strSQL.= ',';
+}
+$strSQL.= ') COMMENT "AutoComment";';
+sql_modify($strSQL);
+return $strSQL;
+}
+function Dummy($TheTable) {
+$result=
+"IF (EXISTS (SELECT *
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA = 'TheSchema'
+AND  TABLE_NAME = '".$TheTable."'))
+BEGIN
+--Write data
+END
+ELSE
+BEGIN
+--Create Table
+END";
+return $result;
+}
+function sql_Replace($table,$arrData) {
+$keys =  array_keys($arrData);
+$values = array_values($arrData);
+$values = array_map( 'addslashes', $values );
+$strSQL= 'REPLACE INTO '.$table.'('.implode(', ',$keys).') VALUES ("'.implode('", "',$values).'");';
+echo $strSQL;
+sql_modify($strSQL);
+return $strSQL;
+}
+function sql_Update($table,$arrData,$id) {
+$keys =  array_keys($arrData);
+$values = array_values($arrData);
+$i= count($arrData);
+$strSQL = 'UPDATE '.$table.' SET ';
+foreach ($arrData as $key => $val) {
+$i--;
+$strSQL.= ' '.$key.' = "'.addslashes($val).'"';
+if ($i>0) $strSQL.= ', ';
+}
+$strSQL.= ' WHERE id = '.$id.';';
+echo $strSQL;
+}
+function arr2tbl($arr,$tabl,$id=1) {
+{ sql_Update($tabl,$arr,$id); };
+}
+function pushedButton($suff,$arr,$tabl='') {
+if ($tabl=='') $tabl= $suff.'Tbl';
+if (isset($_POST['btn_sav_'.$suff ])) arr2tbl($arr, $tabl);
+}
+$dPath= '../Data.demo/';
+;
+$savedBytes= 0;
+$ordrnumb= '#00-000';
+$strOrder= '<span style="background-color:white; padding: 2px 6px;"> '.$ordrnumb.'</span>';
+$status= '<small>'.lang('@Status: Still editable').'</small>';
+if (isset($_POST['btn_sav_orders'  ])) { tabl2arr($arrOrders,'ord_id',['ord_total']);
+$savedBytes+= FileWrite_arr($dPath.$filepath= 'arrOrders.dat.json',$arrOrders );}
+if (isset($_POST['btn_sav_content' ])) { tabl2arr($arrContent,'cnt_post',['cnt_price', 'cnt_total']);
+$savedBytes+= FileWrite_arr($dPath.$filepath='arrContent.dat.json',$arrContent);}
+if (isset($_POST['btn_sav_customr' ])) { form2arr($arrCustomr); $savedBytes+= FileWrite_arr($dPath.$filepath='arrCustomr.dat.json',$arrCustomr);}
+if (isset($_POST['btn_sav_billing' ])) { form2arr($arrBilling); $savedBytes+= FileWrite_arr($dPath.$filepath='arrBilling.dat.json',$arrBilling);}
+if (isset($_POST['btn_sav_deliver' ])) { form2arr($arrDeliver); $savedBytes+= FileWrite_arr($dPath.$filepath='arrDeliver.dat.json',$arrDeliver);}
+if (isset($_POST['btn_sav_conditi' ])) { form2arr($arrConditi); $savedBytes+= FileWrite_arr($dPath.$filepath='arrConditi.dat.json',$arrConditi);}
+if (isset($_POST['btn_sav_mailinv' ])) { form2arr($arrMailing); $savedBytes+= FileWrite_arr($dPath.$filepath='arrMailing.dat.json',$arrMailing);}
+if (isset($_POST['btn_sav_contact' ])) { form2arr($arrContact); $savedBytes+= FileWrite_arr($dPath.$filepath='arrContact.dat.json',$arrContact);}
+if (isset($_POST['btn_sav_custFld' ])) { form2arr($arrCustfld); $savedBytes+= FileWrite_arr($dPath.$filepath='arrCustfld.dat.json',$arrCustfld);}
+if (isset($_POST['btn_sav_cvrform' ])) {}
+if (isset($_POST['btn_sav_language'])) { $lang = $_POST['language']; }
+if (isset($_POST['btn_cre_contact' ])) {  }
+if (isset($_POST['btn_era_contact' ])) {  }
+if (isset($_POST['btn_goo_doLookup'])) {  }
+if (isset($_POST['btn_cre_doInvo'  ])) {  }
+if (isset($_POST['btn_cre_doNote'  ])) {  }
+if (isset($_POST['btn_hom_doCredit'])) {  }
+if (isset($_POST['btn_era_doErase' ])) {  }
+$db_Type = 'mysql';
+$db_Link= dbi_connect($sqhost='mysql62.unoeuro.com', $squser='viuff_info', $sqpass='M4d73anU8j', $sqdb='viuff_info_db8');
+if (false) {
+if (isset($_POST['btn_sav_cust' ])) { form2arr($arrCustomr);  sqlCreateTable($tblName='custTbl',$arrCustomr); }
+if (isset($_POST['btn_sav_bill' ])) { form2arr($arrBilling);  sqlCreateTable($tblName='billTbl',$arrBilling); }
+if (isset($_POST['btn_sav_deli' ])) { form2arr($arrDeliver);  sqlCreateTable($tblName='deliTbl',$arrDeliver); }
+if (isset($_POST['btn_sav_cond' ])) { form2arr($arrConditi);  sqlCreateTable($tblName='condTbl',$arrConditi); }
+if (isset($_POST['btn_sav_csto' ])) { form2arr($arrCustfld);  sqlCreateTable($tblName='cstoTbl',$arrCustfld); }
+if (isset($_POST['btn_sav_mail' ])) { form2arr($arrMailing);  sqlCreateTable($tblName='mailTbl',$arrMailing); }
+sql_modify("ALTER TABLE `custTbl` COMMENT = 'Customer data';");
+sql_modify("ALTER TABLE `billTbl` COMMENT = 'Billing data';");
+sql_modify("ALTER TABLE `deliTbl` COMMENT = 'Delivery data';");
+sql_modify("ALTER TABLE `condTbl` COMMENT = 'Paying conditions';");
+sql_modify("ALTER TABLE `cstoTbl` COMMENT = 'Custom fields';");
+sql_modify("ALTER TABLE `mailTbl` COMMENT = 'Mail data';");
+}
+$arrNames= ['arrCustomr','arrBilling','arrDeliver','arrConditi','arrMailing','arrContact','arrCustfld','arrOrders' ,'arrContent'];
+$arrTabls= ['custTbl',  'billTbl',  'deliTbl',  'condTbl',  'mailTbl',  '',  'cstoTbl',  '' ,  ''];
+foreach ($arrNames as $arr) $$arr= json_decode(file_get_contents($dPath.$arr.'.dat.json'), true);
+pushedButton('cust',$arrCustomr);
+pushedButton('bill',$arrBilling);
+pushedButton('deli',$arrDeliver);
+pushedButton('cond',$arrConditi);
+pushedButton('csto',$arrCustfld);
+pushedButton('mail',$arrMailing);
+dbi_DBclose($db_Link);
+indxCheck($arrOrders,$name='ord_id',$pref='000');
+indxCheck($arrContent,$name='cnt_post');
+#!!!: Remember no OUTPUT to screen, before htm_Page_0
+htm_Page_0(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with function key: F11',
+info:'@Example: Customer-ORDER Build with <b style="color:darkgreen;">PHP2HTML</b>',
+inis:'', algn:'center', gbl_Imag:'', attr:'background: linear-gradient(0deg,#03a9f4 0%,#e3f2fd);', gbl_Bord:false);
+Menu_Topdropdown(true);
+if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
+htm_Caption($labl='@Tiny-Cloud-Accounting',$icon='',$hint='',$algn='center',$styl='color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
+htm_nl(1);
+htm_Fieldset_0(capt:'@Customer Offer/Order',icon:'',hint:'',wdth:'80%',marg:'',attr:'Color: green; font-weight: bold; background-color: white; border-radius: 4px; padding: 0 10px;
+text-align: center; ',rtrn:false);
+htm_Panel_0(capt: '@Find / select existing order:',icon: 'fas fa-search',hint: '',form: 'orders',acti: '',clas: 'panelW960',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '');
+htm_Table(
+$TblCapt= array(
+['@Customer orders', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', '']
+),
+$RowPref= array(
+),
+$RowBody= array(
+['@id',  '8%','show', '',  ['center'], 'ord_id',  '@id number maintained by the system',  '..auto..'],
+['@Order',  '9%','indx', '',  ['center'], 'ord_ix',  '@Order number',  '@Numb...'],
+['@Order Date',  '4%','date', '',  ['left'  ], 'ord_odate',  '@Order Date',  'YYYY-MM-DD'],
+['@Deliv. date',  '4%','date', '',  ['left'  ], 'ord_ddate',  '@Delivery date',  'YYYY-MM-DD'],
+['@Account',  '8%','text', '',  ['center'], 'ord_acco',  '@Debtor Account number',  '@Acco...'],
+['@Company name','36%','text', '',  ['left'  ], 'ord_name',  '@Company name',  '@Firm...'],
+['@Seller',  '7%','text', '',  ['left'  ], 'ord_sell',  '@The employer with contact to the customer',  '@Sell...'],
+['@Amount',  '10%','text', '2d',['right' ], 'ord_amou',  '@The total order sum',  '@Amount...'],
+['@Currency',  '4%','ddwn', '',  ['center'], 'ord_currency','@Currency code for the currency used on the specification.','@Curr...','',[CurrencyArr(),'width: 55px;']],
+['@Maturity',  '4%','date', '',  ['center'], 'ord_duedate', '@Due date of the amount',  '@Due...'],
+['@Status',  '9%','ddwn', '',  ['left'  ], 'ord_stat',  '@Status','@Status...',  '', [OrdrStatu(),'width: 70px;']],
+),
+$RowSuff= array(
+),
+$TblNote= '',
+$arrOrders,
+$FilterOn= true,
+$SorterOn= true,
+$CreateRec=false,
+$ModifyRec=true,
+$ViewHeight= '200px',
+$TblStyle= '',
+$CalledFrom= __FUNCTION__
+);
+htm_Panel_00(labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false);
+htm_Panel_0(capt: lang('@Create new or modify order: ').$strOrder,
+icon: 'fas fa-pen',hint: '@Demo ! <br>No connection to a DataBase. <br>Read/save from/to JSON-files.',
+form: '',acti: '',clas: 'panelW960',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '');
+htm_Caption($labl='@Debtor card',$icon='',$hint='',$algn='center',$styl='color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
+htm_nl(1);
+htm_Panel_0(capt: '@Customer:',icon: 'fas fa-user',hint: '',form: $fm='cust',
+acti: '',clas: 'panelW280',wdth: '',styl: 'background-color: white;',attr: '');
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Customer nr.',  plho:'@..auto..',  icon:'',hint:'@Customer nr: Can not be edited, onlu created. The system sets this',
+type:'text',name:$n='custkont',  valu:$arrCustomr[$n],  form:'',wdth:'50%');
+htm_Input(labl:'@Customer Lookup',  plho:'@Select',  icon:'',hint:'@Here you select which existing customer to select',
+type:'opti',name:$n='custopsl',  valu:$arrCustomr[$n],  form:'',wdth:'50%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Customer type',  plho:'@Select',  icon:'',hint:'@Customer kategori',
+type:'rado',name:$n='custkate',  valu:$arrCustomr[$n],  form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'',list:[['priv', '@private', '@private'], ['prof', '@professional', '@professional']]);
+htm_Input(labl:'@CVR',  plho:'@Business only !',icon:'',hint:'@CVR - Virksomheds ID.',
+type:'text',name:$n='cust_cvr',  valu:$arrCustomr[$n],  form:'',wdth:'100%',algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+htm_Input(labl:'@EAN',  plho:'@Business only !',icon:'',hint:'@EAN - Elektronisk-betalings ID',
+type:'text',name:$n='cust_ean',  valu:$arrCustomr[$n],  form:'',wdth:'100%',algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+htm_Input(labl:'@Bank reg.',  plho:'Reg...',  icon:'',hint:'@Bank reg.',
+type:'text',name:$n='custbreg',  valu:$arrCustomr[$n],  form:'',wdth: '33%');
+htm_Input(labl:'@Bank account',  plho:'Account...',  icon:'',hint:'@Bank account',
+type:'text',name:$n='custbkto',  valu:$arrCustomr[$n],  form:'',wdth: '66%');
+htm_Input(labl:'@Institution',  plho:'@Business only !',icon:'',hint:'@Additional information',
+type:'text',name:$n='custinst',  valu:$arrCustomr[$n] ,  form:'',wdth:'100%',algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+htm_Input(labl:'@Customer manager',  plho:'@Mana...',  icon:'',hint:'@Customer manager',
+type:'text',name:$n='custansv',  valu:$arrCustomr[$n],  form:'',wdth:'100%');
+htm_Input(labl:'@Billing Language',  plho:'@if the language is not local',icon:'',hint:'@The language to be used on invoice transcripts',
+type:'text',name:$n='custlang',  valu:$arrCustomr[$n],  form:'',wdth:'100%',algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'R',bord:'border: 1px solid green;');
+htm_Input(labl:'@Homepage',  plho:'@Business only!', icon:'',hint:'@The customer Homepage',
+type:'text',name:$n='custhome',  valu:$arrCustomr[$n],  form:'',wdth:'100%',algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+htm_MiniNote('<span class="colrorange">'.lang('@Orange ').'</span>'.lang('@frames are required fields.'));
+htm_MiniNote('<span class="colrgreen">' .lang('@Green ').'</span>'. lang('@frames - restricted use.'));
+htm_Panel_00(labl:'@Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);;
+htm_Panel_0(capt: '@Billing:',icon: 'fas fa-pen',hint: '',form: $fm='bill',acti: '',clas: 'panelW280',wdth: '',styl: 'background-color: white;',attr: '');
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Order info',  plho:'@Order:... Date:...',icon:'',hint:'@@Systemfield: Auto fill out, when order is created/saved',
+type:'area',name:$n='billoref',  valu:$arrBilling[$n] ?? '',form:'', wdth:'100%',algn:'left',attr:'',  rtrn:false,unit:'',disa:true,rows:'1');
+htm_Input(labl:'@Customer name',  plho:'@Name...',  icon:'',hint:'@Enter costomer name',
+type:'text',name:$n='billnavn',  valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+htm_Input(labl:'@Customer address',  plho:'@Address...',  icon:'',hint:'@Enter invoice address',
+type:'text',name:$n='billaddr',  valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+htm_Input(labl:'@Customer place',  plho:'@Place...',  icon:'',hint:'@Enter invoice place',
+type:'text',name:$n='billsted',  valu:$arrBilling[$n], form:'');
+htm_Input(labl:'@ZIP',  plho:'@ZIP...',  icon:'',hint:'@ZIP code',
+type:'text',name:$n='billponr',  valu:$arrBilling[$n], form:'',wdth:'30%', algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+htm_Input(labl:'@Invoice city',  plho:'@City...',  icon:'',hint:'@Invoice city',
+type:'text',name:$n='billbynv',  valu:$arrBilling[$n], form:'',wdth:'68%', algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+htm_Input(labl:'@Invoice Country',  plho:'@Country...',  icon:'',hint:'@Invoice Country',
+type:'text',name:$n='billland',  valu:$arrBilling[$n], form:'');
+htm_hr($gbl_TitleColr.'; height: 2px');
+htm_Input(labl:'@Phone(s)',  plho:'@Phone...',  icon:'',hint:'@Phone, mobil, fax',
+type:'text',name:$n='billtelf',  valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+htm_Input(labl:'@Attention',  plho:'@Att...' ,  icon:'',hint:'@Attention - Customer contact',
+type:'text',name:$n='bill_att',  valu:$arrBilling[$n], form:'');
+htm_Input(labl:'@Réquisition number',  plho:'@Ref...' ,  icon:'',hint:'@Customer reference to order',
+type:'text',name:$n='billrekv',  valu:$arrBilling[$n], form:'');
+htm_Input(labl:'@Email address',  plho:'@Mail...',  icon:'',hint:'@Customer Email address',
+type:'text',name:$n='billmail',  valu:$arrBilling[$n], form:'');
+htm_Input(labl:'@Remarks',  plho:'@Rem...' ,  icon:'',hint:'@Notes regarding the customer',
+type:'text',name:$n='billnote',  valu:$arrBilling[$n], form:'');
+if (isset($_POST['use_mail'])) { $use_mail = 'checked'; }
+htm_Input(labl:'@Mailing',  plho:'@...',  icon:'',hint:'@Send invoice with mail',
+type:'chck',name:$n='cond_use',  valu:$arrBilling[$n], form:'',wdth:'50%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list: [['use_mail','@Use mail','@Mailing for this order is active',$namechck ?? '']]);
+htm_Input(labl:'@Order Date',  plho:'@Date...',  icon:'',hint:'@Dato for ordrens oprettelse',
+type:'date',name:$n='conddate',  valu:$arrBilling[$n], form:'',wdth:'50%');
+htm_Input(labl:'@Invoice Date',  plho:'@Date...',  icon:'',hint:'@Invoice Date',
+type:'date',name:$n='condinvc',  valu:$arrBilling[$n], form:'',wdth:'50%');
+htm_Input(labl:'@Rebills',  plho:'@Date...',  icon:'',hint:'@When to rebill date',
+type:'date',name:$n='condrebi',  valu:$arrBilling[$n], form:'',wdth:'50%');
+htm_MiniNote('<span class="colrorange">'.lang('@Orange ').'</span>'.lang('@frames are required fields.'));
+htm_Panel_00(labl:'Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);;
+htm_Panel_0(capt: '@Delivery:',icon: 'fas fa-truck',hint: '',form: $fm='deli',acti: '',clas: 'panelW280',wdth: '',styl: 'background-color: white;',attr: '');
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Delivered to invoice address',  plho:'Name...',  icon:'',hint:'@Check here if the delivery address is the same as the invoice address',
+type:'chck', name:$n='delisame',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+list: [['delisame','@Same address','@Automatic fillout with the same address as invoice',$namechck ?? '']]);
+htm_Input(labl:'@Recipient Name',  plho:'@Name...',  icon:'',hint:'@Enter Recipient Name',
+type:'text', name:$n='deliname',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+htm_Input(labl:'@Delivery Address',  plho:'@Addr..',  icon:'',hint:'@Enter Delivery Address',
+type:'text', name:$n='deliaddr',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+htm_Input(labl:'@Place of Delivery',  plho:'S@ted...',  icon:'',hint:'@Specify Place of Delivery, supplement to address',
+type:'text', name:$n='deliplac',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%');
+htm_Input(labl:'@ZIP',  plho:'@Pnr..',  icon:'',hint:'@Enter Delivery Customer postcode',
+type:'text', name:$n='deli_zip',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'30%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+htm_Input(labl:'@City Name',  plho:'@City..',  icon:'',hint:'@Enter Delivery City name',
+type:'text', name:$n='delicity',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'68%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+htm_Input(labl:'@Delivery Country',  plho:'@Contry...',icon:'',hint:'@Specify Delivery Country',
+type:'text', name:$n='delicoun',  valu: $arrDeliver[$n]  ?? '');
+htm_hr($gbl_TitleColr.'; height: 2px');
+htm_Input(labl:'@Phone(s)',  plho:'@Phone..' , icon:'',hint:'@Enter Recipient`s Phone',
+type:'text', name:$n='deliphon',  valu: $arrDeliver[$n]  ?? '');
+htm_Input(labl:'@Contact person at the delivery address',plho:'Name...' , icon:'',hint:'@Enter Contact Name',
+type:'text', name:$n='delikont',  valu: $arrDeliver[$n]  ?? '');
+htm_Input(labl:'@Recipient`s Email Address',plho:'@Mail...' , icon:'',hint:'@Enter Recipient`s Email Address',
+type:'mail', name:$n='delimail',  valu: $arrDeliver[$n]  ?? '');
+htm_Input(labl:'@Shipping Method.',  plho:'@Shipp...', icon:'',hint:'@Enter Shipping Information. How / with whom was the package sent?',
+type:'text', name:$n='delimeto',  valu: $arrDeliver[$n]  ?? '');
+htm_Input(labl:'@Notes to freight forwarder',plho:'@Note...',  icon:'',hint:'@Notes regarding package delivery',
+type:'area', name:$n='delinote',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+htm_Input(labl:'@Status',  plho:'@Enter...',icon:'',hint:'@Once the service has been sent, amounts can be redeemed',
+type:'chck', name:$n='delistat',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'50%',algn:'left', attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+list: [['shipped_','@Are shipped','@Ready for redemption',$shipped_ ?? '']]);
+#htm_Input(
+htm_Input($labl='@Delivery Date',plho:'@Enter...',icon:'',hint:'@Possibly. shipment date',
+type:'date', name:$n='lev_dato', valu: $arrDeliver[$n]  ?? '', form:'',wdth:'50%'  );
+$delName= $arrDeliver['deliname'] ?? '';
+$delAddr= $arrDeliver['deliaddr'] ?? '';
+$delPlac= $arrDeliver['deliplac'] ?? '';
+$del_Zip= $arrDeliver['deli_zip'] ?? '';
+$delCity= $arrDeliver['delicity'] ?? '';
+if ($arrCustomr['custkate']=='prof') $register='/firma'; else $register='/personer';
+htm_LinkButt( $labl='@Address on map', $gotoLink='https://krak.dk/'. $arrDeliver['deliname'] ?? ''.'+'.$arrDeliver['deliaddr'].'+'.$arrDeliver['deli_zip'].'+'.$arrDeliver['delicity'].$register,
+$hint='@Show address on map', $target='_blank');
+htm_AcceptButt($labl='@Delivery note', $hint='@Show delivery note for delivery', $btnKind='sear', $frmName='deliver', $width='', $akey='l', $rtrn=false,  $tipplc='LblTip_text', $tipstyl='',
+$clickFunction="toast(\"<b>DEMO:</b><br>$delName <br>$delAddr <br>$delPlac <br>$del_Zip - $delCity\",\"lightyellow\",\"black\")");
+htm_MiniNote('<span class="colrblue">'.lang('@Blue ').'</span>'.lang('@frames and customer type, Used for map lookup.'));
+htm_Panel_00( labl:'@Save',icon:'',hint:'',name:'',form:$fm, subm:true,attr:'',akey:'',kind:'save',simu:false);;
+if ($KIS!=true) {
+htm_Panel_0( capt: '@Conditions:', icon: 'far fa-credit-card', hint: '',form: $fm='cond',
+acti: '', clas: 'panelW280', wdth: '', styl: 'background-color: white;', attr: '');
+#htm_Input($type='opti',$name='faktbynv',$valu=$arrCustomr[$name], $labl='@Faktura By',  $hint='@Faktura by', $algn='left',$unit='',$disa=false,$rows='3',$width='68%',$step='',$attr='',$plho='@Bynavn...');
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Debtor group',  plho:'@Select',  icon:'',  hint:'@Choose which group the customer belongs to',
+type:'opti', name:$n='condgrup', valu: $arrConditi[$n],form:'',wdth:'100%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Grup() );
+htm_Input(labl:'@Payment method',  plho:'@Select',  icon:'',  hint:'@How to pay',
+type:'opti', name:$n='condpaym', valu: $arrConditi[$n],form:'',wdth:'100%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Betl() );
+htm_Input(labl:'@Payment deadline',  plho:'@Select',  icon:'',  hint:'@How long is the deadline for payment',
+type:'opti', name:$n='conddead', valu: $arrConditi[$n],form:'',wdth:'100%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Frist() );
+htm_Input(labl:'@Print to',  plho:'@Select',  icon:'',  hint:'@Choose how to print, save or send the document.',
+type:'opti', name:$n='condoutp', valu: $arrConditi[$n],form:'',wdth:'68%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Dok() );
+htm_Input(labl:'@Customer reference', hint:'@for example. Requisitions no',
+type:'text', name:$n='condrefr', valu: $arrConditi[$n],form:'',wdth:'100%');
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Panel_0( capt: '@Mail-invoice:', icon: 'fas fa-envelope', hint: '',
+form: $fm='mail', acti: '', clas: 'panelW280', wdth: '', styl: 'background-color: white;', attr: '');
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Mail subject',  plho:'@Subj...',icon:'',hint:'@Enter Mail subject',
+type:'text',name:$n='mailemne', valu:$arrMailing[$n]);
+htm_Input(labl:'@Mail message',  plho:'@Mess...',icon:'',hint:'@Enter Mail text',
+type:'area',name:$n='mailtext', valu:$arrMailing[$n]);
+htm_Input(labl:'<i class=\'fas fa-paperclip\'></i> '.lang('@Mail Annex'),plho:'@Annex..',icon:'',hint:'@Enter Attached file',
+type:'file',name:$n='mailvedh', valu:$arrMailing[$n]);
+htm_Input(labl:'@Copy to',  plho:'Copy...' ,icon:'',hint:'@Enter mail address to receive one copy of send mail',
+type:'text',name:$n='mail__cc', valu:$arrMailing[$n]);
+htm_Input(labl:'@Blind-copy to',  plho:'BCopy...',icon:'',hint:'@Enter mail address to receive one BC-copy (hidden) of sent mail',
+type:'text',name:$n='mail__bc', valu:$arrMailing[$n]);
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Panel_0( capt: '@Person contact:', icon: 'fas fa-phone-square', hint: '',
+form: $fm='cont', acti: '', clas: 'panelW280', wdth: '', styl: 'background-color: white;', attr: '');
+function ContaktPers($arrCont,$no='') {
+htm_Input(labl:'@No.',  plho:'@auto',  icon:'',hint:'@Specifies the order of the entries',
+type:'text',name:$n='contindx',  valu:$arrCont[$n],form:'',wdth:'15%', algn:'center', attr:'',rtrn:false,unit:'',disa:true,rows:'3',step:'1');
+htm_Input(labl:'@Contact person',plho:'@Kont...',  icon:'',hint:'@Enter Contact person',
+type:'text',name:$n='contname',  valu:$arrCont[$n],form:'',wdth:'50%');
+htm_Input(labl:'@Titel',  plho:'@Titl...',  icon:'',hint:'@Enter the persons titel',
+type:'text',name:$n='conttitel', valu:$arrCont[$n],form:'',wdth:'35%');
+htm_Input(labl:'@Phone',  plho:'@Phon...',  icon:'',hint:'@Enter phone number',
+type:'text',name:$n='contphone', valu:$arrCont[$n],form:'',wdth:'50%');
+htm_Input(labl:'@Mobil',  plho:'@Mobil/lok...',icon:'',hint:'@Enter Mobilnr. or  lokal',
+type:'text',name:$n='contmobil', valu:$arrCont[$n],form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3');
+htm_Input(labl:'@E-mail',  plho:'@Mail...',  icon:'',hint:'@Enter E-mail',
+type:'mail',name:$n='contemail', valu:$arrCont[$n],form:'',wdth:'80%');
+htm_Input(labl:'@Remark',  plho:'@Note...',  icon:'',hint:'@Enter note to the contact, e.g. role (director / secretary / driver)',
+type:'area',name:$n='contremark',valu:$arrCont[$n],form:'',wdth:'80%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1');
+htm_hr('lightgray');
+htm_AcceptButt( labl:'@Delete',  icon:'',hint:'@Remove this contact person <br> (DEMO yet!)', form:'contact_'.$no, wdth:'', attr:'', akey:'',kind:'eras', rtrn:false, tplc:'', tsty:'position: absolute; bottom: 8px;', acti:'toast("Remove contact<br>Cant do it yet !","lightyellow","black")');
+htm_hr('green'.'; height: 2px');
+htm_nl(1);
+}
+if ($arrContact) {
+if (is_array($arrContact[0]))
+$max= count($arrContact); else $max= 1;
+for ($i= 0; $i < $max; $i++) { ContaktPers($arrContact[$i],$no=$i); }
+}
+else htm_Caption('@Ingen oprettede kontakter.');
+htm_AcceptButt( labl:'@Create new',  icon:'', hint:'@Create a new contact <br> (DEMO yet!)',  form:$fm,  wdth:'',  attr:'', akey:'', kind:'crea', rtrn:false, tplc:'', tsty:'position: absolute; bottom: 8px;', acti:'toast("Create contact<br>Cant do it yet !","lightyellow","black")');
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+$body= '<i>Business only !</i><br>
+Copy or check data in the public company register.<br>
+Data is provided by CVR API<br><br>';
+htm_Panel_0( capt: '@CVR-lookup:', icon: 'fas fa-database', hint: '',
+form: $fm='cvr_', acti: '', clas: 'panelW280', wdth: '', styl: 'background-color: white;', attr: '');
+htm_Fieldset_0( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'font-size: smaller; ', rtrn:false);
+htm_TextDiv($body,algn:'left',marg:'8px',styl:'',attr:'');
+set_FormVars(['cvrLand','cvrKode','cvrSoeg']);
+get_FormVars(['cvrLand','cvrKode','cvrSoeg']);
+$cvrLand= $_SESSION['cvrLand'] ?? '';  if (!$cvrLand) $cvrLand= 'dk';
+$cvrKode= $_SESSION['cvrKode'] ?? '';  if (!$cvrKode) $cvrKode= 'search';
+$cvrSoeg= $_SESSION['cvrSoeg'] ?? '';
+if (($cvrLand) and ($cvrKode) and ($cvrSoeg))
+{ $url= 'https://cvrapi.dk/api?'.$cvrKode.'='.$cvrSoeg.'&country='.$cvrLand;
+$content = file_get_contents($url, false, stream_context_create(['http' => ['user_agent' => 'any']]));
+$svar= json_decode($content, true);
+if ($svar['vat']) { $cvrDiv= '';
+$cvrNumm= $svar['vat'];
+$cvrNavn= $svar['name'];
+$cvrAddr= $svar['address'];
+$cvrPost= $svar['zipcode'];
+$cvrBy  = $svar['city'];
+$cvrTelf= $svar['phone'];
+if ($svar['email'])  {$cvrDiv.= lang('@Mail').': '. $svar['email'].'&#xa;';}
+if ($svar['fax'])  {$cvrDiv.= lang('@Fax ').': '. $svar['fax'].'&#xa;';}
+if ($svar['cityname'])  {$cvrDiv.= lang('@Place').': '.$svar['cityname'].'&#xa;';}
+if ($svar['companydesc'])  {$cvrDiv.= lang('@Type').': '. $svar['companydesc'].'&#xa;';}
+$ix= 0; while ($svar['owners'][$ix]['name'])  {$cvrDiv.= lang('@Ovner').': '.$svar['owners'][$ix]['name'].'&#xa;'; $ix++;}
+$ix= 0; while ($svar['productionunits'][$ix]['pno']) {$cvrDiv.= lang('@P-nr').': '. $svar['productionunits'][$ix]['pno'].'&#xa;'; $ix++;}
+}
+}
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'@Land registry',  plho:'',  icon:'',hint:'@In what country do you want to apply?',
+type:'opti', name:$n='cvr_Land', valu: $cvrLand='dk',  form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list: CVR_Land(), llgn:'R',bord:'border: 1px solid green;');
+htm_Input(labl:'@Search for',  plho:'',  icon:'',hint:'@What do you know?',
+type:'opti', name:$n='cvr_Kode', valu: $cvrKode='search',form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list: CVR_Liste(),llgn:'R',bord:'border: 1px solid green;');
+htm_Input(labl:'@CVR/P-uni./Phon/Name',plho:'@Business only !',icon:'',hint:'@Enter here, data or company name that you want to search for',
+type:'text', name:$n='cvr_Soeg', valu: $cvrSoeg,  form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],  llgn:'R',bord:'border: 1px solid green;');
+htm_MiniNote('<span class="colrgreen">'.lang('@Green ').'</span>'.lang('@frames are the basis for entry in the CVR.'));
+htm_hr('lightgray');
+htm_AcceptButt( labl:'@Search',  icon:'', hint:'@Start search in the CVR register',
+form:'cvrform', wdth:'', attr:'', akey:'s', kind:'crea', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
+htm_Fieldset_00();
+htm_Fieldset_0( capt:'@Register data:', icon:'', hint:'', wdth:'', marg:'', attr:'font-size: smaller;', rtrn:false);
+htm_nl();
+htm_Input(labl:'@CVR-number',  plho:'@CVR...', icon:'',hint:'@Retrieved from the CVR register',
+type:'text', name:$n='cvr_Numm', valu:$cvrNumm ?? '',form:'',wdth:'33%');
+htm_Input(labl:'@Company Name',plho:'@Name...',icon:'',hint:'@Retrieved from the CVR register',
+type:'text', name:$n='cvr_Name', valu:$cvrNavn ?? '',form:'',wdth:'66%');
+htm_Input(labl:'@Phone',  plho:'@Phon...',icon:'',hint:'@Retrieved from the CVR register',
+type:'text', name:$n='cvr_phon', valu:$cvrTelf ?? '',form:'',wdth:'33%');
+htm_Input(labl:'@Address',  plho:'@Addr...',icon:'',hint:'@Retrieved from the CVR register',
+type:'text', name:$n='cvr_Adrs', valu:$cvrAddr ?? '',form:'',wdth:'66%');
+htm_Input(labl:'@ZIP',  plho:'@zip...', icon:'',hint:'@Retrieved from the CVR register',
+type:'text', name:$n='cvr_zipp', valu:$cvrPost ?? '',form:'',wdth:'33%');
+htm_Input(labl:'@City',  plho:'@City...',icon:'',hint:'@Retrieved from the CVR register',
+type:'text', name:$n='cvr_town',  valu:$cvrBy  ?? '',form:'',wdth:'66%');
+htm_AcceptButt('@Use',lang('@Use the data shown in your registration of ').($hvem ?? '').'. <br>'. lang('@Warning: Possibly previous data is overwritten! (Fields without content, do not affect external data). <br> Not working yet'), $btnKind='save', $frmName='cvrform', $width='', $akey='b', $rtrn=false);
+htm_Input(labl:'@Other things',plho:'@Various...',icon:'',hint:'@Retrieved from the CVR register, various supplementary data',type:'area', name:'cvrDiv',valu: $cvrDiv ?? '',wdth:'100%');
+htm_Fieldset_00();
+htm_Panel_00( labl:'@Update',  icon:'',  hint:'Overwrite existing data with CVR-register data !',
+name:'',  form:'cvr_', subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+$custFld= [
+['@Extra Field 1','@Extras - Fill in the field 1','@Field 1...'],
+['@Extra Field 2','@Extras - Fill in the field 2','@Field 2...'],
+['@Extra Field 3','@Extras - Fill in the field 3','@Field 3...'],
+['@Extra Field 4','@Extras - Fill in the field 4','@Field 4...'],
+['@Extra Field 5','@Extras - Fill in the field 5','@Field 5...']
+];
+htm_Panel_0( capt: '@Extra fields:', icon: 'fas fa-plus', hint: '',
+form:$fm='csto', acti: '', clas: 'panelW280', wdth: '', styl: 'background-color: white;', attr: '');
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$arrCustomr[$n],  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl: lang($custFld[0][0]),  plho: lang($custFld[0][2]), icon:'', hint: lang($custFld[0][1]),
+type:'text', name:$n=$fm.'Fld1',  valu: $arrCustfld[$n] ?? '', form:'', wdth:'66%');
+htm_Input(labl: lang($custFld[1][0]),  plho: lang($custFld[1][2]), icon:'', hint: lang($custFld[1][1]),
+type:'text', name:$n=$fm.'Fld2',  valu: $arrCustfld[$n] ?? '', form:'', wdth:'66%');
+htm_Input(labl: lang($custFld[2][0]),  plho: lang($custFld[2][2]), icon:'', hint: lang($custFld[2][1]),
+type:'text', name:$n=$fm.'Fld3',  valu: $arrCustfld[$n] ?? '', form:'', wdth:'66%');
+htm_Input(labl: lang($custFld[3][0]),  plho: lang($custFld[3][2]), icon:'', hint: lang($custFld[3][1]),
+type:'text', name:$n=$fm.'Fld4',  valu: $arrCustfld[$n] ?? '', form:'', wdth:'66%');
+htm_Input(labl: lang($custFld[4][0]),  plho: lang($custFld[4][2]), icon:'', hint: lang($custFld[4][1]),
+type:'text', name:$n=$fm.'Fld5',  valu: $arrCustfld[$n] ?? '', form:'', wdth:'66%');
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+}
+htm_Panel_0( capt: '', icon: '', hint: '', form: '', acti: '', clas: 'panelW280', wdth: '', styl: 'background-color: white; visibility: hidden;', attr: '');
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Panel_0( capt: '@Content of the order:'.$strOrder.' - '.$status, icon: 'fas fa-pen', hint: '',
+form: 'content', acti: '', clas: 'panelW960', wdth: '', styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '');
+global $ordrTotal;
+$link= '#';
+$ordrTotal= 0;
+htm_Table(
+$TblCapt= array(
+),
+$RowPref= array(
+),
+$RowBody= array(
+['@Pos.',  '5%','indx', '',  ['center'],'cnt_post',  '@Position number. is assigned automatically','..auto..'],
+['@Item no.',  '9%','text', '',  ['center'],'cnt_product',  '@Item number for the service','@Item...'],
+['@Number',  '3%','text', '1d',['center'],'cnt_numb',  '@Quantity stated as number','@Numb...'],
+['@Unit',  '6%','text', '',  ['left'  ],'cnt_unit',  '@Unit designation','@Unit...'],
+['@Description', '26%','text', '',  ['left'  ],'cnt_description','@Description of the product / service','@Dest...'],
+['@VAT' ,  '5%','text', '1d',['center'],'cnt_vat',  '@VAT pct. rate','@vat...'],
+['@Price',  '8%','text', '2d',['center'],'cnt_price',  '@Unit price ','@Price...'],
+['@%',  '6%','text', '1d',['right' ],'cnt_discount',  '@Discount percent','@Disc...'],
+['@Total',  '10%','calc', '2d',['right' ],'cnt_total',  '@Calculated amount for the current posting.',''],
+['@Currency',  '5%','ddwn', '',  ['center'],'cnt_currency',  '@Currency code for the currency used on the specification.','@Curr...','',[CurrencyArr(),'width: 55px;']],
+),
+$RowSuff= array(
+['@Del.', '2%','text', '',  ['center'],
+lang('@Delete the row! <br> WARNING - you can not regret.'),
+htm_ModalDialog(type:'erro',capt:'@DEMO page!',
+mess:'@The site is still under development.<br>The function to delete row is not finished yet.',
+butt:[ ['clos'],['erro','','Got it'] ],  html:
+'<ic class="fas fa-trash-alt" style="font-size:14px; color:red;" title="'.
+lang('@Delete the row! <br> WARNING - you can not regret.').'"></ic>')
+],
+['@Clon.', '2%','text', '',  ['center'],
+lang('@Make a copy of this row<br> It will be added as the last row in the table'),
+htm_ModalDialog(type:'hint',capt:'@DEMO page!',
+mess:'@The site is still under development.<br>The function to clone row is not finished yet.',
+butt:[ ['@clos'],['@hint','','@Got it'] ],  html:
+'<ic class="far fa-clone" style="font-size:14px; color:blue;" title="'.
+lang('@Make a copy of this row<br> It will be added as the last row in the table').'"></ic>')
+],
+['@Und.', '2%','text', '',  ['center'],
+lang('@Undo posting! <br> Refund the amount by clicking on the icon.').' '.
+lang('@If the order is invoiced, the item can be returned until the order has been posted. Then it must be done by crediting the customer!'),
+htm_ModalDialog(type:'warn',capt:'@DEMO page!',
+mess:'@The site is still under development.<br>The function to undo posting is not finished yet.',
+butt:[ ['@clos'],[@'warn','','@Got it'] ],  html:
+'<ic class="fas fa-undo" style="font-size:14px; color:orange;" title="'.
+lang('@Reverse this entry, e.g. undo reminder fee').'"></ic>')
+],
+['@Mov.', '2%','text', '',  ['center'], '@Move an entry up or down.',
+htm_ModalDialog(type:'succ',capt:'@DEMO page!',
+mess:'@The site is still under development.<br>The function to move up/down is not finished yet.',
+butt:[ ['@clos'],['@succ','','@Got it'] ],  html:
+'<ic class="fas fa-arrows-alt-v" style="font-size:14px; color:green;" title="'.
+lang('@Can`t move an entry up or down yet.').'"></ic>')
+]
+),
+$TblNote=  '<small>This table contains an example of on the fly automatic calculation:<br>$total= ($DataRow[2]*$DataRow[6])*(100-$DataRow[7])/100*(100+$DataRow[5])/100;</small>',
+$arrContent,
+$FilterOn= false,
+$SorterOn= true,
+$CreateRec=true,
+$ModifyRec=true,
+$ViewHeight= '250px',
+$CalledFrom= __FUNCTION__
+);
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Panel_0( capt: '@Handling the offer/order:'.$strOrder, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'panelW960', wdth: '', styl: 'background-color: lightgray;', attr: '');
+htm_nl(1);
+htm_Input(labl:'@Order number',  plho:'Hidden field',  icon:'',hint:'Hidden field',
+type:'hidd',name:$n='ordrnumb',  valu:$ordrnumb,  form:'',wdth:'0%', algn:'left',attr:'',  rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+htm_Input(labl:'<b>'.lang('@Order:').'</b>',  plho:'',icon:'fas fa-hashtag',  hint:'@System field: Order number',
+type:'text',name:'ordr',valu:$ordrnumb,form:'',wdth:'100px',algn:'left',  attr:'',rtrn:false,unit:'',  disa:true,rows:'1',step:'');
+htm_Input(labl:'<b>'.lang('@Customer:').'</b>', plho:'',icon:'far fa-pen-to-square', hint:'@System field: Customer name',
+type:'text',name:'cust',valu:'Customer',form:'',wdth:'400px',algn:'left',  attr:'',rtrn:false,unit:'',  disa:true,rows:'1',step:'');
+htm_Input(labl:'<b>'.lang('@Total:').'</b>',  plho:'',icon:'far fa-credit-card',  hint:'@System field: Amount incl. VAT',
+type:'dec2',name:'totl',valu:$ordrTotal,form:'',wdth:'120px',algn:'center',attr:'',rtrn:false,unit:' DKK ',disa:true,rows:'1',step:'');
+htm_nl(2);
+htm_AcceptButt(labl:'@Create / update', icon:'',hint:lang('@Save the order'),  form:'handling', wdth:'120px',attr:'' ,akey:'', kind:'save',  rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;');
+htm_nl(2);
+htm_AcceptButt(labl:'@Save as Offer',  icon:'',hint:lang('@Create offer for registration'),  form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
+htm_AcceptButt(labl:'@Save as Order',  icon:'',hint:lang('@Create invoice for (the saved!) Order'),  form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
+htm_AcceptButt(labl:'@Save as a role model',icon:'',hint:lang('@Reuse content for re-creation'),  form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
+htm_AcceptButt(labl:'@Create Invoice',  icon:'',hint:lang('@Create invoice for (the saved!) Order'),  form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
+htm_AcceptButt(labl:'@Give credit',  icon:'',hint:lang('@Reset by crediting the order - if it is invoiced'),  form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Give credit<br>Cant do it yet !","orange","black")');
+htm_AcceptButt(labl:'@Delete',  icon:'',hint:lang('@Delete the order - provided the invoice is not formed'), form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'position: absolute; bottom: 50px;',acti:'toast("Delete<br>Cant erase yet !","orange","black")');
+htm_nl(2);
+htm_Panel_00( labl:'',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_nl(2);
+htm_Panel_0( capt: '@Settings:', icon: 'fas fa-wrench', hint: '', form: 'language', acti: '', clas: 'panelW320', wdth: '', styl: 'background-color: white;', attr: '');
+htm_TextDiv('@Change the language for this project: <br>');
+htm_Input(labl:'@Select language',plho:'',icon:'',hint:'@Select among installed languages',
+type:'opti',name:'language',valu:$lang,form:'',wdth:'50%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+list: [['en','@English','@Select english language'],
+['fr','@French','@Select french language'],
+['de','@German','@Select german language'],
+['da','@Dansk','@Select danish language']]);
+htm_TextDiv('@Note: The translate is not complete !<br>It is created with Google Translate, <br>and needs proofread.<br>');
+htm_Panel_00(labl:'@Save and use',  icon:'',  hint:'',  name:'', form:'language',  subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Panel_0(capt: '@Info about this page:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'panelW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
+htm_TextDiv('@This is a demo under development !<br>It stores data to JSON text files.<br>No connection to a SQL-database.<br>
+Translations from English lack <br>proofreading, on Google translate. <br>
+There is also a lack of functionality.<br>Code written for PHP 8+ !<br>');
+htm_Panel_00(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
+htm_nl(0);
+Pmnu_0( elem:'right_click', capt:'Context-Menu',  wdth:'280px',  icon:'', stck:'true', attr:'background-color:lightyellow; height: 16px;', cntx:true);
+Pmnu_Item( labl:'@Select All', icon:'far fa-object-group colrbrown iconsize', hint:'@Mark to select',  type:'plain',  name:'d',  clck:'alert(\"sss\");', attr:'', akey:'CTRL+A');
+Pmnu_Item( labl:'@Copy',  icon:'fas fa-copy colrgreen iconsize',  hint:'@Copy selected to text-buffer',  type:'plain',  name:'d1',  clck:'alert(\"sss\");', attr:'', akey:'CTRL+C');
+Pmnu_Item( labl:'@Paste',  icon:'fas fa-paste colrblue iconsize',  hint:'@Paste content in text-buffer',  type:'plain',  name:'d2',  clck:'alert(\"sss\");', attr:'', akey:'CTRL+V');
+Pmnu_Item( labl:'<hr>',  icon:'',  hint:'',  type:'separator', name:'',  clck:'', attr:'');
+Pmnu_Item( labl:'@Delete',  icon:'fas fa-trash-alt colrred iconsize',  hint:'@Delete the selected',  type:'plain',  name:'e',  clck:'', attr:'',akey:'DEL'.str_sp(6));
+Pmnu_Item( labl:'@Cut',  icon:'fas fa-cut colrblue iconsize',  hint:'@Cut the selected and save to text-buffer', type:'plain',  name:'d3',  clck:'alert(\"sss\");', attr:'', akey:'CTRL+X');
+Pmnu_Item( labl:'@Undo',  icon:'fas fa-undo colrblue iconsize',  hint:'@Undo latest task',  type:'plain',  name:'d5',  clck:'alert(\"sss\");', attr:'', akey:'CTRL+Z');
+Pmnu_Item( labl:'@Redo',  icon:'fas fa-redo colrblue iconsize',  hint:'@Redo the last delete',  type:'plain',  name:'d4',  clck:'alert(\"sss\");', attr:'', akey:'CTRL+Y');
+Pmnu_Item( labl:'<hr>',  icon:'',  hint:'',  type:'separator', name:'',  clck:'', attr:'background-color:lightyellow;');
+Pmnu_Item( labl:'@Multi Menu', icon:'fas fa-home colrgreen iconsize',  hint:'@Horisontal menu.',  type:'multi',  name:'e2',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Delete',  icon:'fas fa-trash-alt colrred iconsize',  hint:'@Delete the selected',  type:'subitem',  name:'e',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Cut',  icon:'fas fa-cut colrblue iconsize',  hint:'@Cut the selected and save to text-buffer', type:'subitem',  name:'d3',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Undo',  icon:'fas fa-undo colrblue iconsize',  hint:'@Undo latest task',  type:'subitem',  name:'d5',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'',  icon:'',  hint:'',  type:'end_sub'  );
+Pmnu_Item( labl:'<hr>',  icon:'',  hint:'',  type:'separator', name:'',  clck:'', attr:'background-color:lightyellow;');
+Pmnu_Item( labl:'@Sub Menu',  icon:'fas fa-home colrgreen iconsize',  hint:'@Open submenu.',  type:'submenu',  name:'f1',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Sub Item 1', icon:'fas fa-link colrblue iconsize',  hint:'@Open...Sub Item 1',  type:'subitem',  name:'f2',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Sub Item 2', icon:'fas fa-link colrblue iconsize',  hint:'@Open...Sub Item 2',  type:'subitem',  name:'f3',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Sub Item 3', icon:'fas fa-link colrblue iconsize',  hint:'@Open...Sub Item 3',  type:'subitem',  name:'f4',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'',  icon:'',  hint:'',  type:'end_sub'  );
+Pmnu_Item( labl:'@Hover Menu', icon:'fas fa-bars colrgreen iconsize',  hint:'@Open hovermenu',  type:'hovermenu', name:'g1',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Sub Item 4', icon:'fas fa-link colrblue iconsize',  hint:'@Open...Sub Item 4',  type:'subitem',  name:'g2',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Sub Item 5', icon:'fas fa-link colrblue iconsize',  hint:'@Open...Sub Item 5',  type:'subitem',  name:'g3',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'@Sub Item 6', icon:'fas fa-link colrblue iconsize',  hint:'@Open...Sub Item 6',  type:'subitem',  name:'g4',  clck:'', attr:'', akey:'');
+Pmnu_Item( labl:'',  icon:'',  hint:'',  type:'end_sub');
+Pmnu_Item( labl:'@<hr>A demo of PopUp menu, witch showup when you right-clck an object<br><br>', icon:'', hint:'', type:'footer',  name:'f', clck:'', attr:'background-color:lightcyan;', akey:'');
+Pmnu_00(labl: '@FOOTER',hint: '@The menu footer.',attr: 'background-color:lightyellow;');
+htm_nl(1);
+htm_Panel_0( capt: '@Info about Defined_vars on this page:', icon: 'fas fa-info', hint: '', form:$form='demo', acti: '', clas: 'panelW960', wdth: '', styl: 'background-color: lightyellow;', attr: '');
+arrPretty(get_defined_vars(),'Defined_vars:');
+htm_Panel_00( labl:'@Save',  icon:'',  hint:'',  name:'', form:$form,  subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+htm_Fieldset_00();
+if ($KIS!=true) {
+if ($savedBytes== 0) {
+PanelOff($First= 3,$Last=11);
+PanelOff($First=12,$Last=16);
+PanelOff($First= 1,$Last= 1);
+}
+}
+htm_Page_00();
+run_Script('toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","blacck",1500)');
+?>

@@ -1,4 +1,4 @@
-<? $DocFile='../translate.inc.php';    $DocVers='1.2.0';    $DocRev1='2022-06-20';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<? $DocFile='../translate.inc.php';    $DocVer='1.2.2';    $DocRev='2022-12-26';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';

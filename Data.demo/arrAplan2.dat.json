@@ -1,0 +1,223 @@
+[{"pln_id__":0,"pln_nmbr":"10","pln_name":"RESULTATOPGØRELSE","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":1,"pln_nmbr":"100","pln_name":"OMSÆTNING:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"","pln_stat":"Aktiv"},{
+"pln_id__":2,"pln_nmbr":"1000","pln_name":"Udført arbejde","pln_type":"D","pln_from":"","pln_vat_":"S1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"U","pln_stat":"Aktiv"},{
+"pln_id__":3,"pln_nmbr":"1100","pln_name":"Varesalg DK","pln_type":"D","pln_from":"","pln_vat_":"S1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"S","pln_stat":"Aktiv"},{
+"pln_id__":4,"pln_nmbr":"1200","pln_name":"Salg af ydelser indenfor EU","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"Y","pln_stat":"Aktiv"},{
+"pln_id__":5,"pln_nmbr":"1220","pln_name":"Salg af varer indenfor EU","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":6,"pln_nmbr":"1250","pln_name":"Salg af ydelser udenfor EU","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":7,"pln_nmbr":"1270","pln_name":"Salg af varer udenfor EU","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":8,"pln_nmbr":"1290","pln_name":"Salg af varer og ydelser udenfor EU","pln_type":"Z","pln_from":"1250","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":9,"pln_nmbr":"1300","pln_name":"Fragt ydet","pln_type":"D","pln_from":"","pln_vat_":"S1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"F","pln_stat":"Aktiv"},{
+"pln_id__":10,"pln_nmbr":"1800","pln_name":"Igangværende arbejder","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"I","pln_stat":"Aktiv"},{
+"pln_id__":11,"pln_nmbr":"1900","pln_name":"Tab på debitorer","pln_type":"D","pln_from":"","pln_vat_":"S1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"T","pln_stat":"Aktiv"},{
+"pln_id__":12,"pln_nmbr":"1950","pln_name":"OMSÆTNING I ALT","pln_type":"Z","pln_from":"100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":13,"pln_nmbr":"2000","pln_name":"VARIABLE OMKOSTNINGER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"","pln_stat":"Aktiv"},{
+"pln_id__":14,"pln_nmbr":"2001","pln_name":"VAREFORBRUG:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"","pln_stat":"Aktiv"},{
+"pln_id__":15,"pln_nmbr":"2050","pln_name":"Ydelseskøb i DK","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"k","pln_stat":"Aktiv"},{
+"pln_id__":16,"pln_nmbr":"2100","pln_name":"Varekøb i DK","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"V","pln_stat":"Aktiv"},{
+"pln_id__":17,"pln_nmbr":"2300","pln_name":"Fragt modtaget","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"f","pln_stat":"Aktiv"},{
+"pln_id__":18,"pln_nmbr":"2400","pln_name":"Leje driftsmidler","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"D","pln_stat":"Aktiv"},{
+"pln_id__":19,"pln_nmbr":"2500","pln_name":"Forbrug egne varer","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"E","pln_stat":"Aktiv"},{
+"pln_id__":20,"pln_nmbr":"2600","pln_name":"Lagerregulering","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"","pln_stat":"Aktiv"},{
+"pln_id__":21,"pln_nmbr":"2700","pln_name":"Køb af ydelser i EU","pln_type":"D","pln_from":"","pln_vat_":"Y1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":22,"pln_nmbr":"2720","pln_name":"Køb af ydelser udenfor EU","pln_type":"D","pln_from":"","pln_vat_":"Y1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":23,"pln_nmbr":"2800","pln_name":"Køb af varer i EU","pln_type":"D","pln_from":"","pln_vat_":"E1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":24,"pln_nmbr":"2820","pln_name":"Varekøb udenfor EU","pln_type":"D","pln_from":"","pln_vat_":"E1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":25,"pln_nmbr":"2850","pln_name":"VAREFORBRUG I ALT","pln_type":"Z","pln_from":"2000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":26,"pln_nmbr":"2899","pln_name":"FREMMED ARBEJDE","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":27,"pln_nmbr":"2900","pln_name":"Fremmed arbejde","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":28,"pln_nmbr":"3000","pln_name":"VAREFORBRUG OG FREMMEDE ARBEJDE","pln_type":"Z","pln_from":"2000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":29,"pln_nmbr":"3500","pln_name":"DÆKNINGSBIDRAG I","pln_type":"Z","pln_from":"1","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":30,"pln_nmbr":"4099","pln_name":"LØNNINGER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":31,"pln_nmbr":"4100","pln_name":"Lån, A-indkomst","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":32,"pln_nmbr":"4110","pln_name":"Medarbejder ATP","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":33,"pln_nmbr":"4120","pln_name":"Medarbejder pension","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":34,"pln_nmbr":"4125","pln_name":"Bruttolån","pln_type":"Z","pln_from":"4100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":35,"pln_nmbr":"4130","pln_name":"Bidragsfri A-indkomst","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":36,"pln_nmbr":"4140","pln_name":"Særlig indkomst","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":37,"pln_nmbr":"4150","pln_name":"Personalegoder","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":38,"pln_nmbr":"4160","pln_name":"Tillæg","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":39,"pln_nmbr":"4170","pln_name":"Optjent SH (søgne-\/hellligdagsbetaling)","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":40,"pln_nmbr":"4200","pln_name":"Feriepenge brutto","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":41,"pln_nmbr":"4205","pln_name":"AM-indkomst","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":42,"pln_nmbr":"4210","pln_name":"Virksomhed ATP","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":43,"pln_nmbr":"4220","pln_name":"Virksomhed pension","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":44,"pln_nmbr":"4230","pln_name":"DA Barsel","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":45,"pln_nmbr":"4240","pln_name":"Refusion sygedagpenge","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":46,"pln_nmbr":"4249","pln_name":"LØNNINGER I ALT","pln_type":"Z","pln_from":"4000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":47,"pln_nmbr":"4250","pln_name":"DÆKNINGSBIDRAG II","1":"Z","pln_from":"1","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":48,"pln_nmbr":"4308","pln_name":"Øvrige omkostninger:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":49,"pln_nmbr":"4309","pln_name":"Øvrige personaleomkostninger:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":50,"pln_nmbr":"4310","pln_name":"Arbejdstøj","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":51,"pln_nmbr":"4320","pln_name":"AER\/AES\/ATP-fib","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":52,"pln_nmbr":"4330","pln_name":"Personaleforsikringer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":53,"pln_nmbr":"4340","pln_name":"Uddannelsesudgifter","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":54,"pln_nmbr":"4350","pln_name":"Diverse udgifter","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":55,"pln_nmbr":"4950","pln_name":"PERSONALEOMK. I ALT","pln_type":"Z","pln_from":"4308","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":56,"pln_nmbr":"5000","pln_name":"LØN OG PERSONALE I ALT","pln_type":"Z","pln_from":"4100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":57,"pln_nmbr":"5099","pln_name":"LOKALEOMKOSTNINGER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":58,"pln_nmbr":"5100","pln_name":"Husleje","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":59,"pln_nmbr":"5200","pln_name":"El, varme m.v.","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":60,"pln_nmbr":"5250","pln_name":"Elafgift","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":61,"pln_nmbr":"5260","pln_name":"Privat andel el","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":62,"pln_nmbr":"5300","pln_name":"Varme","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":63,"pln_nmbr":"5360","pln_name":"Privat andel varme","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":64,"pln_nmbr":"5400","pln_name":"Rengøring og dekoration","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":65,"pln_nmbr":"5500","pln_name":"Reparation og vedligeholdelse","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":66,"pln_nmbr":"5600","pln_name":"LOKALEOMKOSTNINGER I ALT","pln_type":"Z","pln_from":"5100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":67,"pln_nmbr":"5899","pln_name":"SALGSOMKOSTNINGER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":68,"pln_nmbr":"5900","pln_name":"Annoncer & reklame","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":69,"pln_nmbr":"5910","pln_name":"Dekoration","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":70,"pln_nmbr":"5930","pln_name":"Rejseudgifter","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":71,"pln_nmbr":"5940","pln_name":"Konferencer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":72,"pln_nmbr":"5950","pln_name":"Messer","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":73,"pln_nmbr":"5960","pln_name":"Pakkeporto","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":74,"pln_nmbr":"5989","pln_name":"REPRÆSENTATION:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":75,"pln_nmbr":"5990","pln_name":"Repræsentation, restaurant","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":76,"pln_nmbr":"6000","pln_name":"Repræsentation, gaver og blomst.","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":77,"pln_nmbr":"6010","pln_name":"Repræsentation, diverse","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":78,"pln_nmbr":"6020","pln_name":"Ej fradragsberett. andel","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":79,"pln_nmbr":"6030","pln_name":"REPRÆSENTATION I ALT","pln_type":"Z","pln_from":"5980","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":80,"pln_nmbr":"6040","pln_name":"SALGSOMKOSTNINGER I ALT","pln_type":"Z","pln_from":"5900","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":81,"pln_nmbr":"6099","pln_name":"ADMINISTRATION:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":82,"pln_nmbr":"6100","pln_name":"Advokat og revisor","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":83,"pln_nmbr":"6150","pln_name":"Bogføringsassistance","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":84,"pln_nmbr":"6200","pln_name":"Konsulentbistand","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":85,"pln_nmbr":"6300","pln_name":"Avishold","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":86,"pln_nmbr":"6400","pln_name":"Kontingenter m\/moms","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":87,"pln_nmbr":"6450","pln_name":"Kontingenter u\/moms","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":88,"pln_nmbr":"6800","pln_name":"Erhvervsforsikringer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":89,"pln_nmbr":"6900","pln_name":"Fragt & kørsel","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":90,"pln_nmbr":"7000","pln_name":"Kontorartikler & tryksager","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":91,"pln_nmbr":"7200","pln_name":"Porto & gebyrer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":92,"pln_nmbr":"7400","pln_name":"Småanskaffelser","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":93,"pln_nmbr":"7600","pln_name":"Telefoni","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":94,"pln_nmbr":"7640","pln_name":"Privat andel telefon mv.","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":95,"pln_nmbr":"7650","pln_name":"Internet og webhotel","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":96,"pln_nmbr":"7700","pln_name":"Vedligehold driftsmidler","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":97,"pln_nmbr":"7750","pln_name":"Leje af driftsmidler","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":98,"pln_nmbr":"7800","pln_name":"Diverse inkl. moms","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":99,"pln_nmbr":"7900","pln_name":"Diverse ekskl. moms","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":100,"pln_nmbr":"7940","pln_name":"Øredifferencer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":101,"pln_nmbr":"7950","pln_name":"Reg. kassedifferencer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":102,"pln_nmbr":"7960","pln_name":"Valutadifferencer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":103,"pln_nmbr":"8000","pln_name":"ADMINISTRATION I ALT","pln_type":"Z","pln_from":"6100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":104,"pln_nmbr":"8299","pln_name":"KØRSEL:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":105,"pln_nmbr":"8300","pln_name":"Udbetalte kilometerpenge","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":106,"pln_nmbr":"8400","pln_name":"Brændstof","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":107,"pln_nmbr":"8500","pln_name":"Vedligeholdelse","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":108,"pln_nmbr":"8600","pln_name":"Vægtafgift & forsikringer","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":109,"pln_nmbr":"8700","pln_name":"Afskrivning","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":110,"pln_nmbr":"8800","pln_name":"Privat andel autodrift","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":111,"pln_nmbr":"8950","pln_name":"Øvrig personbefordring","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":112,"pln_nmbr":"8960","pln_name":"KØRSEL I ALT","pln_type":"Z","pln_from":"8300","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":113,"pln_nmbr":"8980","pln_name":"Øvrige omkosninger i alt:","pln_type":"Z","pln_from":"4500","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":114,"pln_nmbr":"9000","pln_name":"RESULTAT FØR AFSKRIVNINGER","pln_type":"Z","pln_from":"1","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":115,"pln_nmbr":"9099","pln_name":"AFSKRIVNINGER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":116,"pln_nmbr":"9100","pln_name":"Småanskaffelser","pln_type":"D","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":117,"pln_nmbr":"9200","pln_name":"Driftsmidler","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":118,"pln_nmbr":"9250","pln_name":"Immaterielle anlægsaktiver","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":119,"pln_nmbr":"9300","pln_name":"Lejede lokaler","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":120,"pln_nmbr":"9500","pln_name":"Indgået på tidligere afskrevne f","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":121,"pln_nmbr":"9550","pln_name":"AFSKRIVNINGER I ALT","pln_type":"Z","pln_from":"9100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":122,"pln_nmbr":"9600","pln_name":"RESULTAT FØR FINANSIERING","pln_type":"Z","pln_from":"1","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":123,"pln_nmbr":"9799","pln_name":"RENTEINDTÆGTER M.V.:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":124,"pln_nmbr":"9800","pln_name":"Bank & giro","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":125,"pln_nmbr":"9850","pln_name":"Renteindtægter diverse","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":126,"pln_nmbr":"9870","pln_name":"RENTEINDTÆGTER M.V. I ALT","pln_type":"Z","pln_from":"9800","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":127,"pln_nmbr":"9899","pln_name":"RENTEUDGIFTER M.V.:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":128,"pln_nmbr":"9900","pln_name":"Bankrenter","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":129,"pln_nmbr":"9950","pln_name":"Leverandører m.v.","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":130,"pln_nmbr":"9960","pln_name":"FRADRAGSBERETTIGEDE RENTEUDGIFTE","pln_type":"Z","pln_from":"9900","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":131,"pln_nmbr":"9990","pln_name":"Ikke-fradragsberettigede renter","pln_type":"D","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":132,"pln_nmbr":"10000","pln_name":"RENTEUDGIFTER M.V. I ALT","pln_type":"Z","pln_from":"9900","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":133,"pln_nmbr":"11000","pln_name":"RESULTAT I ALT","pln_type":"Z","pln_from":"1","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":134,"pln_nmbr":"20000","pln_name":"------------------------------------------------------------","pln_type":"X","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":135,"pln_nmbr":"49996","pln_name":"STATUS","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":136,"pln_nmbr":"49997","pln_name":"AKTIVER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":137,"pln_nmbr":"49998","pln_name":"IMMATERIELLE ANLÆGSAKTIVER","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":138,"pln_nmbr":"49999","pln_name":"(Patenter, rettigheder, goodwill, udviklingsprojekter under udførelse mv.)","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":139,"pln_nmbr":"50800","pln_name":"Immaterielle anlægsaktiver primo","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":140,"pln_nmbr":"50810","pln_name":"Forbedringer i året","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":141,"pln_nmbr":"50820","pln_name":"Salg i året","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":142,"pln_nmbr":"50830","pln_name":"Tilgang i året","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":143,"pln_nmbr":"50840","pln_name":"Årets afskrivninger","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":144,"pln_nmbr":"50850","pln_name":"IMMATERIELLE ANLÆGSAKTIVER I ALT","pln_type":"Z","pln_from":"50790","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":145,"pln_nmbr":"50898","pln_name":"MATERIELLE ANLÆGSAKTIVER","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":146,"pln_nmbr":"50899","pln_name":"(Inventar, bygninger, maskiner mv.)","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":147,"pln_nmbr":"50900","pln_name":"Driftmiddelsaldo primo","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":148,"pln_nmbr":"50910","pln_name":"Tilgang i året drift\/inventar","pln_type":"S","pln_from":"","pln_vat_":"K1","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":149,"pln_nmbr":"50920","pln_name":"Afgang i året drift\/inventar","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":150,"pln_nmbr":"50930","pln_name":"Årets afskrivninger","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":151,"pln_nmbr":"51995","pln_name":"Anlægsaktiver","pln_type":"Z","pln_from":"50000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":152,"pln_nmbr":"55099","pln_name":"OMSÆTNINGSAKTIVER:","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":153,"pln_nmbr":"55100","pln_name":"Varebeholdning","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":154,"pln_nmbr":"55995","pln_name":"Varebeholdning","pln_type":"Z","pln_from":"55000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":155,"pln_nmbr":"56099","pln_name":"TILGODEHAVENDER","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":156,"pln_nmbr":"56100","pln_name":"Debitorer, ubetalte fakturaer","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":157,"pln_nmbr":"56150","pln_name":"Efterposteringer","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":158,"pln_nmbr":"56295","pln_name":"Tilgode for salg","pln_type":"Z","pln_from":"56000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":159,"pln_nmbr":"56300","pln_name":"Deposita","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":160,"pln_nmbr":"56500","pln_name":"Forudbetalte omkostninger","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":161,"pln_nmbr":"56995","pln_name":"Andre tilgodehavender","pln_type":"Z","pln_from":"56300","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":162,"pln_nmbr":"56999","pln_name":"Tilgodehavender","pln_type":"Z","pln_from":"56000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":163,"pln_nmbr":"57999","pln_name":"LIKVIDEBEHOLDNINGER","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":164,"pln_nmbr":"58000","pln_name":"Bank","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":165,"pln_nmbr":"58100","pln_name":"Giro","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":166,"pln_nmbr":"58200","pln_name":"Kasse","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":167,"pln_nmbr":"58998","pln_name":"Likvide beholdninger i alt","pln_type":"Z","pln_from":"58000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":168,"pln_nmbr":"58999","pln_name":"OMSÆTNINGSAKTIVER I ALT","pln_type":"Z","pln_from":"55099","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":169,"pln_nmbr":"59999","pln_name":"AKTIVER I ALT","pln_type":"Z","pln_from":"50000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":170,"pln_nmbr":"60498","pln_name":"PASSIVER","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":171,"pln_nmbr":"60499","pln_name":"EGENKAPITAL","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":172,"pln_nmbr":"60500","pln_name":"Egenkapitalkonto primo","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":173,"pln_nmbr":"60800","pln_name":"Årets resultat","pln_type":"R","pln_from":"11000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":174,"pln_nmbr":"60900","pln_name":"Overført fra tidligere år","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":175,"pln_nmbr":"62000","pln_name":"Mellemregning","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":176,"pln_nmbr":"62010","pln_name":"B-skat","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":177,"pln_nmbr":"62020","pln_name":"Restskat","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":178,"pln_nmbr":"62100","pln_name":"Hævet kontant i virksomheden","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":179,"pln_nmbr":"62200","pln_name":"Indskudt kontant i virksomheden","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":180,"pln_nmbr":"62300","pln_name":"Ikke fradragsberettigede udgift.","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":181,"pln_nmbr":"62400","pln_name":"Privat andel autodrift","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":182,"pln_nmbr":"62500","pln_name":"Privat andel telefon","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":183,"pln_nmbr":"62600","pln_name":"75% andel repræsentation","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":184,"pln_nmbr":"62995","pln_name":"Egenkapital","pln_type":"Z","pln_from":"60000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":185,"pln_nmbr":"62999","pln_name":"LANGFRISTET GÆLD (over 1 år)","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":186,"pln_nmbr":"63000","pln_name":"Banklån","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":187,"pln_nmbr":"63099","pln_name":"LANGFRISTET GÆLD I ALT","pln_type":"Z","pln_from":"63000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":188,"pln_nmbr":"64097","pln_name":"KORTFRISTET GÆLD (under 1 år)","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":189,"pln_nmbr":"64098","pln_name":"SKYLDIGE OMKOSTNINGER","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":190,"pln_nmbr":"64099","pln_name":"Lån","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":191,"pln_nmbr":"64100","pln_name":"Nettolån","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":192,"pln_nmbr":"64110","pln_name":"A conto-udbetaling af lån","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":193,"pln_nmbr":"64150","pln_name":"Skyldig A-skat, personale","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":194,"pln_nmbr":"64160","pln_name":"Skyldigt arbejdsmarkedsbidrag","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":195,"pln_nmbr":"64165","pln_name":"Skyldig SP (særlig pension)","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":196,"pln_nmbr":"64170","pln_name":"Skyldig ATP","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":197,"pln_nmbr":"64190","pln_name":"Feriepenge hensat","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":198,"pln_nmbr":"64195","pln_name":"Feriepenge udbetalt","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":199,"pln_nmbr":"64200","pln_name":"Skyldig pension, gruppeliv","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":200,"pln_nmbr":"64210","pln_name":"Skyldig SH (søgne-\/helligdage)","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":201,"pln_nmbr":"64300","pln_name":"Lån ialt","pln_type":"Z","pln_from":"64000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":202,"pln_nmbr":"65000","pln_name":"Forudbetalinger","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":203,"pln_nmbr":"65050","pln_name":"Forudbetalt fra kunder","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":204,"pln_nmbr":"65095","pln_name":"Forudbetalinger i alt","pln_type":"Z","pln_from":"65000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":205,"pln_nmbr":"65100","pln_name":"Kreditorer, ubetalte regninger","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":206,"pln_nmbr":"65200","pln_name":"Kreditor efterpostering","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":207,"pln_nmbr":"65995","pln_name":"Kreditorer","pln_type":"Z","pln_from":"65100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":208,"pln_nmbr":"65999","pln_name":"SKYLDIGE OMKOSTNINGER I ALT","pln_type":"Z","pln_from":"64098","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":209,"pln_nmbr":"66099","pln_name":"SKYLDIG MOMS","pln_type":"H","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":210,"pln_nmbr":"66100","pln_name":"Salgsmoms","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":211,"pln_nmbr":"66150","pln_name":"Moms af varekøb i udlandet","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":212,"pln_nmbr":"66155","pln_name":"Moms af ydelseskøb i udlandet med omvendt betalingspligt","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":213,"pln_nmbr":"66160","pln_name":"Olieafgift","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":214,"pln_nmbr":"66170","pln_name":"Elafgift","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":215,"pln_nmbr":"66180","pln_name":"Vandafgift","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":216,"pln_nmbr":"66200","pln_name":"Købsmoms","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":217,"pln_nmbr":"66900","pln_name":"Momsafregning","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":218,"pln_nmbr":"66950","pln_name":"Skyldig moms i alt","pln_type":"Z","pln_from":"66100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":219,"pln_nmbr":"67000","pln_name":"KORTFRISTET GÆLD I ALT","pln_type":"Z","pln_from":"64100","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":220,"pln_nmbr":"72000","pln_name":"PASSIVER I ALT","pln_type":"Z","pln_from":"60500","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":221,"pln_nmbr":"99995","pln_name":"Ukendte poster","pln_type":"S","pln_from":"","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"},{
+"pln_id__":222,"pln_nmbr":"99999","pln_name":"Balancekontrol","pln_type":"Z","pln_from":"50000","pln_vat_":"","pln_sald":"0.00","pln_curr":"DK","pln_cour":"100","pln_shrt":"-","pln_stat":"Aktiv"}]

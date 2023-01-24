@@ -1,30 +1,36 @@
-<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.2.0';    $DocRev='2022-03-04';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.2.2';    $DocRev='2023-01-18';      $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+$gbl_ProgRoot= './../';
+
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
-## Speedup page-loading, if some libraryes is not needed:
-//      ConstName:          ix:   LocalPath:                 CDN-path:
-define('LIB_JQUERY',        [1, '_assets/jquery/',          'https://cdnjs.cloudflare.com/ajax/libs/']);
-define('LIB_TABLESORTER',   [1, '_assets/tablesorter/js/',  'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
+## Activate needed libraries:
+//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
+define('LIB_JQUERY',        [2, '_assetsjquery/latest/',            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);               // jquery.min.js
+define('LIB_JQUERYUI',      [2, '_assetsjquery-ui/latest/',         'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
+define('LIB_TABLESORTER',   [2, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
 define('LIB_POLYFILL',      [0, '_assets/',  '']);
 define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
-define('LIB_FONTAWESOME',   [0, '_assets/',  '']);
+define('LIB_FONTAWESOME',   [2, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
+define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/tinymce.min.js']); 
 // Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
 
 
 ### PAGE-START:
-htm_Page_0($titl='description.page.php',$hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
+htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  gbl_Imag:'../_accessories/_background.png', gbl_Bord:false);
     Menu_Topdropdown(true); htm_nl(1);
     
-    htm_Panel_0($capt= 'System description:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
+    htm_Panel_0(capt:'System description:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'panelW720', wdth:'', styl:'background-color: white;', attr:'');
 
-    htm_TextDiv('PHP2HTML is a library, a collection of functions that can be used systematically for the interface of your program that you develop in PHP.<br><br>
-        It consists of a large number of functions, all of which support the use of different national languages.<br>
+    htm_TextDiv('PHP2HTML is a library, a collection of functions that can be used systematically for <br>
+        the interface of your program that you develop in PHP.<br><br>
+        It consists of a large number of functions, all of which support the use of different <br>
+        national languages.<br>
         The functions generate output in the HTML5 format that all modern browsers support.<br><br>
 
         Furthermore, most are combined with:<br>
@@ -40,7 +46,8 @@ htm_Page_0($titl='description.page.php',$hint=$©, $info='File: '.$DocFile.' - v
         Scrolling content-window<br>
         Zebra-striped rows<br><br>
 
-        When choosing a layout, it is emphasized that it is compact, so it is suitable for narrow screens that appear on phones and tablets.<br><br>
+        When choosing a layout, it is emphasized that it is compact, so it is suitable <br>
+        for narrow screens that appear on phones and tablets.<br><br>
 
         Furthermore, there are functions that enable layout control.<br><br>
         And more...<br><br>');
@@ -60,21 +67,21 @@ htm_Page_0($titl='description.page.php',$hint=$©, $info='File: '.$DocFile.' - v
     htm_TextDiv('
         <u>Run mode:</u><br>
         You can chose between 2 running modes: "On-line" or "Off-line"<br><br>
-        <b>"On-line"</b> meens with internet access - Libraries is loaded from CDN-servers.<br>
+        <b>"On-line"</b> means with internet access - Libraries is loaded from CDN-servers.<br>
         Used space is reduced with 7 Mb (/_assets is not needed),<br>
         but system can\'t run if connection to the internet breaks.<br><br>
-        <b>"Off-line"</b> meens without internet access - Libraries is in subfolder /_assets<br>
+        <b>"Off-line"</b> means without internet access - Libraries is in subfolder /_assets<br>
         Used space is min. 0.4 Mb. Delays is minimized.<br><br>
     ');
     
     htm_Panel_00();
     
-    htm_Panel_0($capt= 'Note about the demo:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '',$styl= 'background-color: white;',$attr= '');
+    htm_Panel_0(capt:'Note about the demo:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'panelW720', wdth:'', styl:'background-color: white;', attr:'');
 
     htm_TextDiv('
-        In demo source-files, are the variable name and variable value in all function calls specified to make the understanding clearer.<br><br>
+        In demo source-files, the variable name and variable value are in all function calls specified to make the understanding clearer.<br><br>
         Most variable names is actually redundant and can be omitted.<br>
-        Furthermore, variables that have a default value can be omitted, if no individual values are subsequently required.<br><br>
+        Furthermore variables that have a default value can be omitted, if no individual values are subsequently required.<br><br>
         <i>Example:</i><br>
         <b>htm_Input(</b>$type=\'num1\',$name=\'num1\',$valu=\'87654321\',$labl=\'@htm_Input(num1)\',
         $llgn=\'\',$hint=\'@Demo of htm_Input\',$algn=\'center\'<b>);</b><br><br>

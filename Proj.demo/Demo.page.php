@@ -1,21 +1,25 @@
-<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.2.1';    $DocRev='2022-11-05';     $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.2.2';    $DocRev='2023-01-18';      $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
-require_once ($sys.'php2html.lib.php');
+// $jsScripts= '';
+$lateScripts= '';
+
+require_once ($sys.'php2html.lib.php');     // echo $gbl_ProgRoot;
 require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
  
-## Handle libraryes to speedup page-loading, if some libraryes is not needed:
-//      ConstName:          ix:   LocalPath:                        CDN-path:
-define('LIB_JQUERY',        [1, '_assets/jquery/',                  'https://cdnjs.cloudflare.com/ajax/libs/']);
-define('LIB_TABLESORTER',   [1, '_assets/tablesorter/js/',          'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
+## Activate needed libraries:
+//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
+define('LIB_JQUERY',        [2, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);               // jquery.min.js
+define('LIB_JQUERYUI',      [2, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
+define('LIB_TABLESORTER',   [2, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
 define('LIB_POLYFILL',      [0, '_assets/',  '']);  // Not in use           
 define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);  // Not in use       
-// define('LIB_FONTAWESOME',   [2, '_assets/font-awesome5/5.15.4/',    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/']);
-define('LIB_FONTAWESOME',   [2, '_assets/font-awesome6/6.1.1/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/']);
+define('LIB_FONTAWESOME',   [2, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
+define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/tinymce.min.js']); 
 // Set ix= 0:deactive  1:Local-source  2:WEB-source-CDN
 
 
@@ -31,10 +35,12 @@ $tblData=               # = array(),
 htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag= $bodybg,$gbl_Bord=true);
     echo '<div style="text-align: center;"><br><b>Clever-Html-Engine</b> / php2html-Demo:';  htm_nl(2);
 
+
 ### Program mainmenu:
   if (($vismenu=true) and (($loggetind ?? '') == true) or true)
     { Menu_Topdropdown(true); htm_nl(1); }
 
+// arrPrint($_POST,'$_POST');
     
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
 ## Can not be used when variables are in lists: 'chck' 'rado' 'opti'
@@ -43,44 +49,44 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
     
     if (isset($_POST['name']))  { $namex = $_POST['name']; } // Special case !
 
-    $date= date("Y-m-d"); 
-    htm_Panel_0($capt= 'The variants of htm_Input():',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW720',$wdth= '640px',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);
+    $date= date("Y-m-d");
+    htm_Panel_0( capt:'The variants of htm_Input():', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'panelW720', wdth:'640px', styl:'background-color: white;', attr:'',  show :true,  head:$headbg);
     if (USEGRID) echo '<div class="grid-container tableStyle" style="width: 700px; margin:auto;">';
     htm_nl();
-    htm_Input($labl='@htm_Input(Text)',$plho='',$icon='',$hint='@Demo of htm_Input Field type text',                                        $type='text',$name='text',$valu=$text,$form='', $wdth='160px');
-    htm_Input($labl='@htm_Input(Date)',$plho='',$icon='',$hint='@Demo of htm_Input Field type date with browser popup selector',            $type='date',$name='date',$valu=$date,$form='', $wdth='160px');
-    htm_Input($labl='@htm_Input(Intg)',$plho='',$icon='',$hint='@Demo of htm_Input Field type intg: centered integer',                      $type='intg',$name='intg',$valu=$intg,$form='', $wdth='160px',$algn='center');
-                              
-    htm_Input($labl='@htm_Input(Dec0)',$plho='',$icon='',$hint='@Demo of htm_Input Field type dec0: centered number with 0 decimals',       $type='dec0',$name='dec0',$valu=$dec0,$form='', $wdth='160px',$algn='center',$attr='',$rtrn=false,$unit=' %');
-    htm_Input($labl='@htm_Input(Dec1)',$plho='',$icon='',$hint='@Demo of htm_Input Field type dec1: number with 1 decimal ',                $type='dec1',$name='dec1',$valu=$dec1,$form='', $wdth='160px');
-    htm_Input($labl='@htm_Input(Dec2)',$plho='',$icon='',$hint='@Demo of htm_Input Field type dec2: number with 2 decimal',                 $type='dec2',$name='dec2',$valu=$dec2,$form='', $wdth='160px',$algn='center',$attr='',$rtrn=false,$unit='<$ ');
-    htm_Input($labl='@htm_Input(opti)',$plho='@?...',$icon='',$hint='@Demo of htm_Input Field type opti: left aligned number with %-unit',  $type='opti',$name='opti',$valu='87654321',$form='', $wdth='160px',$algn='left',$attr='',$rtrn=false,$unit=' %',$disa=false,$rows='3',$step='',$list= [
+    htm_Input(labl:'@htm_Input(Text)', plho:'', icon:'', hint:'@Demo of htm_Input Field type text',                                         type:'text', name:'text', valu:$text='text', form:'', wdth:'160px');
+    htm_Input(labl:'@htm_Input(Date)', plho:'', icon:'', hint:'@Demo of htm_Input Field type date with browser popup selector',             type:'date', name:'date', valu:$date,        form:'', wdth:'160px');
+    htm_Input(labl:'@htm_Input(Intg)', plho:'', icon:'', hint:'@Demo of htm_Input Field type intg: centered integer',                       type:'intg', name:'intg', valu:$intg='intg', form:'', wdth:'160px', algn:'center');
+                             
+    htm_Input(labl:'@htm_Input(Dec0)', plho:'', icon:'', hint:'@Demo of htm_Input Field type dec0: centered number with 0 decimals',        type:'dec0', name:'dec0', valu:$dec0='dec0', form:'', wdth:'160px', algn:'center', attr:'', rtrn:false, unit:' %');
+    htm_Input(labl:'@htm_Input(Dec1)', plho:'', icon:'', hint:'@Demo of htm_Input Field type dec1: number with 1 decimal ',                 type:'dec1', name:'dec1', valu:$dec1='dec1', form:'', wdth:'160px');
+    htm_Input(labl:'@htm_Input(Dec2)', plho:'', icon:'', hint:'@Demo of htm_Input Field type dec2: number with 2 decimal',                  type:'dec2', name:'dec2', valu:$dec2='dec2', form:'', wdth:'160px', algn:'center', attr:'', rtrn:false, unit:'<$ ');
+    htm_Input(labl:'@htm_Input(opti)', plho:'@?...', icon:'', hint:'@Demo of htm_Input Field type opti: left aligned number with %-unit',   type:'opti', name:'opti', valu:'87654321', form:'', wdth:'160px', algn:'left', attr:'', rtrn:false, unit:' %', disa:false, rows:'3', step:'', list:[
         ['name1','private','@Details about private'],
         ['name2','proff','@Details about profession'],
         ['name3','private','@Details about private','checked'],
         ['name4','hobby','@Details about hobby'],
         ['name5','private','@Details about private'],
     ]);
-    htm_Input($labl='htm_Input(Dec0)',$plho='',$icon='',$hint='Demo of htm_Input Field type dec0: left aligned number with %-suffix',   $type='dec0',$name='dec0a',$valu='87654321',$form='',$wdth='',$algn='left',  $attr='',$rtrn=false,$unit=' %');
-    htm_Input($labl='htm_Input(Dec1)',$plho='',$icon='',$hint='Demo of htm_Input Field type dec1: centered number with %-suffix',       $type='dec1',$name='dec1a',$valu='87654321',$form='',$wdth='',$algn='center',$attr='',$rtrn=false,$unit=' %');
-    htm_Input($labl='htm_Input(Dec2)',$plho='',$icon='',$hint='Demo of htm_Input Field type dec2: right aligned number with %-suffix',  $type='dec2',$name='dec2a',$valu='87654321',$form='',$wdth='',$algn='right', $attr='',$rtrn=false,$unit=' %');
-              
-    htm_Input($labl='@htm_Input(num1)',$plho='',$icon='',$hint='@Demo of htm_Input Field type numb: number with 1 decimal',             $type='num1',$name='num1', $valu='87654321',$form='',$wdth='150px;',$algn='center');
-    htm_Input(      '@htm_Input(num0)',      '',      '',      '@Demo of htm_Input Field type numb: left-justified number',                   'num0',      'num0',       '87654321',      '',     '150px;');
-    htm_nl();
-    htm_Input($labl='htm_Input(chck)', $plho='?...',$icon='',$hint='Demo of htm_Input Field type chck: Multi-line formatted chck-text', $type='chck',$name='chck',$valu='',        $form='',$wdth='150px;',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3',$step='',$list= [
+    htm_Input(labl:'htm_Input(Dec0)', plho:'', icon:'', hint:'Demo of htm_Input Field type dec0: left aligned number with %-suffix',    type:'dec0', name:'dec0a', valu:'87654321', form:'', wdth:'', algn:'left',   attr:'', rtrn:false, unit:' %');
+    htm_Input(labl:'htm_Input(Dec1)', plho:'', icon:'', hint:'Demo of htm_Input Field type dec1: centered number with %-suffix',        type:'dec1', name:'dec1a', valu:'87654321', form:'', wdth:'', algn:'center', attr:'', rtrn:false, unit:' %');
+    htm_Input(labl:'htm_Input(Dec2)', plho:'', icon:'', hint:'Demo of htm_Input Field type dec2: right aligned number with %-suffix',   type:'dec2', name:'dec2a', valu:'87654321', form:'', wdth:'', algn:'right',  attr:'', rtrn:false, unit:' %');
+                                                                                                                                                                                             
+    htm_Input(labl:'@htm_Input(num1)', plho:'', icon:'', hint:'@Demo of htm_Input Field type numb: number with 1 decimal',              type:'num1', name:'num1',  valu:'87654321', form:'', wdth:'150px;', algn:'center');
+    htm_Input(     '@htm_Input(num0)',      '',      '',      '@Demo of htm_Input Field type numb: left-justified number',                   'num0',      'num0',       '87654321',      '',      '150px;');
+    htm_nl();                                                                                                                                        
+    htm_Input(labl:'htm_Input(chck)',  plho:'?...', icon:'', hint:'Demo of htm_Input Field type chck: Multi-line formatted chck-text',  type:'chck', name:'chck',  valu:'',         form:'', wdth:'150px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[
         ['name1','@Label1','@Details about label1','checked']
         //['name2','@Label2','@Details about label2','checked']
     ]);
-    htm_Input($labl='@htm_Input(mail)',$plho='',$icon='',$hint='@Demo of htm_Input Field type mail with syntax control',                $type='mail',$name='mail',$valu='',         $form='',$wdth='160px;');
-    htm_Input($labl='@htm_Input(url)', $plho='https://...',$icon='',$hint='@Demo of htm_Input Field type url with syntax control',      $type='link',$name='link',$valu='',         $form='',$wdth='160px;',  $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-    htm_Input($labl='@htm_Input(pass)',$plho='',$icon='',$hint='@Demo of htm_Input Field type pass with "hidden" output',               $type='pass',$name='pass1',$valu='',        $form='',$wdth='160px;',  $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3',$step='',$list=[],$llgn='R',$bord='',$ftop='20px;');
-    // FIXIT: Not showing pass-field ! ?    
-    htm_Input($labl='@htm_Input(barc)',$plho='',$icon='',$hint='@Demo of htm_Input Field type barc: shown with font barcode',           $type='barc',$name='barc',$valu='BARCODE',  $form='',$wdth='160px;',  $algn='center');
-    htm_Input($labl='@htm_Input(html)',$plho='',$icon='',$hint='@Demo of htm_Input Field type html: Multi-line formatted html-text',    $type='html',$name='html',$valu='',         $form='',$wdth='140px;',  $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3',$step='',$list=[],$llgn='R',$bord='',$ftop=''); 
-    htm_Input($labl='@htm_Input(area)',$plho='',$icon='',$hint='@Demo of htm_Input Field type area: Multi-line text',                   $type='area',$name='area',$valu='',         $form='',$wdth='140px',   $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='6',$step='',$list=[],$llgn='R',$bord='',$ftop='');
+    htm_Input(labl:'@htm_Input(mail)', plho:'', icon:'', hint:'@Demo of htm_Input Field type mail with syntax control',                 type:'mail', name:'mail', valu:'',          form:'', wdth:'160px;');
+    htm_Input(labl:'@htm_Input(url)',  plho:'https://...', icon:'', hint:'@Demo of htm_Input Field type url with syntax control',       type:'link', name:'link', valu:'',          form:'', wdth:'160px;',   algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'');
+    htm_Input(labl:'@htm_Input(pass)', plho:'', icon:'', hint:'@Demo of htm_Input Field type pass with "hidden" output',                type:'pass', name:'pass1', valu:'',         form:'', wdth:'160px;',   algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[], llgn:'R', bord:'', ftop:'20px;');
+    // FIXIT: Not showing pass-field ! ?                                                                                                                                                                                                                     
+    htm_Input(labl:'@htm_Input(barc)', plho:'', icon:'', hint:'@Demo of htm_Input Field type barc: shown with font barcode',            type:'barc', name:'barc', valu:'BARCODE',   form:'', wdth:'160px;',   algn:'center');                                
+    htm_Input(labl:'@htm_Input(html)', plho:'', icon:'', hint:'@Demo of htm_Input Field type html: Multi-line formatted html-text',     type:'html', name:'html', valu:'',          form:'', wdth:'140px;',   algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[], llgn:'R', bord:'', ftop:''); 
+    htm_Input(labl:'@htm_Input(area)', plho:'', icon:'', hint:'@Demo of htm_Input Field type area: Multi-line text',                    type:'area', name:'area', valu:'',          form:'', wdth:'140px',    algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'6', step:'', list:[], llgn:'R', bord:'', ftop:'');
 
-    htm_Input($labl='@htm_Input(chck)',$plho='?...',$icon='',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text', $type='chck',$name='chck1',$valu='',$form='',$wdth='120px;',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3',$step='',$list= [
+    htm_Input(labl:'@htm_Input(chck)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type chck: Multi-line formatted chck-text',  type:'chck', name:'chck1', valu:'', form:'', wdth:'120px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list: [
         ['pos1','@private','@Details about private'],
         ['pos2','@proff','@Details about profession'],
         ['pos3','@private','@Details about private'],
@@ -88,35 +94,35 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
         ['pos5','@private','@Details about private'],
     ]);
     
-    htm_Input($labl='@htm_Input(rado)',$plho='?...',$icon='',$hint='@Demo of htm_Input Field type radio',$type='rado',$name='rado1',$valu='', $form='',$wdth='120px;',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='2',$step='',$list= [
+    htm_Input(labl:'@htm_Input(rado)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type radio', type:'rado', name:'rado1', valu:'',  form:'', wdth:'120px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list: [
         ['post1','private','@private'],
         ['post2','proff','@profession'],
         ['post3','private','@private','checked'],
         ['post4','hobby','@hobby'],
         ['post5','private','@private'],
     ]);
-    htm_Input($labl='@htm_Input(rang)',$plho='',    $icon='',$hint='@Demo of htm_Input Field type range: 0..50 ',    $type='rang',$name='rang',$valu='30',$form='',$wdth='',$algn='left',$attr=' min="0" max="50"',$rtrn=false,$unit='',$disa=false,$rows='1',$step='',$list=[],$llgn='R',$bord='',$ftop='33px');
-    htm_Input($labl='@htm_Input(chck)',$plho='?...',$icon='',$hint='@Demo of htm_Input Field type checkbox in a row',$type='chck',$name='chcka',$valu='', $form='',$wdth='',$algn='left',$attr='',                 $rtrn=false,$unit='',$disa=false,$rows='1',$step='',$list=[
+    htm_Input(labl:'@htm_Input(rang)', plho:'',     icon:'', hint:'@Demo of htm_Input Field type range: 0..50 ',     type:'rang', name:'rang', valu:'30', form:'', wdth:'', algn:'left', attr:' min="0" max="50"', rtrn:false, unit:'', disa:false, rows:'1', step:'', list:[], llgn:'R', bord:'', ftop:'33px');
+    htm_Input(labl:'@htm_Input(chck)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type checkbox in a row', type:'chck', name:'chcka', valu:'',  form:'', wdth:'', algn:'left', attr:'',                  rtrn:false, unit:'', disa:false, rows:'1', step:'', list:[
         ['postc','dark','@Dark (/Light)','checked'],
         ['postd','shiny','@Shiny (/Matt)'],
         ]);
-    htm_Input($labl='@htm_Input(rado)',$plho='?...',$icon='',$hint='@Demo of htm_Input Field type radio in a row',$type='rado',$name='rado2',$valu='',$form='', $wdth='',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='',$list= [
+    htm_Input(labl:'@htm_Input(rado)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type radio in a row', type:'rado', name:'rado2', valu:'', form:'',  wdth:'', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'', list: [
         ['posta','happy','@Happy','checked'],
         ['postb','sorry','@Sorry'],
     ]);
-    htm_Input($labl='@htm_Input(colr)', $plho='', $icon='',$hint='@Demo of htm_Input Field type color',                                 $type='colr',$name='colr',$valu='#0000ff',$form='',$wdth='100px',$algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
-    htm_Input($labl='@htm_Input(butt)', $plho='', $icon='',$hint='@Demo of htm_Input Field type butt',                                  $type='butt',$name='butt',$valu='BUTTON', $form='',$wdth='',     $algn='center',$attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='',$list=[],$llgn='R',$bord='',$ftop='-4px');
-    htm_Input($labl='<i class=\'fas fa-search\'></i> '.lang('@htm_Input(sear)'),
-                                        $plho='?',$icon='',$hint='@Demo of htm_Input Field type search',                                $type='sear',$name='sear',$valu='',       $form='',$wdth='',     $algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
-    htm_Input($labl='@htm_Input(time)', $plho='', $icon='',$hint='@Demo of htm_Input Field type time<br>NOT supported by all browsers', $type='time',$name='time',$valu='',       $form='',$wdth='',     $algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
-    htm_Input($labl='@htm_Input(week)', $plho='', $icon='',$hint='@Demo of htm_Input Field type week<br>NOT supported by all browsers', $type='week',$name='week',$valu='',       $form='',$wdth='',     $algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
-    htm_Input($labl='@htm_Input(mont)', $plho='', $icon='',$hint='@Demo of htm_Input Field type month<br>NOT supported by all browsers',$type='mont',$name='mont',$valu='',       $form='',$wdth='',     $algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
-    htm_Input($labl='@htm_Input(file)', $plho='', $icon='',$hint='@Demo of htm_Input Field type file',                                  $type='file',$name='file',$valu='',       $form='',$wdth='',     $algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='',$list=[],$llgn='R',$bord='',$ftop='-8px');
-    htm_Input($labl='@htm_Input(imag)', $plho='', $icon='',$hint='@Demo of htm_Input Field type image',                                 $type='imag',$name='imag',$valu='',       $form='',$wdth='100px',$algn='left',  $attr='',$rtrn=false,$unit='',$disa=false,$rows='1',$step='',$list=[],$llgn='R',$bord='',$ftop= '9px');
+    htm_Input(labl:'@htm_Input(colr)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type color',                                  type:'colr', name:'colr', valu:'#0000ff', form:'', wdth:'100px', algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
+    htm_Input(labl:'@htm_Input(butt)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type butt',                                   type:'butt', name:'butt', valu:'BUTTON',  form:'', wdth:'',      algn:'center', attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'', list:[], llgn:'R', bord:'', ftop:'-4px');
+    htm_Input(labl:'<i class=\'fas fa-search\'></i> '.lang('@htm_Input(sear)'),
+                                        plho:'?', icon:'', hint:'@Demo of htm_Input Field type search',                                 type:'sear', name:'sear', valu:'',        form:'', wdth:'',      algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
+    htm_Input(labl:'@htm_Input(time)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type time<br>NOT supported by all browsers',  type:'time', name:'time', valu:'',        form:'', wdth:'',      algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
+    htm_Input(labl:'@htm_Input(week)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type week<br>NOT supported by all browsers',  type:'week', name:'week', valu:'',        form:'', wdth:'',      algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
+    htm_Input(labl:'@htm_Input(mont)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type month<br>NOT supported by all browsers', type:'mont', name:'mont', valu:'',        form:'', wdth:'',      algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
+    htm_Input(labl:'@htm_Input(file)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type file',                                   type:'file', name:'file', valu:'',        form:'', wdth:'',      algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'', list:[], llgn:'R', bord:'', ftop:'-8px');
+    htm_Input(labl:'@htm_Input(imag)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type image',                                  type:'imag', name:'imag', valu:'',        form:'', wdth:'100px', algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'', list:[], llgn:'R', bord:'', ftop: '9px');
     if (USEGRID) echo '</div>'; // grid-container}
     htm_Panel_00();
 
-    htm_Panel_0($capt= '@Example of htm_Table():',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'panelW960',$wdth= '640px',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
+    htm_Panel_0(capt: '@Example of htm_Table():', icon: 'fas fa-info', hint: '', form: '', acti: '', clas: 'panelW960', wdth: '640px', styl: 'background-color: white;', attr: '',  show : true,  head: $headbg);           
     htm_Table(
         $TblCapt= array( # ['0:Label',   '1:Width',    '2:Type',    '3:Format', '4:horAlgn',      '5:Tip',    '6:Content'],... // Gl: 0:Label 1:width 2:align 3:Type 4:title 5:Content
           ['<b>'.lang('@Inland').'</b>', '8%','show','left', '', '@VAT on Inland','@PURCHASE'],
@@ -153,7 +159,7 @@ htm_Page_0( $titl='DEMO', $hint=$©, $info='File: '.$DocFile.' - ver:'.$DocVer,$
         $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
 
-        htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '@View part of the demo source-code. !',$form= '',$acti= '',$clas= 'panelW960',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= 'margin:0;');
+        htm_Panel_0( capt: '@PHP Source-code:', icon: 'fas fa-code', hint: '@View part of the demo source-code. !', form: '', acti: '', clas: 'panelW960', wdth: '640px', styl: 'background-color: lightgray;', attr: 'margin:0;');
         $strCode=
 <<< 'STRING'
 <?
@@ -202,8 +208,8 @@ STRING
 
     htm_nl(2);
     echo 'Examples of Container-type elements:';  htm_nl(2);
-    htm_Panel_0($capt= '@Containers',$icon= 'fas fa-database',$hint= '',$form= 'head',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: #f8f8f8;',$attr= '', $show=false, $head= $headbg);    
-        htm_TextDiv($content= 'The system includes the following functions of container-type:.<br>
+    htm_Panel_0(capt:'@Containers', icon:'fas fa-database', hint:'', form:'head', acti:'', clas:'panelW560', wdth:'640px', styl:'background-color: #f8f8f8;', attr:'margin:0;',  show:false,  head:$headbg);    
+        htm_TextDiv(body:'The system includes the following functions of container-type:.<br>
               htm_Page_0()<br>
               htm_Panel_0()<br>
               htm_Fieldset_0()<br>
@@ -215,15 +221,15 @@ STRING
               ');
         htm_nl(1);
         
-        htm_Fieldset_0($caption='@Caption: ',$hint='@You can use hints',$icon='',$wdth='180px',$margin='',$attr='background-color:lightyellow',$rtrn=false);
+        htm_Fieldset_0(capt:'@Caption: ', icon:'', hint:'@You can use hints', wdth:'180px', marg:'', attr:'background-color:lightyellow', rtrn:false);
         echo 'You place your html-objects here inside fieldset-frames...<br>';
-        htm_Fieldset_00($rtrn=false);
+        htm_Fieldset_00( rtrn:false);
         
-        htm_Fieldset_0($caption='@Caption: ',$hint='@You can use hints',$icon='',$wdth='180px',$margin='',$attr='background-color:MintCream',$rtrn=false);
+        htm_Fieldset_0(capt:'@Caption: ', icon:'', hint:'@You can use hints', wdth:'180px', marg:'', attr:'background-color:MintCream', rtrn:false);
         echo 'You place your html-objects here inside fieldset-frames...<br>';
-        htm_Fieldset_00($rtrn=false);
+        htm_Fieldset_00( rtrn:false);
 
-    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW480',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= 'margin:0;');
+    htm_Panel_0( capt:'@PHP Source-code:', icon:'fas fa-code', hint:'@HINT for this panel', form:'', acti:'', clas:'panelW480', wdth:'640px', styl:'background-color: lightgray;', attr:'margin:0;');
 
 
 $strCode= 
@@ -245,16 +251,16 @@ echo 'echo \'You place your html-objects here inside fieldset-frames...\';';
     
         htm_nl(2);
         // htm_Field_0_00(# $labl='',$body='',$icon='',$hint='',$name='fld',$wdth='',$styl='',$attr='',$llgn='C',$rtrn=false,$ftop='')
-        htm_Field_0_00($labl='Label with hint',$body='HTML-Content <br>in container htm_Field_0_00() <br>---
-        ',$icon='',$hint='Tip for htm_Field_0_00()<br>
+        htm_Field_0_00( labl:'Label with hint', body:'HTML-Content <br>in container htm_Field_0_00() <br>---
+        ', icon:'', hint:'Tip for htm_Field_0_00()<br>
         htm_Field_0_00($labl=\'Label with hint\',$hint=\'HINT for htm_Field_0_00()\',$icon=\'\',$name=\'fld\',$html=\'HTML-Content <br>in container htm_Field_0_00() <br>---\',$width=\'\',$margin=\'\',$ftop=\'\',$attr=\'\',$rtrn=false);',
         /* $icon='',$name='fld',
         /* $html='HTML-Content <br>in container htm_Field_0_00() <br>---
         ', */
-        $name='fld',$wdth='',$styl='',$attr='',$llgn='C',$rtrn=false,$ftop='');
+         name:'fld', wdth:'', styl:'', attr:'', llgn:'C', rtrn:false, ftop:'');
         // echo 'CONTENT';
 
-    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0( capt:'@PHP Source-code:', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'panelW560', wdth:'640px', styl:'background-color: lightgray;', attr:'');           
 
 $strCode= 
 <<< 'STRING'
@@ -285,7 +291,7 @@ STRING
         htm_wrapp_00();
         htm_nl(1);
 
-    htm_Panel_0($capt= '@PHP Source-code:',$icon= 'fas fa-code',$hint= '',$form= '',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: lightgray;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0( capt: '@PHP Source-code:', icon: 'fas fa-code', hint: '', form: '', acti: '', clas: 'panelW560', wdth: '640px', styl: 'background-color: lightgray;', attr: '');           
 
 
 $strCode= 
@@ -305,81 +311,80 @@ STRING
     htm_Panel_00();
 
         htm_nl(2);
-    htm_Panel_00( $labl='Demo', $subm=false, $Hint='Buttom', $btnKind='goon', $akey='', $simu=false, $frmName='');
+    htm_Panel_00( labl:'Demo',    icon:'', hint:'Buttom', name:'', form:'',     subm:false, attr:'', akey:'',  kind:'goon', simu:false);
         htm_nl(2);
     echo 'Examples of foldable panel-system:';  htm_nl(2);
-    htm_Panel_0($capt= '@htm_Panel_0(W= 560px) (click to close/open)',$icon= 'fas fa-database',$hint= '',$form= 'head2',$acti= '',$clas= 'panelW560',$wdth= '640px',$styl= 'background-color: lightcyan;',$attr= '', $show = true, $head= $headbg, $show = true, $head= $headbg /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0( capt: '@htm_Panel_0(W= 560px) (click to close/open)', icon: 'fas fa-database', hint: '', form: 'head2', acti: '', clas: 'panelW560', wdth: '640px', styl: 'background-color: lightcyan;', attr: '',  show : true,  head: $headbg);           
         htm_nl(2);
-        htm_TextDiv($content= 'Panels are used to display a collection of fields.<br>
+        htm_TextDiv( body: 'Panels are used to display a collection of fields.<br>
               They are defined i 14 widths from 160 px to 1200 px and width 100%.<br><br>
               The panel content can be displayed/hidden by clicking panel-header text.');
         htm_nl(1);
-        htm_Input($labl='@htm_Input(pass)',$plho='',           $icon='',$hint='Demo of htm_Input Field type password with "hidden" output',        $type='pass',$name='pass2',$valu='',$form='',$wdth='45%',            $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3');
-        htm_Input($labl='@htm_Input(mail)',$plho='xxx@yyy.zzz',$icon='',$hint='Demo of htm_Input Field type mail with syntax control',             $type='mail',$name='mail1',$valu='',$form='',$wdth='45%; top: -35px',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3');
+        htm_Input( labl:'@htm_Input(pass)', plho:'',            icon:'', hint:'Demo of htm_Input Field type password with "hidden" output',         type:'pass', name:'pass2', valu:'', form:'', wdth:'45%',             algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3');
+        htm_Input( labl:'@htm_Input(mail)', plho:'xxx@yyy.zzz', icon:'', hint:'Demo of htm_Input Field type mail with syntax control',              type:'mail', name:'mail1', valu:'', form:'', wdth:'45%; top: -35px', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3');
         htm_nl(2);
-        htm_Input($labl='@htm_Input(chck)',$plho='?...',       $icon='',$hint='@Demo of htm_Input Field type chck: Multi-line formatted chck-text',$type='chck',$name='chck2',$valu='',$form='',$wdth='300px',          $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3',$step='',$list= [
+        htm_Input( labl:'@htm_Input(chck)', plho:'?...',        icon:'', hint:'@Demo of htm_Input Field type chck: Multi-line formatted chck-text', type:'chck', name:'chck2', valu:'', form:'', wdth:'300px',           algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list: [
             ['name1','Label1','@Details about label','checked'],
             ['name1','Label2','@Details about label','checked']
         ]);
         htm_nl(2);
-    htm_Panel_00( $labl='Demo', $subm=false, $Hint='Buttom', $btnKind='goon', $akey='', $simu=false, $frmName='');
+    htm_Panel_00( labl:'Demo',    icon:'', hint:'Buttom', name:'', form:'',     subm:false, attr:'', akey:'',  kind:'goon', simu:false);
     
     $GridOn= false;
     htm_nl(2);
     $ic= ''; // iconStack($cl1='fa-stack fa-2x',$cl2='fa-solid fa-square fa-stack-2',$cl3='fab fa-twitter fa-stack-1x fa-inverse',$rtrn=false)
-    htm_Panel_0($capt= '@Signup: <small>(Example)</small>',$icon= 'fas fa-user-check',$hint= '',$form= 'head1',$acti= '',$clas= 'panelW240',$wdth= '640px',$styl= 'background-color: lightcyan;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
-        htm_Input($labl='@Financial Accounting'.$ic,$plho='@Account...', $icon='',$hint='@The name of the accounting for wich you have access',$type='text',$name='text1',$valu=$text1,$form='',$wdth='75%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='');
-        htm_Input($labl='@Your account',        $plho='@Email...',   $icon='',$hint='@Type your email as your accont',                     $type='mail',$name='mail2',$valu=$mail2,$form='',$wdth='75%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='');
-        htm_Input($labl='@Your password',       $plho='@Password...',$icon='',$hint='@Type your password for your account',                $type='pass',$name='pass3',$valu=$pass3,$form='',$wdth='70%',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3', $step='',$list=[],$llgn='R',$bord='',$ftop='20px;');
+    htm_Panel_0( capt: '@Signup: <small>(Example)</small>', icon: 'fas fa-user-check', hint: '', form: 'head1', acti: '', clas: 'panelW240', wdth: '640px', styl: 'background-color: lightcyan;', attr: '' /* , where:'Undefined', BookMark:'' */ );           
+        htm_Input( labl:'@Financial Accounting'.$ic, plho:'@Account...',  icon:'', hint:'@The name of the accounting for wich you have access', type:'text', name:'text1', valu:$text1='xx', form:'', wdth:'75%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3',  step:'');
+        htm_Input( labl:'@Your account',         plho:'@Email...',    icon:'', hint:'@Type your email as your accont',                          type:'mail', name:'mail2', valu:$mail2='xx', form:'', wdth:'75%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3',  step:'');
+        htm_Input( labl:'@Your password',        plho:'@Password...', icon:'', hint:'@Type your password for your account',                     type:'pass', name:'pass3', valu:$pass3='xx', form:'', wdth:'70%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3',  step:'', list:[], llgn:'R', bord:'', ftop:'20px;');
                  // $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
                    # $labl='',$icon='',$hint='',$type='submit',$name='',$link='',$acti='',$font='32px',$fclr='gray',$bclr='white',$akey='',$rtrn=false
-        htm_IconButt($labl='@Forgotten password ?',$icon='fas fa-key',$hint='@Click to request a new password',$type='button',$name='lost',$link='',$acti='',$font='18px',$fclr='gray',$bclr='white',$akey='',$rtrn=false);
-        htm_nl(0);
+        htm_IconButt( labl:'@Forgotten password ?', icon:'fas fa-key', hint:'@Click to request a new password', type:'button', name:'lost', link:'', evnt:'', font:'18px', fclr:'gray', bclr:'white', akey:'', rtrn:false);
+        htm_nl(0); 
                 
-    htm_Panel_00( $labl='Login', $icon='', $hint='@Login with the given data', $name='butt', $form='head1',$subm=true, $attr='', $akey='l', $kind='navi', $simu=false); 
-               // $labl='Login', $subm=true, $Hint='@Login with the given data', $btnKind='navi', $akey='l', $simu=false, $frmName='head1');
+    htm_Panel_00( labl:'Login',    icon:'', hint:'@Login with the given data', name:'butt', form:'head1',     subm:true, attr:'', akey:'',  kind:'navi', simu:false);
     
     htm_nl(2);
-    htm_Panel_0($capt= '@Contact info:',$icon= 'fas fa-pen-square',$hint= '',$form= 'head2',$acti= '',$clas= 'panelW480',$wdth= '640',$styl= 'background-color: lightcyan;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );           
+    htm_Panel_0( capt: '@Contact info:', icon: 'fas fa-pen-square', hint: '', form: 'head2', acti: '', clas: 'panelW480', wdth: '640', styl: 'background-color: lightcyan;', attr: '');           
         $wdh= '100%';
         $m= ' padding:0; test:99; ';
         $m= '';
-        htm_Input($labl='@Name',  $plho='@The name...', $icon='',$hint='',$type='text',$name='name',$valu=$namex ?? '',$form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-        htm_Input($labl='@Street',$plho='@Address 1...',$icon='',$hint='',$type='text',$name='stre',$valu=$stre,       $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-        htm_Input($labl='@Place', $plho='@Address 2...',$icon='',$hint='',$type='text',$name='plac',$valu=$plac,       $form='',$wdth='66%', $algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
+        htm_Input( labl:'@Name',   plho:'@The name...',  icon:'', hint:'', type:'text', name:'name', valu:$namex ?? '', form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
+        htm_Input( labl:'@Street', plho:'@Address 1...', icon:'', hint:'', type:'text', name:'stre', valu:$stre ?? '',        form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
+        htm_Input( labl:'@Place',  plho:'@Address 2...', icon:'', hint:'', type:'text', name:'plac', valu:$plac ?? '',        form:'', wdth:'66%',  algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
         
         $GridOn= false; // Without grid the following fields can be placed on a single row.
-        htm_Input($labl='@ZIP',$plho='@Code...',$icon='',$hint='',$type='opti',$name='zipp',$valu=$zipp,$form='',$wdth='30%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='',$list= [
+        htm_Input( labl:'@ZIP', plho:'@Code...', icon:'', hint:'', type:'opti', name:'zipp', valu:$zipp ?? '', form:'', wdth:'30%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'', list: [
                     ['5000','5000','5000'],
                     ['6000','6000','6000'],
                     ['6050','6050','6050','checked'],
                     ['6080','6080','6080'],
                     ['7000','7000','7000'],
                     ]);
-        htm_Input($labl='@City',     $plho='@Address town...', $icon='',$hint='',                                                   $type='text',$name='city', $valu=$city, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');        //if (USEGRID) $GridOn= true;
-        htm_Input($labl='@Country',  $plho='@Country...',      $icon='',$hint='',                                                   $type='text',$name='coun', $valu=$coun, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-        htm_Input($labl='@Remark',   $plho='@Remark?...',      $icon='',$hint='@Demo of htm_Input Field type area: Multi-line text',$type='area',$name='remk', $valu=$remk, $form='',$wdth='100%' ,$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='1',$step='');
-        htm_Input($labl='@Phone',    $plho='@Phone number...', $icon='',$hint='',                                                   $type='text',$name='phon', $valu=$phon, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-        htm_Input($labl='@Reference',$plho='@?...',            $icon='',$hint='',                                                   $type='text',$name='refe', $valu=$refe, $form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
-        htm_Input($labl='@Email',    $plho='@Email address...',$icon='',$hint='@Demo of htm_Input Field type mail',                 $type='mail',$name='mail3',$valu=$mail3,$form='',$wdth='100%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='');
+        htm_Input( labl:'@City',      plho:'@Address town...',  icon:'', hint:'',                                                    type:'text', name:'city',  valu:$city ?? '',  form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');        //if (USEGRID) $GridOn= true;
+        htm_Input( labl:'@Country',   plho:'@Country...',       icon:'', hint:'',                                                    type:'text', name:'coun',  valu:$coun ?? '',  form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
+        htm_Input( labl:'@Remark',    plho:'@Remark?...',       icon:'', hint:'@Demo of htm_Input Field type area: Multi-line text', type:'area', name:'remk',  valu:$remk ?? '',  form:'', wdth:'100%' , algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'1', step:'');
+        htm_Input( labl:'@Phone',     plho:'@Phone number...',  icon:'', hint:'',                                                    type:'text', name:'phon',  valu:$phon ?? '',  form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
+        htm_Input( labl:'@Reference', plho:'@?...',             icon:'', hint:'',                                                    type:'text', name:'refe',  valu:$refe ?? '',  form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
+        htm_Input( labl:'@Email',     plho:'@Email address...', icon:'', hint:'@Demo of htm_Input Field type mail',                  type:'mail', name:'mail3', valu:$mail3 ?? '', form:'', wdth:'100%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'');
         
         if (isset($_POST['namechck']))  { $namechck = 'checked'; }
-        htm_Input($labl='@Mailing',  $plho='@?...',            $icon='',$hint='@Demo of htm_Input Field type chck',                 $type='chck',$name='chck3',$valu=$chck3,$form='',$wdth='96%',$algn='left',$attr=$m,$rtrn=false,$unit='',$disa=false,$rows='3',$step='',
-                  $list= [['namechck','@Mailing active','@Use mail',$namechck ?? '']]);
+        htm_Input( labl:'@Mailing',   plho:'@?...',             icon:'', hint:'@Demo of htm_Input Field type chck',                  type:'chck', name:'chck3', valu:$chck3 ?? '', form:'', wdth:'96%', algn:'left', attr:$m, rtrn:false, unit:'', disa:false, rows:'3', step:'',
+                   list: [['namechck','@Mailing active','@Use mail',$namechck ?? '']]);
         
         $GridOn= false;
         htm_nl(1);
-        htm_Input($labl='@Created',$plho='',$icon='',$hint='@Demo of htm_Input Field type date with browser popup selector',$type='date',$name='datr',$valu=$date,$form='',$wdth='46%; float: left',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3');
-        htm_Input($labl='@Changed',$plho='',$icon='',$hint='@Demo of htm_Input Field type date with browser popup selector',$type='date',$name='dath',$valu=$date,$form='',$wdth='46%',             $algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='3');
+        htm_Input( labl:'@Created', plho:'', icon:'', hint:'@Demo of htm_Input Field type date with browser popup selector', type:'date', name:'datr', valu:$date, form:'', wdth:'46%; float: left', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3');
+        htm_Input( labl:'@Changed', plho:'', icon:'', hint:'@Demo of htm_Input Field type date with browser popup selector', type:'date', name:'dath', valu:$date, form:'', wdth:'46%',              algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3');
         //if (USEGRID) $GridOn= true;
         
         htm_nl(0);
-    htm_Panel_00( $labl='Save', $subm=true, $capt='@Save data in this panel', $btnKind='save', $akey='s', $simu=false, $frmName='');
+    htm_Panel_00( labl:'Save',    icon:'', hint:'@Save data in this panel', name:'', form:'',     subm:true, attr:'', akey:'s',  kind:'save', simu:false);
     
     echo '</div>'; // DEMO
     
     htm_nl(4);
-    htm_Panel_0($capt= '@User rights:',$icon= 'fas fa-pen-square',$hint= '@In this panel, you see a DEMO of the Multi-state button',$form= 'head3',$acti= '',$clas= 'panelW960',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
+    htm_Panel_0( capt: '@User rights:', icon: 'fas fa-pen-square', hint: '@In this panel, you see a DEMO of the Multi-state button', form: 'head3', acti: '', clas: 'panelW960', wdth: '640', styl: 'background-color: white;', attr: '',  show : true,  head: $headbg);           
 
     $task= [['@Chart of Accounts',      'Struktur for regnskabet'],
             ['@Account settings',       'Angående regnskabet'],
@@ -449,7 +454,7 @@ STRING
     htm_MiniNote('This is an example using the multi-state button.');
     htm_nl(1);
     
-    htm_Panel_00( $labl='Save', $subm=true, $capt='@Save data in this panel', $btnKind='save', $akey='s', $simu=false, $frmName='head3');
+    htm_Panel_00( labl:'',    icon:'', hint:'@Save data in this panel', name:'', form:'head3',     subm:true, attr:'', akey:'s',  kind:'save', simu:false);
 
 /* * /
         htm_ActionButt($label='@LeftClick Me', $id='left_click', $form='', $type='button', $onclick='', $icon='fas fa-mouse colrgreen', $hint='@Try clicking me <br>to test popup-menues', $attr='', $rtrn=false);
@@ -525,7 +530,7 @@ STRING
     htm_SwitchButton($labl='@Switch accepting',$name='switchbox_id2', $valu='', $wdth='6em', $bclr='green', $styl='style="padding:1px;"', $hint='@Here you can toggle setting', 
                    $list=['@Accept','@Decline'], $rtrn=false);
     htm_nl();
-    htm_Panel_00( $labl='', $icon='', $hint='', $name='', $form='sw', $subm=false, $attr='', $akey='s', $kind='save', $simu=false);
+    htm_Panel_00( labl:'',    icon:'', hint:'', name:'', form:'sw',     subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
     htm_Panel_0($capt= '@Toggleable Tabs:',$icon= 'fas fa-pen-square',$hint= '@HINT for this panel',$form= 'tb',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg );           
 
@@ -554,28 +559,27 @@ STRING
             <small>See the source in php2html.lib.php to manage the function parameters.</small>
         ';
     htm_Tabs_0($head='<small>Here you see the htm_Tabs_0() - Toggleable tabs system:</small>', $styl='text-align:left;', $rtrn=false);
-    htm_Tab($labl='HTML Page',$body= $strPage,  $name='HTMLPage', $styl='text-align:left;',    $bclr='white',      $vhgh='200px');
-    htm_Tab($labl='Panels',   $body= $strPanels,$name='Panels',   $styl='text-align:left;',    $bclr='lightyellow',$vhgh='200px');
-    htm_Tab($labl='Tables',   $body= $strTabel, $name='Tables',   $styl='text-align:left;',    $bclr='lightcyan',  $vhgh='200px');
-    htm_Tab($labl='Input',    $body= '',        $name='input',    $styl='text-align:left;',    $bclr='lightgray', );
+    htm_Tab($labl='@HTML Page',$body= $strPage,  $name='HTMLPage', $styl='text-align:left;',    $bclr='white',      $vhgh='200px');
+    htm_Tab($labl='@Panels',   $body= $strPanels,$name='Panels',   $styl='text-align:left;',    $bclr='lightyellow',$vhgh='200px');
+    htm_Tab($labl='@Tables',   $body= $strTabel, $name='Tables',   $styl='text-align:left;',    $bclr='lightcyan',  $vhgh='200px');
+    htm_Tab($labl='@Input',    $body= '',        $name='input',    $styl='text-align:left;',    $bclr='lightgray', );
     htm_Tabs_00($foot='@FOOTER for Toggleable Tabs', $styl='font-size: smaller;', $rtrn=false);
     
-                # $labl='', $icon='', $hint='', $name='tb', $form='tb',$subm=false, $attr='', $akey='', $kind='save', $simu=false)
-    htm_Panel_00( $labl='', $subm=false, $capt='@...', $btnKind='save', $akey='s', $simu=false, $frmName='tb');
+    htm_Panel_00( labl:'', icon:'', hint:'', name:'tb', form:'tb', subm:false, attr:'', akey:'s', kind:'save', simu:false);
 
      
     htm_Panel_0($capt= '@Containers:',$icon= 'fas fa-info',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
     htm_Fieldset_0($capt='This is af fieldSet container',$icon='',$hint='',$wdth='80%',$marg='',$attr='',$rtrn=false);
     htm_TextDiv('Tabels, Panels and Fieldsets is areas that contains other elements.');
     htm_Fieldset_00();
-    htm_Panel_00( $labl='', $subm=false, $capt='@...', $btnKind='save', $akey='s', $simu=false, $frmName='tb');
+    htm_Panel_00( labl:'',    icon:'', hint:'', name:'', form:'tb',     subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
 
     htm_Panel_0($capt= '@Navigate functions:',$icon= 'fas fa-info',$hint= '@HINT for this panel',$form= '',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);           
     htm_TextDiv('To navigate in your project, you can use the Menu_Topdropdown() shown on top of all demo pages.<br>
                  You can also use various buttons for that...
     ');
-    htm_Panel_00( $labl='', $subm=false, $capt='@...', $btnKind='save', $akey='s', $simu=false, $frmName='tb');
+    htm_Panel_00( labl:'',    icon:'', hint:'', name:'', form:'tb',     subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
 
     htm_Panel_0($capt= '@About function parameters:',$icon= 'fas fa-info',$hint= '@HINT for this panel',$form= 'head5',$acti= '',$clas= 'panelW800',$wdth= '640',$styl= 'background-color: white;',$attr= '', $show = true, $head= $headbg);
@@ -597,14 +601,17 @@ STRING
         <br>
         Be aware of PHP 7.4 is a supported version until 2023/24 ! 
         ');
-    htm_Panel_00( $labl='', $subm=false, $capt='@...', $btnKind='save', $akey='s', $simu=false, $frmName='head4');
-    
+    htm_Panel_00( labl:'',    icon:'', hint:'', name:'', form:'head4',     subm:false, attr:'', akey:'s',  kind:'save', simu:false);
+       
+
     PanelOff($First=3,$Last=6);
     
     // echo 'A look at the translate system:';  scannLngStrings();
 htm_Page_00();
-    run_Script('toast("<b>'. lang('@You`re looking at a DEMO !'). '</b><br>'. lang('@It is a demonstration of the php2html-output.'). '","green","white")');
+    run_Script('toast("<b>'. lang('@You`re looking at a DEMO !'). '</b><br>'. 
+            lang('@It is a demonstration of the php2html-output.').'<br>Code is for PHP 8+ only!'. '","green","white")'
+            );
 // phpinfo();
 // var_dump(opcache_get_status()['jit']);
-getState();
+// getState();
 ?>

@@ -1,0 +1,18 @@
+// test.php 
+<?php
+$songData = $_POST['data'];
+print_r($songData);
+
+
+
+  $array = json_decode($_POST['array']);
+    print_r($array); //for debugging purposes only
+
+     $response = array();
+     if(isset($array[$blah])) 
+        $response['reply']="Success";
+    else 
+        $response['reply']="Failure";
+
+   echo json_encode($response);
+?>
