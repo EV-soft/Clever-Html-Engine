@@ -22,6 +22,7 @@ When using PHP2HTML your code will be more compact, and easier to read.
 	PHP7:
     htm_Input($type='dec2',$name='dec2',$valu=$dec2, $labl='@htm_Input(Dec2)',
               $hint='@Demo of htm_Input Field type dec2: number with 2 decimal', $plho='', $wdth='',$algn='center',$unit='<$ ');
+or
 
 	PHP8+:
     htm_Input(type:'dec2',name:'dec2',valu:$dec2, labl:'@htm_Input(Dec2)',
