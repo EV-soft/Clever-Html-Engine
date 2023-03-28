@@ -98,5 +98,5 @@ Want to try ? - Go to the full window demo and see advanced example: [CustomerOr
 
                       PHP is the language to make server-side backend programming.
 
-            PHP2HTML is the tool/framework to make your client-side frontend programming in PHP.
+            PHP2HTML is your tool/framework to make your client-side frontend programming in PHP.
 </b></p>
