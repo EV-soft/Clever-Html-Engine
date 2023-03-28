@@ -93,3 +93,10 @@ You can see descriptions and a demo and try the functions here: https://ev-soft.
 <h3><b>Demo:</b></h3>
 
 Want to try ? - Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.2.2/Proj.demo/CustomerOrder.page.php)
+
+<p style="text-align: center;"><b>
+
+                      PHP is the language to make server-side backend programming.
+
+            PHP2HTML is the tool/framework to make your client-side frontend programming in PHP.
+</b></p>
