@@ -1,7 +1,7 @@
 # php2html.lib = Clever-Html-Engine
-The fast track to a build UI components and good web applications.
+The fast track to build UI components in a good web applications.
 
-php2html.lib.php is a PHP library with functions that generates HTML pages and elements.
+<i>php2html.lib.php</i> is a PHP library with functions that generates HTML pages and elements.
 
 If you program html output in php, you can use this library's routines to generate the html code.
 	
@@ -15,7 +15,7 @@ Standards: PHP7+/PHP8+, HTML5, CSS3, JavaScript.
 
 Source must be in UTF-8, with no tabs, indent: 4 chars
 
-When using PHP2HTML your code will be more compact, and easier to read.
+When using <i>PHP2HTML</i> your code will be more compact, and easier to read.
 
 <i>As an example this height level PHP-code:</i>
 
