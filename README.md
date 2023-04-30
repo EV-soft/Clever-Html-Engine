@@ -92,7 +92,11 @@ You can see descriptions and a demo and try the functions here: https://ev-soft.
 
 <h3><b>Demo:</b></h3>
 
-Want to try ? - Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.2.2/Proj.demo/CustomerOrder.page.php)
+Get inspired and test the system.
+
+Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.2.2/Proj.demo/CustomerOrder.page.php)
+
+Use the top menu to view documentation and examples.
 
 <p style="text-align: center;"><b>
 
