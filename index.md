@@ -31,8 +31,3 @@ Look and feel at the demo here:
 
 The content of this frame is actually my test site, so it may contain errors and future news!
 
-
-
-Here you will find the repository:    
-
-https://github.com/EV-soft/Clever-Html-Engine
