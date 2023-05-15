@@ -54,13 +54,13 @@ and looks like this:
 <li>Advanced translation system</li>
 <li>Block-oriented provides compact code</li>
 <li>Possibility of Font-awesome Icons anywhere</li>
-<li>Tooltip for all html elements</li>
-<li>Compact layout with collapsible panels</li>
+<li>Hints/Tooltip for all html elements</li>
+<li>Compact layout with advanced collapsible cards</li>
 <li>Option for user defined system blocks</li>
 <li>Advanced tables based on Mottie Table Sorter system</li>
 <li>TinyMCE integrated HTML-editor library</li>
 <li>Optional use of libraries locally or on the Web (CDN)</li>
-<li>Narrow panels suitable for adaptive adaptation</li>
+<li>Narrow cards suitable for adaptive adaptation</li>
 <li>Easily enter dates with browsers date picker interface</li>
 </ul>
 
@@ -72,10 +72,10 @@ Create project-folder '/world' and create the file: '{public-URL}/hello/world/fi
 <pre><code>< ? 
 $GLOBALS["ØProgRoot"]= '../';
 require_once ('../php2html.lib.php');
-htm_Page_0( $pageTitl='DEMO', $ØPageImage='../_accessories/_background.png',$align='center',$PgInfo=lang('@PHP2HTML: My first page'));
-    htm_Caption($labl='HELLO WORLD:',$style='color:#550000; font-weight:600; font-size: 18px;',$align='center',$hint='');
+htm_Page_0(titl:'DEMO', info:lang('@PHP2HTML: My first page'), imag:'../_accessories/_background.png, attr:');
+    htm_Caption(labl:'HELLO WORLD:', hint:'', algn:'center',styl:'color:#550000; font-weight:600; font-size: 18px;');
     htm_nl(2);
-    htm_TextDiv($content='This page is build with PHP2HTML',$align='center',$marg='8px',$attr='width:300px; margin:auto; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; background-color: white; ');
+    htm_TextDiv(body:'This page is build with PHP2HTML', algn:'center', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray;', attr:'background-color: white;');
 htm_Page_00()
 ?>
 </code></pre>
