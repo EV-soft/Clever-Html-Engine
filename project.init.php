@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.2.1';    $DocRev='2022-12-18';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= 'project.init.php';    $DocVers='1.3.0';    $DocRev='2023-04-27';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** 
 #  This file is included from start of php2html.lib.php
 
@@ -27,8 +27,11 @@
     $gbl_BodyBcgrd= 'Tan';
     $gbl_iconColor= 'DarkGreen';        # Panel-header icon
     $gbl_TitleColr= 'DarkGreen';        # Caption text-color in panel-head
-    $gbl_PanelBgrd= 'transparent';      # Panels hideble background
+    // $gbl_PanelBgrd= 'transparent';   # Panels hideble background
+    $gbl_CardsBgrd= 'background-color: white;';      # Cards hideble background
     $gbl_GridOn= true;                  # Use grid to place objects in rows / colums
     $gbl_progZoom = 'small';            # Global tag "font-scale"
     $GLOBALS["gbl_ProgRoot"]= './';
+    $gbl_labelAlgn= 'r';                # L/C/R - Align label for htm_Input() and htm_Inbox()
+    $LibIx= 2;                          # Central settings Library 1:local/2:CDN
 ?>

@@ -1,0 +1,221 @@
+<?   $DocFileLib='Project.notes.txt';    $DocVer='1.3.0';    $DocRev='2023-04-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
+
+Notes regarding php2html.lib.php:
+
+
+##  ToDo: 
+ #  FIX: removeRow()
+ #  FIX: clone: plusbtn
+
+// HOW TO COMPRESS SOURCE CODE:
+//  1.  Open your file in Notepad++
+//  2.  Edit > BLANK Operations > TAB to SPACE
+//  3.  Open the Replace dialog ( CTRL + H )
+//  4.  Check the two options Wrap around and Regular expresion.
+//  5.  Remove comments - Find:
+//       \/\*([\s\S]*?)\*\/|#+ .*?(?=\r?$)|(\s\/\/.*?)(?=\r?$)|#+\r
+//      Explained:
+//       \/\*([\s\S]*?)\*\/      /**/    Mark multi-line comments
+//       |#+ .*?(?=\r?$)         #       or Mark #SPACE comments until EOL (Word/LF starting with One or more # followed by SPACE )
+//       |(\s\/\/.*?)(?=\r?$)    //      or Mark // comments until EOL (From lineStart or prefixed width SPACE)
+//       |#+\r                   #       or Mark single # at EOL
+//  6.  Replace with EMPTY (Now is all comments removed)
+//  7.  Edit > Line Operations > Remove Empty Lines (Containing Blank Characters)
+//  8.  Edit > BLANK Operations > Remove preceeded and subordinate SPACES
+//  9.  Repeat - Find: SPACESPACESPACE Replace to:SPACESPACE until not found
+// 10.  Save lib-file as minimized file .min.
+
+// Search for all external called files.
+// Find:
+// ([\/\.\-_a-z0-9]*\.css")|([\/\.\-_a-z0-9]*\.js")|([\/\.\-_a-z0-9]*\.png")|([\/\.\-_a-z0-9]*\.ico")|([\/\.\-_a-z0-9]*\.jpg")|(src=)|(rel=)
+
+// Now lib-file is ready for removing unused functions....
+//      Search:'function'   Put 'funcName' in array
+//      Search in Project-files: Mark used 'funcName' s
+//      Remove unused functions in lib-file
+//      Save lib-file as optimized file .opt.
+
+// Regex: https://regexr.com/       https://regex101.com/
+
+// upgrade function call to php8 notation for named variables:
+// '\$([A-z]{4})='  # Search for   '$xxxx='
+// ' \1:'           # Replace with ' xxxx:'
+// downgrade:
+// ([ ,(])([A-z]{4})(:['[ $ft]) # xxxx:
+// '\1$\2=\3'                   # $xxxx=
+
+
+Changelog.txt:
+
+v1.1.0:
+New:
+Choose to fetch libraryes from local folder /_assets or from Web: CDN-servers
+Context Popup menu system (leftclick / rightclick)
+
+Changed:
+Table - fldNames: removed
+Table - RowBody: new param: fldKey
+
+Function rename:
+$Title      => $Hint
+$Title      => $Capt
+StartBlock  => Suffix: _0
+EndBlock    => Suffix: _00
+Blocks: Page, Panel, Pmnu
+Menu_Branch => Menu_Item
+
+Variable rename:
+$Lang_list  => $arrLang
+$more       => $attr
+
+
+File rename:
+_sys_trans.json => _trans.sys.json
+
+###########
+v1.2.0:
+Variable rename:
+$Ø* $gbl_*
+
+htm_*-functions variables renamed and changed order to standard groups
+/* 
+Function variables name and order:
+       labl capt body foot plho icon hint                                               (Visibly for the user)
+               type name valu form subm acti elem                                       (HTML-Teknical)
+                       clas wdth algn marg styl attr font colr fclr bclr llgn bord      (presentation)
+                               link targ akey kind rtrn                                 (Navigate)
+                                       code ftop unit disa rows rows step rept          (not common)
+                                                        cntx  butn mess enbl clck       (special)
+KeyWords for syntax highlighting:
+ labl capt body foot plho icon hint type name valu form subm acti clas wdth algn marg styl attr font colr fclr bclr llgn link targ akey kind 
+ echo ftop unit disa rows step bord rtrn titl info inis gbl_imag gbl_bord simu clck vhgh stck cntx html butt mess tplc tsty head elem code show idix enbl plac
+(Usefull when used for PHP8+ programming)
+
+Key:   Meening:
+labl - Label
+capt - Caption
+body - Body (content)
+foot - Footer
+plho - PlaceHolder
+icon - Icon
+hint - Hint (user tip / title)
+type - Type
+name - Name
+valu - Value
+form - Form
+subm - Submit
+acti - Form action
+clas - Class
+wdth - Width
+algn - Align
+marg - Margin
+styl - Style
+attr - Attribute
+font - Font
+colr - Color
+fclr - Foreground color
+bclr - Background color
+llgn - LabelAlign
+link - Link
+targ - Target
+akey - AcessKey
+kind - Kind
+echo - Echo
+unit - Unit
+disa - Disabled
+rows - Rows
+step - Step
+bord - Border
+plac - Placement
+rept - Repeat
+rtrn - Return
+titl - Title
+info - Info
+inis - Initial script
+imag - image
+pbrd - Page border
+simu - Simulate
+clck - Click
+vhgh - ViewHeight
+stck - isSticky
+cntx - Context
+html - String with HTML codes
+butt - Button
+mess - Message
+tplc - Class for Placement of tooltip
+tsty - Style for Placement of tooltip
+head - Panel header background (style)
+evnt - Event script
+note - Note
+rept - Repeat
+shrt - shortcut
+frst - First
+last - Last
+from - From
+to__ - To
+elem - Element id
+pref - Prefix
+suff - Suffix
+filt - Ability to filter records
+data - Data
+crea - Created / Flag for creating new record
+modi - Ability to modify data
+expo - Export file
+just - Justify
+sort - Flag for sorting
+filt - Flag for filtering
+vrnt - Variant
+capt - tblcapt - Caption above table
+pref - rowpref - fields prefixed table-rows
+body - rowbody - table fields
+suff - rowsuff - fields suffixed table-rows
+note - tblnote - text below the table
+data - tbldata - Array with the table content
+filt - filteron - Flag for table filtering (filt) 
+sort - sorteron - Flag for table sorting (sort)
+crea - createrec - Flag for table creating new record
+modi - modifyrec - Flag for modifying table records
+vhgh - viewheight - The heigh of scrolling window showing the table
+styl - Style for table-span
+from - calledfrom - DebugData: source file
+list - list for options
+expo - export table to file
+
+[
+labl capt body plho icon hint type name valu form subm acti clas wdth algn marg styl attr font colr llgn link targ akey kind echo unit disa rows rows step bord rtrn titl info inis gbl_imag gbl_bord simu clck stck cntx html capt butt mess tplc tsty ftop head tblcapt rowpref rowbody rowsuff tblnote 
+tbldata filteron sorteron createrec modifyrec viewheight calledfrom tblstyle multilist exportto
+]
+
+###########
+Upgrade: font-awesome 5 to font-awesome 6
+Created: customLib.inc.php for global user rules 
+htm_Panel_0: New toggle width button
+
+
+###########
+v1.2.1:
+Fixed TogglePassword
+More function parameter rename and order change
+Minor changes
+
+
+###########
+v1.2.2:
+New: TinyMCE 6.3.x HTML-editor
+Some demo updated for PHP 8+ only
+
+
+###########
+(v1.2.3 /) v1.3.0:
+New: htm_Inbox()
+Rename: htm_Panel()  to  htm_Card()
+htm_Card(): Added max viewheight 
+Rename: gbl_PanlForm to gbl_CardForm
+Rename: CardInitRange to CardRange
+Rename: htm_Input/htm_Inbox/msg_Dialog/Pmnu_Item/msg_System
+        - function parameter: type to vrnt (Variant)
+Rename: htm_Page0() shortened some function parameters
+
+*/
+
+?>

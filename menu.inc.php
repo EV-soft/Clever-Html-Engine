@@ -1,5 +1,5 @@
-<?php $DocFile0='../menu.inc.php';    $DocVer='1.2.2';    $DocRev='2022-12-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+<?php $DocFile0='../menu.inc.php';    $DocVer='1.3.0';    $DocRev='2023-05-14';      $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 
 # MENU-folders:
@@ -16,15 +16,15 @@ function MenuStart($clas='firstmain',$href='#',$labl='',$titl='') {  //  MUST be
 // Responsive-menu! if (narrow screen) width:120px; else width:1200px;
   echo '  <data-menu id="wb_TopMenu" style="display: flex; position: fixed; top:1px; height:24px; width: max-content; z-index:999; left: 0; right: 0; margin: 0 auto;">';  //  width:'.$menuwd.';
   echo '    <ul>';
-  echo '      <li class="'.$clas.'" style="color:black; width:20px; text-align:left;"><a href="'.$href.'" target="_self" style="background:#EEEEEE;" title="'.lang($titl).'">'.lang($labl).'</a> </li>';
+  echo '      <li class="'.$clas.'" style="color:black; width:20px; text-align:left;"><a href="'.$href.'" target="_self" style="background:#EEEEEE; height: 25px;" title="'.lang($titl).'">'.lang($labl).'</a> </li>';
 }
 
 function MenuEnd() {global $gbl_ProgRoot, $gbl_ProgTitl, $gbl_progvers, $gbl_copydate, $gbl_copyright, $gbl_designer, $gbl_menuLogo;
   echo '    </ul>';
-  // echo Lbl_Tip($labl='@Local menu',$titl='@All paneles headlines, acts as local menu items in the actual window. Click the panel header to show / hide the panel`s contents.','SW').' ';
+  // echo Lbl_Tip($labl='@Local menu',$titl='@All cards headlines, acts as local menu items in the actual window. Click the card header to show / hide the card`s contents.','SW').' ';
   echo '<span style="text-align: right;" title="'.
         $gbl_ProgTitl.' - Version '.$gbl_progvers.' - Copyright '. $gbl_copydate.' '.$gbl_copyright.' - '.lang('@Design: ').$gbl_designer.
-        '" > <img src= "'. $gbl_ProgRoot.$gbl_menuLogo.' " alt="Logo" height="25" style="top:2px; position:absolute; padding-left: 20px;" ></span><br>';
+        '" > <img src= "'. $gbl_ProgRoot.$gbl_menuLogo.' " alt="Logo" height="25px" style="top:2px; position:absolute; padding-left: 20px;" ></span><br>';
   echo '  </data-menu>';
   echo '</div>';
   echo "\n";
@@ -51,37 +51,38 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
 
 function Menu_Topdropdown($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
 global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;
- // MenuStart($clas='firstmain',      $href='#',                               $labl='@MENU:',         $titl='@Main menu');
-    MenuStart($clas='firstmain',      $href='#',                               $labl='<b>PHP2HTML </b>',  $titl='@Demo of the php to html library');
+ // MenuStart($clas='firstmain',      $href= '#',                               $labl='@MENU:',         $titl='@Main menu');
+    MenuStart($clas='firstmain',      $href= '#',                               $labl='<b>PHP2HTML &nbsp;</b>', $titl='@Demo of the php to html library');
     if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href= $folder2.'PHP2HTML-intro.page.php',$labl='@INTRODUCTION',  $titl='@Introduction to the systems most usable modules');
       MenuBranch($clas='firstitem',   $href= $folder2.'PHP2HTML-intro.page.php',$labl='@Introduction',  $titl='@Introduction to the systems most usable modules', $icon='fas fa-info');
       MenuBranch($clas='',            $href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',           $icon='fas fa-info');
       MenuBranch($clas='',            $href= $folder2.'Demo.page.php',          $labl='@Demo',          $titl='@Demonstrate some functions',           $icon='fas fa-info');
-      MenuBranch($clas='',            $href= $folder2.'tinyEditor.page.php',    $labl='@Tiny Editor',   $titl='@Working with tiny Editor:', $icon='fas fa-info');
+      MenuBranch($clas='',            $href= $folder2.'tinyEditor.page.php',    $labl='@Tiny Editor',   $titl='@Working with tiny Editor:',            $icon='fas fa-info');
       MenuBranch($clas='lastitem',    $href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)', $icon='fas fa-cubes');
     }
     if ($showGroup1) {
-      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
+      MenuBranch($clas='withsubmenu', $href= '',                                $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
       MenuBranch($clas='firstitem',   $href= $folder2.'input.page.php',         $labl='@htm_Input()',   $titl='@Something about function htm_Input()', $icon='fas fa-cubes');
       MenuBranch($clas='',            $href= $folder2.'table.page.php',         $labl='@htm_Table()',   $titl='@Something about function htm_Table()', $icon='fas fa-cubes');
-      MenuBranch($clas='',            $href= $folder2.'panel.page.php',         $labl='@htm_Panel()',   $titl='@Something about function htm_Panel()', $icon='fas fa-cubes');
+      MenuBranch($clas='',            $href= $folder2.'card.page.php',          $labl='@htm_Card()',    $titl='@Something about function htm_Card()',  $icon='fas fa-cubes');
       MenuBranch($clas='',            $href= $folder2.'pages.page.php',         $labl='@Page layout',   $titl='@Something about Page and layout',      $icon='fas fa-cubes');
       MenuBranch($clas='',            $href= $folder2.'navigate.page.php',      $labl='@Navigate',      $titl='@Tools related to navigating',          $icon='fas fa-cubes');
       MenuBranch($clas='lastitem',    $href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions than above',           $icon='fas fa-cubes');
     }
     if ($showGroup1) {
-      MenuBranch($clas='withsubmenu', $href='',                                 $labl='@FILES',         $titl='@Information about php2html files');
-      MenuBranch($clas='firstitem',   $href= $folder2.'files.page.php',         $labl='@System files',  $titl='@Something about System files',         $icon='fas fa-file');
-      MenuBranch($clas='lastitem',    $href= $folder2.'support.page.php',       $labl='@Support files', $titl='@Something about Support files',        $icon='fas fa-file');
+      MenuBranch($clas='withsubmenu', $href= '',                                $labl='@FILES',         $titl='@Information about php2html files');
+      MenuBranch($clas='firstitem',   $href= $folder2.'files.page.php',         $labl='@File naming',  $titl='@Something about System files',  $icon='fas fa-file');
+      MenuBranch($clas='lastitem',    $href= $folder2.'support.page.php',       $labl='@Folders and files', $titl='@Something about Support files',        $icon='fas fa-file');
     }
     if ($showGroup1) {
       MenuBranch($clas='withsubmenu', $href= $folder2.'translate.page.php',     $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
       MenuBranch($clas='lastitem',    $href= $folder2.'translate.page.php',     $labl='@Translate',     $titl='@About the language translate system',  $icon='fas fa-info');
     }
     if ($showGroup1) {
-      MenuBranch($clas='withsubmenu', $href= $folder2.'functions.page.php',     $labl='@FUNCTIONS',     $titl='@Information about TRANSLATE module');
-      MenuBranch($clas='lastitem',    $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions',  $icon='fas fa-info');
+      MenuBranch($clas='withsubmenu', $href= $folder2.'functions.page.php',     $labl='@FUNCTIONS',     $titl='@Information about SYSTEN functions');
+   // MenuBranch($clas='firstitem',   $href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions',                       $icon='fas fa-cubes');
+      MenuBranch($clas='lastitem',    $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions', $icon='fas fa-info');
     }
     MenuEnd();
 }
@@ -120,7 +121,7 @@ $arrHref= [ // href:             Labl:
     [$folder1.'description.page.php','@Description'],
     [$folder1.'input.page.php','@htm_Input()'],
     [$folder1.'table.page.php','@htm_Table()'],
-    [$folder1.'panel.page.php','@htm_Panel()'],
+    [$folder1.'card.page.php','@htm_Card()'],
     [$folder5.'pages.page.php','@Page layout'],
     [$folder5.'navigate.page.php','@Navigate'],
     [$folder5.'other.page.php','@Others'],
@@ -158,8 +159,8 @@ function Menu_BottomScroll() { global $arrHref;
 $CSS_system .= '
 <style type="text/css">
 :root {
---width120: 100px; /* var(--width120); */
---width128: 100px; /* var(--width128); */
+--LabelWidth: 130px; /* var(--width120); LabelWidth */
+--FieldWidth: 140px; /* var(--width128); FieldWidth */
 }
 
 section#container
@@ -170,7 +171,7 @@ section#container
 #wb_TopMenu ul
 {   list-style-type: none;   margin: 0;   padding: 0;}
 #wb_TopMenu li
-{   float: left;   margin: 0;   padding: 0px 2px 0px 0px;   width: var(--width120);}
+{   float: left;   margin: 0;   padding: 0px 2px 0px 0px;   width: var(--LabelWidth);}
 #wb_TopMenu a, aaa
 {  display: block;   float: left;   color: #FFFFFF;   border: 1px #C0C0C0 solid;   -moz-border-radius: 3px;
    -webkit-border-radius: 3px;   border-radius: 3px;   background-color: #3A3A3A;
@@ -180,7 +181,7 @@ section#container
    background: -ms-linear-gradient(bottom,#3A3A3A 0%,#999999 100%);
    background: linear-gradient(bottom,#3A3A3A 0%,#999999 100%);
    font-family: Arial;   font-weight: normal;   font-size: 11px;   font-style: normal;   text-decoration: none;
-   width: var(--width128);   padding: 0px 5px 0px 5px;   vertical-align: middle;
+   width: var(--FieldWidth);   padding: 0px 5px 0px 5px;   vertical-align: middle;
    line-height: 18px;   text-align: center;
 }
 #wb_TopMenu aaa, #wb_TopMenu a:hover
@@ -202,7 +203,7 @@ section#container
 #wb_TopMenu li:hover, #wb_TopMenu li a:hover
 {   position: relative;}
 #wb_TopMenu a.withsubmenu
-{   padding: 3px 5px 0 5px;   width: var(--width128);}
+{   padding: 5px 5px 3px 5px;   width: var(--FieldWidth);}
 #wb_TopMenu li:hover a.withsubmenu, #wb_TopMenu a.withsubmenu:hover
 {  background-image: none;
    background: -moz-linear-gradient(bottom,#C0C0C0 0%,#EEEEEE 100%);
@@ -217,7 +218,7 @@ section#container
 }
 
 #wb_TopMenu ul ul
-{   position: absolute;   left: 0px;   top: 0px;   visibility: hidden;   width: var(--width120);   height: auto;
+{   position: absolute;   left: 0px;   top: 0px;   visibility: hidden;   width: var(--LabelWidth);   height: auto;
     border: none;   background-color: transparent;
 }
 #wb_TopMenu ul :hover ul
@@ -225,18 +226,18 @@ section#container
 #wb_TopMenu .firstmain:hover ul
 {   left: 0px;  /* width: 80px; */}
 #wb_TopMenu li li
-{   width: var(--width120);   padding: 0 0px 0px 0px;   border: 0px #C0C0C0 solid;   border-width: 0 0px;}
+{   width: var(--LabelWidth);   padding: 0 0px 0px 0px;   border: 0px #C0C0C0 solid;   border-width: 0 0px;}
 #wb_TopMenu li li.firstitem
 {   border-top: 0px #C0C0C0 solid;}
 #wb_TopMenu li li.lastitem
 {   border-bottom: 0px #C0C0C0 solid;}
 #wb_TopMenu ul ul a, #wb_TopMenu ul :hover ul a, #wb_TopMenu ul :hover ul :hover ul a
-{   float: none;   margin: 0;   width: 126px;   height: auto;   white-space: normal;
+{   float: none;   margin: 0;   width: var(--LabelWidth);   height: auto;   white-space: normal;
    padding: 3px 6px 3px 6px;   background-color: #EEEEEE;   background-image: none;   border: 1px #C0C0C0 solid;
    -moz-border-radius: 0;
    -webkit-border-radius: 0;
    border-radius: 0;   color: #666666;   font-family: Arial;    font-family: sans-serif;   font-weight: normal;   font-size: 12px;
-   font-style: normal;   line-height: 12px;   text-align: left;   text-decoration: none;
+   font-style: normal;   /* line-height: 12px; */   text-align: left;   text-decoration: none;
 }
 #wb_TopMenu ul :hover ul .firstitem a, #wb_TopMenu ul :hover ul :hover ul .firstitem a
 {   margin-top: 0px; }
@@ -253,7 +254,7 @@ section#container
    background: linear-gradient(bottom,#C0C0C0 0%,#EEEEEE 100%);
 }
 #wb_TopMenu ul ul a.withsubmenu, #wb_TopMenu ul :hover ul a.withsubmenu, #wb_TopMenu ul :hover ul :hover ul a.withsubmenu
-{   width: var(--width128);   padding: 3px 5px 3px 5px;   <!-- background-image: none; --> }
+{   width: var(--FieldWidth);   padding: 3px 5px 3px 5px;   <!-- background-image: none; --> }
 #wb_TopMenu ul ul :hover a.withsubmenu, #wb_TopMenu ul ul a.withsubmenu:hover, #wb_TopMenu ul ul :hover ul :hover a.withsubmenu, #wb_TopMenu ul ul a.withsubmenu:hover a.withsubmenu:hover
 {  /* background-image: none; */
    background-image: url(../_assets/images/Arrow_Drop_Right.png);
@@ -268,7 +269,7 @@ section#container
 #wb_TopMenu ul :hover ul ul, #wb_TopMenu ul :hover ul :hover ul ul
 {   position: absolute;   left: 0px;   top: 0px;   visibility: hidden;}
 #wb_TopMenu ul :hover ul :hover ul, #wb_TopMenu ul :hover ul :hover ul :hover ul
-{   left: var(--width128);   top: 0px;   visibility: visible;}
+{   left: var(--FieldWidth);   top: 0px;   visibility: visible;}
 #wb_TopMenu ul :hover ul .firstitem:hover ul, #wb_TopMenu ul :hover ul :hover ul .firstitem:hover ul
 {   top: 0px;}
 #wb_TopMenu br

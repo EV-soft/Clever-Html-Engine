@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.2.2';    $DocRev='2023-01-18';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.3.0';    $DocRev='2023-05-17';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -10,22 +10,20 @@ require_once ($sys.'menu.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
 ## Activate needed libraries:
-//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [2, '_assetsjquery/latest/',            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [2, '_assetsjquery-ui/latest/',         'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [2, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
-define('LIB_POLYFILL',      [0, '_assets/',  '']);
-define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
-define('LIB_FONTAWESOME',   [2, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
-define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/tinymce.min.js']); 
+//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
+define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
+define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
+define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
+define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
+define('LIB_TINYMCE',       [0,      '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/tinymce.min.js']); 
 // Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
 
 
 ### PAGE-START:
-htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  gbl_Imag:'../_accessories/_background.png', gbl_Bord:false);
+htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
     Menu_Topdropdown(true); htm_nl(1);
     
-    htm_Panel_0(capt:'System description:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'panelW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_0(capt:'System description:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 
     htm_TextDiv('PHP2HTML is a library, a collection of functions that can be used systematically for <br>
         the interface of your program that you develop in PHP.<br><br>
@@ -68,27 +66,50 @@ htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - v
         <u>Run mode:</u><br>
         You can chose between 2 running modes: "On-line" or "Off-line"<br><br>
         <b>"On-line"</b> means with internet access - Libraries is loaded from CDN-servers.<br>
-        Used space is reduced with 7 Mb (/_assets is not needed),<br>
+        Used space is reduced with 29 Mb (/_assets is not needed),<br>
         but system can\'t run if connection to the internet breaks.<br><br>
         <b>"Off-line"</b> means without internet access - Libraries is in subfolder /_assets<br>
         Used space is min. 0.4 Mb. Delays is minimized.<br><br>
     ');
     
-    htm_Panel_00();
+    htm_Card_00();
     
-    htm_Panel_0(capt:'Note about the demo:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'panelW720', wdth:'', styl:'background-color: white;', attr:'');
-
+    htm_Card_0(capt:'Note about the demo:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    
     htm_TextDiv('
-        In demo source-files, the variable name and variable value are in all function calls specified to make the understanding clearer.<br><br>
+        In demo source-files, the variable name and variable value are in all function calls <br>
+        specified to make the understanding clearer (PHP 7 syntax).<br><br>
         Most variable names is actually redundant and can be omitted.<br>
-        Furthermore variables that have a default value can be omitted, if no individual values are subsequently required.<br><br>
-        <i>Example:</i><br>
-        <b>htm_Input(</b>$type=\'num1\',$name=\'num1\',$valu=\'87654321\',$labl=\'@htm_Input(num1)\',
-        $llgn=\'\',$hint=\'@Demo of htm_Input\',$algn=\'center\'<b>);</b><br><br>
+        Furthermore variables that have a default value can be omitted, <br>
+        if no individual values are subsequently required.<br><br>
+        <i>PHP 7 Example:</i><br>
+        <b>htm_Input(</b>$vrnt=\'num1\', $name=\'num1\', $valu=\'87654321\',<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;$labl=\'@htm_Input(num1)\', $llgn=\'\', $hint=\'@Demo of htm_Input\',<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;$algn=\'center\'<b><br>
+        );</b><br><br>
         <i>Short form:</i><br>
-        <b>htm_Input(</b>\'num0\',\'num0\',\'87654321\',\'@htm_Input(num0)\',\'@Demo of htm_Input\'<b>);</b><br><br>
-        ');
-    htm_Panel_00();
+        <b>htm_Input(</b>\'num1\',\'num1\',\'87654321\',\'@htm_Input(num1)\',\'@Demo of htm_Input\'<b>);</b><br><br>
+        <i>PHP 8 Example:</i><br>');
+    echo htm_CodeDiv(highlight_words(highlight_str(
+"   htm_Input(
+        labl:'@htm_Input(num1)',
+        hint:'@Demo of htm_Input',
+        vrnt:'num1',                // Input() Variant
+        name:'num1',
+        valu:'87654321',
+        wdth:'120px'
+    ); " ,true)));
+    echo 'Output in browser: ';
+    htm_Input(
+            labl:'@htm_Input(num1)',
+            hint:'@Demo of htm_Input',
+            vrnt:'num1',                // Input() Variant
+            name:'num1',
+            valu:'87654321',
+            wdth:'120px'
+        );
+    htm_nl(3);
+    htm_Card_00();
     
 htm_Page_00();
 

@@ -1,4 +1,0 @@
-
-2022-07-22 09:40:01 /p2h/v1.2.0/Proj.demo/CustomerOrder.page.php -- dbi_askData: #File: /var/www/viuff.info/ev-soft.work/p2h/v1.2.0/filedata.inc.php - #Line: 363 - #Func: sql_readAssoc <br>SQL:SELECT * FROM tca_OrdersTbl
-2022-07-22 09:52:44 /p2h/v1.2.0/Proj.demo/CustomerOrder.page.php -- dbi_askData: #File: /var/www/viuff.info/ev-soft.work/p2h/v1.2.0/filedata.inc.php - #Line: 359 - #Func: sql_readAssoc <br>SQL:SELECT * FROM tca_OrdersTbl
-2022-07-22 10:31:27 /p2h/v1.2.0/Proj.demo/CustomerOrder.page.php -- dbi_askData: #File: /var/www/viuff.info/ev-soft.work/p2h/v1.2.0/filedata.inc.php - #Line: 359 - #Func: sql_readAssoc <br>SQL:SELECT * FROM tca_OrdersTbl

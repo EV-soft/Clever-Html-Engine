@@ -1,12 +1,14 @@
-<?
+<?  $DocFileInc='../customRules.inc.php';   $DocVers='1.3.0';  $DocRev='2023-04-27';  $DocIni='evs';  $ModulNo=0; ## File informative only
+
   ## In php2html.lib.php this file is included: 
   ##    if (is_readable('customRules.inc.php')) include('customRules.inc.php');  
    # Here you can add your special rules 
 
-    if ($MultiList==['','']) $rowType= '';
+    // if (false)
+    if ($list==['','']) $rowType= '';
     else {
         $Drow= $DataRow;
-        if ($MultiList[0]== 'KONTOPLAN') {
+        if ((isset($list[0]) ? $list[0] : '') == 'KONTOPLAN') {
           
           $rowType= strtoupper($Drow[3]);
           switch ($rowType) {  //  Kontotype: D=Drift, S=Status, Z=Sum, H=Overskrift, R=Resultat, X=Sideskift, L=Lukket',
