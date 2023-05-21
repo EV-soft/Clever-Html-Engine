@@ -94,7 +94,7 @@ You can see descriptions and a demo and try the functions here: https://ev-soft.
 
 Get inspired and test the system.
 
-Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.2.2/Proj.demo/CustomerOrder.page.php)
+Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.3.0/Proj.demo/CustomerOrder.page.php)
 
 Use the top menu to view documentation and examples.
 
