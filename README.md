@@ -64,6 +64,17 @@ and looks like this:
 <li>Easily enter dates with browsers date picker interface</li>
 </ul>
 
+
+<br><strong>About the powerfull externel libraryes:</strong><br>
+jquery&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "jquery" &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://jquery.com/" target="_blank" rel="noopener">Feature-rich JavaScript library</a><br>
+jquery-ui&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "jquery-UserInterface"&nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://jqueryui.com/" target="_blank" rel="noopener">User interface interactions</a><br>
+tablesorter&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"Advanced tables"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://mottie.github.io/tablesorter/docs/" target="_blank" rel="noopener">Plugin for turning a standard HTML table with THEAD and TBODY tags into a sortable table</a><br>
+font-awesome&nbsp; &nbsp; &nbsp;"Icons"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://fontawesome.com/" target="_blank" rel="noopener">Icon library and toolkit</a><br>
+tinymce&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "HTML rich text editor"&nbsp; &nbsp; <a title="More about the system..." href="https://www.tiny.cloud/" target="_blank" rel="noopener">Self hosted advanced WYSIWYG HTML editor</a><br>
+dialog-polyfill&nbsp; &nbsp; &nbsp; &nbsp;"popup dialog"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="noopener">Dialog element for a popup box</a><br><br>
+
+
+
 <h3><b>How to start your first project</b></h3>
 
 Save system-files on your web-server in system-folder '{public-URL}/hello'
