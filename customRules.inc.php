@@ -1,4 +1,4 @@
-<?  $DocFileInc='../customRules.inc.php';   $DocVers='1.3.0';  $DocRev='2023-04-27';  $DocIni='evs';  $ModulNo=0; ## File informative only
+<?  $DocFileInc='../customRules.inc.php';   $DocVers='1.3.1';  $DocRev='2023-09-02';  $DocIni='evs';  $ModulNo=0; ## File informative only
 
   ## In php2html.lib.php this file is included: 
   ##    if (is_readable('customRules.inc.php')) include('customRules.inc.php');  
@@ -16,7 +16,7 @@
                       $bgColor= '';                                                          
                       $Drow[3]= ' '; $Drow[5]= ' '; $Drow[6]=' '; $Drow[7]=' '; $Drow[8]=' '; $Drow[9]=' '; $Drow[10]=' '; 
                       // $Drow[2]= '<span style="font-weight: 600; font-size: smaller; text-align:left;">'.$Drow[2].'</span>';
-                      if ($Body[2]!='hidd') $Body[2]= 'html';
+                      if ($bdy[2]!='hidd') $bdy[2]= 'html';
                       $ixalign= 'text-align:center; '; 
                       $captStyle= 'font-weight:600;';
                     }; break;                                                                
@@ -48,7 +48,7 @@
                       $Drow[2]=' '; $Drow[3]=lang('@Sideskift'); $Drow[5]= ' '; $Drow[6]=' '; $Drow[7]=' '; $Drow[8]=' '; $Drow[9]=' ';  $Drow[10]=' '; 
                       $rowBg= ' background:darkgray; '; 
                       // ? 'indx' _> 
-                      $Body[1]= 'hidd';  // background: transparent;
+                      $bdy[1]= 'hidd';  // background: transparent;
                       break;
             }
         }

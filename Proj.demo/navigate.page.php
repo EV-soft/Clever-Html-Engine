@@ -1,9 +1,9 @@
-<?php   $DocFile= './Proj.demo/navigate.page.php';    $DocVer='1.3.0';    $DocRev='2023-05-18';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/navigate.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 require_once ($sys.'php2html.lib.php');
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
@@ -19,10 +19,18 @@ define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https:
 #htm_Page_0($pageTitl='navigate.page.php', $gbl_PageImage= $gbl_ProgRoot.'_accessories/_background.png', $align='center');       
 //htm_Page_0(titl:'pages.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:'', algn:'center', imag:'../_accessories/_background.png', pbrd:true);
 htm_Page_0(titl:'navigate.page.php',hint:$©,info:lang('@PHP2HTML Demo and Documentation'),inis:'',algn:'center', imag:'../_accessories/_background.png',pbrd:true);
-    Menu_Topdropdown(true); htm_nl(1);
-        # v1.2: $capt= '',$icon= '',$hint= '',$form= '',$acti= '',$clas= 'cardWmax',$wdth= '',$styl= 'background-color: white;',$attr= '',$where='Undefined',$BookMark='' 
+    // Menu_Topdropdown(true); htm_nl(1);
+    
+    // $menudata is set in: project.init.php
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
+
     htm_Card_0(capt:'@Navigate functions:', icon:'fas fa-info', hint:'@HINT',form:'', acti:'', clas:'cardW480', wdth:'', styl:'background-color: white;',attr:'');
     htm_TextDiv('To navigate in a program you can use:<br><br>
+            <b>htm_Menu_Leftout()</b> which is a system module. <br>
+            You see it on the introduktion-page in the left side. <br>
+            <br>
+               You can also use <br>
             <b>Menu_Topdropdown()</b> which you can see at <br>
             the top of all demo pages.<br>
             You find it in the file: menu.inc.php <br>

@@ -1,4 +1,4 @@
-<?php $DocFile0='../menu.inc.php';    $DocVer='1.3.0';    $DocRev='2023-05-14';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php $DocFile0='../menu.inc.php';    $DocVer='1.3.0';    $DocRev='2023-08-08';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 
@@ -14,7 +14,7 @@ function MenuStart($clas='firstmain',$href='#',$labl='',$titl='') {  //  MUST be
   echo "\n";
   echo '<div id="container" style="display:inline-block;">';  // style/css: see the file _base/htm_TopMenu-head.css.htm
 // Responsive-menu! if (narrow screen) width:120px; else width:1200px;
-  echo '  <data-menu id="wb_TopMenu" style="display: flex; position: fixed; top:1px; height:24px; width: max-content; z-index:999; left: 0; right: 0; margin: 0 auto;">';  //  width:'.$menuwd.';
+  echo '  <data-menu id="wb_TopMenu" style="display: flex; position: fixed; height:24px; width: max-content; z-index:999; left: 0; right: 0; margin: 0 auto;">';  //  width:'.$menuwd.';
   echo '    <ul>';
   echo '      <li class="'.$clas.'" style="color:black; width:20px; text-align:left;"><a href="'.$href.'" target="_self" style="background:#EEEEEE; height: 25px;" title="'.lang($titl).'">'.lang($labl).'</a> </li>';
 }
@@ -22,9 +22,9 @@ function MenuStart($clas='firstmain',$href='#',$labl='',$titl='') {  //  MUST be
 function MenuEnd() {global $gbl_ProgRoot, $gbl_ProgTitl, $gbl_progvers, $gbl_copydate, $gbl_copyright, $gbl_designer, $gbl_menuLogo;
   echo '    </ul>';
   // echo Lbl_Tip($labl='@Local menu',$titl='@All cards headlines, acts as local menu items in the actual window. Click the card header to show / hide the card`s contents.','SW').' ';
-  echo '<span style="text-align: right;" title="'.
+  echo '<span style="text-align: right; margin-left: 20px; height: 22px; background-color: ivory; padding: 3px;" title="'.
         $gbl_ProgTitl.' - Version '.$gbl_progvers.' - Copyright '. $gbl_copydate.' '.$gbl_copyright.' - '.lang('@Design: ').$gbl_designer.
-        '" > <img src= "'. $gbl_ProgRoot.$gbl_menuLogo.' " alt="Logo" height="25px" style="top:2px; position:absolute; padding-left: 20px;" ></span><br>';
+        '" > './* '<img src= "'. $gbl_ProgRoot.$gbl_menuLogo.' " alt="Logo" height="25px" style="top:2px; position:absolute; padding-left: 20px;" >'. */'Clever-Html-Engine</span><br>';
   echo '  </data-menu>';
   echo '</div>';
   echo "\n";
@@ -35,7 +35,7 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
   if ($clas=='exit')                {$bold='<span style="color:red; font-weight:600; left: -110px;">'; } else {$bold='';};
   if (strpos($href,'ttp' )>0)       {$targ='_blank'; } else $targ='_self'; //  Test if http seems (externel/locale link?)
   $link= 'href="'.$href.'" target="'.$targ.'" title="'.strip_tags(lang($titl)).'" >'.
-        '<data-ic class="'.$cssIcon.'" style="font-size:'.($size ?? 12).'; color:'.($fg ?? '00').'; "> </data-ic>&nbsp;'.$blnd.$bold.ucfirst(lang($labl));
+        '<data-ic class="'.$cssIcon.'" style="font-size:'.($size ?? 12).'px; color:'.($fg ?? '#000').'; "> </data-ic>&nbsp;'.$blnd.$bold.ucfirst(lang($labl));
   if ($bold!='') {$link.= '</span>'.$obs;}
   if ($blnd!='') {$link.= '</i>'.$obs;} else {$link.= $obs;}
   echo "\n\n";
@@ -48,6 +48,7 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
     default :           ;
   }
 }
+
 
 function Menu_Topdropdown($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
 global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;

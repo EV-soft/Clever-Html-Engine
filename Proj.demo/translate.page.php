@@ -1,20 +1,18 @@
-<?php   $DocFil= './Proj.demo/translate.page.php';    $DocVer='1.3.0';    $DocRev='2023-04-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj.demo/translate.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 require_once ($sys.'php2html.lib.php');
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php');
 
 ## Activate needed libraries:
-//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [2, '_assetsjquery/latest/',            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [2, '_assetsjquery-ui/latest/',         'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [2, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
-define('LIB_POLYFILL',      [0, '_assets/',  '']);
-define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
-define('LIB_FONTAWESOME',   [2, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
+//      ConstName:          ix:       LocalPath:                         CDN-path:                                                               // File:
+define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
+define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
+define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.1/']);
+define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
 // Set ix 0:deactive  1:Local-source  2:WEB-source-CDN 
 
 if (!isset($_SESSION['currLang'])) {
@@ -23,9 +21,13 @@ if (!isset($_SESSION['currLang'])) {
 }
          # $titl='',$hint='',$info='',$inis='',$algn='center', $gbl_Imag='',$gbl_Bord=true) 
 htm_Page_0( titl:'translate.page.php', hint:'@Maintenance of project translation', info:'', inis:'', algn:'center',  imag:$gbl_ProgRoot.'_accessories/_background.png', pbrd:true);
-    Menu_Topdropdown(true); 
+    // Menu_Topdropdown(true); 
     // htm_nl(1); 
     
+    // $menudata is set in: project.init.php
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
+
     global $arrLang;
     // arrPrint($arrLang,'$arrLang');
 
@@ -35,7 +37,7 @@ htm_Page_0( titl:'translate.page.php', hint:'@Maintenance of project translation
               # $capt= '',$icon= '',$hint= '',$form= '',$acti= '',$clas= 'cardWmax',$wdth= '',$styl= 'background-color: white;',$attr= ''
     htm_Card_0( capt:'@About translate system:',  icon:'fas fa-info',  hint: '', form: '', acti: '', clas:'cardW560',  wdth: '', styl: 'background-color: white;', attr: '');
     echo '<div style="text-align: left; margin: 20px;">
-        All english textstrings that should be translated, can have prefix \'@ 
+        All english textstrings to be translated, should have prefix \'@ 
         in the source. <br>It will be translated with function lang(\'English text\') <br><br>
         To create the table with strings to translate a function will scann all the
         source after prefix: <b>lang(\'</b>  .. and with suffix: <b>\')</b><br>

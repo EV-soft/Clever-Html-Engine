@@ -1,9 +1,9 @@
-<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.3.0';    $DocRev='2023-05-18';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 require_once ($sys.'php2html.lib.php');
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php'); 
 
@@ -34,8 +34,15 @@ define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https:
 
 
 htm_Page_0(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVer,inis:'',algn:'center', imag:'../_accessories/_background.png',pbrd:false);
-    Menu_Topdropdown(true); htm_nl(1);
-
+    // Menu_Topdropdown(true);     // htm_nl(1);
+    echo '<style>
+        body { padding-top: 0; margin-top:0; }
+    </style>';
+    
+    // $menudata is set in: project.init.php
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
+    
     htm_Card_0(capt: 'The collection of htm_Input() variants:',icon: 'fas fa-info',hint: '',form: 'test',acti: '',clas: 'cardW720',wdth: '',styl: 'background-color: white;',attr: '');
 
     htm_Fieldset_0(capt:'TEXT variants',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
@@ -143,11 +150,11 @@ htm_Page_0(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocV
     <tr><td>x</td><td>y</td><td>z</td></tr>
     </table>
     ';
-    htm_Inbox(labl:'Inbox-test',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of htm_Inbox() containing a table.<be>Readonly',
+    htm_Inbox(labl:'Inbox-test RO',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of htm_Inbox() containing a table.<be>Readonly',
                   vrnt: '',name:'Body_div',valu:$html,form:'',wdth:'33%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
 
-    htm_Inbox(labl:'Inbox-test',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of editable htm_Inbox() containing a table',
+    htm_Inbox(labl:'Inbox-test RW',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of editable htm_Inbox() containing a table',
                   vrnt: '',name:'Body_div',valu:$html,form:'',wdth:'33%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:true,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
     echo lang('@Inbox() is not really an Input() element, but looks like Input() with a content that you decide.');

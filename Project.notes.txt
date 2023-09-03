@@ -214,8 +214,13 @@ Rename: gbl_PanlForm to gbl_CardForm
 Rename: CardInitRange to CardRange
 Rename: htm_Input/htm_Inbox/msg_Dialog/Pmnu_Item/msg_System
         - function parameter: type to vrnt (Variant)
-Rename: htm_Page0() shortened some function parameters
+Rename: htm_Page0() shortened some function parameter names
 
+
+###########
+v1.3.1:
+New: htm_Menu_TopDown()
+New: htm_Menu_Leftout()
 */
 
 ?>

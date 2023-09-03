@@ -1,9 +1,9 @@
-<?php   $DocFil= './functions.page.php';    $DocVer='1.3.0';    $DocRev='2023-05-18';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './functions.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 require_once ($sys.'php2html.lib.php');
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
@@ -19,7 +19,11 @@ include('../funcscann.php');
 
 ### PAGE-START:
 htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:true);
-    Menu_Topdropdown(true); htm_nl(1);
+    // Menu_Topdropdown(true); htm_nl(1);
+    
+    // $menudata is set in: project.init.php
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
     
     htm_Card_0( capt: '@The overview over the system functions:', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
@@ -38,9 +42,12 @@ htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',
             ['plho','PlaceHolder'],
             ['icon','Icon'],
             ['hint','Hint (user tip / title)'],
+            ['desc','Description'],
             ['type','Type'],
             ['name','Name'],
             ['valu','Value'],
+            ['vmax','MaxValue'],
+            ['vmin','MinValue'],
             ['form','Form'],
             ['subm','Submit'],
             ['acti','Form action'],
@@ -118,8 +125,9 @@ htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',
             ['styl','Style for table-span'],
             ['from','calledfrom - DebugData: source file'],
             ['list','list for options'],
+            ['enbl','Enabled'],
             ['expo','export table to file'],
-            ['show','Only show (disabled/readonly)'],
+            ['show','Show cards arrows. Only show (disabled/readonly)'],
             ['help','Link to custom-help'],
             ['ftop','string: Ajust field vertical position']
         ];
@@ -128,7 +136,7 @@ htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',
         htm_Table(capt:[
                          ['Most function parameter names, are shortened to 4 characters.<br>
                            This gives a pretty lookout of the code, <br>and the possibility for syntax coloring of words.<br>
-                           Here is en explanation of the shortened names:', '8%','show','left', '', '']
+                           Here is en explanation of all shortened names:', '8%','show','left', '', '']
                        ], 
                   pref:[], 
                   body:[
@@ -178,7 +186,7 @@ function htm_Page_00();  # End of page - has no parameters
     htm_Card_0( capt: ' htm_Card_0();', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
         htm_CodeDiv(highlight_words(highlight_str(
-"function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'', show:true, head:'', vhgh:'600px');
+"function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'', show:true, head:'', vhgh:'600px', help:'');
     \$capt = '',                         # string: The card caption
     \$icon = '',                         # string: icon to the left of caption
     \$hint = '',                         # string: The hint on hover caption

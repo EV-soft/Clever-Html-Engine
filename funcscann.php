@@ -1,4 +1,4 @@
-﻿<?php   $DocFile= '.\funcscann.php';    $DocVer='1.3.0';    $DocRev='2023-04-27';     $DocIni='evs';  $ModulNr=0; ## File informative only
+﻿<?php   $DocFile= '.\funcscann.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
 
 #  $d = dir("../../saldi-e/'");  ## saldi-e\_base\_tools\funcscann.php   ~/.rcinfo
 #  $d = basename('./saldi-e');
@@ -8,7 +8,7 @@
     function sortByKey($a, $b) {
         return $a['key'] > $b['key'];
     }
-  echo "<br>";
+  // echo "<br>";
 #  var_dump($paths);
   $searchWord= 'function ';
   if (false) // Not in use !

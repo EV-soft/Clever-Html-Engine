@@ -1,10 +1,10 @@
-<?php   $DocFile= './Proj.demo/other.page.php';    $DocVer='1.3.0';    $DocRev='2023-04-29';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/other.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 require_once ($sys.'php2html.lib.php');
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
@@ -20,7 +20,11 @@ define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdn
 // Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
 
 htm_Page_0($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
-    Menu_Topdropdown(true); htm_nl(1);
+    // Menu_Topdropdown(true); htm_nl(1);
+    
+    // $menudata is set in: project.init.php
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
     htm_Card_0($capt= 'Other htm_functions:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'cardW480',$wdth= '',$styl= 'background-color: white;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );
                 
     htm_TextDiv("There are a lot of small functions <br>

@@ -1,6 +1,6 @@
-<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.3.0';    $DocRev='2023-05-17';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
-## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
+## NOTE: In this demo all function-parameters can be shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
@@ -8,7 +8,7 @@ $gbl_ProgRoot= './../';
 $lateScripts= '';
 
 require_once ($sys.'php2html.lib.php');     // echo $gbl_ProgRoot;
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
  
@@ -107,7 +107,14 @@ htm_Page_0( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis
 
 ### Program mainmenu:
   if (($vismenu=true) and (($loggetind ?? '') == true) or true)
-    { Menu_Topdropdown(true); htm_nl(1); }
+    { htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;'); htm_nl(1); }
+//    { Menu_Topdropdown(true); htm_nl(1); }
+// Menu_Topdropdown(true);     // htm_nl(1);
+    echo '<style> body { padding-top: 0; margin-top:0; } </style>';
+    
+    // $menudata is set in: project.init.php
+    // htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
 
 
 // arrPrint($_POST,'$_POST');
@@ -168,11 +175,11 @@ htm_Page_0( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis
     htm_nl(2);
     htm_Fieldset_0(capt:'SELECT variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(opti)', plho:'@?...', icon:'', hint:'@Demo of htm_Input Field type opti: left aligned number with %-unit', vrnt:'opti', name:'opti', valu:'87654321', form:'', wdth:'160px', algn:'left', attr:'', rtrn:false, unit:' %', disa:false, rows:'3', step:'', list:[
-            ['name1','private','@Details about private'],
-            ['name2','proff','@Details about profession'],
-            ['name3','private','@Details about private','checked'],
-            ['name4','hobby','@Details about hobby'],
-            ['name5','private','@Details about private'],
+            ['name1','@private','@Details about private'],
+            ['name2','@proff','@Details about profession'],
+            ['name3','@private','@Details about private','checked'],
+            ['name4','@hobby','@Details about hobby'],
+            ['name5','@private','@Details about private'],
         ]);
         htm_Input(labl:'htm_Input(chck)',  plho:'?...', icon:'', hint:'Demo of htm_Input Field type chck: Multi-line formatted chck-text',  vrnt:'chck', name:'chck',  valu:'',         form:'', wdth:'150px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[
             ['name1','@Label1','@Details about label1','checked'],
@@ -188,11 +195,11 @@ htm_Page_0( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis
         ]);
         
         htm_Input(labl:'@htm_Input(rado)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type radio, vertical layout', vrnt:'rado', name:'rado1', valu:'',  form:'', wdth:'120px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list: [
-            ['post1','private','@private'],
-            ['post2','proff','@profession'],
-            ['post3','private','@private','checked'],
-            ['post4','hobby','@hobby'],
-            ['post5','private','@private'],
+            ['post1','@private','@private'],
+            ['post2','@proff','@profession'],
+            ['post3','@private','@private','checked'],
+            ['post4','@hobby','@hobby'],
+            ['post5','@private','@private'],
         ]);
         htm_nl(2);
         htm_Input(labl:'@htm_Input(rang)', plho:'',     icon:'', hint:'@Demo of htm_Input Field type range: 0..50 ',     vrnt:'rang', name:'rang', valu:'30', form:'', wdth:'', algn:'left', attr:' min="0" max="50"', rtrn:false, unit:'', disa:false, rows:'1', step:'', list:[], llgn:'R', bord:'', ftop:'');
@@ -530,7 +537,7 @@ STRING
     
     echo '</span>';
     htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'creat', rtrn:false, 
-                   tplc:'LblTip_text', tsty:'left: auto; position: relative;',acti:'toast("Create new user<br>Cant create yet !","orange","black")');
+                   tplc:'LblTip_text', tsty:'left: auto; top: 0; position: relative;',acti:'toast("Create new user<br>Cant create yet !","orange","black")');
     htm_MiniNote('This is an example using the multi-state button.');
     htm_nl(1);
     

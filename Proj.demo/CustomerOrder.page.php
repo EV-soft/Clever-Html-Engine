@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.2.3';    $DocRev='2023-05-17';   $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';   $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
@@ -7,7 +7,7 @@ $gbl_ProgRoot= './../';
 $gbl_progvers= $DocVer;
 $gbl_copydate= $DocRev; 
 require_once ($sys.'php2html.lib.php'); // 'php2html.lib.min.php'
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php'); // sql_/dbi_-functions
 
@@ -330,7 +330,11 @@ indxCheck($arrContent,$name='cnt_post');
 htm_Page_0(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with function key: F11',
            info:'@Example: Customer-ORDER Build with <b style="color:darkgreen;">PHP2HTML &nbsp;</b>',
            inis:'', algn:'center', imag:'', attr:'background: linear-gradient(0deg,#03a9f4 0%,#e3f2fd);', pbrd:false);
-    Menu_Topdropdown(true); 
+    // Menu_Topdropdown(true); 
+    
+    // $menudata is set in: project.init.php
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(3);
 
 if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
     

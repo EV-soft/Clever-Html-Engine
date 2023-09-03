@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.3.0';    $DocRev='2023-05-17';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
@@ -6,7 +6,7 @@ $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 
 require_once ($sys.'php2html.lib.php');
-require_once ($sys.'menu.inc.php');
+// require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php'); 
 
@@ -19,10 +19,47 @@ define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https:
 define('LIB_TINYMCE',       [0,      '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/tinymce.min.js']); 
 // Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
 
-$darkTheme= true;
+// $darkTheme= true;
 
 htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hint=$©,$info='File: '.$DocFile.' - Ver:'.$DocVer, $inis='',$algn='center', $gbl_Imag='', $gbl_Bord=false);
-    Menu_Topdropdown(true); htm_nl(1);
+    // Menu_Topdropdown(true); htm_nl(1);
+
+    htm_Menu_Leftout(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:88px;'); 
+    run_script('desc_div("narrow","capt");');   // Init htm_Menu_Leftout() to narrow state
+    
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(5);
+/*     
+$href= $folder2.'PHP2HTML-intro.page.php',$labl='@INTRODUCTION',  $titl='@Introduction to the systems most usable modules');
+$href= $folder2.'PHP2HTML-intro.page.php',$labl='@Introduction',  $titl='@Introduction to the systems most usable modules', $icon='fas fa-info');
+$href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',                      $icon='fas fa-info');
+$href= $folder2.'Demo.page.php',          $labl='@Demo',          $titl='@Demonstrate some functions',                      $icon='fas fa-info');
+$href= $folder2.'tinyEditor.page.php',    $labl='@Tiny Editor',   $titl='@Working with tiny Editor:',                       $icon='fas fa-info');
+$href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)',        $icon='fas fa-cubes');
+
+
+$href= '',                                $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
+$href= $folder2.'input.page.php',         $labl='@htm_Input()',   $titl='@Something about function htm_Input()',            $icon='fas fa-cubes');
+$href= $folder2.'table.page.php',         $labl='@htm_Table()',   $titl='@Something about function htm_Table()',            $icon='fas fa-cubes');
+$href= $folder2.'card.page.php',          $labl='@htm_Card()',    $titl='@Something about function htm_Card()',             $icon='fas fa-cubes');
+$href= $folder2.'pages.page.php',         $labl='@Page layout',   $titl='@Something about Page and layout',                 $icon='fas fa-cubes');
+$href= $folder2.'navigate.page.php',      $labl='@Navigate',      $titl='@Tools related to navigating',                     $icon='fas fa-cubes');
+$href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions than above',                      $icon='fas fa-cubes');
+
+
+$href= '',                                $labl='@FILES',         $titl='@Information about php2html files');
+$href= $folder2.'files.page.php',         $labl='@File naming',   $titl='@Something about System files',                    $icon='fas fa-file');
+$href= $folder2.'support.page.php',       $labl='@Folders and files', $titl='@Something about Support files',               $icon='fas fa-file');
+
+
+$href= $folder2.'translate.page.php',     $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
+$href= $folder2.'translate.page.php',     $labl='@Translate',     $titl='@About the language translate system',             $icon='fas fa-info');
+
+
+$href= $folder2.'functions.page.php',     $labl='@FUNCTIONS',     $titl='@Information about SYSTEN functions');
+$href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions',                                 $icon='fas fa-cubes');
+$href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions',           $icon='fas fa-info');
+ */
 //    echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">';
     htm_RowCol_0($RowColWdth=1100);
     
@@ -31,12 +68,17 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
             <p style="margin: 10px; text-align: center; line-height: 1.2;"><strong>Procedural block-structured programming with the PHP2HTML</strong></p>
             <p style="margin: 10px; text-align: center; line-height: 1;"><strong>&nbsp;library gives you easy central maintenance of your code.</strong></p>
             <p>&nbsp;</p>
-            <p style="margin: 12px;" >The PHP2HTML library can be used in PHP applications to produce HTML code with advanced features.</p>
+            <p style="margin: 12px;" >The PHP2HTML library are used in PHP applications to produce dynamic HTML/CSS/JS code with advanced features.</p>
             <p style="margin: 12px;" >Library consists of a collection of functions that produce both standard HTML elements and special usefull variants.</p>
+            
+            <p style="margin: 12px;" >With this library you can program a complete program, both backstage and frontstage, source code in PHP.</p>
+            <p style="margin: 12px;" >From your compact block-structured source code, the generator produces the necessary html code in a 5:1 ratio</p>
+            <p style="margin: 12px;" >The PHP2HTML system has built-in integration with several powerful open-source projects, Font-awesome, Tablesorter, Jquery, tinyMCE, which makes it easy to take advantage of these. </p>
+            './* '
             <p style="margin: 12px;" >All modules are with a integrated language translation system, which allows the user to exchange all program texts into many different languages.</p>
             <p style="margin: 12px;" >User advice: input placeholder and pop-up user tip (hint/title) are consistently possible for all labels etc. They are made visible by hovering the mouse over the element.</p>
             <p style="margin: 12px;" >PHP2HTML make use of other open source libraryes: Font-awesome, Tablesorter, Jquery, tinyMCE...</p>
-            <p style="margin: 12px;" >And much more ...</p>
+            '. */'
             <br>
             ', algn:'justify', marg:'12px;padding:12px', styl:' font-weight: 500; color: #000000; border-radius: 25px; width:700px; margin: auto; background-color: white;
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);');
@@ -59,7 +101,7 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>User Advice </strong></td>
-<td style="height: 21px;">Tooltip and placeholder for all html elements</td>
+<td style="height: 21px;">Tooltip, placeholder and pop-up user tip (hint/title) for all html elements</td>
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>Cards </strong></td>
@@ -67,7 +109,7 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>Tables </strong></td>
-<td style="height: 21px;">Advanced tables based on Mottie Table Sorter system</td>
+<td style="height: 21px;">Advanced sortible tables based on Mottie Table Sorter system</td>
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>HTML editor</strong></td>
@@ -99,7 +141,14 @@ htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hi
 </tr>
 </tbody>
 </table>
-<p style="text-align:center;"><i>Code and Time-saving when you are familiar with the system<br>
+<p style="text-align:center;">
+<br> PHP is the language for producing server-side backend programming.
+<br> With PHP2HTML you can produce client-side frontend programming in PHP.
+<br> Thus, you can now program your entire project in PHP.
+<br> 
+<br> 
+
+<i>Code and Time-saving when you are familiar with the system<br>
 Don\'t reinvent the Wheel, use PHP2HTML…</i></p>
 		',marg:'8px;padding:10px');
 	htm_Card_00();
@@ -163,7 +212,7 @@ $strCode= highlight_str('// HTML:
             It is build with two functions: htm_Page_0() and htm_Page_00()<br>
             Here are the page title, the window background and content align setup.<br>
             All the needed preparing (calling libraries) is done here.<br>
-            Example: htm_Page_0(<abbr class= "hint"><data-hint>htm_Page_0(titl:\'\',hint:\'\',info:\'\',inis:\'\',algn:\'center\', gbl_Imag:\'\',gbl_Bord:true);</data-hint>Parameters</abbr>) and htm_Page_00()<br>
+            Example: htm_Page_0(<abbr class= "hint"><data-hint>htm_Page_0(titl:\'\', hint:\'\', info:\'\', inis:\'\', algn:\'center\', imag:\'\', attr:\'\', pbrd:true);</data-hint>Parameters</abbr>) and htm_Page_00()<br>
             <small><small>Mouse-over "Paremeters" shows hint !</small></small>
 		');
 	htm_Card_00();
@@ -179,7 +228,7 @@ $strCode= highlight_str('// HTML:
             Cards can be used as a "Local Menu" and to keep overview...<br>
             Example: htm_Card_0(<abbr class= "hint">
             <data-hint> htm_Card_0('. (
-                "capt:'@<small>System - </small>CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''").
+                "capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''").
             '</data-hint>
             Parameters</abbr>) and htm_Card_00(<abbr class= "hint">
             <data-hint>htm_Card_00('. ( 
@@ -191,7 +240,7 @@ $strCode= highlight_str('// HTML:
 
     htm_Card_0(capt:'@LAYOUT:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('If you will not let cards fill the window-width, you can use the functions: <br>
-            htm_RowColxxx() to create a column layout.<br> 
+            htm_RowCol_0() / htm_RowCol_next() / htm_RowCol_00() to create a column layout.<br> 
             Example: htm_RowCol_0(<abbr class= "hint"><data-hint>htm_RowCol_0 (wdth:240)</data-hint> Parameters</abbr>) and htm_RowCol_next(<abbr class= "hint"><data-hint>htm_RowCol_next(wdth:320)</data-hint>Parameters</abbr>)<br>
             and htm_RowCol_00()
 		');
@@ -217,7 +266,9 @@ $strCode= highlight_str('// HTML:
             Column wise it can: Filter - Sort - Width-Resize<br>
             Row wise it can: Create - Change - Delete - Spec. Buttons - set background color<br>
             Above and underneth the table, you can use special captions and notes.<br>
-            Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, $TblNote, &$TblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $TblStyle, $CalledFrom, $MultiList)</data-hint>Parameters</abbr>)
+            Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table('.
+            highlight_words('capt:[], pref:[], body:[],suff:[], note:\'\', data:[],filt:true,sort:true,crea:true, modi:true, vhgh:\'400px\',  styl:\'\',  from:__FILE__,list:[],expo:\'\')','','color:'.'red; ').
+            '</data-hint>Parameters</abbr>)
 		');
 	htm_Card_00();
 
