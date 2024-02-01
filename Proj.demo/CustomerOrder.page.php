@@ -1,25 +1,23 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';   $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';   $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
-
+ 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 $gbl_progvers= $DocVer;
 $gbl_copydate= $DocRev; 
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php'); // 'php2html.lib.min.php'
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php'); // sql_/dbi_-functions
-
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);   
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.2/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-define('LIB_TINYMCE',       [0,      '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/']); 
-// Set ix= 0:deactive  1:Local-source  2:WEB-source-CDN
-
 
 
 ### SPECIAL this page only:
@@ -333,9 +331,9 @@ htm_Page_0(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with
     // Menu_Topdropdown(true); 
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
-
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
+    
 if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
     
     htm_Caption(labl:'@Tiny-Cloud-Accounting',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
@@ -433,7 +431,8 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
             htm_Input(labl:'@Print to',          plho:'@Select',      icon:'',  hint:'@Choose how to print, save or send the document.',
                       vrnt:'opti', name:$n='condoutp', valu: $arrConditi[$n],   form:'',wdth:'68%',   algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Dok() );
             htm_Input(labl:'@Customer reference',/*plho:'Ref...',icon:'',*/     hint:'@for example. Requisitions no',                   
-                      vrnt:'text', name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
+                      vrnt:'text', 
+name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
         htm_Card_00(labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
 
         $body= '<small><i>Business only !</i><br>
@@ -590,40 +589,40 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
         htm_Card_00( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
         
         htm_Card_0(capt: '@Delivery:',icon: 'fas fa-truck',hint: '',form: $fm='deli',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
-            htm_Input(labl:'@Order number',             plho:'Hidden field', icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],       form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Delivered to invoice address', plho:'Name...', icon:'',hint:'@Check here if the delivery address is the same as the invoice address',
-                      vrnt:'chck', name:$n='delisame',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+            htm_Input(labl:'@Order number',             plho:'Hidden field', icon:'',hint:'Hidden field', vrnt:'hidd',
+                      name:$n='ordrnumb',   valu:$arrCustomr[$n],       form:'',wdth:'0%', algn:'left',attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
+            htm_Input(labl:'@Delivered to invoice address', plho:'Name...', icon:'',hint:'@Check here if the delivery address is the same as the invoice address', vrnt:'chck', 
+                      name:$n='delisame',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: [['delisame','@Same address','@Automatic fillout with the same address as invoice',$namechck ?? '']]);
-            htm_Input(labl:'@Recipient Name',           plho:'@Name...',  icon:'',hint:'@Enter Recipient Name',                                             
-                      vrnt:'text', name:$n='deliname',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@Delivery Address',         plho:'@Addr..',   icon:'',hint:'@Enter Delivery Address',                                           
-                      vrnt:'text', name:$n='deliaddr',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@Place of Delivery',        plho:'S@ted...',  icon:'',hint:'@Specify Place of Delivery, supplement to address',                 
-                      vrnt:'text', name:$n='deliplac',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%');
-            htm_Input(labl:'@ZIP',                      plho:'@Pnr..',    icon:'',hint:'@Enter Delivery Customer postcode',                                 
-                      vrnt:'text', name:$n='deli_zip',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'26%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@City Name',                plho:'@City..',   icon:'',hint:'@Enter Delivery City name',                                         
-                      vrnt:'text', name:$n='delicity',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'68%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@Delivery Country',         plho:'@Contry...',icon:'',hint:'@Specify Delivery Country',                                         
-                      vrnt:'text', name:$n='delicoun',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Recipient Name',           plho:'@Name...',  icon:'',hint:'@Enter Recipient Name', vrnt:'text', 
+                      name:$n='deliname',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@Delivery Address',         plho:'@Addr..',   icon:'',hint:'@Enter Delivery Address', vrnt:'text', 
+                      name:$n='deliaddr',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@Place of Delivery',        plho:'S@ted...',  icon:'',hint:'@Specify Place of Delivery, supplement to address', vrnt:'text', 
+                      name:$n='deliplac',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%');
+            htm_Input(labl:'@ZIP',                      plho:'@Pnr..',    icon:'',hint:'@Enter Delivery Customer postcode', vrnt:'text', 
+                      name:$n='deli_zip',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'26%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@City Name',                plho:'@City..',   icon:'',hint:'@Enter Delivery City name', vrnt:'text', 
+                      name:$n='delicity',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'68%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@Delivery Country',         plho:'@Contry...',icon:'',hint:'@Specify Delivery Country', vrnt:'text', 
+                      name:$n='delicoun',  valu: $arrDeliver[$n]  ?? '');
             htm_hr($gbl_TitleColr.'; height: 2px');
-            htm_Input(labl:'@Phone(s)',                 plho:'@Phone..' , icon:'',hint:'@Enter Recipient`s Phone',                                          
-                      vrnt:'text', name:$n='deliphon',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Contact person',           plho:'Name...' , icon:'',hint:'@Contact person at the delivery address',                                               
-                      vrnt:'text', name:$n='delikont',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Recipient`s Email Address',plho:'@Mail...' , icon:'',hint:'@Enter Recipient`s Email Address',                                  
-                      vrnt:'mail', name:$n='delimail',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Shipping Method.',         plho:'@Shipp...', icon:'',hint:'@Enter Shipping Information. How / with whom was the package sent?',
-                      vrnt:'text', name:$n='delimeto',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Notes to freight forwarder',plho:'@Note...',  icon:'',hint:'@Notes regarding package delivery',                                 
-                      vrnt:'area', name:$n='delinote',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Status',                   plho:'@Enter...',icon:'',hint:'@Once the service has been sent, amounts can be redeemed',          
-                      vrnt:'chck', name:$n='delistat',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'50%',algn:'left', attr:'margin: 0 10px;',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+            htm_Input(labl:'@Phone(s)',                 plho:'@Phone..' , icon:'',hint:'@Enter Recipient`s Phone', vrnt:'text', 
+                      name:$n='deliphon',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Contact person',           plho:'Name...' , icon:'',hint:'@Contact person at the delivery address', vrnt:'text', 
+                      name:$n='delikont',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Recipient`s Email Address',plho:'@Mail...' , icon:'',hint:'@Enter Recipient`s Email Address', vrnt:'mail', 
+                      name:$n='delimail',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Shipping Method.',         plho:'@Shipp...', icon:'',hint:'@Enter Shipping Information. How / with whom was the package sent?', vrnt:'text', 
+                      name:$n='delimeto',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Notes to freight forwarder',plho:'@Note...',  icon:'',hint:'@Notes regarding package delivery', vrnt:'area', 
+                      name:$n='delinote',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Status',                   plho:'@Enter...',icon:'',hint:'@Once the service has been sent, amounts can be redeemed', vrnt:'chck', 
+                      name:$n='delistat',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'50%',algn:'left', attr:'margin: 0 10px;',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: [['shipped_','@Are shipped','@Ready for redemption',$shipped_ ?? '']]);           
            #htm_Input(# $labl='',$plho='@Enter...',$icon='',$hint='',$type= 'text',$name='',$valu='',form:'',$wdth='',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='2',$step='',$list=[],$llgn='R',$bord='',$ftop='');
-            htm_Input($labl='@Delivery Date',plho:'@Enter...',icon:'',hint:'@Possibly. shipment date',
-                      vrnt:'date', name:$n='lev_dato', valu: $arrDeliver[$n]  ?? '', form:'',wdth:'50%'   );
+            htm_Input($labl='@Delivery Date',plho:'@Enter...',icon:'',hint:'@Possibly. shipment date', vrnt:'date', 
+                      name:$n='lev_dato', valu: $arrDeliver[$n]  ?? '', form:'',wdth:'50%'   );
 
             $delName= $arrDeliver['deliname'] ?? '';
             $delAddr= $arrDeliver['deliaddr'] ?? '';
@@ -766,7 +765,7 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
 
 
 
-    htm_Card_0( capt: '@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px');
+    htm_Card_0( capt:'@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px');
         $heading= [['@Pos.','center'],['@Item no.','center'],['@Quantity','right'],['@Unit','left'],['@Description','left'],['@VAT','center'],
                    ['@Price','right'],['@%','right'],['@Total','right'],['@Currency','center']];
         $body= '<small><table style="margin: 0 auto; width:675px;"><thead>';    // Content Preview:<br>

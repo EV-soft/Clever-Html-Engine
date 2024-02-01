@@ -1,35 +1,36 @@
-<?php   $DocFil= './functions.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './functions.page.php';    $DocVer='1.3.2';    $DocRev='2024-01-27';     $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',            'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);   
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',         'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',       'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']); 
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);        // css/all.min.css
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
 include('../funcscann.php');
 
 ### PAGE-START:
 htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:true);
-    // Menu_Topdropdown(true); htm_nl(1);
-    
+   
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
     
     htm_Card_0( capt: '@The overview over the system functions:', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
         htm_TextPre('<big>FUNCTIONS - vers. '.$DocVer.' - '.date("Y-m-d").':</big><br>'.
             file_get_contents('Functions.html'));
-        htm_nl(1);
+        $lines = count(file('Functions.html'));
+        echo 'Total: '.floor(0.5+($lines-2)/2),' htm_Functions';
+        htm_nl(2);
     htm_Card_00();
 
     htm_Card_0( capt: '@Notes about function parameters - Keywords table();', icon: 'fas fa-info', 
@@ -57,6 +58,7 @@ htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',
             ['marg','Margin'],
             ['styl','Style'],
             ['attr','Attribute'],
+            ['mode','Mode'],
             ['font','Font'],
             ['colr','Color'],
             ['fclr','Foreground color'],
@@ -129,7 +131,36 @@ htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',
             ['expo','export table to file'],
             ['show','Show cards arrows. Only show (disabled/readonly)'],
             ['help','Link to custom-help'],
-            ['ftop','string: Ajust field vertical position']
+            ['ftop','string: Ajust field vertical position']  /* ,
+            ['intg','htm_Input() Variant'],
+            ['text','htm_Input() Variant'],
+            ['dec0','htm_Input() Variant'],
+            ['dec1','htm_Input() Variant'],
+            ['dec2','htm_Input() Variant'],
+            ['num0','htm_Input() Variant'],
+            ['num1','htm_Input() Variant'],
+            ['num2','htm_Input() Variant'],
+            ['num3','htm_Input() Variant'],
+            ['mail','htm_Input() Variant'],
+            ['link','htm_Input() Variant'],
+            ['sear','htm_Input() Variant'],
+            ['file','htm_Input() Variant'],      
+            ['imag','htm_Input() Variant'],
+            ['date','htm_Input() Variant'],
+            ['time','htm_Input() Variant'],
+            ['week','htm_Input() Variant'],
+            ['mont','htm_Input() Variant'],
+            ['rang','htm_Input() Variant'],
+            ['butt','htm_Input() Variant'],
+            ['colr','htm_Input() Variant'],
+            ['phon','htm_Input() Variant'],
+            ['pass','htm_Input() Variant'],
+            ['area','htm_Input() Variant'],
+            ['html','htm_Input() Variant'],
+            ['chck','htm_Input() Variant'],
+            ['rado','htm_Input() Variant'],
+            ['opti','htm_Input() Variant'],
+            ['hidd','htm_Input() Variant']   */
         ];
         $keys= '';  foreach ($data as $k) $keys.= $k[0].' ';
         
@@ -164,7 +195,7 @@ htm_Page_0( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center',
 
     htm_Card_0( capt: ' htm_Page_0();', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_CodeDiv(highlight_words(highlight_str(
+        htm_CodeBox(highlight_words(highlight_str(
 "function htm_Page_0(# titl:'', hint:'', info:'', inis:'', algn:'center', gbl_Imag:'', attr:'', gbl_Bord:true) 
     \$titl='',           # string: Page title
     \$hint='',           # string: Page tip  (vertical text - left)
@@ -185,7 +216,7 @@ function htm_Page_00();  # End of page - has no parameters
 
     htm_Card_0( capt: ' htm_Card_0();', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_CodeDiv(highlight_words(highlight_str(
+        htm_CodeBox(highlight_words(highlight_str(
 "function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'', show:true, head:'', vhgh:'600px', help:'');
     \$capt = '',                         # string: The card caption
     \$icon = '',                         # string: icon to the left of caption
@@ -223,7 +254,7 @@ function htm_Card_00(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, a
 
     htm_Card_0( capt: ' htm_Input();', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_CodeDiv(highlight_words(highlight_str(
+        htm_CodeBox(highlight_words(highlight_str(
 "
 function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:'',valu:'',form:'',wdth:'',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'',ftop:'');
     # Generel order:
@@ -260,7 +291,7 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
     $gbl_CardsBgrd= 'white'; 
     htm_Card_0( capt: ' htm_Cleverbox();', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_CodeDiv(highlight_words(highlight_str(
+        htm_CodeBox(highlight_words(highlight_str(
 "htm_Cleverbox(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'noUse',name:'noUse',valu:'',form:'noUse',wdth:'200px;',algn:'left',attr:'',rtrn:false,unit:'noUse',disa:false,rows:'noUse',step:'noUse',list:['noUse'],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
     \$labl= '',                            # string: Translated label above the input field
     \$plho= '@Enter...',                   # string: The placeholder shown with blank value
@@ -293,7 +324,7 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
 
     htm_Card_0( capt: ' htm_Table;', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_CodeDiv(highlight_words(highlight_str("
+        htm_CodeBox(highlight_words(highlight_str("
 function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:true,sort:true,crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'');
     \$capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:horJust',       '5:Tip',    '6:placeholder', '7:Content';], ...
            ],

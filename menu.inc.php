@@ -1,5 +1,5 @@
-<?php $DocFile0='../menu.inc.php';    $DocVer='1.3.0';    $DocRev='2023-08-08';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?  $DocFile0='../menu.inc.php';    $DocVer='1.3.2';    $DocRev='2024-01-26';       $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 
 # MENU-folders:
@@ -49,7 +49,7 @@ function MenuBranch($clas='',$href='#',$labl='',$titl='',$cssIcon='',$more='') {
   }
 }
 
-
+    
 function Menu_Topdropdown($showGroup1=true, $showGroup2=false, $showGroup3=false, $showGroup4=false, $showGroup5=false, $showGroup6=false) {
 global $gbl_debug, $gbl_ProgTitl, $_assets, $_base, $folder1, $folder2, $folder3, $folder4, $folder5;
  // MenuStart($clas='firstmain',      $href= '#',                               $labl='@MENU:',         $titl='@Main menu');

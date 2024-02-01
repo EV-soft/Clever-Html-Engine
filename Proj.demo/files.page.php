@@ -1,26 +1,26 @@
-<?php   $DocFil= './Proj.demo/files.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj.demo/files.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
-
+ 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
 htm_Page_0(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag:$gbl_ProgRoot.'_accessories/_background.png', pbrd:false);
     // Menu_Topdropdown(true); htm_nl(1);
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
     htm_Card_0(capt:'Naming System-files', icon:'fas fa-file',hint: '',form: 'head', acti: '',clas:'cardW640', wdth: '',styl: 'background-color: white;',attr: '');
     htm_nl(1);
 

@@ -1,31 +1,28 @@
-<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.3.1';    $DocRev='23-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.3.1';    $DocRev='23-09-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
-$gbl_ProgRoot= './../';
+$gbl_ProgRoot= './../'; 
 $lang= 'da';
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php');
 
-## Speedup page-loading, if some libraryes is not needed:
-//      ConstName:          ix:   LocalPath:                 CDN-path:
-define('LIB_JQUERY',        [1, '_assets/jquery/latest/',   'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [1, '_assets/jquery-ui/latest/','https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);
-define('LIB_TABLESORTER',   [1, '_assets/tablesorter/js/',  'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/js/']);
-define('LIB_POLYFILL',      [0, '_assets/',  '']);
-define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
-define('LIB_FONTAWESOME',   [1, '_assets/font-awesome/latest/', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
-
 htm_Page_0( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
-    // Menu_Topdropdown(true); htm_nl(1);
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    // htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_nl(2);
     $dPath= '../Data.demo/';
     $accoPlan= json_decode(file_get_contents(/* $dPath. */'accPlan.dk.json' /* 'export.dat.json' */), true); // export.dat.json / $dPath.'arrAplan2.dat.json'
     // $accoPlan= newFieldOrder($accoPlan,['pln_id__','pln_nmbr','pln_name','pln_type','pln_from','pln_vat_','pln_sald','pln_curr','pln_cour','pln_shrt','pln_stat']);

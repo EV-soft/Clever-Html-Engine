@@ -1,7 +1,7 @@
-<?  $DocFileInc='../customRules.inc.php';   $DocVers='1.3.1';  $DocRev='2023-09-02';  $DocIni='evs';  $ModulNo=0; ## File informative only
+<?  $DocFileInc='../customRules.inc.php';   $DocVers='1.3.2';  $DocRev='2024-01-26';   $DocIni='evs';  $ModulNo=0; ## File informative only
 
   ## In php2html.lib.php this file is included: 
-  ##    if (is_readable('customRules.inc.php')) include('customRules.inc.php');  
+  ##    if (is_readable('customRules.inc.php')) include('customRules.inc.php');  (related: htm_Table())
    # Here you can add your special rules 
 
     // if (false)

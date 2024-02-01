@@ -1,30 +1,26 @@
-<?php   $DocFile= './Proj.demo/other.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/other.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-18';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
-## Activate needed libraries:
-//      ConstName:          ix:   LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [2, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [2, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [2, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);  // multible
-define('LIB_POPSCRIPTS',    [0, '_assets/',  '']);
-define('LIB_POLYFILL',      [0, '_assets/',  ' Not in use ']);       
-define('LIB_FONTAWESOME',   [2, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
-define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/tinymce.min.js']); 
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
 htm_Page_0($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
-    // Menu_Topdropdown(true); htm_nl(1);
-    
+  
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
     htm_Card_0($capt= 'Other htm_functions:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'cardW480',$wdth= '',$styl= 'background-color: white;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );
                 
     htm_TextDiv("There are a lot of small functions <br>

@@ -1,4 +1,4 @@
-<?   $DocFileLib='Project.notes.txt';    $DocVer='1.3.0';    $DocRev='2023-04-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?   $DocFileLib='Project.notes.txt';    $DocVer='1.3.2';    $DocRev='2024-01-26';      $DocIni='evs';  $ModulNo=0; ## File informative only
 
 Notes regarding php2html.lib.php:
 
@@ -24,6 +24,7 @@ Notes regarding php2html.lib.php:
 //  8.  Edit > BLANK Operations > Remove preceeded and subordinate SPACES
 //  9.  Repeat - Find: SPACESPACESPACE Replace to:SPACESPACE until not found
 // 10.  Save lib-file as minimized file .min.
+// 11.  Test the file (Maybe add removed comments: // INIT: "; near addEventListener )
 
 // Search for all external called files.
 // Find:
@@ -221,6 +222,16 @@ Rename: htm_Page0() shortened some function parameter names
 v1.3.1:
 New: htm_Menu_TopDown()
 New: htm_Menu_Leftout()
+
+
+###########
+v1.3.2:
+Changed: Activating libraryes
+New: htm_CodeBox()
+New: htm_Figure(()
+New: htm_Details()
+New: \Quick_Proj\quickstart.page.php
+
 */
 
 ?>

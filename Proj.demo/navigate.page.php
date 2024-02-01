@@ -1,42 +1,51 @@
-<?php   $DocFile= './Proj.demo/navigate.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/navigate.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
 
-$sys= $GLOBALS["gbl_ProgRoot"]= '../';
+$sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
 
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jjquery-ui.min.js
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
          # $pageTitl='',                  $gbl_PageImage='',                                            $align='center',$PgInfo='',$PgHint='',$headScript='',$pageBorder=true) 
 #htm_Page_0($pageTitl='navigate.page.php', $gbl_PageImage= $gbl_ProgRoot.'_accessories/_background.png', $align='center');       
 //htm_Page_0(titl:'pages.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:'', algn:'center', imag:'../_accessories/_background.png', pbrd:true);
 htm_Page_0(titl:'navigate.page.php',hint:$©,info:lang('@PHP2HTML Demo and Documentation'),inis:'',algn:'center', imag:'../_accessories/_background.png',pbrd:true);
-    // Menu_Topdropdown(true); htm_nl(1);
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
-
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
+    
     htm_Card_0(capt:'@Navigate functions:', icon:'fas fa-info', hint:'@HINT',form:'', acti:'', clas:'cardW480', wdth:'', styl:'background-color: white;',attr:'');
     htm_TextDiv('To navigate in a program you can use:<br><br>
-            <b>htm_Menu_Leftout()</b> which is a system module. <br>
-            You see it on the introduktion-page in the left side. <br>
-            <br>
-               You can also use <br>
-            <b>Menu_Topdropdown()</b> which you can see at <br>
-            the top of all demo pages.<br>
+            Two system functions <b>htm_Menu_TopDown()</b><br>
+            <img src="'.$gbl_ProgRoot.'_accessories/top_menu.JPG" width="450"></img><br>
+            and <b>htm_Menu_Leftout()</b> <br>
+            <img src="'.$gbl_ProgRoot.'_accessories/left_menu.JPG" width="40"></img><br>
+            Both are 2-level adaptive menues. <br>
+            The menucontent is set in an data-array().
+            <br><br>
+            Including library menu.inc.php you can also use:<br>
+            <b>Menu_Topdropdown()</b> <br>
+            <img src="'.$gbl_ProgRoot.'_accessories/topDown_menu.JPG" width="450"></img>
+            <br><br>
             You find it in the file: menu.inc.php <br>
-            and it is called with Menu_Topdropdown() <br><br>
+            and it is called with Menu_Topdropdown() <br>
+            It is a multi-level adaptive menu.<br>
+            The menucontent is set in the file menu.inc.php.
+            <br><br>
             Another button is <b>menuButt()</b> that can be used <br>
-            to link to subpages:<br><br>');
+            to link to subpages:
+            <br><br>'
+        );
 
     echo '<div style="text-align: center;">';
         menuCapt($h='24',$w='200',$label='Simple menuCaption()');
@@ -44,6 +53,13 @@ htm_Page_0(titl:'navigate.page.php',hint:$©,info:lang('@PHP2HTML Demo and Docum
         menuButt($h='24',$w='200',$label='MenuButt 1',$link='',$title='MenuButt'); htm_nl(1);
         menuButt($h='24',$w='200',$label='MenuButt 2',$link='',$title='MenuButt');
     echo '</div>';
+    /* 
+    echo '<br><br>';
+    echo '<div style="zoom: 55%;"';
+    htm_Menu_TopDown(capt:'',data:$menudata, foot:'', styl:'');
+   //  htm_Menu_Leftout(capt:'',data:$menudata, foot:'', styl:'');
+    echo '</div'; */
+    
     echo '<br><br>';
     htm_TextTip($capt='See also: <b>htm_IconButt()</b>',$body='- a general button with icon.',$width='',$colr='lightgreen',$align='center');
     htm_TextTip($capt='See also: <b>htm_AcceptButt()</b>',$body='- a general button with icon.',$width='',$colr='lightgreen',$align='center');

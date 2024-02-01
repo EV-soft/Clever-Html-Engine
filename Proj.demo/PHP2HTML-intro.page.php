@@ -1,33 +1,30 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';      $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php'); 
 
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // query.min.js
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-define('LIB_TINYMCE',       [0,      '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/tinymce.min.js']); 
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
 // $darkTheme= true;
 
 htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hint=$©,$info='File: '.$DocFile.' - Ver:'.$DocVer, $inis='',$algn='center', $gbl_Imag='', $gbl_Bord=false);
-    // Menu_Topdropdown(true); htm_nl(1);
 
-    htm_Menu_Leftout(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:88px;'); 
+    htm_Menu_Leftout(capt:'Clever html engine', data:$menudata, foot:'PHP2HTML', styl:'top:88px;'); 
     run_script('desc_div("narrow","capt");');   // Init htm_Menu_Leftout() to narrow state
     
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
+    htm_Menu_TopDown(capt:'Clever html engine', data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
     htm_nl(5);
 /*     
 $href= $folder2.'PHP2HTML-intro.page.php',$labl='@INTRODUCTION',  $titl='@Introduction to the systems most usable modules');
@@ -61,7 +58,8 @@ $href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other 
 $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions',           $icon='fas fa-info');
  */
 //    echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">';
-    htm_RowCol_0($RowColWdth=1100);
+
+//  htm_RowCol_0($RowColWdth=1100);
     
     htm_TextDiv(body:'
             <p style="margin: 10px; text-align: center; line-height: 1.2;"><span style="font-size: 18pt;"><strong>Clever html engine</strong></span></p>
@@ -132,7 +130,7 @@ $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An ove
 <td style="height: 21px;">Checks browser input validation</td>
 </tr>
 <tr style="height: 21px;">
-<td style="height: 21px;"><strong>PHP 8.2+</strong></td>
+<td style="height: 21px;"><strong>PHP 8.3+</strong></td>
 <td style="height: 21px;">Compatible with latest PHP</td>
 </tr>
 <tr style="height: 21px;">
@@ -166,7 +164,8 @@ htm_Input(labl:\'@Amount\', icon:\'fas fa-euro\', vrnt:\'dec2\',
         // esc_code();
         // $strCode= highlight_string($strCode,true); 
         // esc_code();
-        htm_CodeDiv(($strCode));
+        htm_CodeBox(($strCode));
+        
         htm_TextDiv('@<i>will produce css-data and this html code:</i>');
 $strCode= highlight_str('// HTML:
 <div class="inpField" id="inpBox" style="margin: auto;  width: 150px; display: inline-block;"> 
@@ -192,7 +191,7 @@ $strCode= highlight_str('// HTML:
 ',true);
 // arrPretty($strCode,'$strCode');
 // arrPretty(preg_replace('/^<\?(.*)(\>)?$/s', '$1',$strCode),'$strCode'); // str_replace()  preg_replace("/<\?/", 'xxx',$strCode),'$strCode')  // 
-        htm_CodeDiv((preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "",$strCode)));
+        htm_CodeBox((preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "",$strCode)));
         htm_TextDiv('@<i>And here are the output:</i>');
         $dec2= 0;
         htm_Input(labl:'@Amount',plho:'@Enter...',icon:'fas fa-euro',hint:'@Demo of htm_Input Field variant dec2: number with 2 decimal',
@@ -227,12 +226,12 @@ $strCode= highlight_str('// HTML:
             Cards has predefined widths, and its position will swap, if the window-width is to small.<br>
             Cards can be used as a "Local Menu" and to keep overview...<br>
             Example: htm_Card_0(<abbr class= "hint">
-            <data-hint> htm_Card_0('. (
-                "capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''").
+            <data-hint> htm_Card_0('.  highlight_words(highlight_str(
+                "capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''"),styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>) and htm_Card_00(<abbr class= "hint">
-            <data-hint>htm_Card_00('. ( 
-                "labl:'@Save', icon:'', hint:'', name:'', form:'', subm:true, attr:'', akey:'', kind:'save', simu:false)").
+            <data-hint>htm_Card_00('. highlight_words(highlight_str( 
+                "labl:'@Save', icon:'', hint:'', name:'', form:'', subm:true, attr:'', akey:'', kind:'save', simu:false)"),styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>)
 		');
@@ -307,7 +306,7 @@ $strCode= highlight_str('// HTML:
 		');  
 	htm_Card_00();
     
-    htm_RowCol_00();
+//  htm_RowCol_00();
     CardOff($First=3,$Last=9);
 
 htm_Page_00();

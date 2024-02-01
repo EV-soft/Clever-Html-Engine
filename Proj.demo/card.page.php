@@ -1,20 +1,19 @@
-<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.3.2';    $DocRev='2024-01-27';      $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
-
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-
 
 ### DATA-INIT/UPDATE:
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used !
@@ -30,8 +29,8 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
     // echo 'About the foldable card-system:';  htm_nl(2);
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
     
     htm_RowCol_0($RowColWdth=1200);
     htm_Card_0(capt: 'htm_Card_0(); (click to close/open)',icon: 'fas fa-info',
@@ -139,7 +138,7 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
                 name:'', form:'xxx',subm:true, attr:'', akey:'s', kind:'save', simu:false);
     
     // htm_RowCol_next($RowColWdth=480);
-    
+
     htm_Card_0(capt: '@How creating cards:',icon: 'fas fa-info',hint: '',
                form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white;',attr: '');
     htm_TextDiv('To build a card there are 2 functions: <br><br>
@@ -149,8 +148,9 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
         In between, you add your content.             <br><br>
         <small>See the source in php2html.lib.php to manage the function parameters.</small>
         ');
+        
         htm_Card_0(capt: '@PHP Source-code:',icon: 'fas fa-code',hint: '',
-                   form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white;',attr: '');
+                   form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white; text-align:left;',attr: '');
 
 $strCode= "
 htm_Card_0(capt: '@PHP Source-code:',        # string: The card caption
@@ -171,12 +171,13 @@ htm_Card_0(capt: '@PHP Source-code:',        # string: The card caption
 );
 
 // Placed here the cardcontent...
+
 htm_Card_00();
         ";
-            htm_CodeDiv(highlight_words(highlight_str($strCode,true)));
+            htm_CodeBox(highlight_words(highlight_str($strCode,true)));
 
-        htm_Card_00();
-    htm_Card_00();
+        htm_Card_00();  # PHP Source-code
+    htm_Card_00();  # How creating cards:
     
     htm_Card_0(capt: '@How do you manage cards:',icon: 'fas fa-info',hint: '',
                form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white;',attr: '');

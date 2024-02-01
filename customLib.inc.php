@@ -1,4 +1,4 @@
-<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.3.0';  $DocRev='2023-04-27';  $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.3.2';  $DocRev='2024-01-27';   $DocIni='evs';  $ModulNo=0; ## File informative only
     # In this file you can add your global custom rules and values, for all pages in your project.
     # The file will be read by a require_once() in php2html.lib.php and html added to all page headers:
 
@@ -25,7 +25,7 @@ if ($darkTheme= true) {
 
 ## Hightlight - Custom word-list and custom style: 
 function highlight_words($text, $wrds='', $styl='',$patt='~\w{4,10}~') { 
-    $wrds.='labl capt body foot plho icon hint type name valu form subm acti clas wdth algn marg styl attr font colr fclr bclr llgn link targ akey kind echo unit disa rows step bord plac rept rtrn titl info inis imag pbrd simu clck vhgh stck cntx html butt mess tplc tsty head evnt note rept shrt frst last from to__ elem pref suff filt data crea modi expo just sort filt vrnt capt pref body suff note data filt sort crea modi vhgh styl from list expo show help ftop
+    $wrds.='labl capt body foot plho icon hint desc type name valu vmax vmin form subm acti clas wdth algn marg styl attr mode font colr fclr bclr llgn link targ akey kind echo unit disa rows step bord plac rept rtrn titl info inis imag pbrd simu clck vhgh stck cntx html butt mess tplc tsty head evnt note rept shrt frst last from to__ elem pref suff filt data crea modi expo just sort filt vrnt capt pref body suff note data filt sort crea modi vhgh styl from list enbl expo show help ftop
            ';
     $wrds= str_replace(' ',': ',$wrds); # Add : to all words
     if ($styl=='') $styl='color:'.'cyan; './* '#550000 #a16802; '. */ 'font-style:italic;';
@@ -42,13 +42,6 @@ function highlight_str($code,$retr=true) { # Remove the needed triggering <? pre
     return $result;
 }
    
-function htm_CodeDiv($code,$rtrn=false) { // htm_CodeDiv(highlight_words(highlight_string('<? '.$strCode,true)));
-    $result= '<p style="text-align: left; padding:4px; white-space: nowrap; overflow-x: auto; line-height: 1; background-color:#121212;">'; // #121212
-    $result.= $code; //str_replace(['$','"'],['\$','\"'],$code);
-    $result.= '</p>';
-    if ($rtrn==false) echo $result;
-    else return $result;
-};
 
 /*  // https://www.php.net/manual/en/function.highlight-string.php
 <?esc_code()?>

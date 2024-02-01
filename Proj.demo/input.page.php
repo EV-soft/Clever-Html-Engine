@@ -1,19 +1,19 @@
-<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.3.2';    $DocRev='2024-01-27';      $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
-$sys= $GLOBALS["gbl_ProgRoot"]= '../';
+$sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php'); 
-
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
 
 
 ## REMARK: scannSource() are only usefull, when rules like:     $name='intg', $valu=$intg, - are used ! 
@@ -40,8 +40,8 @@ htm_Page_0(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocV
     </style>';
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
-    htm_nl(3);
+    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_nl(2);
     
     htm_Card_0(capt: 'The collection of htm_Input() variants:',icon: 'fas fa-info',hint: '',form: 'test',acti: '',clas: 'cardW720',wdth: '',styl: 'background-color: white;',attr: '');
 
@@ -140,7 +140,7 @@ htm_Page_0(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocV
         htm_Input(labl:'@htm_Input(imag)',plho:'',              icon:'',hint:'@Demo of htm_Input Field type image',                            vrnt:'imag',name:'imag',valu:'',        form:'',wdth:'100px', algn:'left',  attr:'',rtrn: false,unit:'',disa:false,rows:'1',step:'');
     htm_nl(2);
     
-    htm_Inbox(labl:'Inbox',plho:'@Enter...',icon:'fas fa-info',hint:'Tooltip text',vrnt: '',name:'Body_div',valu:'EMPTY box',form:'',wdth:'150px;',algn:'left',
+    htm_Inbox(labl:'htm_Inbox',plho:'@Enter...',icon:'fas fa-info',hint:'Tooltip text',vrnt: '',name:'Body_div',valu:'EMPTY box',form:'',wdth:'150px;',algn:'left',
                   attr:'color: green;',rtrn:false,unit:'',disa:true,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
 
     $html= '
@@ -150,14 +150,14 @@ htm_Page_0(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocV
     <tr><td>x</td><td>y</td><td>z</td></tr>
     </table>
     ';
-    htm_Inbox(labl:'Inbox-test RO',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of htm_Inbox() containing a table.<be>Readonly',
+    htm_Inbox(labl:'htm_Inbox-test RO',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of htm_Inbox() containing a table.<be>Readonly',
                   vrnt: '',name:'Body_div',valu:$html,form:'',wdth:'33%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
 
-    htm_Inbox(labl:'Inbox-test RW',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of editable htm_Inbox() containing a table',
+    htm_Inbox(labl:'htm_Inbox-test RW',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of editable htm_Inbox() containing a table',
                   vrnt: '',name:'Body_div',valu:$html,form:'',wdth:'33%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:true,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
-    echo lang('@Inbox() is not really an Input() element, but looks like Input() with a content that you decide.');
+    echo '<br>'.lang('@htm_Inbox() is not really an Input() element, but looks like htm_Input() with a content that you decide.');
     htm_Fieldset_00();
     htm_nl(2);
 

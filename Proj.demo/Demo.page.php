@@ -1,5 +1,5 @@
-<?php   $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-02';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.3.2';    $DocRev='2024-01-27';      $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters can be shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -7,20 +7,18 @@ $gbl_ProgRoot= './../';
 // $jsScripts= '';
 $lateScripts= '';
 
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+$needJquery=      '2';
+$needTablesorter= '2';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
 require_once ($sys.'php2html.lib.php');     // echo $gbl_ProgRoot;
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
  
-## Activate needed libraries:
-//      ConstName:          ix:       LocalPath:                         CDN-path:                                                              // File:
-define('LIB_JQUERY',        [$LibIx, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
-define('LIB_JQUERYUI',      [$LibIx, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
-define('LIB_TABLESORTER',   [$LibIx, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.3/']);
-define('LIB_FONTAWESOME',   [$LibIx, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
-define('LIB_TINYMCE',       [0,      '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.3.1/tinymce.min.js']); 
-// Set ix= 0:deactive  1:Local-source  2:WEB-source-CDN
-
 /* 
 $grab_height= '30px';
 $grab_width= '300px';
@@ -107,7 +105,7 @@ htm_Page_0( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis
 
 ### Program mainmenu:
   if (($vismenu=true) and (($loggetind ?? '') == true) or true)
-    { htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;'); htm_nl(1); }
+    { htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); htm_nl(1); }
 //    { Menu_Topdropdown(true); htm_nl(1); }
 // Menu_Topdropdown(true);     // htm_nl(1);
     echo '<style> body { padding-top: 0; margin-top:0; } </style>';
@@ -187,11 +185,11 @@ htm_Page_0( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis
         ]);
 
         htm_Input(labl:'@htm_Input(chck)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type chck: Multi-line formatted chck-text, vertical layout',  vrnt:'chck', name:'chck1', valu:'', form:'', wdth:'120px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list: [
-            ['pos1','@private','@Details about private'],
+            ['pos1','@private','@Details about private' ],
             ['pos2','@proff','@Details about profession'],
-            ['pos3','@private','@Details about private'],
+            ['pos3','@private','@Details about private' ],
             ['pos4','@hobby','@Details about hobby','checked'],
-            ['pos5','@private','@Details about private'],
+            ['pos5','@private','@Details about private' ],
         ]);
         
         htm_Input(labl:'@htm_Input(rado)', plho:'?...', icon:'', hint:'@Demo of htm_Input Field type radio, vertical layout', vrnt:'rado', name:'rado1', valu:'',  form:'', wdth:'120px;', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list: [
@@ -266,8 +264,8 @@ htm_Page_0( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis
 
         htm_Card_0( capt:'@PHP Source-code: htm_Table();', icon:'fas fa-code', hint:'@View part of the demo source-code. !', form:'', acti:'', clas:'cardW960', wdth:'640px', styl:'background-color: lightgray;', attr:'margin:0;', help:'CustHelp.htm');
 
-        htm_CodeDiv(highlight_words(highlight_str("
-function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:true,sort:true,crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'');
+        htm_CodeBox(highlight_words(highlight_str("
+function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px', styl:'', from:__FILE__,list:[],expo:'');
     \$capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:horJust',       '5:Tip',    '6:placeholder', '7:Content';], ...
            ],
     \$pref= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:Html'], ...
@@ -292,9 +290,10 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:t
 
        // htm_CodeDiv(highlight_words(highlight_string($strCode,true)));
         htm_Card_00();
+    htm_Card_00();
 
     htm_nl(2);
-    echo 'Examples of Container-type elements:';  htm_nl(2);
+    // echo 'Examples of Container-type elements:';  htm_nl(2);
     htm_Card_0(capt:'@Containers', icon:'fas fa-database', hint:'', form:'head', acti:'', clas:'cardW560', wdth:'640px', styl:'background-color: #f8f8f8;', attr:'margin:0;',  show:true,  head:$headbg, help:'CustHelp.htm');    
         htm_TextDiv(body:'The system includes the following functions of container-type:.<br>
               htm_Page_0()<br>
@@ -338,7 +337,7 @@ htm_Fieldset_0(capt:'@Caption: ',
 STRING
 ;
 
-        htm_CodeDiv(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
+        htm_CodeBox(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
         echo 'echo \'You place your html-objects here inside fieldset-frames...\';';
     htm_Card_00();
     
@@ -354,7 +353,7 @@ STRING
 $strCode= 
 <<< 'STRING'
 <? // PHP8-syntax:
-htm_Field_0_00(labl:'Label with hint',
+htm _Field_0_00(labl:'Label with hint',
                hint:'Tip for htm_Field_0_00()',
                icon:'',name:'fld',
                html:'HTML-Content <br>in container htm_Field_0_00() <br>---',
@@ -365,7 +364,7 @@ htm_Field_0_00(labl:'Label with hint',
 STRING
 ; 
 
-        htm_CodeDiv(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
+        htm_CodeBox(highlight_words(highlight_string(/* '<? '. */$strCode,true)));
     htm_Card_00();
         
         
@@ -380,7 +379,7 @@ STRING
         htm_wrapp_00();
         htm_nl(1);
 
-    htm_Card_0( capt:'@PHP Source-code: htm_wrapp_0();', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'cardW560', wdth:'640px', styl:'background-color: lightgray;', attr:'', help:'CustHelp.htm');           
+    htm_Card_0( capt:'@PHP Source-code: htm_wrapp_0();', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'cardW560', wdth:'640px', styl:'background-color: white;', attr:'', help:'CustHelp.htm');           
 
 
 $strCode= 
@@ -396,7 +395,7 @@ htm_wrapp_00();
 STRING
 ; 
 
-        htm_CodeDiv(/* highlight_words */(highlight_string(/* '<? '. */$strCode,true)));
+        htm_CodeBox(/* highlight_words */(highlight_string(/* '<? '. */$strCode,true)));
     htm_Card_00();
 
         htm_nl(2);
@@ -424,7 +423,7 @@ STRING
         htm_IconButt(labl:'@Forgotten password ?', icon:'fas fa-key', hint:'@Click to request a new password', type:'button', name:'lost', link:'', evnt:'', wdth:'80%', font:'18px', fclr:'gray', bclr:'white', akey:'', rtrn:false);
         htm_nl(2);
         $html= htm_Humantest(capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', 
-                             form:'', wdth:'100%', hght:'22px', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO',rtrn:true);
+                             form:'human', wdth:'100%', hght:'22px', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO',rtrn:true);
         htm_Inbox(labl:'@Robot ?',  plho:'', icon:'',hint:'@Confirm you are not a robot',
                   vrnt:'',name:'robot',valu:$html, form:'',wdth:'80%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
@@ -529,9 +528,10 @@ STRING
     echo '<tr><td>&nbsp;</td></tr>';
     echo '<tr style="border: 1px solid lightgray;">
     <td colspan="1"> &nbsp;<small><strong>'.lang('@Meaning:').'</strong></small></td>
-    <td colspan="2">'.htm_MultistateButt(name:'dontCare', valu:1, acti:false, styl:'').' <small>: '. lang('@No access').'</small></td>
-    <td colspan="5">'.htm_MultistateButt(name:'dontCare', valu:2, acti:false, styl:'').' <small>: '. lang('@Read only').'</small></td>
-    <td colspan="5">'.htm_MultistateButt(name:'dontCare', valu:3, acti:false, styl:'').' <small>: '. lang('@Full access').'</small></td>
+    <td colspan="1">'.htm_MultistateButt(name:'dontCare', valu:1, acti:false, styl:'').' <small>: '. lang('@No access').'</small></td>
+    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:2, acti:false, styl:'').' <small>: '. lang('@Read only').'</small></td>
+    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:3, acti:false, styl:'').' <small>: '. lang('@Full access').'</small></td>
+    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:0, acti:false, styl:'').' <small>: '. lang('@Undefined').'</small></td>
     <td colspan="'.(count($task)-8).'" style="text-align:right;"><small>'.lang('@CLICK symbol to change').'</small>&nbsp;</td></tr>';
     echo '</table>';
     
@@ -670,10 +670,33 @@ STRING
         htm_Input('.b('labl').':\'@htm_Input(Dec2)\', '.b('type').':\'dec2\','.b('name').':\'dec2\','.b('valu').':$dec2,'.b('unit').':\'<$ \','.
         b('hint').':\'@Demo of htm_Input Field type dec2: number with 2 decimal\');</div></code><br>
         <br>
-        Be aware of PHP 7.4 is a supported version until 2023/24 ! 
+        Be aware of PHP 7.4 is a supported version until 2023/24 ! <br>
+        Use PHP 8 syntax...
         ');
     htm_Card_00(labl:'', icon:'', hint:'', name:'', form:'head4', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
        
+    htm_Card_0(capt:'@Demo of most recent functions (2024):',icon:'fas fa-info',hint:'@HINT for this card',form:'head6',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: lightgray;',attr:'', show: true, head: $headbg);
+        
+        htm_nl(2);
+        htm_Field_0_00(labl:'@Demo of htm_Figure()', 
+                       body: htm_Figure(
+                                capt:'@Mine logo',type:'h2',imag:'../_accessories/21997911.png',
+                                info:'@Missing image !',styl:'width:100px',
+                                labl:'@EV-soft',
+                                hint:'@Here you see mine Github-logo',rtrn:true), 
+                       icon:'',
+                       hint:'@Demo for htm_Figure()', name:'fig', wdth:'', styl:'background-color:lightcyan;', attr:'', llgn:'C', rtrn:false, ftop:'');
+        echo '<hr>';
+        htm_Field_0_00(labl:'@Demo of htm_Details()', 
+                       body: htm_Details(
+                                capt:'@Details',type:'h3',
+                                body:'@This is the details...',styl:'text-align:left; margin-left:20px;',
+                                labl:'@Summery',
+                                hint:'@These are summaries with collapsible details',mode:'open',rtrn:true), 
+                       icon:'',
+                       hint:'@Demo of htm_Details()', name:'det', wdth:'300px;', styl:'background-color:lightcyan;', attr:'', llgn:'C', rtrn:false, ftop:'');
+                       
+    htm_Card_00(labl:'', icon:'', hint:'', name:'', form:'head6', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
     CardOff(frst:3,last:6);
     
