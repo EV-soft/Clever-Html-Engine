@@ -94,14 +94,17 @@ htm_Page_00()
 
 Now you can see the page in your browser at URL: '{public-URL}/hello/world/first.page.php'
 
+Another more in-depth way is to follow the instructions in Quick_Proj/quickstart.page.php
+
 Advanced example - see files in folder: '{public-URL}/hello/Proj.demo/'
  
 <h3><b>More information...</b></h3>
 
 You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
 
+To learn the system and its possibilities, it is recommended to study the *.page.php files in the folder: Proj.demo
 
-<h3><b>Demo:</b></h3>
+<h3><b>Online-Demo:</b></h3>
 
 Get inspired and test the system.
 
