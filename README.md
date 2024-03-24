@@ -100,7 +100,7 @@ Advanced example - see files in folder: '{public-URL}/hello/Proj.demo/'
  
 <h3><b>More information...</b></h3>
 
-You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
+You can see a combined documentation & demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
 
 To learn the system and its possibilities, it is recommended to study the *.page.php files in the folder: Proj.demo
 
