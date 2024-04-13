@@ -15,7 +15,7 @@ Standards: PHP7+/PHP8+, HTML5, CSS3, JavaScript.
 
 Source must be in UTF-8, with no tabs, indent: 4 chars
 
-When using <i>PHP2HTML</i> your code will be more compact, and easier to read, and you can have both backend ond frontend code in one file.
+When using <i>PHP2HTML</i> your code will be more compact, and easier to read, and you can have both backend and frontend code in one file.
 
 <i>As an example this height level PHP-code:</i>
 
