@@ -15,7 +15,7 @@ Standards: PHP7+/PHP8+, HTML5, CSS3, JavaScript.
 
 Source must be in UTF-8, with no tabs, indent: 4 chars
 
-When using <i>PHP2HTML</i> your code will be more compact, and easier to read, and you can have both backend ond frontend code in one file.
+When using <i>PHP2HTML</i> your code will be more compact, and easier to read, and you can have both backend and frontend code in one file.
 
 <i>As an example this height level PHP-code:</i>
 
@@ -94,18 +94,21 @@ htm_Page_00()
 
 Now you can see the page in your browser at URL: '{public-URL}/hello/world/first.page.php'
 
+Another more in-depth way is to follow the instructions in Quick_Proj/quickstart.page.php
+
 Advanced example - see files in folder: '{public-URL}/hello/Proj.demo/'
  
 <h3><b>More information...</b></h3>
 
-You can see descriptions and a demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
+You can see a combined documentation & demo and try the functions here: https://ev-soft.github.io/Clever-Html-Engine/
 
+To learn the system and its possibilities, it is recommended to study the *.page.php files in the folder: Proj.demo
 
-<h3><b>Demo:</b></h3>
+<h3><b>Online-Demo:</b></h3>
 
 Get inspired and test the system.
 
-Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.3.0/Proj.demo/CustomerOrder.page.php)
+Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.4.x/Proj.demo/CustomerOrder.page.php)
 
 Use the top menu to view documentation and examples.
 
