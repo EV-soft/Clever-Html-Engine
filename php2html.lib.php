@@ -1,4 +1,4 @@
-<?  $DocFileLib='../php2html.lib.php';    $DocVer='1.3.2';    $DocRev='2024-01-30';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?  $DocFileLib='../php2html.lib.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModNo=0; ## File informative only
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -43,22 +43,27 @@ define('DEBUG',false);              # Set to true to activate system debugging
 define('ThousandsSep',' ');         # Used in number output
 define('DecimalSep',',');           # Used in number output
 
-//         ConstName:           ix:                 LocalPath:                         CDN-path:                                                              // File:
-if ((isset($needJquery)) and ($needJquery>0)) {
-    define('LIB_JQUERY',        [$needJquery,      '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/']);               // jquery.min.js
-    define('LIB_JQUERYUI',      [$needJquery,      '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jquery-ui.min.js
+$isOnline = fsockopen("cdnjs.cloudflare.com", 80, $errno, $errstr, 30);
+if ($isOnline) { $autoCDN= '2'; fclose($isOnline); }
+else             $autoCDN= '1'; // $autoCDN can be used to auto switch between - 1:Local-source  2:WEB-source-CDN
+
+//         LibName:           ix:                 LocalPath:                         CDN-path:                                                              // File:
+if ((isset($needJquery)) and ($needJquery>'0')) {
+    $LIB_JQUERY=        [$needJquery,      '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/'];               // jquery.min.js
+    $LIB_JQUERYUI=      [$needJquery,      '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.3/'];            // jquery-ui.min.js
 }
+
 if ((isset($needTablesorter)) and ($needTablesorter>0)) {
-    define('LIB_TABLESORTER',   [$needTablesorter, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
+    $LIB_TABLESORTER=   [$needTablesorter, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/'];
 }
 if ((isset($needPolyfill)) and ($needPolyfill>0)) {
-    define('LIB_TABLESORTER',   [$needPolyfill,    '_assets/tablesorter/latest/',         'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.30.1/']);
+    $LIB_POLYFILL=      [$needPolyfill,    '_assets/dialog-polyfill/latest/',  'https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/'];
 }
 if ((isset($needFontawesome)) and ($needFontawesome>0)) {
-    define('LIB_FONTAWESOME',   [$needFontawesome, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/']);
+    $LIB_FONTAWESOME=   [$needFontawesome, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/'];
 }
 if ((isset($needTinymce)) and ($needTinymce>0)) {
-    define('LIB_TINYMCE',       [$needTinymce,     '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/']); 
+    $LIB_TINYMCE=       [$needTinymce,     '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.0.0/']; // 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/']); 
 }
 
 // part1= $_SERVER['HTTP_REFERER'] ?? '';
@@ -67,9 +72,9 @@ if ((isset($needTinymce)) and ($needTinymce>0)) {
 // gbl_ProgBase= $part2.'/';
 $gbl_ProgBase= ''; // echo $gbl_ProgBase;
 
-# GLOBALS:
-if (is_readable($custFile= '../project.init.php')) include($custFile);
-else {
+# GLOBALS
+#Defaults:
+{
     $gbl_TblIx= -1;                             # Index for table-id to separate multible tables in one page
     $gbl_ProgTitl= 'php2html';
     $gbl_progVers= 'Develop'.' ';
@@ -83,19 +88,33 @@ else {
     $gbl_iconColor= 'DarkGreen';                # Card-header icon
     $gbl_TitleColr= 'DarkGreen';                # Caption text-color in card-head
     $gbl_CardsBgrd= 'background-color: white;'; # Cards hideble background
-    $gbl_GridOn= true;                          # Use grid to place objects in rows / colums
+    $gbl_GridOn=    true;                       # Use grid to place objects in rows / colums
     $gbl_progZoom = 'small';                    # Global tag "font-scale"
     $gbl_labelAlgn= 'R';                        # L/C/R - Align label for htm_Input() and htm_Inbox()
+    
+    $gbl_ButtnBgrd= '#44BB44';  /* LightGreen  */   $gbl_ButtnText= '#FFFFFF'; 
+    $gbl_BtLnkBgrd= 'yellow';   /* '#FCFCCC';  */   $gbl_BtLnkText= '#000000';
+    $gbl_TextLight= 'white';       $gbl_TextDark= 'black';
+    $gbl_BtDelBgrd= 'Crimson ';    $gbl_BtDelText= $gbl_TextLight;   # Delete:      RED
+    $gbl_BtSavBgrd= '#0064b4';     $gbl_BtSavText= $gbl_TextLight;   # Save/Submit: BLUE
+    $gbl_BtNavBgrd= '#269B26';     $gbl_BtNavText= $gbl_TextLight;   # Navigate:    GREEN
+    $gbl_BtGooBgrd= '#66CDAA';     $gbl_BtGooText= $gbl_TextDark;    # Continue:    MARINE
+    $gbl_BtNewBgrd= 'Orange';      $gbl_BtNewText= $gbl_TextDark;    # CreateNew:   ORANGE
+    $gbl_dimmed=    ' opacity:0.8;';
 }
+if (is_readable($custFile= '../project.init.php')) include($custFile);  # Change gloal Defaults
+else echo '<br> '.__LINE__.' '.$custFile.' not found <br>';
+
 $jsScripts= '';                                 # Empty buffer
 
 if (is_null($rowHtml ?? '')) $rowHtml= '';
 
 # PATHS:
 # $gbl_ProgRoot is set in *.page.php files. 
-if ($GLOBALS["gbl_ProgRoot"] ?? '') $gbl_ProgRoot= $GLOBALS["gbl_ProgRoot"]; 
-else                                $gbl_ProgRoot=  './'; # $gbl_ProgRoot=   "./../";  // "../";  Relative in 1. subniveau    #-$gbl_ProgRoot= "./../../";   //  Relative in 2. subniveau
-$gbl_ProgRoot=   "./../"; 
+
+if (!is_null($GLOBALS["gbl_ProgRoot"])) 
+        $gbl_ProgRoot= $GLOBALS["gbl_ProgRoot"]; 
+else    $gbl_ProgRoot=  './../';    # $gbl_ProgRoot= "./../";  // "../";  Relative in 1. subniveau    #-$gbl_ProgRoot= "./../../";   //  Relative in 2. subniveau
 
 $_assets=     $gbl_ProgRoot.'_assets/';
 $_base=   '';
@@ -151,16 +170,14 @@ if (false) { # Save/Get configuration to/from file:
 # DEBUGGING and erly declaring:
 
 function arrPrint($arr,$name='',$rtrn=false)  ## Output actual value of any variabeltype
-{
-    if ($name>'') $name.=': ';
+{   if ($name>'') $name.=': ';
     $result= "<br><textarea>".$name. print_r($arr). "</textarea><hr>\n"; // </pre>
     if (!$rtrn) echo $result;
     else return $result;
 }
 
 function arrPretty($arrVar,$titl='',$attr='rows="20" cols="135"',$wdth='100%',$rtrn=false)  ## Pretty output of any variable
-{
-    $result= "<meta charset='UTF-8'>
+{   $result= "<meta charset='UTF-8'>
     <div style='background: lightcyan; width:".$wdth.";'>".$titl."</div>
               <textarea ".$attr." wrap = 'off' style='padding: 10px; width: ".$wdth."; display: block;'>".
                     print_r($arrVar,true).
@@ -188,7 +205,8 @@ function set_Style($att='',$string='') {
              # PHP7: $type='',$name='',$valu='',$labl='',$hint='',$plho='@Enter...',$wdth='',$algn='left',$unit='',$disa=false,$rows='2',$step='',$attr='',$list=[],$llgn='R',$bord='',$rtrn=false,$form='',$ftop='');
 ## ver 1.2.0 # PHP7: $labl='',$plho= '@Enter...',$icon='',$hint='',$type= 'text',$name= '',$valu= '',$form= '',$wdth= '100%',$algn= 'left',$attr= '',$rtrn= false,$unit= '',$disa= false,$rows= '2',$step= '',$list= [],$llgn= 'R',$bord= '',$ftop= ''
 
-function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:'',valu:'',form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'',ftop:'');
+# An advanced object rel. in-output of data
+function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', name:'', valu:'', form:'', wdth:'100%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list:[], llgn:'R',bord:'', ftop:'')
 
     # Generel order:
     $labl= '',              # string: Translated label above the input field
@@ -234,11 +252,12 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
     if (/* ($vrnt=='date') and */ ($valu=='')) $dataStyle= 'font-weight: 200; color:var(--grenColr1);'; else $dataStyle='font-weight: 600; ';
 
 # htm_Input: FIELD:
-    $result.= '<div class="inpField" id="inpBox" style="margin: auto; padding: 0 2px 6px; '.$wdth.' '.$ftop.' display: inline-block; vertical-align: top;"> ';
+    if ($vrnt!='hidd')
+        $result.= '<div class="inpField" id="inpBox" style="margin: auto; padding: 0 2px 6px; '.$wdth.' '.$ftop.' display: inline-block; vertical-align: top;"> ';
 
 # htm_Input: INPUT:
     ($name=='') ? $inpIdNm= ' id="missing" name="missing" ' 
-                : $inpIdNm= ' id="'.$name.'" name="'.$name.'" ';
+                : $inpIdNm= ' id="id_'.$name.'" name="'.$name.'" ';
     $inpStyle= ' class="boxStyle" style="text-align: '.$algn.'; font-size: 14px; '. $dataStyle. $bord; //boxStyle - border: 1px solid var(--grayColor);
     $eventInvalid= ' oninvalid="this.setCustomValidity(\''.lang('@Wrong or missing data in ').$labl.' ! \')" oninput="setCustomValidity(\'\')" ';
     $pattern= '';
@@ -265,7 +284,7 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
               ## Number values accepted by input-validation, has to be cleaned 
               ## for SPACE '%' and currency symbols (prefix/suffix), before saved in DB !
               ## Also check the decimal separator.
-        case 'barc' : $result.= '<input type= "text" '. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr. 
+        case 'barc' : $result.= '<input type= "text" '. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr. 'title="'.$valu.'"'.
                         $inpStyle. ' font-family:barcode; font-size:19px; font-weight:normal; '. '" />';  break;
         /* case 'qrcd' : $result.= '<input type= "text" '. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr.  // 2D QR code
                         $inpStyle. ' font-family:barcode; font-size:19px; font-weight:normal; '. '" />';  break; */
@@ -319,77 +338,80 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
                             '<span class="fieldContent boxStyle" style="'.$bord.' text-align: left; '.($rows!='0' ? 'height: 36px; ':'').'padding-right: 20px;">'.
                             '<div style="white-space: nowrap;">'.
                                 '<input type= "password" '. $inpIdNm. ' style="height: 8px; width: 75%; margin-top: -1px; 
-                                    box-shadow: none;" value="'. $valu.'" '.$eventInvalid. $aktiv. $plh. $attr.' onkeyup="getPassword('.$name.')" 
+                                    box-shadow: none;" value="'. $valu.'" '.$eventInvalid. $aktiv. $plh. $attr.' onkeyup="pw_strength(id_'.$name.')" 
                                  />'.
                                  # labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'gray' bclr:'white', akey:'', rtrn:false)
                                 htm_IconButt($btnlabl='', $btnicon='far fa-eye fa-fw colrgreen',$btnhint= lang('@Show/Hide password'),
                                              $btntype='button', $btnname='tgl_'.$name, $btnlink='',
-                                             $btnevnt='onmousedown=\'togglePassword('.$name.','.'tgl_'.$name.')\'', $wdth='', $btnfont='14px;', 
+                                             $btnevnt='onmousedown=\'togglePassword(id_'.$name.','.'tgl_'.$name.')\'', $wdth='', $btnfont='14px;', 
                                              $btnfclr='green', $btnbclr='white; padding-right:3px; padding-bottom:1px; margin-top:1px; width:28px;',
                                              $btnakey='', $btnrtrn=true ).
                             '</div>';
                             $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
                             if ($rows!='0')
-                                $result.= '<meter id= "pwPoint'.$name.'" style="position:relative; height:12px; width:100%; top: -10px;" '.
+                                $result.= '<meter id= "pwPoint_'.'id_'.$name.'" style="position:relative; height:12px; width:100%; top: -10px;" '.
                                           'min="0" low="6" optimum="7" high="9" max="10" '.
-                                          'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
+                                          'title="'.lang('@Password strength: 0..10 (This fails !)').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
                                      '</meter>'; 
                       $result.= '</span>';  break;
 
         case 'area' : $result.= ## TEXTAREA:
-                        '<span class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 0;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.
+                        '<span class="fieldContent boxStyle" '. $inpIdNm. ' style="'.$bord.' padding: 10px 4px 0;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.
                         '" style="width:99%; font-size: 1em; border: 1px solid Gainsboro; border-radius: 4px; '.$dataStyle.' '.'" '.
                         $eventInvalid. $aktiv. $plh.$attr.' >'.$valu.'</textarea>'; $just= 'top: -4px; position: relative;'; break;
 
         case 'html' : $result.= ## HTML-TEXT:
-                        '<span class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px;"> <small><div contenteditable="true" rows="'.$rows.'" id="'.$name.'" name="'.$name.
+                        '<span class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px;"> <small><div contenteditable="true" rows="'.$rows.'" id="id_'.$name.'" name="'.$name.
                         '" style="background-color: white; min-height: '.($rows>'1' ? '34px;' : '5px;').' border: 1px solid Gainsboro; padding: 2px; " '. //  Like area, but with html-content
                         $eventInvalid. $aktiv. $plh.' data-placeholder="'.lang($plho).'" '. $attr.' >'. $valu.'</div></small>';
                         if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';  
                         $just= 'top: -4px; position: relative;'; break;
 
         case 'chck' : $result.= ## CHECKBOX:
-                            '<span class="fieldContent boxStyle '.(count($list)== 1 ? 'fieldSingle' : '').'" style="'.$bord.' margin: 0 2px; ">';
+                            '<span class="fieldContent boxStyle '.(count($list)== 1 ? 'fieldSingle' : '').'" style="'.$bord.' ">';
                             foreach ($list as $rec) { // $list= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:state:'checked/selected',4:otherAttr (id="idxx")], ['@Label','@ToolTip'],...]
                                 array_push($rec, '', '');   # Prevent error on $rec[3] / $rec[4]
                                 $result.= '<span style="display: inline-block">';
-                                $result.= '<input type= "hidden"   name="'.$rec[0].'" value="unchecked" /><label for="'.$rec[0].'"></label>'; # Hidden field because Unchecked boxes is not included in $_POST !
-                                $result.= '<input type= "checkbox" name="'.$rec[0].'" value="checked" '. $rec[3].' '. $rec[4]. ' '.$valu.' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
-                                   '<label for="'.$rec[0].'" style="position: relative; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
+                                ## https://stackoverflow.com/questions/11424037/do-checkbox-inputs-only-post-data-if-theyre-checked (dublicated id because of this !)
+                                $result.= '<input type= "hidden"   id="'.$rec[0].'" name="'.$rec[0].'" value="unchecked" /><label for="'.$rec[0].'"></label>'; # Hidden field because Unchecked boxes is not included in $_POST !
+                                $result.= '<input type= "checkbox" id="'.$rec[0].'" name="'.$rec[0].'" value="checked" '. $rec[3].' '. $rec[4]. ' '.$valu.' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
+                                   '<label for="id_'.$rec[0].'" style="position: relative; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
                                  //  '<label for="'.$rec[0].'"                                              ">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
                                 $result.= '</span>';
                              //   if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
-                            }   $result.= ''.($subm ?? '').'</span>';  break;
+                            }   $result.= ''.($subm ?? '').'</span>';  break; 
 
         case 'rado' : $result.= ## RADIO:
                             '<span class="fieldContent boxStyle" style="'.$bord.'"><small>';
                             foreach ($list as $rec) { // $list= [[0:'value',1:'Label',2:'@ToolTip',3:state:'checked/selected'], ['Label','@ToolTip'],...]
                                 if ($valu==$rec[0]) $chk= ' checked '; else $chk= ' ';
-                                    $result.= '<input type= "radio" id="'.$rec[0].'" name="'.$name.'" value="'.$rec[0].'" '.
+                                    $result.= '<input type= "radio" id="id_'.$rec[0].'" name="'.$name.'" value="'.$rec[0].'" '.
                                         $chk.($rec[3] ?? ''). ' '.$attr.' style="width: 20px; box-shadow: none;">'.
-                                     '<label for="'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; ').'</label>';
+                                     '<label for="id_'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; ').'</label>';
                                 if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
                             }   $result.= '</small>'.($subm ?? '').'</span>';  break;
 
         case 'opti' : $result.= ## OPTION:
                             '<span class="fieldContent boxStyle"  style="'.$bord.' background-color; white; text-align: center; padding: 10px 4px 4px;"><small>';
-                            $result.= '<select class="styled-select" id="'.$name.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
+                            $result.= '<select class="styled-select" id="id_'.$name.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
                             $result.= '<option label="'.lang($plho).'" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
                                 $result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2] ?? '').'" value="'.$rec[0].'" '.$state=$rec[3] ?? ''.$attr=$rec[4] ?? ''; //  Firefox does not support Label !
                                 if ($rec[0]==$valu) $result.= ' selected ';
                                 $result.= '>'.$lbl=lang($rec[1]).'</option> ';
                             }   $result.= '</select></small>'.($subm ?? '').'</span>';  break;
-    //  case 'show' : $result.= '<input type= "text"   id="'.$name.'" name="'.$name.'" value="'.$valu.'" disabled />';  break;
+                            
+    //  case 'show' : $result.= '<input type= "text"   id="id_'.$name.'" name="'.$name.'" value="'.$valu.'" disabled />';  break;
+    
         case 'hidd' : $result.= ## INVISIBLY:
-                            '<input type= "hidden" id="'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break;
+                            '<input type= "hidden" id="id_'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break;
 
         default     : $result.= ## UNSPECIFYED:
                             ' htm_Input(): Illegal vrnt ! ';
         dvl_pretty();
     }
 
-# htm_Input: LABEL & TIP:
+# htm_Input: LABEL & HINT:
     switch (strtoupper($llgn)) {
     case 'L': $lblalign = 'margin-right: auto;';  break;   // Align label Left
     case 'C': $lblalign = 'margin:       auto;';  break;   // Align label Center
@@ -399,7 +421,7 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
     if ($vrnt!='hidd')
         $result.= ' <abbr class= "hint">'.
                 ($labl>'' ? 
-                   '<label for="'.$name.'" style="font-size: 12px; '.$top. ' vertical-align:top; ">
+                   '<label for="id_'.$name.'" style="font-size: 12px; '.$top. ' vertical-align:top; ">
                         <div style="white-space: nowrap; '.$lblalign.$just.'">'.$icon.$labl.'</div>
                    </label>' : '').($hint>'' ?
                    '<data-hint style="top: 45px; left: 2px;">'. $hint.
@@ -407,14 +429,16 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
                         ($pattern>"" ? ('<br><div style="color:green">'. $pattern. '</div>') : '').
                    '</data-hint>
                </abbr>' : '');
-         $result.= '</div>'; # :FIELD inpField
+         if ($vrnt!='hidd')
+            $result.= '</div>'; # :FIELD inpField
     if ($form>'') $result.= '</form>';
 
     if (!$rtrn) echo $result; else return $result;
 } # :htm_Input()
 
 
-function htm_Inbox(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'noUse',name:'noUse',valu:'',form:'noUse',wdth:'200px;',algn:'left',attr:'',rtrn:false,unit:'noUse',disa:false,rows:'noUse',step:'noUse',list:['noUse'],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
+# A ontainer with: Border, Label, Hint, (Placeholder)
+function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse', name:'noUse', valu:'', form:'noUse', wdth:'200px;', algn:'left',attr:'', rtrn:false, unit:'noUse', disa:false, rows:'noUse', step:'noUse', list:['noUse'], llgn:'R', bord:'1px solid var(--grayColor);', ftop:'')
     # Inbox: container with: Border, Label, Hint, (Placeholder)
     # Design and parameters same as htm_Input()
     $labl= '',                              # string: Translated label above the input field
@@ -456,7 +480,7 @@ function htm_Inbox(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'noUse',name
         }
       
     $result= 
-    '<div id="Inbox_div" style="  '.                /* The outher div with border: */
+    '<div class="boxStyle" id="id_Inbox_div_'.$name.'" style="  '.                /* The outher div with border: */
            'box-shadow: 3px 4px 2px var(--shadColor);
             border-radius: 5px;
             border: '.$bord.'
@@ -470,7 +494,7 @@ function htm_Inbox(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'noUse',name
             vertical-align: top;
             ">
         <abbr class= "hint" >'.                                                                             /* The Tooltip-container shown on mouse over */
-           '<label for="Inbox_div" style="font-size: 12px; height: 0; display: block; '.$lblalign.'; ">'.   /* The Label above the field content */
+           '<label for="id_Inbox_div_'.$name.'" style="font-size: 12px; height: 0; display: block; '.$lblalign.'; ">'.   /* The Label above the field content */
                 '<div style="white-space: nowrap; position: relative; background-color: var(--lablBgrnd); '. 
                     'border: 1px solid  var(--FieldBord);
                     top: -19px;
@@ -498,7 +522,7 @@ function htm_Inbox(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'noUse',name
     if (!$rtrn) echo $result; else return $result;
 } # htm_Inbox
 
-## General output for pt. Progress etc.
+# General output for pt. Progress etc.
 function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', valu:'', vmax:''
     $labl='',           # string: The caption text
     $icon='',           # string: comming new (label prefix)
@@ -514,10 +538,10 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
 ) { global $gbl_iconColor;
     if ($icon>'') $icon= '<ic class="'.$icon.'" style="color: '.$gbl_iconColor.'; margin: 0 5px;"></ic>&nbsp;'; else $icon= '';
     if ($bclr>'') $bclr= ' background: '.$bclr.';'; else $bclr= '';
-    $result= '<span id="'.$name.'" style= "padding: 2px 5px; position: relative;'.$bclr.'; ">';
+    $result= '<span id="id_'.$name.'" style= "padding: 2px 5px; position: relative;'.$bclr.'; ">';
     if ($hint>'') $result.= ' <abbr class= "hint">';
     switch ($vrnt) { // Variants:
-        case 'outp' : $result.= '<label for="'.$name.'">'.$icon.lang($labl).'</label>'. # Output element with label and hint
+        case 'outp' : $result.= '<label for="id_'.$name.'">'.$icon.lang($labl).'</label>'. # Output element with label and hint
                                 '<output name="'.$name.'outp" for="'.$valu.'" form="'.$form.'">
                                 </output>';  break;
 /*      case 'outp' : echo '
@@ -529,7 +553,7 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
                          break;'
 */
         case 'pgrs' : if ($valu<0) $value=''; else $value=' value="'.$valu.'"';
-                      $result.= '<label for="'.$name.'">'.$icon.lang($labl).'</label>'. # Output Progress indicator
+                      $result.= '<label for="id_'.$name.'">'.$icon.lang($labl).'</label>'. # Output Progress indicator
                                 '<progress id="'.$name.'pqrs" '.$value.' max="'.$vmax.'" >
                                 </progress>';  break;
         default     : $result.= ' htm_Output(): Illegal vrnt ! ';
@@ -566,8 +590,8 @@ progress::-webkit-progress-value {  /*style for progress track* /
 }
 
 
-## A caption with icon, label and hint
-function htm_Caption(# labl:'',icon:'',hint:'',algn:'',styl:'color:#550000; font-weight:600; font-size: 13px;',rtrn:false);
+# A caption with icon, label and hint
+function htm_Caption(# labl:'',icon:'',hint:'',algn:'',styl:'color:#550000; font-weight:600; font-size: 13px;',rtrn:false)
     $labl='',       # string: The caption text
     $icon='',       # string: label prefix
     $hint='',       # string: The hint/tooltip
@@ -585,7 +609,8 @@ function htm_Caption(# labl:'',icon:'',hint:'',algn:'',styl:'color:#550000; font
     if (!$rtrn) echo $result; else return $result;
 }
 
-function htm_TextDiv(# body:'', algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white;', rtrn:false );
+# Text formatted in a div
+function htm_TextDiv(# body:'', algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white;', rtrn:false )
     $body,          # string: Html-text inside div
     $algn='left',   # string: div-text alignment
     $marg='8px',    # string: div margin
@@ -599,8 +624,8 @@ function htm_TextDiv(# body:'', algn:'left', marg:'8px', styl:'box-shadow: 3px 3
     if (!$rtrn) echo $result; else return $result;
 }
 
-## Text displayed in a fixed-width font, and preserves both spaces and line breaks
-function htm_TextPre(# body,algn:'left',marg:'8px',attr:'',font:'',code:false,rtrn:false);  ## Preformatted HTML text
+# Text displayed in a fixed-width font, and preserves both spaces and line breaks
+function htm_TextPre(# body, algn:'left', marg:'8px', attr:'', font:'', code:false, rtrn:false)  ## Preformatted HTML text
     $body,          # string: Html-text inside pre
     $algn='left',   # string: pre-text alignment
     $marg='8px',    # string: Default pre margin
@@ -615,8 +640,7 @@ function htm_TextPre(# body,algn:'left',marg:'8px',attr:'',font:'',code:false,rt
     if (!$rtrn) echo $result; else return $result;
 }
 
-/* 
-function htm_CodeDiv($code,$rtrn=false) { // htm_CodeDiv(highlight_words(highlight_string('<? '.$strCode,true)));
+/*     function htm_CodeDiv($code,$rtrn=false) { // htm_CodeDiv(highlight_words(highlight_string('<? '.$strCode,true)));
     $result= '<p style="text-align: left; padding:4px; white-space: nowrap; overflow-x: auto; line-height: 1; background-color:#121212;">'; // #121212
     $result.= $code; //str_replace(['$','"'],['\$','\"'],$code);
     $result.= '</p>';
@@ -625,16 +649,99 @@ function htm_CodeDiv($code,$rtrn=false) { // htm_CodeDiv(highlight_words(highlig
 };
  */
 
-function htm_CodeBox($code,$rtrn=false) {
+/* 
+
+<dt>	a term in a description list
+<dd>	Describes the term in a description list
+ */
+ 
+# Starting various types ef text list
+function htm_List_(# capt:'', vrnt:'ul', type:'circle', $strt:'0', styl:'text-align:left;', rtrn:false)
+$capt='',                   # string: Html-text
+$vrnt='ul',                 # string: Variants: <ul> an unordered list  /  <ol> an ordered list  /  <li> a list item  /  <dl> a description list
+$type='disc',               # string: List-style marker type (Ref: https://www.w3schools.com/cssref/playdemo.php?filename=playcss_list-style-type)
+$strt='0',                  # string: Index start for ordered list
+$styl='text-align:left;',   # string: Other style rel. body
+$rtrn=false                 # bool:   Function Return or echo result
+) { $mark=' style="list-style-type: '.$type.'; "';
+$result= '<span style="'.$styl.'">';
+    switch ($vrnt= strtolower($vrnt)) {
+        case 'ul' : $result.='<ul '.$mark.'>';                    break; # Unordered list
+        case 'ol' : $result.='<ol '.$mark.' start="'.$strt.'">';  break; # Ordered list
+        case 'li' : $result.='<li '.$mark.'>';                    break; # List item
+        case 'dl' : $result.='<dl '.$mark.'>';                    break; # Description list
+        default   : $result.='<'.$vrnt.' '.$mark.'>';                    # Custom variant
+    }
+    $result.= lang($capt);
+    $GLOBALS['ListVrnt']= $vrnt;
+    $GLOBALS['ListMark']= $mark;
+    if ($rtrn==false) echo $result; else return $result;
+}
+
+# A single item in a text list
+function htm_List_item(# labl:'', body:'', rtrn:false)
+$labl='',       # string: Html-text - term/name in a description list
+$body='',       # string: Variants: <dt> term/name in a description list.  /  <dl> an description list
+$rtrn=false     # bool:   Function Return or echo result
+) {
+    switch ($flag= $GLOBALS['ListVrnt']) {    
+        case 'dl' : $result= '<dt>'.lang($labl).'</dt>'.
+                             '<dd>'.lang($body).'</dd>';    break; # Description list
+        case 'ol' : $result= '<li>'.lang($body).'</li>';    break; # 
+        default   : $result= '<'.$flag.$GLOBALS['ListMark'].'>'.lang($body).'</'.$flag.'>'; 
+    }
+    if ($rtrn==false) echo $result; else return $result;
+}
+
+# Ending a text list
+function htm_List_end(# rtrn:false)
+$rtrn=false     # bool:   Function Return or echo result
+) { $result= '</'.$GLOBALS['ListVrnt'].'>'. '</span>';
+    if ($rtrn==false) echo $result; else return $result;
+}
+
+
+## Hightlight - Custom word-list and custom style: 
+function highlight_words($text, $wrds='', $styl='',$patt='~\w{4,10}~') { 
+    if ($wrds=='')
+        $wrds='labl capt body foot plho icon hint desc type name valu vmax vmin form subm acti clas wdth heig algn marg styl attr mode font colr fclr bclr llgn link targ akey kind echo unit disa rows step bord plac rept rtrn titl info inis imag pbrd simu clck stck cntx text html srce butt mess tplc tsty head evnt note rept shrt frst last from to__ elem pref suff filt data crea modi expo just sort filt vrnt capt pref body suff idix note data filt sort crea modi vhgh styl from list enbl dflt strt expo show poup help ftop code synt repl tout
+              ';
+    else $wrds.= $wrds;
+    $wrds= str_replace(' ',': ',$wrds); # Add : to all words
+    if ($styl=='') $styl='color:'.'cyan; './* '#550000 #a16802; '. */ 'font-style:italic;';
+    preg_match_all($patt, $wrds, $matches);
+    if(!$matches) return $text;
+    $styl= 'style="'.$styl.'" ';
+    $replacement = '~\\b(' . implode('|', $matches[0]). ')\\b~';
+    return preg_replace($replacement, '<span '.$styl.'>$0</span>', $text);
+} 
+
+## Remove the needed triggering <? prefix
+function highlight_str($code,$rtrn=true) { 
+    $source= highlight_string('<?'.$code,$rtrn);                                #  print_r(htmlentities($source));
+    $result= str_replace('&lt;?','',substr($source,0,80)).substr($source,80);   #  print_r(htmlentities($result));
+    $result= str_replace('<code style="color: orange;">','',substr($result,0,80)).substr($result,80);
+    $result= str_replace('</code>','',$result); ## Added in highlight_string() !
+    if ($rtrn==false) echo $result; else return $result;
+}
+   
+# A span containing syntax formattet php-code
+function htm_CodeBox(# code:'', synt:true, repl:false, rtrn:false)
+    $code='',       # string: php-code with syntax display
+    $synt=true,     # bool:   Activate syntax output
+    $repl=false,    # bool:   Do output formattet string
+    $rtrn=false     # bool:   Function Return or echo result
+    ){
+    if ($repl==true) $code= sprintf(''.''.$code);  // sprintf($format, $num, $location);
     $result= '<span style="text-align: left; white-space: nowrap; overflow-x: auto; line-height: 1;">
-              <pre style= "background-color: #121212; text-align: left;  padding:6px;">'.
-              $code.
+              <pre style= "background-color: #121212; text-align: left;  padding:6px; overflow-x: auto; ">'.
+              (($synt==true) ? highlight_words(highlight_str($code)) : $code ).
               '</pre></span>';
     if ($rtrn==false) echo $result; else return $result;
 };
 
-## Vertical text
-function htm_TextVer(# body,algn:'left',marg:'8px',attr:'',font:'',code:false); ## Vertical text
+# Vertical orientated text
+function htm_TextVer(# body, algn:'left', marg:'8px', attr:'', font:'', code:false) ## Vertical text
     $body,          # string: Html-text inside div
     $algn='left',   # string: text alignment
     $marg='8px',    # string: Default margin
@@ -650,15 +757,15 @@ function htm_TextVer(# body,algn:'left',marg:'8px',attr:'',font:'',code:false); 
     margin: auto; line-height: 1.44; '.$attr.'">'. $body. '</div>';
 }
 
-## A very small text
+# A very small text line
 function htm_MiniNote(# note:'') # Very small text-line
     $note= ''
 )
 {   echo '<br><small><small>'.lang($note).'</small></small>';
 }
 
-## A text with a caption on colored line
-function htm_TextTip(# capt:'TIP',body:'',wdth:'',algn:'center',colr:'');
+# A text with a caption on colored line
+function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'')
     $capt='TIP',    # string: The output caption
     $body='',       # string: The output text
     $wdth='',       # string: The div width
@@ -674,6 +781,7 @@ function htm_TextTip(# capt:'TIP',body:'',wdth:'',algn:'center',colr:'');
     '</div>';
 }
 
+# A div containing a text with a hidden hint
 function htm_TextHint(# text:'', hint:'', styl:'', attr:'', rtrn:false) {
     $text='Visibly Text',               # string: Visibly Text       
     $hint='Hidden description',         # string: Hidden description 
@@ -696,6 +804,7 @@ function htm_TextHint(# text:'', hint:'', styl:'', attr:'', rtrn:false) {
     if (!$rtrn) echo $result; else return $result;
 }
 
+# A image with caption, label and a hint
 function htm_Figure(# capt:'',type:'',imag:'',styl:'',labl:'',hint:'',rtrn:false) {
     $capt= '',      # string: The header text
     $type= 'h1',    # string: Header type (h1..h6)
@@ -719,22 +828,26 @@ function htm_Figure(# capt:'',type:'',imag:'',styl:'',labl:'',hint:'',rtrn:false
     if (!$rtrn) echo $result; else return $result;
 }
 
+# A summery list with collapsible details
 function htm_Details(# capt:'',type:'',body:'',styl:'',labl:'',hint:'',mode:'',rtrn:false) { # Collapsibly text
     $capt= '',      # string: The header text 
     $type= 'h1',    # string: Header type (h1..h6)
+    $labl= '',      # string: The details summary
     $body,          # string: The details text
     $styl= '',      # string: Styles for capt & body & labl
-    $labl= '',      # string: The details summary
     $hint= '',      # string: Hidden description
     $mode= '',      # string: Initial mode: 'open'/''
     $rtrn= false    # bool:   Function Return or echo result
 ) 
-{   $result= '<'.$type.' style="'.$styl.'">'.lang($capt).'</'.$type.'>
+{   if ($capt>'')
+        $result= '<'.$type.' style="'.$styl.'">'.(($capt>'') ? lang($capt) :'').'</'.$type.'>';
+    else $result= '';
+        $result.= '
         <details '.$mode.' style="'.$styl.'">
             <summary>'.
                 lang($labl).'
             </summary>
-          <p>'.lang($body).'</p>
+          <div style="margin-left:14px;">'.lang($body).'</div>
         </details>';
     if ($hint>'') $result= 
         '<abbr class= "hint" style="position: relative;">'.
@@ -745,6 +858,7 @@ function htm_Details(# capt:'',type:'',body:'',styl:'',labl:'',hint:'',mode:'',r
 }
 
 
+# experimental: Change colors
 function invertColor($colr,$bw) ## Untested !
 { // Get max contrastcolor black or white       # Not tested
   # run_Script("function getHexColor(colorStr) {    // https://stackoverflow.com/questions/1573053/javascript-function-to-convert-color-names-to-hex-codes
@@ -772,8 +886,8 @@ function invertColor($colr,$bw) ## Untested !
 
 // echo 'XX:'.invertColor('LightPink',true).'YY';
 
-## Add strings to a buffer
-function spool($data,$echo=true) { global $spool;
+# Add strings to a buffer
+function spool($data,$echo=false) { global $spool;
     if ($echo==true) echo $data;
     $spool.= $data;
 }
@@ -807,9 +921,9 @@ Layout of htm_Table:
 |                                                ($note)                                                |
 |-------------------------------------------------------------------------------------------------------|
 */
-         # PHP7: $TblCapt,$RowPref,$RowBody,$RowSuff,$TblNote,&$TblData,$FilterOn,$SorterOn,$CreateRec,$ModifyRec,$ViewHeight,$TblStyle,$CalledFrom,$MultiList)
-     # ver 1.2.2: TblCapt:,RowPref:,RowBody:,RowSuff:,TblNote:,TblData:,FilterOn:,SorterOn:,CreateRec:,ModifyRec:,ViewHeight:,TblStyle:,CalledFrom:,MultiList:,ExportTo:'')
-function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'');
+
+# Output data in a advanced table
+function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'',rtrn:false)
     $capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:horJust',       '5:Tip',    '6:placeholder', '7:Content';], ...
            ],
     $pref= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:Html'], ...
@@ -834,7 +948,8 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
     $styl= '',         # string: Style for the span that holds the table;
     $from= __FILE__,   # string: = __FILE__ / __FUNCTION__ (debugging: locate error)
     $list= ['',''],    # array:  LookupLists for options // Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
-    $expo= ''          # string: Export values in table fields (only body-cols) to CSV-file
+    $expo= '',         # string: Export values in table data fields to CSV-file
+    $rtrn= false       # bool:   Function Return or echo result
 // ,$dropFirst=false   # remove first field (dbIndex id) from TblData-rows
 )
                        # Field 4: $FieldProporties - is composed of: [0:horJust, 1:FieldBgColor, 2:FieldStyle, 3:TdColor, 4:SorterON, FilterON, SelectON, Flst]
@@ -943,8 +1058,8 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
 
 
 ### Table-start:
-    echo '<span class="wrapper" style="padding:0; margin: 0 0 6px; border:1px solid gray; height:'.$vhgh.'; display: block;">'; //  "Table-window": Container for tabel  display: inline ?
-    echo '  <div id="overlay'.$gbl_TblIx.'"></div>';
+    spool(  '<span class="wrapper" style="padding:0; margin: 0 0 6px; border:1px solid gray; height:'.$vhgh.'; display: block;">'); //  "Table-window": Container for tabel  display: inline ?
+    spool(  '  <div id="overlay'.$gbl_TblIx.'"></div>');
     spool( '    <table class="tablesorter" id="table'.$gbl_TblIx.'" style="width:auto; padding:1px; margin:0; table-layout: fixed;">'); //  id= 'table'.$gbl_TblIx  0..6
     spool( '    <thead>');
     $filter_cellFilter= []; //  [ '', 'hidden', '', 'hidden' ]
@@ -968,7 +1083,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                              else $datCount= count($data    ?? []);
     $fldCount= count($fldNames ?? []);
     // if ($datCount!= $fldCount)  echo '<div style="color:red;"> DataError! '.$datCount.'(data)/'. $fldCount.'(flds)<div>';
-    // toast('<div style="color:red;"> DataError! '.$datCount.'(data)/'. $fldCount.'(flds)<div>');
+    // htm_toast('<div style="color:red;"> DataError! '.$datCount.'(data)/'. $fldCount.'(flds)<div>');
     
     if ($selectable) spool(  '<th class="filter-false sorter-false" > </th>');
     foreach ($body as $bdy) { dvl_pretty();
@@ -1142,8 +1257,11 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                 if (($flag=='::') or ($flag==':.')) $valu= substr($valu,2).' '; // fieldFlag is not shown. SPACE so placeholder is not shown.
 
   ## Special conditional "row" formats:
-            if (is_readable($custFile= '../customRules.inc.php')) include($custFile);  # Here you can add your special rules 
-            $ixalign= $ixalign ?? '';
+            if (is_readable($custFile= '../customRules.inc.php'))   # Here you can add your special table row-rules 
+                 include($custFile);
+            else echo '<br> '.__LINE__.' '.$custFile.' not found <br>';
+
+$ixalign= $ixalign ?? '';
             $captStyle= $captStyle ?? '';
             ## RowRules:
                 if ($fldNames[0]=='pln_nmbr') { // Account Plan
@@ -1240,7 +1358,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                                   break;
                     case 'opti' :{ $rowField.= '"'.$sortData.'><span '. 
                                         htm_Input($labl=lang($bdy[7]),$plho= '?...',$icon='',$hint=lang($bdy[6]),$vrnt='opti',$name= $fldNames[$ColIx],$valu,$form='',$wdth='98%',
-                                        $algn='left',$attr='',$rtrn=true,$unit='', $disa=false,$rows='2',$step='',$list=$SelectList,$llgn='R',$bord='border: 1px solid Gainsboro;',$ftop='')
+                                        $algn='left',$attr='',$rtrnx=true,$unit='', $disa=false,$rows='2',$step='',$list=$SelectList,$llgn='R',$bord='border: 1px solid Gainsboro;',$ftop='')
                                     .' </span>';
                                 } // print_r($SelectList);
                                   break;
@@ -1269,7 +1387,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                                 }
                     default   : { $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" value="'.$valu.' '.
                                         $bdy[2].'" '.'placeholder="'.lang($bdy[7]).'"'.$txAlign.$inpBg.$fltStyl.' width:98%;" /> ';
-                                       // toast('Invalid type: '.$Body[2].' in htm_Table() - error !','orange','black');
+                                       // htm_toast('Invalid type: '.$Body[2].' in htm_Table() - error !','orange','black');
                                 }
                     }   // :switch InputTypes
                     $rowField.= '</td>';
@@ -1327,7 +1445,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
         if ($fp) { fwrite($fp,$cvrData."\n"); fclose($fp); }
     }
 
-### Init Tablesorter:
+### Init Tablesorter:   VIRKER DETTE ? eller $jsScripts ?
     run_Script("
         $('#table".$gbl_TblIx."').tablesorter({
             theme: 'blue',"
@@ -1405,34 +1523,46 @@ if ($crea) {
     $rowField= str_replace('<td','<td style="background-color: lightyellow;" ',$rowField);
     //$rowField= str_replace('"','\"',$rowField);
     $newRow= '`<tr style=" border: 3px solid red;">'.$newRow.'</tr>`';
-    echo htm_AcceptButt($labl='<i class="fas fa-plus"> </i> '.lang($ButtLabl),$icon='', // Create new item record
+    spool( '<div style="text-align: center;">'. 
+            htm_AcceptButt($labl='<i class="fas fa-plus"> </i> '.lang($ButtLabl),$icon='', // Create new item record
                         $hint='@Create an empty row, so you can fill in data in the yellow fields ! ', 
                         $form='form_'.$gbl_CardIx.'_'.$gbl_TblIx, $wdth='200px; min-height:16px;', 
-                        $attr='', $akey='c', $kind='spc2',$rtrn=false, $tplc='LblTip_NW', 
+                        $attr='', $akey='c', $kind='spc2',$rtrnx=true, $tplc='LblTip_NW', 
                         $tsty='position: absolute; right: 100px;',
-                        $acti='appendRow(table'.$gbl_TblIx.','.$newRow.')');
+                        $acti='appendRow(table'.$gbl_TblIx.','.$newRow.')').
+                        '</div>'
+        );
 }
-    echo '<br><span style="display: inline-block; position: relative;">'.$note.'</span>';
-    echo '</span>'; // tableStyle
+    spool( '<br><span style="display: inline-block; position: relative;">'.$note.'</span>');
+    spool( '</span>'); // tableStyle
     if (DEBUG) dvl_pretty('End-htm_Table: '.$from);
     
-    
+    if (!$rtrn) echo $spool; 
+    else      return $spool;
 } // htm_Table
 
 
-function htm_Fieldset_0(# capt:'',icon:'',hint:'',wdth:'',marg:'',attr:'',rtrn:false) # use: htm_Field_0_00() for single object!
-    $capt='',$icon='',$hint='',$wdth='',$marg='',$attr='',$rtrn=false)
-{ // Has to be followed by htm_Fieldset_00()
-    // if ($icon>'') $icon= '<i class="'.$icon.'"></i>';
-        $result=  '
+# Start a bordered area with a caption, icon ant hint
+function htm_Fieldset_(# capt:'',icon:'',hint:'',wdth:'',marg:'',styl:'',attr:'',rtrn:false)
+    $capt='',       # string: The fieldset caption
+    $icon='',       # string: Class: icon to the left of fieldset caption
+    $hint='',       # string: The hint on hover caption
+    $wdth='',       # string: fieldset width
+    $marg='',       # string: fieldset margin-size
+    $styl='',       # string: fieldset style
+    $attr='',       # string: legend attributes
+    $rtrn=false     # bool:   Function Return or echo result
+    )
+{   $result=  '
         <fieldset style="page-break-after: avoid; display: inline-block; box-shadow: 0 3px 3px #AAAAAA; font-size:smaller; 
-                         width: '.$wdth.'; margin: '.$marg.'; border-radius: 6px; "> 
+                         width: '.$wdth.'; margin: '.$marg.'; border-radius: 6px; '.$styl.'"> 
         <legend style="box-shadow: 0 0 5px #AAAAAA; '.$attr.'">'.str_WithHint($capt,$hint,$icon).' </legend>';
     if (!$rtrn) echo $result; 
     else return $result;
 }
 
-function htm_Fieldset_00(# rtrn:false) 
+# End a bordered area
+function htm_Fieldset_end(# rtrn:false) 
     $rtrn=false) 
 {   if (!$rtrn) echo '</fieldset>
     '; 
@@ -1440,21 +1570,28 @@ function htm_Fieldset_00(# rtrn:false)
     ';
 }
 
+# Output external content in a local frame
+function htm_iFrame(# srce:'', heig:'200px', wdth:'300px', titl:'', styl:'')
+    $srce= '',      # string: Source with html content
+    $heig= '200px', # string: iframe height
+    $wdth= '300px', # string: iframe width
+    $titl= '',      # string: iframe title
+    $styl= ''       # string: iframe style (eg. border)
+){
+    echo '<iframe src="'.$srce.'" height="'.$heig.';" width="'.$wdth.';" title="'.$titl.'" style="'.$styl.'"></iframe>';
+}
 
-// Old:     function htm_Field_0_00($labl='',$hint='',$icon='',$name='fld',$html='',$width='',$margin='',$ftop='',$llgn='R',$attr='',$rtrn=false) #FIELD:
-                # v.1.1: $labl='',$hint='',$icon='',$name='fld',$html='',$width='',$margin='',$ftop='',$llgn='C',$attr='',$boxstyl='',$rtrn=false
-function htm_Field_0_00(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:false,ftop:'') #FIELD:
-    $labl='',       # string: 
-    $body='',       # string: 
-    $icon='',       # string: 
-    $hint='',       # string: 
-    $name='fld',    # string: 
-                    
-    $wdth='',       # string: 
-    $styl='',       # string: 
-    $attr='',       # string: 
-    $llgn='C',      # string: 
-                   
+# Make a box like htm_input() with label, icon and hint 
+function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:false,ftop:'') #FIELD:
+    $labl='',       # string: label for the box
+    $body='',       # string: Html content
+    $icon='',       # string: Class: icon to the left of ?? !
+    $hint='',       # string: The hint on hover label
+    $name='fld',    # string: field name
+    $wdth='',       # string: field width
+    $styl='',       # string: field style
+    $attr='',       # string: field attributes
+    $llgn='C',      # string: label align L/C/R
     $rtrn=false,    # bool:   Act as procedure: Echo result, or as function: Return string:   
     $ftop=''        # string: fieldtop: label y-offset
 ){  switch (strtoupper($llgn)) {
@@ -1463,63 +1600,83 @@ function htm_Field_0_00(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',sty
         case 'R': $lblalign = 'margin-left:   auto;';  break;   // Align label Right
         default : $lblalign = 'margin-left:   auto;';
     }
-    $result= '<div class="inpField" id="'.$name.'" style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
+    $result= '<div class="inpField" id="id_'.$name.'" style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
              '; display: inline-block; box-shadow:none; '.$attr.'"> '; // float: left;
     $result.= '<div class="boxStyle" style="padding:5px; margin-top:6px; '.$styl.' ">'.$body.'</div>';
     $result.= ' <abbr class= "hint">'.
             ($labl>'' ? 
-               '<label for="'.$name.'" style="font-size: 14px; '.$ftop. '">
+               '<label for="id_'.$name.'" style="font-size: 14px; '.$ftop. '">
                     <div style="white-space: nowrap; box-shadow: none; border: none;'.$lblalign.'">'.lang($labl).'</div>
                </label>'
                : '').
                ($hint>''? ('<data-hint style="top: 45px; left: 2px;">'.lang($hint).'</data-hint>'):'').'
            </abbr>'.($subm ?? '').'
-        </div>'; # :FIELD
+        </div>';
     if (!$rtrn) echo $result.'
     '; // lf in html
     else return $result.'
     '; // lf in html
 }
-/* 
-func tion htm_Field_00($rtrn=false) #FIELD:
-{   $result= '</div> ';
-    if (!$rtrn) echo $result.'
-    '; 
-    else return $result.'
-    ';
-}
- */
- 
-function htm_Row_0()
+
+# Prepare a span with inline-block output
+function htm_Row_()
 {   echo '
     <span style="display: inline-block;">';
 }
-function htm_Row_00()
+# Finalize the span
+function htm_Row_end()
 {   echo '</span>
     ';
 }
 
-function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'', show:true, head:'background-color: white;', vhgh:'600px', help:'', fclr:'');
+/*
+Layout of htm_Card:
+|---------------------|-----------------------------------|----------------------|  htm_Card_()
+|        C-left       |        CARD-Caption-center        |       C-right        |  C-left: Menu-links / C-right: Card-contrl
+|---------------------|-----------------------------------|----------------------|  CARD-Caption: $icon & $capt
+|                                                                                |
+|                                                                                |
+|                                                                                |
+|                                                                                |
+|                                                                                |
+|                                  CARD-BODY                                     |  HTML between htm_Card_() and htm_Card_end()
+|                                                                                |
+|                                                                                |
+|                                                                                |
+|                                                                                |
+|--------------------------------------------------------------------------------|
+|                                   CARD-FOOT                                    |  htm_Card_end()
+|--------------------------------------------------------------------------------|
+*/
+
+# An advanced span with lots of functionality 
+function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', help:'', fclr:'', frst:'', last:'')
     $capt = '',                         # string: The card caption
     $icon = '',                         # string: Class: icon to the left of caption
     $hint = '',                         # string: The hint on hover caption
     $form = '',                         # string: form id/name (No form without a name)
     $acti = '',                         # string: form action 
-                                        
     $clas = 'cardWmax',                 # string: The card class (general CSS-data)
     $wdth = '',                         # string: The closed card width
     $styl = 'background-color: white;', # string: The card body style
     $attr = 'margin-bottom: 8px;',      # string: general attributes (style) for the card-container
-    $show = true,                       # bool:   Show card-buttons top-right
+    $show = true,                       # bool:   Show card-contrl-buttons top-right
+    $mode = '2',                        # string: Mode regarding card-contrl-buttons: 0:none, 1:heiht-only, 2:width-also, 3:, 4:
+    $poup = true,                       # bool:   Activate popup-menu for handling all cards
     $head = 'background-color: white;', # string: Style for Header background
     $vhgh = '600px',                    # string: MaxHeight (ViewHeight) for span (HideBody) with scrollable content
     $help = '',                         # string: Link to show custom Card-help (HTML-file to open)
-    $fclr = ""                          # Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
-) // Renamed from htm_Panel_0 in v.1.3.0
-{ # MUST be followed of htm_Card_00 after card-content !
-    global $gbl_iconColor, $gbl_TitleColr, $gbl_CardForm, $gbl_ProgRoot, $_assets, $gbl_CardIx, $gbl_CardsBgrd, $gbl_GridOn; # v.1.2.3: $gbl_PanlForm => $gbl_CardForm
+    $fclr = '',                         # Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
+    $frst = '',                         # string: Html content in Caption left
+    $last = ''                          # string: Html content in Caption right
+)
+{   global $gbl_iconColor, $gbl_TitleColr, $gbl_CardForm, $gbl_ProgRoot, $_assets, $gbl_CardIx, $gbl_CardsBgrd, $gbl_GridOn; # v.1.2.3: $gbl_PanlForm => $gbl_CardForm
     $gbl_CardIx++;
-
+    
+    $icon= '<ic class="'.$icon.'" style="font-size: 20px; color: '.$gbl_iconColor.'; '.$fclr.'margin: 0 5px;"></ic>';
+    $capt= lang($capt); 
+    
+   // if ($frst == '') { $frst= $icon.' &nbsp;'.$capt; }
     echo '<script>';  //  Hide/show Card-Body:  
     echo 'function CardHeight'.$gbl_CardIx.'() {
                 var h = document.getElementById("HideBody'.$gbl_CardIx.'");
@@ -1560,26 +1717,75 @@ function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWma
                 '}'.
             '}';
     // if (class="wrapper")
-        echo 'function WrapperHeight'.$gbl_CardIx.'() { 
+    echo 'function WrapperHeight'.$gbl_CardIx.'() { 
                 '. // Has to be developed !  class="wrapper" - $Viewheight - TextArea-rows
                 ''.
             '}';
     echo '</script>
     ';
     
-    dvl_pretty('htm_Card_0');
+    dvl_pretty('htm_Card_');
     $gbl_GridOn= false;
     if ($capt=='') $Ph= 'height:0px;'; else $Ph= '';
+    
+    if ($frst >'') $frst= '<div style="float:left;  color:'.$gbl_TitleColr.'; display:inline-block; padding: 0  8px;">'.$frst.'</div>'; else $frst= '';
+    if ($last >'') $last= '<div style="float:right; color:'.$gbl_TitleColr.'; display:inline-block; padding: 0 10px;">'.$last.'</div>';
+    
+    $Card_contrl= '';
+    // TOGGLE butt: Toggle max-height between vhgh and 999px 
+    $buttstyl= 'width:12px; height:12px; margin:6px 2px 0 0; float:right; font-size: 12px; '.$fclr.' ';
+    if (($show==true) and ($mode>'0'))
+        $Card_contrl.=  '<abbr class= "hint">'.
+            '<ic class="fas fa-arrows-alt-v" style="'.$buttstyl .' padding:0 4px 0 0; margin-left: 0; cursor:row-resize;" '.
+            ' onclick= CardHeight'.$gbl_CardIx.'(); ></ic> 
+            <data-hint>'.lang('@<b>TOGGLE-height:</b> Click icon to toggle viewHeight for <i>this</i> card').' </data-hint></abbr>';
+    // WIDE butt:
+    if (($show==true) and ($mode>'1'))
+        $Card_contrl.=  '<abbr class= "hint">
+            <ic class="fa-solid fa-right-left" style="'.$buttstyl .' padding:0 0 0 4px; cursor:col-resize;" '.
+            ' onclick= CardWide'.$gbl_CardIx.'(); ></ic>
+            <data-hint>'. lang('@<b>WIDE:</b> Click to maximize/normalize <i>this</i> card width').'</data-hint></abbr>';
+    // HEIGHT butt:
+    if ($show==true) if (false) // if (class="wrapper")
+        // <script> const el = document.getElementById('card'.$gbl_CardIx.'');    el.closest('.wrapper');     el.find('.wrapper'): </script>
+        $Card_contrl.=  '<abbr class= "hint">
+            <ic class="fa-solid fa-right-left fa-rotate-90" style="'.$buttstyl .' cursor:s-resize;"'.
+            ' onclick= WrapperHeight'.$gbl_CardIx.'(); ></ic>
+            <data-hint>'. lang('@<b>HEIGHT:</b> Click to maximize/normalize <i>this</i> View height (Table/WrapperCard)').'</data-hint></abbr>';
+    // COLLAPSE butt:
+    if (($show==true) and ($mode>'1'))
+        $Card_contrl.=  '<abbr class= "hint">
+            <ic class="fas fa-angle-double-up" style="'.$buttstyl .' cursor:zoom-out;" '.
+            ' onclick= CardMinimizeAll(); ></ic>
+            <data-hint>'. lang('@<b>COLLAPSE:</b> Click to close <i>all</i> cards').';" </data-hint></abbr>';
+    // EXPAND butt:
+    if (($show==true) and ($mode>'1'))
+        $Card_contrl.=  '<abbr class= "hint">
+            <ic class="fas fa-angle-double-down" style="'.$buttstyl .' cursor:zoom-in;" '.
+            ' onclick= CardMaximizeAll(); ></ic>
+            <data-hint>'. lang('@<b>EXPAND:</b> Click to open <i>all</i> cards').';" </data-hint></abbr>';
+            
+    // CardHelp:
+    if ($help>'') $Card_help=
+         '<abbr class= "hint">'.
+            '<ic class="fa-solid fa-question" style="'.$buttstyl .' float:none; cursor:help; padding: 0 6px;" '.
+            ' onclick="window.open(\''.$help.'\', \'_blank\')" >'.
+            '</ic>
+            <data-hint>'.lang('@<b>HELP:</b>'.lang('@Click icon to goto custom help for <i>this</i> card: ').$help.'').' </data-hint>
+         </abbr>'; else $Card_help= '';
 
     if ($form>'') { //  Without name form will not be created, so local forms can be used !
             $gbl_CardForm= true;
-            $formCrea=  "\n\n".'<form name="'.$form.'" id="'.$form.'" action="'.$acti.'" method="POST" style="margin-block-end: 0;">'."\n";
+            $formCrea=  "\n\n".'<form name="'.$form.'" id="'.$form.'" action="'.$acti.'" 
+                        method="POST" enctype="multipart/form-data"
+                        style="margin-block-end: 0;">'."\n";
         }               //  "ParentForm" - Nestet forms is not allowed, so sub-forms has to specially handled!
     else {$gbl_CardForm= false; $formCrea= ''; }
-    $prnHtml= '<ic class="'.$icon.'" style="font-size: 20px; color: '.$gbl_iconColor.'; '.$fclr.'margin: 0 5px;"></ic> &nbsp;'.ucfirst(lang($capt));
+    
+    $prnHtml= $icon.ucfirst($capt);
+    if ($last=='') $last= $Card_contrl. $Card_help;
 
-
-## CARD-START:                                               style="margin: 0 10px 10px 0; left: -6px;
+## CARD-START:
     echo '<span class="'.$clas.'" id="card'.$gbl_CardIx.'"  style="position: relative; vertical-align: top; margin: 1px; margin-bottom: 8px; '.$attr.'"> '.
             $formCrea.
             // CardTop:
@@ -1587,55 +1793,21 @@ function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWma
             <span id="chead'.$gbl_CardIx.'" style="display:inline-block; width: calc(100% - 0px); text-align: left; padding: 4px 0;'.$head.'">';
             if ($hint=='')   $hint= '@<b>TOGGLE:</b> Click icon or card header-text to open / close <i>this</i> card';
 
-            // CardTitl:
-            echo '<abbr class= "hint">'.
-                 '<span class= "cardsTitl" style="'.$Ph.' color:'.$gbl_TitleColr.'; cursor:row-resize; text-align: left; min-height:26px; padding-right:calc(80% - 350px); display:inline;'.$fclr.'"'.
-                    ' onclick= CardSwitch'.$gbl_CardIx.'(); > '. $prnHtml. '
-                 </span>
-                    <data-hint>'.lang($hint).' </data-hint></abbr>';
-            // TOGGLE butt: Toggle max-height between vhgh and 999px 
-            if ($show==true) 
-            echo '<abbr class= "hint">'.
-                    '<ic class="fas fa-arrows-alt-v" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:row-resize; font-size: 12px; '.$fclr.'" '.
-                    ' onclick= CardHeight'.$gbl_CardIx.'(); ></ic> 
-                    <data-hint>'.lang('@<b>TOGGLE-height:</b> Click icon to toggle viewHeight for <i>this</i> card').' </data-hint></abbr>';
-            // WIDE butt:
-            if ($show==true) 
-            echo '<abbr class= "hint">
-                    <ic class="fa-solid fa-right-left" style="width:12px; height:12px; margin-top:6px; margin-right:4px; float:right; cursor:col-resize; font-size: 12px; '.$fclr.'" '.
-                    ' onclick= CardWide'.$gbl_CardIx.'(); ></ic>
-                    <data-hint>'. lang('@<b>WIDE:</b> Click to maximize/normalize <i>this</i> card width').'</data-hint></abbr>';
-            // HEIGHT butt:
-            if ($show==true) if (false) // if (class="wrapper")
-                // <script> const el = document.getElementById('card'.$gbl_CardIx.'');    el.closest('.wrapper');     el.find('.wrapper'): </script>
-            echo '<abbr class= "hint">
-                    <ic class="fa-solid fa-right-left fa-rotate-90" style="width:12px; height:12px; margin-top:6px; margin-right:2px; float:right; cursor:s-resize; font-size: 12px; '.$fclr.'" '.
-                    ' onclick= WrapperHeight'.$gbl_CardIx.'(); ></ic>
-                    <data-hint>'. lang('@<b>HEIGHT:</b> Click to maximize/normalize <i>this</i> View height (Table/WrapperCard)').'</data-hint></abbr>';
-
-            // COLLAPSE butt:
-            if ($show==true)
-            echo '<abbr class= "hint">
-                    <ic class="fas fa-angle-double-up" style="width:12px; height:12px; margin-top:6px; margin-right:2px; float:right; cursor:zoom-out; font-size: 12px; '.$fclr.'" '.
-                    ' onclick= CardMinimizeAll(); ></ic>
-                    <data-hint>'. lang('@<b>COLLAPSE:</b> Click to close <i>all</i> cards').';" </data-hint></abbr>';
-            // EXPAND butt:
-            if ($show==true)
-            echo '<abbr class= "hint">
-                    <ic class="fas fa-angle-double-down" style="width:12px; height:12px; margin-top:6px; margin-right:2px; float:right; cursor:zoom-in; font-size: 12px; '.$fclr.'" '.
-                    ' onclick= CardMaximizeAll(); ></ic>
-                    <data-hint>'. lang('@<b>EXPAND:</b> Click to open <i>all</i> cards').';" </data-hint></abbr>';
-            if ($help>'') 
-            echo '<abbr class= "hint">'.
-                    '<ic class="fa-solid fa-question" style="width:12px; height:12px; margin-top:6px; margin-right:2px; float:right; cursor:help; font-size: 12px; " '.
-                    ' onclick="window.open(\''.$help.'\', \'_blank\')" >'.
-                    '</ic> 
-                    <data-hint>'.lang('@<b>HELP:</b> Click icon to goto custom help for <i>this</i> card: '.$help.'').' </data-hint>
-                 </abbr>';
-            
-    echo '</span>';   // CardTop
-    if (true) {    
-    Pmnu_0(elem:'chead'.$gbl_CardIx.'',capt:'@Applies to all cards:', wdth:'240px',  icon:'fas fa-info', stck:'false', attr:' height: 14px;',cntx:true);
+       // CardTitl:
+       $titlSty= '<span class= "cardsTitl" onclick= CardSwitch'.$gbl_CardIx.'(); style="'.$Ph.' color:'.$gbl_TitleColr.'; cursor:row-resize;';
+       echo '<span> 
+                <span style="float:left;                   width:10%;   text-align:left;"   >'.$frst.'</span>'.
+                '<abbr class= "hint">'.
+                ($frst >'' ? $titlSty.' text-align:center; width:68%; display: inline-block;" >'.$prnHtml.'</span>'
+                           : $titlSty.' text-align:left; "                                    >'.$prnHtml.'</span>') .
+                '</span>
+                <span style="float:right;                     text-align:right;"  >'.$last.'</span>
+            </span>';
+        if ($last=='') echo '<span style="padding: 0 10px;">'.$Card_contrl. $Card_help.'</span>';
+    //echo '</span>';   // CardTop
+    
+    if ($poup==true) {    
+    Pmnu_(elem:'chead'.$gbl_CardIx.'',capt:'@Applies to all cards:', wdth:'240px',  icon:'fas fa-info', stck:'false', attr:' height: 14px;',cntx:true);
     Pmnu_Item(labl:'@Close cards',     icon:'far fa-rectangle-xmark colrgreen', hint:'@Close all cards',        vrnt:'plain',     name:'m1', clck:'CardHeightAll(`clo`,330);',attr:'',shrt:'');
     Pmnu_Item(labl:'@Minimize height', icon:'fas fa-minus     colrgreen',  hint:'@Minimize all cards height',   vrnt:'plain',     name:'m2', clck:'CardHeightAll(`min`,330)', attr:'',shrt:'');
     Pmnu_Item(labl:'@Small height',    icon:'fas fa-compress  colrgreen',  hint:'@Small height to all cards',   vrnt:'custom',    name:'m3', clck:'CardHeightAll(`sma`,330)', attr:'',shrt:'');
@@ -1646,31 +1818,30 @@ function htm_Card_0(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWma
     Pmnu_Item(labl:'@COLLAPSE body', icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardHeightAll(`max`,330);', attr:'',shrt:'');
     Pmnu_Item(labl:'@EXPAND body',   icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardHeightAll(`max`,330);', attr:'',shrt:'');
     // Pmnu_Item(vrnt:'separator');
-    Pmnu_00(/* labl:'@Not working yet',hint:'@Working on it',attr:'padding-top: 2px; text-color:red; text-align:center;' */);
-   // Pmnu_00(labl:'<small>No function yet ! </small>',hint:'',attr:'padding-top: 8px; text-color:red;');
+    Pmnu_end(/* labl:'@Not working yet',hint:'@Working on it',attr:'padding-top: 2px; text-color:red; text-align:center;' */);
+   // Pmnu_end(labl:'<small>No function yet ! </small>',hint:'',attr:'padding-top: 8px; text-color:red;');
     }
-    echo '<span id="HideBody'.$gbl_CardIx.'" style="background:'.$gbl_CardsBgrd.'; transition-duration: 1s; 
+    echo '<span id="HideBody'.$gbl_CardIx.'" style="'.$gbl_CardsBgrd.'; transition-duration: 1s; 
           max-height:'.($vhgh > '' ? $vhgh : "500px").'; overflow-y: auto; display: block; '.$styl.'">';   // Hide from here ! 
     if ($capt > '') if ($head != '') echo '<hr class="style13" style="margin: 0 0 6px 0;"/>';
     echo '<div class="cardContent" style="text-align: center; margin: 4px; '.$styl.'">'; // width: min-content;">';
     return $prnHtml;
-} // htm_Card_0 -   # Cardets < /Card-span>, < /hiding> og < /form> er placeret i htm_Card_00, som skal kaldes til slut!
+}
 
-function htm_Card_00(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false)
-    $labl='',       # string: Label on the submit button
+# Finalize htm_Card_()
+function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false)
+    $labl='',       # string: Label on the submit button in the footer
     $icon='',       # string: Icon left to label
     $hint='',       # string: Hint on hover the submit button
     $name='',       # string: The name of the button to submit
     $form='',       # string: The name of the form to submit
     $subm=false,    # bool:   Submit button shown and active
-                    
     $attr='',       # string: Button attributes. Generel use e.g. action= "$link"
     $akey='',       # string: Shortcut to activate the button
     $kind='save',   # string: The button appearance 
     $simu=false     # bool:   Button only simulate
 )
-{ # MUST follow after htm_Card_0 and card content !
-    global $gbl_CardForm;    dvl_pretty('htm_Card_00 ');
+{   global $gbl_CardForm;    dvl_pretty('htm_Card_end ');
     //if ($disa==true) $aktiv=' disabled '; else $aktiv= '';
     if ($hint=='') {$hint= '@Remember to save here if you changed anything above, before leaving the window.'; $kind='save';}
     echo '</div>';  $prnHtml= '</div>';  // class="cardContent"
@@ -1678,7 +1849,6 @@ function htm_Card_00(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, a
         if ($subm==true) {
         echo '<hr class="style13" style= "height:4px;">'.
              '<span class="center" style="height:35px; display: inline-block; position: relative;">';
-                     # labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'', rtrn:true, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
         htm_AcceptButt($labl, $icon, $hint, $form, $wdth='', $attr, $akey, $kind='button',$rtrn=false, tplc:'LblTip_N', tsty:'left: auto; top: -65px;');
         echo '</span>';
         }
@@ -1686,12 +1856,12 @@ function htm_Card_00(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, a
     if ($gbl_CardForm) echo "\n".'</form>'.'<!-- /'.$name.' -->'."\n\n"; //  CardForm-end
     echo '</span>'; $prnHtml.= '</span>'; // Card-end
     return $prnHtml;
-} # htm_Card_00
+} # htm_Card_end
 
 // $CardState= [[ix:1..xx,display:none/block],[...]];
 
-// JS functions to handle Cards:
-function CardInit($cardCount) {
+
+function CardInit($cardCount) {     // JS functions to handle Cards:
     global $CardState;
     echo '<script>';
       /*   for ($Ix=1; $Ix<=$cardCount; $Ix++) { 
@@ -1773,7 +1943,6 @@ function getState() {   // https://bobbyhadz.com/blog/javascript-get-all-element
             }
         });
     
-
 /* 
         jsondata = JSON.stringify(states);
         console.log(jsondata); 
@@ -1824,13 +1993,41 @@ function CardOn($from,$to__=0)  //  Maximize a single or a interval
 }
 
 
-
-function htm_wrapp_0(# vhgh:'400px') # WrapperCard
+# Start a span with scrolling content in a fixed-height window
+function htm_Wrapp_(# vhgh:'400px') # WrapperCard - open
     $vhgh='400px') # WrapperCard - vhgh: ViewHeight
 {   echo '<span class="wrapper" style="padding:0; margin: 0 0 6px; border:1px solid gray; height:'.$vhgh.'; display: block;">'; 
 }
-function htm_wrapp_00() 
+# Filalixe a wraooer window
+function htm_Wrapp_end()         # WrapperCard - close
 {   echo '</span>';
+}
+
+# Start creating a form
+function htm_Form_(# name:'', acti:'', mode:'POST', type:'multipart/form-data', attr:'')
+    $name= '',                      # string: The name of the form
+    $acti= '',                      # string: Form action
+    $mode= 'POST',                  # string: Form method
+    $type= 'multipart/form-data',   # string: enctype
+    $attr= ''                       # string: Other attributes
+    )
+{   echo '<form action='.$acti. ' method='.$mode. ' enctype='.$type. ' '.$attr.'>'; 
+    /*
+    Form attributes:
+    accept-charset  Specifies the character encodings used for form submission
+    action          Specifies where to send the form-data when a form is submitted
+    autocomplete    Specifies whether a form should have autocomplete on or off
+    enctype         Specifies how the form-data should be encoded when submitting it to the server (only for method="post")
+    method          Specifies the HTTP method to use when sending form-data
+    name            Specifies the name of the form
+    novalidate      Specifies that the form should not be validated when submitted
+    rel             Specifies the relationship between a linked resource and the current document
+    target          Specifies where to display the response that is received after submitting the form
+    */
+}
+# Finalixe a form
+function htm_Form_end() 
+{   echo '</form>';
 }
 
 
@@ -1901,7 +2098,8 @@ function RowColTest( # colr:'gray')
 }
 
 ## PROBLEM: This courses topMenu not to stay visibly at page top !
-function htm_RowCol_0(# wdth:240)  # ColumnTop // Must be followed/ended of htm_RowColBott()
+# Start a first column in a div
+function htm_RowCol_(# wdth:240)        # ColumnTop // Must be followed/ended of htm_RowCol_end()
     $wdth=240)
 {  dvl_pretty('htm_RowColTop');      // RowColTop RowCol240, RowCol320 (Look at CSS ! )
     echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">'.
@@ -1909,19 +2107,21 @@ function htm_RowCol_0(# wdth:240)  # ColumnTop // Must be followed/ended of htm_
          '<data-RowCol id="RowCol'.$wdth.'" '.RowColTest('blue').' >';
 }
 
-function htm_RowCol_next(# wdth:320)  # NextColumn
+# Create the next column
+function htm_RowCol_next(# wdth:320)    # NextColumn
     $wdth=320) 
 {   echo '</data-RowCol> <data-RowCol id="RowCol'.$wdth.'" '.RowColTest('red').'>'; 
 }
 
-function htm_RowCol_00()  # ColumnBottom
+# Create the last column
+function htm_RowCol_end() #             # ColumnBottom
 {   echo '</data-RowCol> </span></data-ColnHead><span class="clearWrap" >'.
          '</div>';
 }
 ## Importent: $RowColWdth - Only use defined width ! (See CSS: @media screen)
 
-
-function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'', rtrn:true, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
+# A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submig
+function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'home', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'')
     $labl='',           # string: The caption on the button
     $icon='',           # string: The iconclass ('<i class="fas fa-plus"> </i> ';)
     $hint='',           # string: hint about the button function
@@ -1941,11 +2141,13 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', 
     $idix='',           # string: ix-suffix on name/id
     $disa=false         # bolean: 'disabled' to deactivate the button
     )
-{   global $gbl_ShortKeys;
+{   global $gbl_ShortKeys, $gbl_ButtnBgrd, $gbl_BtLnkBgrd, $gbl_TextLight, $gbl_TextDark, $gbl_BtDelBgrd, 
+           $gbl_BtDelText, $gbl_BtNavBgrd,  $gbl_BtSavBgrd, $gbl_BtSavText, $gbl_dimmed, $gbl_BtNewBgrd , 
+           $gbl_BtNewText , $gbl_BtGooBgrd , $gbl_BtGooText , $gbl_BtNavText;
     dvl_pretty('htm_htm_AcceptButt');
-    // Colors:
-    $gbl_ButtnBgrd= '#44BB44';  /* LysGrøn   */     $gbl_ButtnText= '#FFFFFF'; 
-    $gbl_BtLnkBgrd= 'yellow';   /* '#FCFCCC';  */   $gbl_BtLnkText= '#000000';
+/*     // Colors:
+    $gbl_ButtnBgrd= '#44BB44';  /* LysGrøn   * /     $gbl_ButtnText= '#FFFFFF'; 
+    $gbl_BtLnkBgrd= 'yellow';   /* '#FCFCCC';  * /   $gbl_BtLnkText= '#000000';
     $gbl_TextLight= 'white';       $gbl_TextDark= 'black';
     $gbl_BtDelBgrd= 'Crimson ';    $gbl_BtDelText= $gbl_TextLight;   # Delete:      RED
     $gbl_BtSavBgrd= '#0064b4';     $gbl_BtSavText= $gbl_TextLight;   # Save/Submit: BLUE
@@ -1953,8 +2155,8 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', 
     $gbl_BtGooBgrd= '#66CDAA';     $gbl_BtGooText= $gbl_TextDark;    # Continue:    MARINE
     $gbl_BtNewBgrd= 'Orange';      $gbl_BtNewText= $gbl_TextDark;    # CreateNew:   ORANGE
     $gbl_dimmed=    ' opacity:0.8;';
-
-
+ */
+ 
     // Initiate:
     if ($form>'') {$name= $form; $form=' form="'.$form.'" ';} 
     else          {$name= '_none'; }
@@ -2004,8 +2206,9 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', 
     if (!$rtrn) echo $result; else return $result;
 } # :htm_AcceptButt()
 
+# A generel action button 
 function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', form:'', acti:'', attr:'', rtrn:true)
-    $labl='',          # string: Text on the button
+    $labl='',       # string: Text on the button
     $icon='',       # string: Icon before the label
     $hint='',       # string: Hint about the button function
               
@@ -2022,13 +2225,13 @@ function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', for
     if ($hint>'') {
     $s1= '<abbr class= \'hint\'>';
     $s2= '    <data-hint>'.lang($hint).'</data-hint>
-            </abbr>';
+          </abbr>';
     } else {$s1=''; $s2='';};
     $result= $s1. '
                 <button class=\'buttstyl\' 
-                    type=\''.$type.'\' 
-                    id=\''  .$name.'\' 
-                    name=\''.$name.'\' '.
+                    type=\''. $type.'\' 
+                    id=\''.$name.'\' 
+                    name=\''. $name.'\' '.
                     ($form>'' ? ' form=\''.$form.'\' ' : '').
                     ($acti>'' ? ' onclick=\''.$acti.'\' ' : '').
                     $attr.'>
@@ -2038,34 +2241,28 @@ function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', for
     if (!$rtrn) echo $result; else return $result; // str_replace('"','\'',$result); 
 } # htm_ActionButt()
 
+# A generel botton with icon and label
 function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'gray', bclr:'white', akey:'', rtrn:false)
     $labl='',       # string: Button label
     $icon='',       # string: Icon before label
     $hint='',       # string: User hint
-                
     $type='submit', # string: Button type
     $name='',       # string: Button id / name
-                  
     $link='',       # string: formtarget
     $evnt='',       # string: Event script (earlier: $action)
     $wdth='',
     $font='32px',   # string: font-size
     $fclr='gray',   # string: Forground color
     $bclr='white',  # string: Background color
-                   
     $akey='',       # string: Keyboard shortcut
     $rtrn=false     # bool:   Function Return or echo
     )
 {   global $gbl_ButtnBgrd, $gbl_ShortKeys, $btnix;
-
     dvl_pretty('htm_IconButt');
     if ($wdth) $wdth= ' width: '.$wdth.';';
-    /* if ($gbl_ShortKeys) */ {
-        //($akey>'') ? $keytip= '<br>'.lang('@Keyboard shortcut: ').$akey; : $keytip=''; ;
-        if ($akey) $keytip= '<br>'.lang('@Keyboard shortcut: ').$akey; else $keytip='';
-        if ($link=='') $targ= 'formtarget="_self"'; 
-        else           $targ= 'action="'.$link.'" method="get" formtarget="_self"';
-    }
+    if ($akey) $keytip= '<br>'.lang('@Keyboard shortcut: ').$akey; else $keytip='';
+    if ($link=='') $targ= 'formtarget="_self"'; 
+    else           $targ= 'action="'.$link.'" method="get" formtarget="_self"';
     $btnix++;
     $result = '
     <span class="tooltip" style="display:inline; padding:0; width:200px;">
@@ -2081,19 +2278,65 @@ function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:
         </abbr>
         '.
     '</span>';
-    // if (($font=='32px') or ($rtrn)) echo $result;
     if (!$rtrn) echo $result;
     else return $result;
 } # htm_IconButt
 
-function htm_SwitchButt(# labl:'', hint:'',name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', rtrn:false) 
+# A special button for going to top of page
+function htm_GoTopButt(# labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to page top', styl:'') 
+    $labl='@Top',                   # string: Button label
+    $icon='fa-solid fa-arrow-up',   # string: Icon before label
+    $hint='@Go to page top',        # string: User hint
+    $styl=''                        # string: Custom style
+) 
+{   global $gbl_BtNavBgrd, $gbl_BtNavText;
+    echo'<button onclick="fnGoTop()" id="btnGoTop" title="'.lang($hint). '" style="
+              display: none;                        /* Hidden by default */
+              position: fixed;                      /* Fixed/sticky position */
+              bottom: 6px;                          /* Place the button at the bottom of the page */
+              right: 16px;                          /* Place the button 30px from the right */
+              z-index: 99;                          /* Make sure it does not overlap */
+              border: none;                         /* Remove borders */
+              outline: none;                        /* Remove outline */
+              background-color: '.$gbl_BtNavBgrd.'; /* Set a background color */
+              color: '.           $gbl_BtNavText.'; /* Text color */
+              cursor: pointer;                      /* Add a mouse pointer on hover */
+              padding: 6px;                         /* Some padding */
+              border-radius: 6px;                   /* Rounded corners */
+              font-size: 16px;                      /* Increase font size */
+              '.$styl.'
+            ">
+            <abbr class= "hint" style="position: relative; color: '. $gbl_BtNavText.';">'.
+                (($icon>'') ? '<data-ic class="'. $icon. '"> </data-ic>'  : ''). lang($labl).
+                '<data-hint style="left: auto; top:-33px; right:44px;">'.
+                    lang($hint).
+                '</data-hint>
+            </abbr>'.
+        '</button>';
+    run_Script('
+    let btnGoTop = document.getElementById("btnGoTop"); // Get the button
+    window.onscroll = function() {fnScroll()};    // When the user scrolls down 20px from the top of the document, show the button
+
+    function fnScroll() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        btnGoTop.style.display = "block";
+      } else {
+        btnGoTop.style.display = "none";
+      }
+    }
+    function fnGoTop() {                        // When the user clicks on the button, scroll to the top of the document
+      document.body.scrollTop = 0;              // For Safari
+      document.documentElement.scrollTop = 0;   // For Chrome, Firefox, IE and Opera
+    }');
+}
+
+# A button with switch layout
+function htm_SwitchButt(# labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', rtrn:false) 
     $labl='',               # string: Button label
     $hint='',               # string: Hint about the button function
-                          
     $name='switchbox_id',   # string: Button name
     $valu='',               # string: Value
     $list=[],               # array:  Setting
-                        
     $wdth='',               # string: Width
     $bclr='',               # string: Background color
     $styl='',               # string: Style
@@ -2111,28 +2354,29 @@ function htm_SwitchButt(# labl:'', hint:'',name:'switchbox_id', valu:'', list:[]
         <abbr class="hint">
             <button type="button" class="switchbox" '.$presssed.' style="width:'.$strWd.
                 '; --sw-width: '.$strWd.'; --themeColr: '.$bclr.'; '.
-                ';" id="'.$name. '" aria-pressed="'.$presssed.'">
+                ';" id="id_'.$name. '" aria-pressed="'.$presssed.'">
                 <span class="switchbox-yes">'.$yes.'</span>
                 <span class="switchbox-no" >'.$no.'<//span>
             </button>
-        <label for="'.$name.'">'.lang($labl).'</label>
+        <label for="id_'.$name.'">'.lang($labl).'</label>
         ';
     $result.= '<data-hint>'.lang($hint).'</data-hint>
         </abbr>
         </'.$gbl_progZoom.'>';
     if (!$rtrn) echo $result; else return $result; // str_replace('"','\'',$result); 
-}
+} # htm_SwitchButt()
 
+# Another button with switch layout
 function htm_SwitchButton(# labl, name:'switchbox_id', valu:'', wdth:'', bclr:'', styl:'', hint:'', list:[], rtrn:false) 
-    $labl,  
-    $name='switchbox_id',
-    $valu='', 
-    $wdth='', 
-    $bclr='', 
-    $styl='', 
-    $hint='', 
-    $list=[], 
-    $rtrn=false           # bool:   Act as procedure: Echo result, or as function: Return string
+    $labl,                  # string: Button label
+    $name='switchbox_id',   # string: 
+    $valu='',               # string: 
+    $wdth='',               # string: Width
+    $bclr='',               # string: 
+    $styl='',               # string: 
+    $hint='',               # string: Hint about the button function
+    $list=[],               # string: 
+    $rtrn=false             # bool:   Act as procedure: Echo result, or as function: Return string
 )
 {   echo '
         <style>
@@ -2243,17 +2487,16 @@ function htm_SwitchButton(# labl, name:'switchbox_id', valu:'', wdth:'', bclr:''
         </abbr>
     ';
     if (!$rtrn) echo $result; else return $result; // str_replace('"','\'',$result); 
-} # htm_SwitchButton
+} # htm_SwitchButton()
 
+# A special button to switch between many states
 function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;') 
     $name='ROWyCOLx',       # string: 
     $valu='',               # string: 
     $acti=true,             # bool:   
-                          
     $styl='padding:1px;'    # string: 
     )
-{
-    $Bicon= ['<i class="far fa-square colrgray"          style="'.$styl.'" ></i>',
+{   $Bicon= ['<i class="far fa-square colrgray"          style="'.$styl.'" ></i>',
              '<i class="far fa-minus-square colrred"     style="'.$styl.'" ></i>',
              '<i class="far fa-check-square colrorange"  style="'.$styl.'" ></i>',
              '<i class="far fa-plus-square colrgreen"    style="'.$styl.'" ></i>'
@@ -2283,21 +2526,20 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
     return $result;
 }
  
+# Button for test human or robot
 function htm_Humantest(# capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', 
-                        # form:'form-id', wdth:'200px', hght:'30px30px', yclr:'lightcyan', nclr:'white', xytx:'@YES', ntxt:'@NO',$rtrn= false);
-$capt= '@Are you human? ',                          # capt $quest= '@Are you human?',
-$icon= 'fa-solid fa-arrow-right-to-bracket',        # icon after caption
-$hint= '@Grab and slide to right to change state',  # hint $slide_hint= '@Grab and slide to right to change state'
-$form= 'form-id',                                   # form $form_id= 'form-id',
-
-$wdth= '200px',                                     # wdth $grab_width= '200px',
-$hght= '24px',                                      # hght $grab_height= '30px',
-$yclr= 'lightgray',                                 # yclr $yclr= 'lightcyan',
-$nclr= 'white',                                     # nclr $no_colr= 'white',
-$bclr= '#1bd441',                                   # background in human state
-
-$xytx= '@YES',                                      # xytx $yes_text= '@YES',
-$ntxt= '@NO',                                       # ntxt $no_text= '@NO',
+                       # form:'form-id', wdth:'200px', hght:'24px', yclr:'lightgray', nclr:'white', bclr: '#1bd441', xytx:'@YES', ntxt:'@NO',rtrn: false);
+$capt= '@Are you human? ',                          # string: capt $quest= '@Are you human?',
+$icon= 'fa-solid fa-arrow-right-to-bracket',        # string: icon after caption
+$hint= '@Grab and slide to right to change state',  # string: hint $slide_hint= '@Grab and slide to right to change state'
+$form= 'form-id',                                   # string: form $form_id= 'form-id',
+$wdth= '200px',                                     # string: wdth $grab_width= '200px',
+$hght= '24px',                                      # string: hght $grab_height= '24px',
+$yclr= 'lightgray',                                 # string: yclr $yclr= 'lightgray',
+$nclr= 'white',                                     # string: nclr $no_colr= 'white',
+$bclr= '#1bd441',                                   # string: background in human state
+$xytx= '@YES',                                      # string: xytx $yes_text= '@YES',
+$ntxt= '@NO',                                       # string: ntxt $no_text= '@NO',
 $rtrn= false                                        # bool: Act as procedure: Echo result, or as function: Return string
 ) {
 $result= '
@@ -2353,7 +2595,6 @@ $result= '
     border-color: white;
     box-shadow: 0 0 5px gray;
   }
-
 
   .grab-slider-wrapper.human {
     background-color: '.$bclr.';
@@ -2434,8 +2675,8 @@ $result.= '
     if (!$rtrn) echo $result; else return $result;
 } # htm_Humantest
 
-
-function htm_Tabs_0(# head:'', styl:'', rtrn:false)
+# Start a tab-object with multibly tabs
+function htm_Tabs_(# head:'', styl:'', rtrn:false)
     $head='',
     $styl='', 
     $rtrn=false
@@ -2443,12 +2684,13 @@ function htm_Tabs_0(# head:'', styl:'', rtrn:false)
 {   $GLOBALS['TabLabl']='<div class="tab">';
     $GLOBALS['TabBody']='';
     $result= '
-        <div style="'.$styl.'">'. 
+        <span style="'.$styl.'">'. 
             $head.
-        '</div>';
+        '</span>';
    if (!$rtrn) echo $result; else return $result; // str_replace('"','\'',$result); 
 }
-                #$name, $labl='', $body='', $bclr='white', $style='text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;') 
+
+# Create a tab in the htm_Tabs_() object
 function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', bclr:'white')
     $labl='',       # string: Tab Label
     $body='',       # string: Content on tab
@@ -2456,7 +2698,8 @@ function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow
     $styl=          # string: Style
           'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;',
     $bclr='white',  # string: Background color
-    $vhgh=''        # ViewHeight (future !)
+    $vhgh='',       # string: ViewHeight (future !)
+    $dflt=false     # boolean: Open as default
     ) 
     
 {   $b= 'small'; 
@@ -2464,27 +2707,34 @@ function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow
         <button class="tablinks" type="button" title="'.lang('@Show this Tab-content').'" 
         onclick="openTab(event, \''.$name.'\')" 
         style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; "><'.$b.'>'.lang($labl).'</'.$b.'></button>';
+        if ($dflt==true) "window.openTab(event, \''.$name.'\')" ;
+       
     $GLOBALS['TabBody'].= '
-        <div id="'.$name.'" class="tabcontent" style="display: none; background-color:'.$bclr.'; '.$styl.' border-right: 2px solid #aaa;">'. lang($body).'</div>';
+        <div id="'.$name.'" class="tabcontent" style="display: none; background-color:'.$bclr.'; '.
+            $styl.' border-right: 2px solid #aaa;">'. lang($body).
+       '</div>';
 }
-function htm_Tabs_00(# foot:'', styl:'', rtrn:false)
+
+# Finalize a htm_Tabs_() object
+function htm_Tabs_end(# foot:'', styl:'', rtrn:false)
     $foot='', 
     $styl='', 
     $rtrn=false
     ) 
-{   $result= 
-        $GLOBALS['TabLabl'].'<span style="float:right;" title="'.lang('@Hide the Tab-content').'" onclick="closeTabs()"><i class="far fa-window-close"></i>&nbsp;<span> </div>'.
+{   $result=
+        $GLOBALS['TabLabl'].'<span style="float:right;" title="'.lang('@Hide the Tab-content').
+                            '" onclick="closeTabs()"><i class="far fa-window-close"></i>&nbsp;<span> </div>'.
         $GLOBALS['TabBody'];
         if ($foot>'') $result.= '<span style="'.$styl.'">'.lang($foot).'</span>';
+        $result.= '<hr style="border-top: 2px solid #aaa; margin-top: 0;">'; 
     if (!$rtrn) echo $result; else return $result; // str_replace('"','\'',$result); 
 }
 
-
+# A general link-button
 function htm_LinkButt(# labl:'', hint:'', attr:'', link:'', targ:'_blank', rtrn:false)
     $labl='',       # string: Label
     $hint='',       # string: 
     $attr='',       # string: 
-                   
     $link='',       # string: 
     $targ='_blank', # string: 
     $rtrn=false     # bool:   Function Return or echo result
@@ -2493,6 +2743,7 @@ function htm_LinkButt(# labl:'', hint:'', attr:'', link:'', targ:'_blank', rtrn:
     if (!$rtrn) echo $result; else return $result;
 }
 
+# Create a HTML-textarea with multibly lines
 function htm_TextArea(# labl:'', hint:'', name:'area', form:'', valu:'', rows:'1', widt:'', plho:'?', attr:'', rtrn:true) 
     $labl='', 
     $hint='', 
@@ -2515,6 +2766,7 @@ function htm_TextArea(# labl:'', hint:'', name:'area', form:'', valu:'', rows:'1
     if (!$rtrn) echo $result; else return $result;
 }
 
+# Create a text with hidden hint/title
 function str_WithHint(# labl:'', hint:'', icon:'', $styl);
     $labl='',       # string: Your text
     $hint='',       # string: On-Mouse-over text
@@ -2528,8 +2780,9 @@ function str_WithHint(# labl:'', hint:'', icon:'', $styl);
 }
 
 
-// echo $htm_ModalDialog; Initiated in htm_Page_0 ($htm_ModalDialog)
-function htm_ModalDialog(# type:'none', capt:'@Voilà!', mess:'', butt:['$type','$icon','$labl','$hint','$link'], html:'CSS-based Modal Dialog', rtrn:true) 
+// echo $htm_ModalDialog; Initiated in htm_Page_ ($htm_ModalDialog)
+# Create a modal popup window with color-coded background
+function htm_ModalDialog(# type:'none', capt:'@Voilà!', mess:'', butt:['type:','icon:','labl:','hint:','link:'], html:'CSS-based Modal Dialog', rtrn:true) 
     $type='none', # Variant
     $capt='@Voilà!',
     $mess='',
@@ -2610,25 +2863,25 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
     if (!$rtrn) echo $result; else return $result;
 } // htm_ModalDialog
 
-
-function htm_Dialog(# capt:'CAPTION', content:'', bclr:'lightyellow', buttons: // []) # Modal dialog:
+# Create a Dialog with alternative buttons to select between
+function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt: // []) # Modal dialog:
     $capt='CAPTION', 
-    $content='', 
+    $body='', 
     $bclr='lightyellow', # Background color
-    $buttons= [ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],   // (0:id, 1:value, 2:label, 3:icon, 4:hint) 
+    $butt= [ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],   // (0:id, 1:value, 2:label, 3:icon, 4:hint) 
                 ['',          'cancel', '@Cancel', 'fas fa-minus-circle','red','@Break and return']
               ]
 )  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
 {   $result= '<dialog id="htmDialog" style="padding:5px; background-color:lightcyan; border-radius: 6px;">
         <form  name="yyy" method="dialog">
             <div style="background-color:'.$bclr.'; padding:4px;">'.lang($capt).'</div>
-            <p>'.lang($content).'</p>'.   //  <p><label>Favorite animal: <select> <option></option> <option>Brine shrimp</option> <option>Red panda</option> <option>Spider monkey</option> </select> </label></p>
+            <p>'.lang($body).'</p>'.   //  <p><label>Favorite animal: <select> <option></option> <option>Brine shrimp</option> <option>Red panda</option> <option>Spider monkey</option> </select> </label></p>
             '<menu style="padding-inline-start: 40px; padding-inline-end: 40px;">'; 
-                foreach ($buttons as $butt) {
-                $iconClass= $butt[3];
+                foreach ($butt as $butn) {
+                $iconClass= $butn[3];
                 // if ($iconClass === '') $icon=''; else 
-                $icon= '<ic class="'.$butt[3].'" style="font-size: 16px; color: '.$butt[4].';"></ic>&nbsp;';
-                $result.= '<button id="'.$butt[0].'" value="'.$butt[1].'" title="'.lang($butt[5]).'" style="padding: 3px 5px;">'.$icon.lang($butt[2]).'</button>&nbsp;';
+                $icon= '<ic class="'.$butn[3].'" style="font-size: 16px; color: '.$butn[4].';"></ic>&nbsp;';
+                $result.= '<button id="'.$butn[0].'" value="'.$butn[1].'" title="'.lang($butn[5]).'" style="padding: 3px 5px;">'.$icon.lang($butn[2]).'</button>&nbsp;';
                 }
     $result.= '</menu>
         </form>
@@ -2826,7 +3079,7 @@ function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['gobac
 
 
 //       Pmnu_Prepare:
-function Pmnu_0(# elem:'id', capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan;', cntx:true, rtrn:false) 
+function Pmnu_(# elem:'id', capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan;', cntx:true, rtrn:false) 
                  $elem='id',$capt='',$wdth='210px',$icon='',$stck='false',$attr='background-color:lightcyan;',$cntx=true,$rtrn=false) // Note: $elem is used to link to the calling element
 { // Create jsCode:
 if (DEBUG) return false;
@@ -2887,7 +3140,7 @@ if (DEBUG) return false;
     if (!$rtrn) echo $result; else return $result;
 } // Pmnu_Item
 
-function Pmnu_00(# labl:'',hint:'',attr:'',rtrn:false) 
+function Pmnu_end(# labl:'',hint:'',attr:'',rtrn:false) 
     $labl='',
     $hint='',
     $attr='',
@@ -2906,7 +3159,7 @@ if (DEBUG) return false;
     });      // :INIT (addEventListener)
     </script>
 ";
-    if ($rtrn) return $result; else  echo $result; 
+    if ($rtrn) return $result; else echo $result; 
 }
 /* 
 <script>
@@ -2932,59 +3185,16 @@ if (DEBUG) return false;
 
 { ## Group ******************** htm_Menu: **************************
 
-
-function htm_Menu_TopDown(# capt:'Clever html engine', data:[], foot:'', styl:'', widt;150px, note;'')
+# A page-menu on top of the page
+function htm_Menu_TopDown(# capt:'Clever html engine', data:[], foot:'PHP2HTML', styl:'', wdth;'150px', note;'')
 $capt='Clever html engine', # string: Title at left
-$data,                      # array:  Data for the meny
+$data=[],                   # array:  Data for the meny
 $foot='PHP2HTML',           # string: Note at right
 $styl='',                   # string: Aditional style to default style
-$widt='150px',              # string: Widths of menu columns. NOT used yet !
+$wdth='150px',              # string: Widths of menu columns. NOT used yet !
 $note=''
 )
-{
-    /* function MenuBran($pref='', $vrnt='', $icon='', $labl='', $hint='', $desc='', $link='', $subm=[], $styl='', $widt) { 
-    echo '
-    <span style="display:inline-block; width:'.$widt.'; padding:2px; text-align:'.($pref=='' ? 'center' : 'left').
-        '; background:lightgray; color:white;">
-        &nbsp;'. (($icon > '')  ? '<data-ic class="'.$icon.' fa-fw" style="font-size:16px;"></data-ic>' : ''). 
-       '<a href="'.$link.'" target=_self style="text-decoration: none; onhover {text-decoration: underline;}">'.lang($labl).'</a>'.
-    '</span>';
-    } */
-    /*
-    echo '<div onmouseover="desc_div(`wide`, `'.$capt.'`, `'.$widt.'`)" onmouseout="desc_div(`narrow`, `'.$capt.'`, `'.$widt.'`)"
-           style="text-align:left; background:#fafafa; opacity: 0.9; 
-           border: 1px solid lightgray; border-radius: 4px; padding:2px; width:max-content; z-index: 1000;
-           position:relative; top:0; margin-left:auto; margin-right:auto;'.$styl.'">';
-
-     echo '
-     <ul style="list-style-type: none;">';
-     if ($capt>'') echo '<span class="mnu_heads";>'.lang($capt).'&nbsp;<br></span>';
-     foreach ($data as $item)
-         { /* echo '<li style="float: left;">';  * / // Toplevel;
-        //         0          1        2         3         4         5         6         7         8                9
-        MenuBran($pref='', $item[0], $item[1], $item[2], $item[3], $item[4], $item[5], $item[6], ($item[7] ?? ''),$widt);
-        /*  echo '</li>'; * /
-        if (count($item[6])>0) { echo '
-        <ul>'; // Sublevel;
-            foreach ($item[6] as $xx) {
-                echo '
-                <li style="list-style-type: none;>';
-                    MenuBran($pref='',$xx[0],$xx[1],$xx[2],$xx[3],$xx[4],$xx[5],$xx[6],$xx[7],$widt);
-                echo '
-                </li>
-                ';
-            }
-        echo '
-        </ul>';
-        }
-     };
-    if ($foot>'') echo '<span class="mnu_heads";>&nbsp;'.lang($foot),'<span>'; 
-    echo '
-    </ul>';
-     
-    echo '</div>';
- */
-    if (!function_exists('subMenu')) {
+{   if (!function_exists('subMenu')) {
     function subMenu($i) {
         if ($i[1]>'') $ic= '<data-ic class="'.$i[1].' fa-fw" style="font-size:16px;"></data-ic>'; else $ic= '';
         echo '<abbr class= "hint " style="background-color:yellow;">
@@ -2996,8 +3206,7 @@ $note=''
                     ( $i[3]>'' ? lang($i[3]) : lang($i[4]) ).
                 ' </data-hint>';
         echo '</abbr>';
-    }
-    }
+    } }
     # htm_Menu_TopDown:
     /* if ($styl>'')  */echo '<style> body { padding-top: 0; margin-top:0; } </style>'; # Allow menu to be placed at window top
         // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='')
@@ -3070,21 +3279,20 @@ $note=''
     ';
 } # htm_Menu_TopDown
 
-
-
-function htm_Menu_Leftout(# $capt='Clever html engine', $data, $foot='', $styl='')
-$capt='Clever html engine', # string: Title at top
-$data,                      # array:  Data for the menu
-$foot='',                   # string: Note at bottom
-$styl='',                   # string: Aditional style to default style
-$widt='180px'               # string: Widths of menu columns
+# A page-menu to the left of the page
+function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:'',wdth:'180px')
+    $capt='Clever html engine', # string: Title at top
+    $data=[],                   # array:  Data for the menu
+    $foot='',                   # string: Note at bottom
+    $styl='',                   # string: Aditional style to default style
+    $wdth='180px'               # string: Widths of menu columns
 )
 { //                    0          1        2         3         4         5         6         7         8         9
-    function MenuLine($pref='', $vrnt='', $icon='', $labl='', $hint='', $desc='', $link='', $subm=[], $styl='', $widt) {
+    function MenuLine($pref='', $vrnt='', $icon='', $labl='', $hint='', $desc='', $link='', $subm=[], $styl='', $wdth) {
         echo                                                                        # pref; string - Prefix (indent) for submenu
         '<br><span>'.                                                               # vrnt: string - Variant not in use (Frst/Next/Last)
             '<span class= "iconlabl" '.                                             # icon: string - icon class        
-             'style="width:'.$widt.'; display:inline-block;;">'.$pref;              # labl: string - Alays visible
+             'style="width:'.$wdth.'; display:inline-block;;">'.$pref;              # labl: string - Alays visible
                                                                                     # hint: string - Visible on mouseover lable
             if ($icon>'') echo                                                      # desc: string - Visible on mouseover menu
             '<data-ic class="'.$icon.' fa-fw" style="font-size:16px;"></data-ic>';  # link: string - url / href
@@ -3100,7 +3308,7 @@ $widt='180px'               # string: Widths of menu columns
             '</abbr>
             </span>';
             if ($desc>'') echo '
-            <span class="desc_div"; style="max-width:'.$widt.'; /* left: 180px; */ position: revert; display: inline-block; 
+            <span class="desc_div"; style="max-width:'.$wdth.'; /* left: 180px; */ position: revert; display: inline-block; 
                 vertical-align: top; font-size:smaller;">'.
                 lang($desc).
             '</span>';
@@ -3108,7 +3316,7 @@ $widt='180px'               # string: Widths of menu columns
        </span>';
     } // MenuLine
     
-    echo '<div onmouseover="desc_div(`wide`, `'.$capt.'`, `'.$widt.'`)" onmouseout="desc_div(`narrow`, `'.$capt.'`, `'.$widt.'`)"
+    echo '<div onmouseover="desc_div(`wide`, `'.$capt.'`, `'.$wdth.'`)" onmouseout="desc_div(`narrow`, `'.$capt.'`, `'.$wdth.'`)"
            style="text-align:left; background:#fafafa; opacity: 0.9; background-color: var(--darkBcgrd); color: white;
            border: 2px solid lightgray; border-radius: 4px; padding:5px; width:max-content; z-index: 1000;
            position:fixed; top:28px; left:15px;'.$styl.'">';
@@ -3117,10 +3325,10 @@ $widt='180px'               # string: Widths of menu columns
      if ($capt=='') echo '<div class="mnu_heads";>'. lang('@Menu:').'</div>';
      echo '<br>';
      foreach ($data as $top) {          // TopMenu:
-        MenuLine($pref='', $top[0], $top[1], $top[2], $top[3], $top[4], $top[5], $top[6], ($top[7] ?? ''),$widt);
+        MenuLine($pref='', $top[0], $top[1], $top[2], $top[3], $top[4], $top[5], $top[6], ($top[7] ?? ''),$wdth);
         if (count($top[6])>0)
             foreach ($top[6] as $sub)   // SubMenu:
-                MenuLine($pref=' &nbsp; &nbsp; ',$sub[0],$sub[1],$sub[2],$sub[3],$sub[4],$sub[5],$sub[6],$sub[7],$widt);
+                MenuLine($pref=' &nbsp; &nbsp; ',$sub[0],$sub[1],$sub[2],$sub[3],$sub[4],$sub[5],$sub[6],$sub[7],$wdth);
      };
     if ($foot>'') echo '<br><span class="mnu_heads"; style="width:94%;"><hr>'.lang($foot),'<span>'; 
     echo '</div>';
@@ -3159,42 +3367,22 @@ function desc_div(state, capt, widt) {
 
 { ## Group ******************** htm_Page: **************************
 
-function htm_Page_0(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'', attr:'', pbrd:true) 
+# Start creating a page
+function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'', attr:'', pbrd:true) 
     $titl='',           # string: Page title
     $hint='',           # string: Page tip  (vertical text - left)
     $info='',           # string: Page into (vertical text - right)
-    $inis='',           # string: Initial CSS/js script in page header
+    $inis='',           # string: Page initial CSS/js script in page header
 
     $algn='center',     # string: align - "text-align"
     $imag='',           # string: Page background-image
     $attr='',           # string: Page attributes
     $pbrd=true          # bool:   Draw border around the page body-div
     )
-{ # Prepare / initialize a page  # Must be followed of htm_Page_00() to finalise the page
-    global $gbl_ProgRoot, $CSS_system, $gbl_TitleColr, $cardCount, $pbrd,$gbl_progZoom, $jsScripts, $headEndScript, $gbl_progDesti, $gbl_copyright;
+{ # Prepare / initialize a page  # Must be followed of htm_Page_end() to finalise the page
+    global $gbl_ProgRoot, $CSS_system, $gbl_TitleColr, $cardCount, $pbrd,$gbl_progZoom, $jsScripts, $headEndScript, 
+           $gbl_progDesti, $gbl_copyright, $autoCDN, $LIB_JQUERY, $LIB_JQUERYUI, $LIB_TABLESORTER, $LIB_FONTAWESOME, $LIB_TINYMCE, $LIB_POLYFILL;
     $pageMess= '<b>ERROR:</b> ';
-// Library_state: 0:inactive - 1:Offline (from /_assets) - 2:Online (from CDN)
-// libraries: jQuery-latest, Dialog-polyfill, TableSorter, ContextMenu, (popMnu_) ctxP_ Menu
-
-/* in project.inc.php (globaly) or in *.page.php files (individualy) PLACE THE FOLLOWING LINES:
-## Library selector: Activate needed libraries.
-//      ConstName:          ix:   LocalPath:                         CDN-path:   ( https://cdnjs.com: 2023-09-02)                                                         // File:
-define('LIB_JQUERY',        [0, '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/']);               // jquery/3.6.3/jquery.min.js
-define('LIB_JQUERYUI',      [0, '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/']);            // jqueryui/1.13.2/jquery-ui.min.js
-define('LIB_TABLESORTER',   [0, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/']);
-define('LIB_POLYFILL',      [0, '_assets/dialog-polyfill/latest/',  'https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/']);
-define('LIB_POPSCRIPTS',    [0, '_assets/',  ' Not in use ']);      
-define('LIB_FONTAWESOME',   [0, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/']);
-define('LIB_TINYMCE',       [0, '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.7.0/']);              // tinymce.min.js
-define('LIB_SWITCHBOX',     [0, '_assets/',  ' Not in use ']);
-define('LIB_POPUPSYSTEM',   [0, '_assets/',  ' Not in use ']);
-// Set ix 0:deactive  1:Local-source  2:WEB-source-CDN
-*/
-
-if (false) {
-    // include '../_assets/phpqrcode/qrlib.php';       // Include the qrlib file
-    include '../_assets/chillerlan/QRCode.php';        // Include the qrlib file
-}
 
 // <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     echo '<!DOCTYPE html>
@@ -3207,15 +3395,16 @@ if (false) {
     <meta name="robots" content="Noindex, Nofollow">'.  // Reject robots
    '<meta name="googlebot" content="Noindex">'.         // Reject robots
    '<title>'.lang($titl).'</title>'. "\n";  
-    dvl_pretty('htm_Page_0');
+    dvl_pretty('htm_Page_');
 
 
 ### ----------------------Library-dialog-polyfill-------------------------
-    if (defined('LIB_POLYFILL')) {
-        switch(LIB_POLYFILL[0]) {
-            case 0 : $path= '';                             break;  # Not active
-            case 1 : $path= $gbl_ProgRoot.LIB_POLYFILL[1];  break;  # Local-folder
-            case 2 : $path=               LIB_POLYFILL[2];  break;  # CDN-server  :https://
+    if (isset($LIB_POLYFILL)) {
+        if ($LIB_POLYFILL[0]=='3') $LIB_POLYFILL[0]= $autoCDN;       # Auto: Local/CDN
+        switch($LIB_POLYFILL[0]) {
+            case 0 : $path= '';                              break;  # Not active
+            case 1 : $path= $gbl_ProgRoot.$LIB_POLYFILL[1];  break;  # Local-folder
+            case 2 : $path=               $LIB_POLYFILL[2];  break;  # CDN-server  :https://
            default : { $pageMess.= 'LIB_POLYFILL: illegal index ! '; }
         }
         if ($path > '') {
@@ -3230,7 +3419,7 @@ if (false) {
         //        { alert(\"<?php echo htm_Dialog(capt, content); ? >\"); }");
             }
     } else 
-    { define('LIB_POLYFILL', [0, '', '']); /* $pageMess.= ' dialog-polyfill is not loaded  ! <br>'; */ }
+    { $LIB_POLYFILL=  [0, '', '']; /* $pageMess.= ' dialog-polyfill is not loaded  ! <br>'; */ }
 /* 
 if (LIB_POLYFILL[0]==1) {
     $path= $gbl_ProgRoot.'_assets/dialog-polyfill/';      // To get Firefox and other browsers to support <dialog>
@@ -3253,25 +3442,27 @@ if (LIB_POLYFILL[0]==1) {
 //                  https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css
 //                                          _assets/jquery/*********************************
 
-    if (defined('LIB_JQUERY')) {
-        switch(LIB_JQUERY[0]) {
+    if (isset($LIB_JQUERY[0]) and ($LIB_JQUERY[0] >=0)) {
+        if ($LIB_JQUERY[0]==3) $LIB_JQUERY[0]= $autoCDN;            # Auto: Local/CDN
+        switch($LIB_JQUERY[0]) {
             case 0 : $path= '';                             break;  # Not active
-            case 1 : $path= $gbl_ProgRoot.LIB_JQUERY[1];    break;  # Local-folder
-            case 2 : $path=               LIB_JQUERY[2];    break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery.min.js
-           default : { $pageMess.= 'LIB_JQUERY: illegal index ! '; }
+            case 1 : $path= $gbl_ProgRoot.$LIB_JQUERY[1];   break;  # Local-folder
+            case 2 : $path=               $LIB_JQUERY[2];   break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery.min.js
+           default : { $pageMess.= 'LIB_JQUERY: illegal index ! '.$LIB_JQUERY[0]; }
         }
         if ($path > '') {
             echo '<script src="'.$path.'jquery.min.js"></script>';              //  topic="Tablesorter-system" and Topmenu-system      
         } 
     } else 
-    { define('LIB_JQUERY', [0, '', '']); $pageMess.= ' jQuery is not loaded  ! <br>'; }
+    { $pageMess.= ' jQuery is not loaded - Some functions do not work!<br>'.$LIB_JQUERY[0]; $LIB_JQUERY=  [0, '', '']; }
 
-    if (defined('LIB_JQUERYUI')) {
-        switch(LIB_JQUERYUI[0]) {
-            case 0 : $path= '';                             break;  # Not active
-            case 1 : $path= $gbl_ProgRoot.LIB_JQUERYUI[1];  break;  # Local-folder
-            case 2 : $path=               LIB_JQUERYUI[2];  break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
-           default : { $pageMess.= 'LIB_JQUERYUI: illegal index ! '; }
+    if (isset($LIB_JQUERYUI[0]) and ($LIB_JQUERYUI[0] >=0)) { 
+        if ($LIB_JQUERYUI[0]==3) $LIB_JQUERYUI[0]= $autoCDN;             # Auto: Local/CDN
+        switch($LIB_JQUERYUI[0]) {
+            case 0 : $path= '';                              break;  # Not active
+            case 1 : $path= $gbl_ProgRoot.$LIB_JQUERYUI[1];  break;  # Local-folder
+            case 2 : $path=               $LIB_JQUERYUI[2];  break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js
+           default : { $pageMess.= 'LIB_JQUERYUI: illegal index ! '.$LIB_JQUERYUI[0]; }
         }
         if ($path > '') {
         echo '<script src="'.$path.'jquery-ui.min.js"></script>';               //  topic="Tablesorter-system" and Topmenu-system
@@ -3280,26 +3471,25 @@ if (LIB_POLYFILL[0]==1) {
         // echo '<link  href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.css" />';    // topic="jquery Dialog"> 
         } 
     } else 
-    { define('LIB_JQUERYUI', [0, '', '']); $pageMess.= ' jQuery-ui is not loaded  ! <br>'; }
+    { $pageMess.= ' jQuery-ui is not loaded  ! <br>'; $LIB_JQUERYUI=  [0, '', '']; }
 ### ----------------------
 
 ### ----------------------Library-Tablesorter-------------------------
-    if (defined('LIB_TABLESORTER')) {
-        if (array_key_exists(0, LIB_TABLESORTER))
-            if (LIB_TABLESORTER[0]>0) {                                                 # if library activated
-                if (LIB_TABLESORTER[0]==1)  $path= $gbl_ProgRoot.LIB_TABLESORTER[1];    # Local-folder
-                else                        $path=               LIB_TABLESORTER[2];    # CDN-server 
+    if (isset($LIB_TABLESORTER) and ($LIB_TABLESORTER[0]>=0)) {
+        if (array_key_exists(0, $LIB_TABLESORTER))
+            if ($LIB_TABLESORTER[0]>0) {                                                 # if library activated
+                if ($LIB_TABLESORTER[0]==3) $LIB_TABLESORTER[0]= $autoCDN;               # Auto: Local/CDN
+                if ($LIB_TABLESORTER[0]==1) $path= $gbl_ProgRoot.$LIB_TABLESORTER[1];    # Local-folder
+                else                        $path=               $LIB_TABLESORTER[2];    # CDN-server 
             echo '<script src="'.$path.'js/jquery.tablesorter.js"></script>';                      // topic="Tablesorter-system" - required
             echo '<script src="'.$path.'js/widgets/widget-cssStickyHeaders.min.js"></script>';     // topic="Tablesorter-system - parsers"
             echo '<script src="'.$path.'js/parsers/parser-input-select.min.js"></script>';         // topic="Tablesorter-extra"
             echo '<script src="'.$path.'js/jquery.tablesorter.widgets.js"></script>';
             echo '<link  href="'.$path.'css/theme.blue.css" rel="stylesheet" />';     
             // topic="Tablesorter-system" (choose a theme file)
-        } /* else {
-            define('LIB_TABLESORTER',       [0, '', '']);
-            $pageMess.= ' Tablesorter is not loaded ! <br>';
-        } */
+        }
     } 
+    /* 
     else {
 //$path= './../_assets/tablesorter/';
     $path= $gbl_ProgRoot.'_assets/tablesorter/';
@@ -3313,17 +3503,17 @@ if (LIB_POLYFILL[0]==1) {
     echo '<script src="'.$path.'js/jquery.tablesorter.widgets.js"></script>';              
     echo '<link rel="stylesheet" href="'.$path.'css/theme.blue.css"/>';                 // topic="Tablesorter-system" (choose a theme file)
     }
-    
+    */
     // $lateScripts= '';   // To be run before >/body>
 //    echo "//    echo "
 
-if (!(defined('LIB_FONTAWESOME[0]') && array_key_exists(0, LIB_FONTAWESOME) && (LIB_FONTAWESOME[0]==0) )) 
+if (!(isset($LIB_FONTAWESOME[0]) && array_key_exists(0, $LIB_FONTAWESOME) && ($LIB_FONTAWESOME[0]==0) )) 
     // $doNothing = ""; else
     $jsScripts.= "
 <script>
     $(function () {
-    /* $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({ */
-    $('#table').tablesorter({
+    /* $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({ gbl_TblIx       */
+    $('#table0, #table1, #table2, #table3, #table4, #table5, #table6, #table7, #table8').tablesorter({
       theme: 'blue',
       dateFormat : \"Y-m-d\",
       widthFixed : true,
@@ -3482,10 +3672,9 @@ if (!(defined('LIB_FONTAWESOME[0]') && array_key_exists(0, LIB_FONTAWESOME) && (
     };
 
 
-    function getPassword(input) {
+    function pw_strength(input) {
         var text =      document.getElementById(input.id).value;
-        var point =     document.getElementById("pwPoint"+input.id).value;
-        point = 0;
+        var point = 0;
         if ( text.length >= 6 )     {point += 1};
         if ( text.length >= 8 )     {point += 1};
         if ( text.length >= 10 )    {point += 2};
@@ -3494,8 +3683,7 @@ if (!(defined('LIB_FONTAWESOME[0]') && array_key_exists(0, LIB_FONTAWESOME) && (
         if (/[A-ZÆØÅ]/.test(text) ) {point += 1};
         if (/[0-9]/.test(text) )    {point += 1};
         if (/[~`!@#$£€¤%?()\^&*+=\-\[\]\\\';,/{}|\\":<>\?]/g.test(text) ) {point += 1};
-        document.getElementById("pwPoint" + input.id).value = point;
-    /*  document.getElementById("mtPoint" + input.id).innerHTML = point;  */
+        document.getElementById("pwPoint_" + input.id).value = point;
     }
 '.
 "   function togglePassword(input,butt) {
@@ -3609,7 +3797,7 @@ $sys_Style= "
             border-radius: 8px;
             border-width: 2px;
             margin: 4px 4px 0 0; 
-            padding: 4px 0px 2px 4px;
+            padding: 4px 8px 2px 4px;
         }
         
     </style>
@@ -3620,7 +3808,7 @@ $sys_Style= "
             background-color: #f1f1f1;
             border-top: 2px solid #aaa; 
             border-right: 2px solid #aaa;
-            border-bottom: none;
+            border-bottom: none; 
             
         }
         .tab button {           /* Style the buttons inside the tab */
@@ -3923,7 +4111,7 @@ $sys_Style= "
 ";  // $sys_Style
 
 
-if (defined('LIB_SWITCHBOX{[0]') && array_key_exists(0, LIB_SWITCHBOX) && (LIB_SWITCHBOX[0]==0) ) 
+if (isset($LIB_SWITCHBOX[0]) && array_key_exists(0, $LIB_SWITCHBOX) && ($LIB_SWITCHBOX[0]==0) )
      $switchbox_style = ""; 
 else $switchbox_style= "
     <style>
@@ -4053,7 +4241,7 @@ body {
 </script>
 
 <?
-if (defined('LIB_POPUPSYSTEM[0]') && array_key_exists(0, LIB_POPUPSYSTEM) && (LIB_POPUPSYSTEM[0]==0) ) 
+if (isset($LIB_POPUPSYSTEM[0]) && array_key_exists(0, $LIB_POPUPSYSTEM) && ($LIB_POPUPSYSTEM[0]==0) ) 
      $switchbox_style = ""; else 
 
   /* Context menu system: */
@@ -4400,7 +4588,7 @@ tfoot input {
 }
 
 #overlay0, #overlay1 {
-    background: rgba(244,244,244,0.8) url(http: /* mottie.github.com/tablesorter/addons/pager/icons/loading.gif) center center no-repeat; */
+    background: rgba(244,244,244,0.8); /*  url(http:mottie.github.com/tablesorter/addons/pager/icons/loading.gif) center center no-repeat; */
     position: absolute;
     z-index: 1000;
     display: none;
@@ -4515,7 +4703,7 @@ $htm_ModalDialog= '
     background: #ffffff;
     border-radius: 8px;
 }
-// .modal-window header { font-weight: bold; }
+<!-- // .modal-window header { font-weight: bold; } -->
 
 .modal-window h1 {
     font-size: 150%;
@@ -4756,7 +4944,7 @@ echo $htm_ModalDialog;
 
 echo $switchbox_style;
 
-//echo $inis;   // initScript: read CSS given in htm_Page_0 parameter
+//echo $inis;   // initScript: read CSS given in htm_Page_ parameter
 
 /* 
 if (DEBUG)
@@ -4796,13 +4984,15 @@ run_Script(    // Implementing Server Timing: (https://www.smashingmagazine.com/
 //  if (DEBUG) run_Script('header("Server-Timing: ".$Timers->getTimers()); ');
  */
  
-run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
+# Special script: message with auto-timeout
+ # function htm_Toast(text, bclr:'#333', fclr:'#fff', tout:5000)
+run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
     var x = document.getElementById('snackbar');
-        x.innerHTML= txt;
+        x.innerHTML= text;
         x.className = 'show';
-        x.style.background = bgcolr;
-        x.style.color = fgcolr;
-        setTimeout(function(){ x.className = x.className.replace('show', ''); }, timeout);
+        x.style.background = bclr;
+        x.style.color = fclr;
+        setTimeout(function(){ x.className = x.className.replace('show', ''); }, tout);
     }");
 /*        
     run_Script("function deleteThisRow(table) {
@@ -4861,38 +5051,28 @@ run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
     
 
 ### ----------------------Library-fontawesome icons ----------------------
-    if (defined('LIB_FONTAWESOME') && array_key_exists(0, LIB_FONTAWESOME) )  {
-        if (LIB_FONTAWESOME[0]>0) {                                                     # if library activated
-                if (LIB_FONTAWESOME[0]==1)  $path= $gbl_ProgRoot.LIB_FONTAWESOME[1];    # Local-folder
-                else                        $path=               LIB_FONTAWESOME[2];    # CDN-server 
+    if (isset($LIB_FONTAWESOME) && array_key_exists(0, $LIB_FONTAWESOME) )  {
+        if ($LIB_FONTAWESOME[0]>0) {                                                     # if library activated
+                if ($LIB_FONTAWESOME[0]==3) $LIB_FONTAWESOME[0]= $autoCDN;               # Auto: Local/CDN
+                if ($LIB_FONTAWESOME[0]==1) $path= $gbl_ProgRoot.$LIB_FONTAWESOME[1];    # Local-folder
+                else                        $path=               $LIB_FONTAWESOME[2];    # CDN-server 
             echo '<link  href="'.$path.'css/all.min.css" rel="stylesheet" />';      // topic="fontawesome-system" (choose a theme file)
         } else {
-            // define('LIB_FONTAWESOME',       [0, '', '']);
-            $pageMess.= ' Fontawesome is not loaded ! <br>';
+            $pageMess.= ' Fontawesome is not loaded - Icons do not work!<br>';
         }
-    } /* else {
-    echo '<script defer src="'.$gbl_ProgRoot.'_assets/font-awesome/latest/js/all.js"></script>'; 
-    echo '<link        href="'.$gbl_ProgRoot.'_assets/font-awesome/latest/css/all.css" rel="stylesheet">';
-    
     }
-     */
 ### ----------------------
 
 
 ### ----------------------Library-tinyMCE editor ----------------------
-    if (defined('LIB_TINYMCE')) {
-        if (array_key_exists(0, LIB_TINYMCE))
-        if (LIB_TINYMCE[0]>0) {                                             # if library activated
-            if (LIB_TINYMCE[0]==1)  $path= $gbl_ProgRoot.LIB_TINYMCE[1];    # Local-folder
-            else                    $path=               LIB_TINYMCE[2];    # CDN-server 
-            echo '<script src="'.   $path.'/tinymce.min.js" referrerpolicy="origin"></script>';
-    // } else { define('LIB_TINYMCE',       [0, '', '']); 
-        // $pageMess.= ' tinyMCE is not loaded ! <br>'; }
-    }
-    /* else {
-        // define('LIB_TINYMCE',       [0, '', '']);
-        /* $pageMess.= ' tinyMCE is not loaded ! <br>'; */
-    } 
+    if (isset($LIB_TINYMCE)) {
+        if (array_key_exists(0, $LIB_TINYMCE))
+        if ($LIB_TINYMCE[0]>0) {                                             # if library activated
+            if ($LIB_TINYMCE[0]==3) $LIB_TINYMCE[0]= $autoCDN;               # Auto: Local/CDN
+            if ($LIB_TINYMCE[0]==1) $path= $gbl_ProgRoot.$LIB_TINYMCE[1];    # Local-folder
+            else                    $path=               $LIB_TINYMCE[2];    # CDN-server 
+            echo '<script src="'.   $path.'tinymce.min.js" referrerpolicy="origin"> </script>';
+    }} 
     ## Be aware tinyMCE has its own translate system !
 ### ----------------------
 
@@ -4908,15 +5088,15 @@ run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
                $attr.' '.(($imag>'') ? ' background-repeat: repeat; background-size: 225px; background-image: url('.$imag.')}' : '')
     );
     
-    if ($info>'')
+    if ($info>'')   // Page into (vertical text - right)
         echo '<div style="position: fixed; z-index: 99; float: right; display: inline-block; width: max-content; line-height: 14px;line-height: 14px; right: 0;
             transform-origin: bottom left; transform: rotate(-90deg); translate: 100% 85vh; white-space: nowrap; 
             padding: 2px; background-color:#ddddddbd;"><span style="font-size: 0.8em;">'.lang($info).'</span></div>';
 
-    if ($hint>'')
+    if ($hint>'')   // Page tip  (vertical text - left)
         echo '<div style="position: fixed; width: min-content; line-height: 14px; bottom: -10px; left: 0px; z-index: 99;
             transform-origin: top left; transform: rotate(-90deg); white-space: nowrap; padding: 2px; background-color:#ddddddbd;" '.
-            'title="CTRL-Scroll UP/Down mousewheel to zoom window content">'.
+            'title="'.lang('@CTRL-Scroll UP/Down mousewheel to zoom window content.').'">'.
     // '<data-hint>CTRL-Scroll UP/Down mousewheel to zoom window content</data-hint>'.
             '<small>'.lang($hint).'</small></div>';
     // echo '<div class="ver_right"; style="color:red;">[[[[[[[[[HHHHH__HHHHHH]]]]]]]]]]</div>';
@@ -4924,8 +5104,8 @@ run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
     echo $jsScripts;
     echo $sys_Style;
 
-    if ($inis>'')          echo $inis;   // read CSS/js given in htm_Page_0 parameter
-    // if ($lateScripts > '') echo $lateScripts; // run_Script($lateScripts);
+    if ($inis>'')            echo $inis;            // read CSS/js given in htm_Page_ parameter
+    // if ($lateScripts > '') echo $lateScripts;    // run_Script($lateScripts);
     if ($headEndScript > '') run_Script($headEndScript);
 
 
@@ -4937,15 +5117,15 @@ run_Script("function toast(txt, bgcolr='#333', fgcolr='#fff', timeout=5000) {
     if ((isset($imag)) and ($imag>'')) $image= 'background-image: url(\''.$imag.'\');'; else  $image= '';
     echo '<div style="text-align: '.$algn.'; '.$image.' margin: auto; ">';
     if ($pbrd) echo '<div style="border: 2px solid #AAA; border-radius: 8px; overflow: hidden; margin: auto;" >'; // margin: 24px 4px 4px;
-} // htm_Page_0()
+} // htm_Page_()
 
 
-
-function htm_Page_00()
+# Finalize the htm_Page_()
+function htm_Page_end()
 { global $gbl_CardIx, $cardCount, $gbl_ProgRoot, $sys_Style, $jsScripts, $bodyEndScript, $pbrd, $gbl_Imag;
     $cardCount= $gbl_CardIx;
-    if ($pbrd) echo '</div>';   // Started in htm_Page_0()
-    echo '</div>';                  // $align - Started in htm_Page_0()
+    if ($pbrd) echo '</div>';   // Started in htm_Page_()
+    echo '</div>';              // $align - Started in htm_Page_()
     //Menu_Bottom();
     echo '<div id="snackbar">Short message</div>';
     CardInit($cardCount ? $cardCount : 15);
@@ -4985,9 +5165,9 @@ function htm_Page_00()
 
 
     htm_nl(2);
-    echo "\n  </body>"; // Started in htm_Page_0()
+    echo "\n  </body>"; // Started in htm_Page_()
     echo '</html><br>';
-} # htm_Page_00
+} # htm_Page_end
 
 } ## Group ******************** /htm_Page **************************
 
@@ -5041,18 +5221,25 @@ function calcHash($usr_name,$usr_code)
 
 
 // String-output:
-function htm_Ihead(# source) 
-    $source)            {echo '<br/><i>'.$source.'</i> ';}
-function htm_hr(# $c='#0',$attr='')   
-    $c='#0',$attr='')   {echo '<hr style="background-color:'.$c.';'.$attr.'"/>';}
+# String function: make italic-text
+function htm_Ihead(# html) ):
+    $html)             {echo '<br/><i>'.$html.'</i> ';}
+# String function: make horisontal line/ruler
+function htm_hr(# colr:'#0',attr:'')   
+    $colr='#0',$attr='') {echo '<hr style="background-color:'.$colr.';'.$attr.'"/>';}
+# String function: Add one or more line-breaks
 function htm_br(# rept:1)   
     $rept=1)            {echo str_repeat('<br />',$rept);}
+# String function: Add one ore more new line(s)
 function htm_nl(# rept:1)
     $rept=1)            {echo str_repeat('<br />',$rept);}
-function htm_lf(# $rept=1)  
+# String function: Add one or more linefeed
+function htm_lf(# rept:1)  
     $rept=1)            {echo str_repeat(' &#xa;',$rept);}  //  LineFeed
+# String function: Add one ore more nobreaking spaces
 function htm_sp(# rept:1) 
     $rept=1)            {echo str_repeat('&nbsp;',$rept);}
+# String function: Make a span with given width
 function htm_space(# wdth)  
     $wdth)              {echo '<span style="width:'.$wdth.'; display:block; "></span>';}
 
@@ -5102,7 +5289,9 @@ function sys_get_translations($transTable=[])
     if (isset($_POST['alllang']))  $alllang = $_POST['alllang']; else $alllang = '';
     if ($arrLang == null)     // Prevent repeating calls
     try {
-        $content = file_get_contents($gbl_ProgRoot.'_trans.sys.json');
+        if (is_readable('./_trans.sys.json'))
+             $content = file_get_contents('./_trans.sys.json');
+        else $content = file_get_contents($gbl_ProgRoot.'_trans.sys.json');
          // echo $content;
         if ($content !== FALSE) {
             $lng = json_decode($content, TRUE);
@@ -5127,7 +5316,7 @@ function sys_get_translations($transTable=[])
             # if (false) { $out = fopen('json.out', "w"); fwrite($out, PHP_EOL. print_r($value["translation"], true)); fclose($out); } // save pretty JSON-file
             return $arrLang;
             // if ($transTable) return $arrLang; else return $transTable;
-        }; // else toast('File error reading: _trans.sys.json !','yellow','black');
+        }; // else htm_toast('File error reading: _trans.sys.json !','yellow','black');
     }
     catch (Exception $e) {
         echo $e;
@@ -5249,13 +5438,13 @@ function menuButt ($h='32',$w='120',$label='',$link='',$Hint='') // Icon ?
         .synt-number    {color: lightgreen; }
         .synt-default   {color: white;      }
 */
-        function str_Synt_0()  {return '<pre class="synt">';}
-        function str_Synt_00() {return '</pre>';}
+        function str_Synt_()  {return '<pre class="synt">';}
+        function str_Synt_end() {return '</pre>';}
         function str_Synt($elem='',$type='default') { return '<span class="synt-'.$type.'">'.$elem.'</span>'; }
         
 /* 
         function str_Pars($source) {
-    #   htm_Fields_0(                                                   # funcName
+    #   htm_Fields_(                                                   # funcName
     #                $caption='',
     #                            $width='',
     #                                      $margin='',
@@ -5281,7 +5470,7 @@ function menuButt ($h='32',$w='120',$label='',$link='',$Hint='') // Icon ?
                           str_Synt($elem=', ',$type='operator');
                 
             }
-            echo str_Synt_0().$result.'<br>'.str_Synt(substr($funcTail,0,2),'default').str_Synt(substr($funcTail,2),'comment').str_Synt_00();
+            echo str_Synt_().$result.'<br>'.str_Synt(substr($funcTail,0,2),'default').str_Synt(substr($funcTail,2),'comment').str_Synt_end();
         }
   */
 
@@ -5304,11 +5493,11 @@ $CSS_system = '
     --grenColor: #336600;
     --grenColr1: #448800;   /* placeholder-text */
     --lablColor: #500000;   /*  #1b5b22;  #363eba;   /* LysBlå: Labels Caption */
-    --lablBgrnd: #fffaf0;   /* FloralWhite; */
+    --lablBgrnd: #f0ffff;   /* FloralWhite; */
     --cardsTitl: #ffffff00; /* Transparent */
     --oranColor: #F37033;
     --brunColor: #550000;   /*  Table borders  */
-    --grayColor: #ACA9A8;
+    --grayColor: #aca9a870; /* #ACA9A8; */
     --shadColor: #d3d3d352;
     --xx11Color: #3CBC8D;
  /* --HintsBgrd: rgba(55, 55, 55, 0.90);     --HintsText: #FFFFFF; */
@@ -5353,9 +5542,6 @@ $CSS_system = '
     --ctxP_Hover: #d7f1e5;
     --ctxP_OverflowIcon: #999;
     --ctxP_Separator: #999;
-    
-    --lablColor: #500000;
-    --lablBgrnd: FloralWhite;
     
     /* --ButtnShad: gray; */
     --HintsBgrd: Cornsilk;
@@ -6040,7 +6226,9 @@ fieldset>legend {
 } ## Group ******************** /CSS STYLE **************************
 
  
-if (is_readable($custFile= '../customLib.inc.php')) require_once($custFile);
-# In /customLib.inc.php you can add modified or needed code
+if (is_readable($custFile= '../customLib.inc.php'))     # In /customLib.inc.php you can add modified or needed code
+    require_once($custFile);
+else
+    echo '<br> '.__LINE__.' '.$custFile.' not found <br>';
 
 ?>

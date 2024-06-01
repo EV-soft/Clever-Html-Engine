@@ -1,5 +1,5 @@
-<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.3.1';    $DocRev='23-09-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.4.0';    $DocRev='24-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../'; 
@@ -13,22 +13,19 @@ $needFontawesome= '2';
 $needTinymce=     '0';
 
 require_once ($sys.'php2html.lib.php');
-// require_once ($sys.'menu.inc.php');
-// require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php');
 
-htm_Page_0( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
+htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
     
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
-    // htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
     htm_nl(2);
     $dPath= '../Data.demo/';
     $accoPlan= json_decode(file_get_contents(/* $dPath. */'accPlan.dk.json' /* 'export.dat.json' */), true); // export.dat.json / $dPath.'arrAplan2.dat.json'
     // $accoPlan= newFieldOrder($accoPlan,['pln_id__','pln_nmbr','pln_name','pln_type','pln_from','pln_vat_','pln_sald','pln_curr','pln_cour','pln_shrt','pln_stat']);
     // arrPretty($accoPlan,'$accoPlan');
     
-    htm_Card_0($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',$form= $fm='plan',$acti= '',$clas= 'panelW110',$wdth= '',$styl= 'background-color: white;',$attr= '');
+    htm_Card_($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',$form= $fm='plan',$acti= '',$clas= 'panelW110',$wdth= '',$styl= 'background-color: white;',$attr= '');
     htm_Table(capt:[['@@Kontoplan baseret på Erhvervsstyrelsens standard.', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', '']],
         pref:[],
         body:[
@@ -36,12 +33,12 @@ htm_Page_0( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ve
               ['@Account no.',  '5%','indx','',   ['center','transparent'],           'pln_nmbr', '@Account number. Unique number code, which is used for sorting, totaling, etc. If you enter an unused one, a new account will be created, otherwise you can correct the account.','@Konto...'],
               ['@Account name','45%','text','',   ['left'  ],                         'pln_name', '@Account name - descriptive text','@Name...'],
               ['@Type',         '9%','text','',   ['center'],                         'pln_type', '@Account type: D=Operation, S=Status, Z=Total, H=Heading, R=Result, X=Page Break, L=Closed','@Type...'],  //  Angår styring af layout i tabelvisning
-              ['@FromAcc',      '9%','text','>0', ['center','','font-style:italic; '],'pln_from', '@Total from_account. Enter the lowest account number to be included in the tally. Applies only to sum accounts, type Z','@Fra...'],
+              ['@FromAcc',      '9%','text','>0', ['center','','font-style:italic; '],'pln_from', '@Total from_account. Enter the lowest account number to be included in the tally. Applies only to sum accounts, type Z','@From...'],
               ['@VAT',          '7%','text','',   ['center'],                         'pln_vat_', '@VAT code: K_:Purchase... S_:Sale... Y_:Services, E_:,','@Code...'], 
               ['@Balance',      '9%','show','2d', ['center'],                         'pln_sald', '@Account balance. Calculated amount'],
               ['@Currency',     '5%','text','',   ['left'],                           'pln_curr', '@Currency code','@Currency','',true],
               ['@Course',       '7%','text','',   ['center'],                         'pln_cour', '@Course','','',true],
-              ['@Shortcut',     '3%','text','',   ['center','Azure'],                 'pln_shrt', '@Shortcut key, enter a letter','@Ingen'],
+              ['@Shortcut',     '3%','text','',   ['center','Azure'],                 'pln_shrt', '@Shortcut key, enter a letter','@None'],
               ['@Status',       '7%','sttu','',   ['center','Azure'],                 'pln_stat', '@Status: Active or Closed','@Stat...']  //  DB-Felt "lukket" værdi: "on"
         ],
         suff:[],
@@ -55,18 +52,17 @@ htm_Page_0( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ve
         htm_LinkButt( labl:'@Print preview', hint:'@Vis tabellen i fuld bredde og højde og uden navigations knapper', 
                             attr:'', link:'accountPlan-print.page.php');     // https://ev-soft.work/p2h/v1.2.0/Proj.demo/accountPlan-print.page.php
         
-    htm_Card_00('@Save','','@Save to database','save',$fm,true); 
+    htm_Card_end('@Save','','@Save to database','save',$fm,true); 
     htm_nl();
-    // arrPretty($accoPlan,'$accoPlan');
     echo str_WithHint($labl='@Kontoplan ?',$hint='@Erhvervsstyrelsen har udgivet en standard kontoplan med tilhørende vejledning til postering på kontiene.',$icon='').'<br><br>';
     echo '<a href="https://erhvervsstyrelsen.dk/sites/default/files/2019-03/Vejledning%20til%20den%20frivillige%20standardkontoplan%20V.1.pdf" target="_blank">Vejledning til standard kontoplanen</a><br><br>';
 
     // file_put_contents('accountPlan.print.htm','<body style="margin:0; padding:0;">'.$spool.'</body>');
 
-htm_Page_00(); 
+htm_Page_end(); 
 
 
-    CardOff(frst:2,last:2);
+    CardOff(frst:1,last:1);
     
     /* 
     // echo put_json($fname=$dPath.'arrAplan2.dat.json',$accoPlan).' b saved';

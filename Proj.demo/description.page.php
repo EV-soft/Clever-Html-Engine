@@ -1,5 +1,5 @@
-<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';      $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
@@ -19,14 +19,14 @@ require_once ($sys.'php2html.lib.php');
 
 
 ### PAGE-START:
-htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
+htm_Page_( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
     // Menu_Topdropdown(true); htm_nl(1);
     
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
     
-    htm_Card_0(capt:'System description:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'System description:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 
     htm_TextDiv('PHP2HTML is a library, a collection of functions that can be used systematically for <br>
         the interface of your program that you develop in PHP.<br><br>
@@ -75,9 +75,9 @@ htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - v
         Used space is min. 0.4 Mb. Delays is minimized.<br><br>
     ');
     
-    htm_Card_00();
+    htm_Card_end();
     
-    htm_Card_0(capt:'Note about the demo:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'Note about the demo:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
     
     htm_TextDiv('
         In demo source-files, the variable name and variable value are in all function calls <br>
@@ -93,7 +93,7 @@ htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - v
         <i>Short form:</i><br>
         <b>htm_Input(</b>\'num1\',\'num1\',\'87654321\',\'@htm_Input(num1)\',\'@Demo of htm_Input\'<b>);</b><br><br>
         <i>PHP 8 Example:</i><br>');
-    echo htm_CodeBox(highlight_words(highlight_str(
+    echo htm_CodeBox(
 "   htm_Input(
         labl:'@htm_Input(num1)',
         hint:'@Demo of htm_Input',
@@ -101,7 +101,8 @@ htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - v
         name:'num1',
         valu:'87654321',
         wdth:'120px'
-    ); " ,true)));
+    ); ", rtrn:true);
+    
     echo 'Output in browser: ';
     htm_Input(
             labl:'@htm_Input(num1)',
@@ -112,9 +113,9 @@ htm_Page_0( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - v
             wdth:'120px'
         );
     htm_nl(3);
-    htm_Card_00();
+    htm_Card_end();
     
-htm_Page_00();
+htm_Page_end();
 
 ### :PAGE_END
 ?>

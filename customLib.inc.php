@@ -1,4 +1,4 @@
-<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.3.2';  $DocRev='2024-01-27';   $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.4.0';  $DocRev='2024-06-01';   $DocIni='evs';  $ModulNo=0; ## File informative only
     # In this file you can add your global custom rules and values, for all pages in your project.
     # The file will be read by a require_once() in php2html.lib.php and html added to all page headers:
 
@@ -23,25 +23,12 @@ if ($darkTheme= true) {
 }
 // if (!ini_get('CODEBACKGROUND')) { ini_set('CODEBACKGROUND', 'GhostWhite'); echo '80745608'; } else echo 'skdjf';
 
-## Hightlight - Custom word-list and custom style: 
-function highlight_words($text, $wrds='', $styl='',$patt='~\w{4,10}~') { 
-    $wrds.='labl capt body foot plho icon hint desc type name valu vmax vmin form subm acti clas wdth algn marg styl attr mode font colr fclr bclr llgn link targ akey kind echo unit disa rows step bord plac rept rtrn titl info inis imag pbrd simu clck vhgh stck cntx html butt mess tplc tsty head evnt note rept shrt frst last from to__ elem pref suff filt data crea modi expo just sort filt vrnt capt pref body suff note data filt sort crea modi vhgh styl from list enbl expo show help ftop
-           ';
-    $wrds= str_replace(' ',': ',$wrds); # Add : to all words
-    if ($styl=='') $styl='color:'.'cyan; './* '#550000 #a16802; '. */ 'font-style:italic;';
-    preg_match_all($patt, $wrds, $matches);
-    if(!$matches) return $text;
-    $styl= 'style="'.$styl.'" ';
-    $replacement = '~\\b(' . implode('|', $matches[0]). ')\\b~';
-    return preg_replace($replacement, '<span '.$styl.'>$0</span>', $text);
-} 
-
-function highlight_str($code,$retr=true) { # Remove the needed triggering <? prefix
-    $source= highlight_string('<?'.$code,$retr);  #  print_r(htmlentities($source));
-    $result= str_replace('&lt;?','',substr($source,0,80)).substr($source,80);     #  print_r(htmlentities($result));
-    return $result;
+## Output unformatted HTML code
+function preCode($code) {   
+    if (strlen($code)>0)
+        return '<pre>'.htmlentities($code).' </pre>';
+    else return '';
 }
-   
 
 /*  // https://www.php.net/manual/en/function.highlight-string.php
 <?esc_code()?>

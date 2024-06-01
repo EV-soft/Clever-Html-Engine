@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.3.2';    $DocRev='2024-01-27';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -23,7 +23,7 @@ require_once ($sys.'php2html.lib.php');
     if (isset($_POST['name']))  { $namex = $_POST['name']; }    // Special case !
 
 ### PAGE-START:
-htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'',
+htm_Page_(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'',
            algn:'center', imag:'../_accessories/_background.png', pbrd:false);
     // Menu_Topdropdown(true); htm_nl(1);
     // echo 'About the foldable card-system:';  htm_nl(2);
@@ -32,8 +32,8 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
     
-    htm_RowCol_0($RowColWdth=1200);
-    htm_Card_0(capt: 'htm_Card_0(); (click to close/open)',icon: 'fas fa-info',
+    htm_RowCol_($RowColWdth=1200);
+    htm_Card_(capt: 'htm_Card_(); (click to close/open)',icon: 'fas fa-info',
                hint: '',form: 'head',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white;',attr: '' );
         htm_nl(1);
         htm_TextDiv('Cards are used to display a collection of HTML-objects <br>
@@ -42,13 +42,13 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
               The card content can be displayed/hidden by clicking card-header.','center');
         htm_nl(2);
                  
-    htm_Card_00(labl:'Demo', icon:'', 
+    htm_Card_end(labl:'Demo', icon:'', 
                 hint:'Buttom', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false);
-    // htm_RowCol_00();
+    // htm_RowCol_end();
     
-    //htm_RowCol_0($RowColWdth=400);
+    //htm_RowCol_($RowColWdth=400);
     
-    htm_Card_0(capt: '@Signup: <small>(Example)</small>',icon: 'fas fa-user-check',
+    htm_Card_(capt: '@Signup: <small>(Example)</small>',icon: 'fas fa-user-check',
                hint: '',form: 'head1',acti: '',clas: 'cardW320',wdth: '',styl: 'background-color: white;',attr: '');
     htm_Input(labl:'@Financial Accounting',plho:'@Account...',icon:'',hint:'@The name of the accounting for wich you have access',
               vrnt:'text',name:'text1',valu:$text1='', form:'',wdth:'75%',algn:'left',attr:'',rtrn:false,
@@ -65,11 +65,11 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
         //htm_Input($vrnt='html',$name='text',$valu=$h,$labl='Hash:',$hint='@Demo of htm_Input Field variant html',$algn='left',$unit='',$disa=false,$rows='2',$width='95%',$step='',$more='',$plho='@Account...');
         echo '<br><br><a href="'.($link ?? '').'" accesskey="'.$akey=''.'"> '. Lbl_Tip('@Forgotten password ?','@Click to request a new password'). '</a>';
         // htm_Input($type='intg',$name='intg',$valu='87654321',$labl='htm_Input(Intg)',$hint='Demo of htm_Input Field variant intg: centered integer',$algn='center',$unit='',$disa=false,$rows='3',$width='95%');
-    htm_Card_00(labl:'@Login', icon:'fas fa-key', hint:'@Login with the given data', 
+    htm_Card_end(labl:'@Login', icon:'fas fa-key', hint:'@Login with the given data', 
                 name:'', form:'',subm:true, attr:'', akey:'l', kind:'save', simu:false);
     // htm_RowCol_next($RowColWdth=400);
     
-    htm_Card_0(capt: '@Contact info: <small>(Example)</small>',icon: 'fas fa-pen-square',
+    htm_Card_(capt: '@Contact info: <small>(Example)</small>',icon: 'fas fa-pen-square',
                hint: '',form: 'head2',acti: '',clas: 'cardW320',wdth: '',styl: 'background-color: white;',attr: '');
         $wdh= '100%';
         $m= ' padding:0; test:99; ';
@@ -134,26 +134,25 @@ htm_Page_0(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
               vrnt:'date',name:'dath',valu:$date ?? '',form:'',wdth:'48%',algn:'left',attr:$m,rtrn:false,
               unit:'',disa:false,rows:'3',step:'',list:[],llgn:'R',bord:'',ftop:'');
 
-    htm_Card_00(labl:'Save', icon:'', hint:'@Save data in this card', 
+    htm_Card_end(labl:'Save', icon:'', hint:'@Save data in this card', 
                 name:'', form:'xxx',subm:true, attr:'', akey:'s', kind:'save', simu:false);
     
     // htm_RowCol_next($RowColWdth=480);
 
-    htm_Card_0(capt: '@How creating cards:',icon: 'fas fa-info',hint: '',
+    htm_Card_(capt: '@How creating cards:',icon: 'fas fa-info',hint: '',
                form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white;',attr: '');
     htm_TextDiv('To build a card there are 2 functions: <br><br>
-        <b>htm_Card_0()</b> - prepares the start of a card.<br>
+        <b>htm_Card_()</b> - prepares the start of a card.<br>
         and: <br>
-        <b>htm_Card_00()</b> - finalize the card.     <br><br>
+        <b>htm_Card_end()</b> - finalize the card.     <br><br>
         In between, you add your content.             <br><br>
         <small>See the source in php2html.lib.php to manage the function parameters.</small>
         ');
         
-        htm_Card_0(capt: '@PHP Source-code:',icon: 'fas fa-code',hint: '',
+        htm_Card_(capt: '@PHP Source-code:',icon: 'fas fa-code',hint: '',
                    form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white; text-align:left;',attr: '');
-
 $strCode= "
-htm_Card_0(capt: '@PHP Source-code:',        # string: The card caption
+htm_Card_(capt: '@PHP Source-code:',        # string: The card caption
            icon: 'fas fa-code',              # string: Class: icon to the left of caption
            hint: '',                         # string: The hint on hover caption
            form: '',                         # string: form id/name (No form without a name)
@@ -172,14 +171,14 @@ htm_Card_0(capt: '@PHP Source-code:',        # string: The card caption
 
 // Placed here the cardcontent...
 
-htm_Card_00();
+htm_Card_end();
         ";
-            htm_CodeBox(highlight_words(highlight_str($strCode,true)));
+            htm_CodeBox($strCode);
 
-        htm_Card_00();  # PHP Source-code
-    htm_Card_00();  # How creating cards:
+        htm_Card_end();  # PHP Source-code
+    htm_Card_end();  # How creating cards:
     
-    htm_Card_0(capt: '@How do you manage cards:',icon: 'fas fa-info',hint: '',
+    htm_Card_(capt: '@How do you manage cards:',icon: 'fas fa-info',hint: '',
                form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white;',attr: '');
     htm_TextDiv('
         The Card header is always visible, and you can click on:<br>
@@ -194,12 +193,23 @@ htm_Card_00();
         <br>
         If you right-click card-header a popup menu regarding all cards will be displayed<br>
         ');
-    htm_Card_00();
+    htm_Card_end();
     
-    htm_RowCol_00();
+    htm_Card_(capt: '@Warning:',icon: 'fas fa-info',hint: '',
+               form: '',acti: '',clas: 'cardW560', wdth: '', styl: 'background-color: white;',attr: '');
+    htm_TextDiv('
+        It is illegal to have nested forms in html.<br><br>
+        Therefore, you must be aware that htm_card() <br>
+        creates a form if a form name is specified.<br>
+        By omitting a name, it is possible to have child cards <br>
+        on a father card.<br>
+        ');
+    htm_Card_end();
+    
+    htm_RowCol_end();
     
     CardOff($First=2,$Last=3); // Close card 2 and 3 on page open
-htm_Page_00();
+htm_Page_end();
 ### :PAGE_END
     CardOff($First=5,$Last=5);
 

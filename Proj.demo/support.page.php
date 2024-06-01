@@ -1,10 +1,10 @@
-<?php   $DocFile= './Proj.demo/support.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/support.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -12,18 +12,13 @@ $needFontawesome= '2';
 $needTinymce=     '0';
 
 require_once ($sys.'php2html.lib.php');
-// require_once ($sys.'menu.inc.php');
-// require_once ($sys.'translate.inc.php');
-// require_once ($sys.'filedata.inc.php');
 
-htm_Page_0(titl:'support.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
-    // Menu_Topdropdown(true); htm_nl(1);
-    
+htm_Page_(titl:'support.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
     
-    htm_Card_0(capt:'Libraryes and files',icon:'fas fa-file', hint: '',form: 'head',acti: '',clas:'cardW640',wdth: '',styl: 'background-color: white;',attr: '');
+    htm_Card_(capt:'Libraryes and files',icon:'fas fa-file', hint: '',form: 'head',acti: '',clas:'cardW640',wdth: '',styl: 'background-color: white;',attr: '');
     set_Style('type="text/css"', 'li:hover{ color:gray; font-weight: 400; }' );
 
     echo '<div style="text-align: left;">';
@@ -35,7 +30,7 @@ htm_Page_0(titl:'support.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.
 <p>Local folders:</p>
 <p style="line-height: 0.5;"><span style="background-color: rgb(191, 237, 210);"><span style="background-color: rgb(255, 255, 255);">&lt;</span></span><span style="background-color: rgb(194, 224, 244);">System_folder</span>&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; System support files (.lib.php .sys.json .init.php)</p>
 <p style="line-height: 0.5;">&nbsp; &nbsp; &nbsp;&brvbar;---- <span style="background-color: rgb(191, 237, 210);">_accessories</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Project support files (.img .ttf)</p>
-<p style="line-height: 0.5;">&nbsp; &nbsp; &nbsp;&brvbar;---- <span style="background-color: rgb(191, 237, 210);">_assets </span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"libraries"</p>
+<p style="line-height: 0.5;">&nbsp; &nbsp; &nbsp;&brvbar;---- <span style="background-color: rgb(191, 237, 210);">_assets </span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;"libraries"</p>
 <p style="line-height: 0.5;">&nbsp; &nbsp; &nbsp;&brvbar;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &brvbar;---- <span style="background-color: rgb(191, 237, 210);">jquery<span style="background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "jquery"</span></span></p>
 <p style="line-height: 0.5;">&nbsp; &nbsp; &nbsp;&brvbar;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &brvbar;---- <span style="background-color: rgb(191, 237, 210);">jquery-ui<span style="background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "jquery-UserInterface"</span></span></p>
 <p style="line-height: 0.5;">&nbsp; &nbsp; &nbsp;&brvbar;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &brvbar;---- <span style="background-color: rgb(191, 237, 210);">tablesorter<span style="background-color: rgb(255, 255, 255);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"Advanced tables"</span></span></p>
@@ -53,8 +48,7 @@ htm_Page_0(titl:'support.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.
 
     htm_nl(0);
     echo '</div>';
-                # $labl='', $icon='', $hint='', $name='', $form='',$subm=false, $attr='', $akey='', $kind='save', $simu=false)
-    htm_Card_00(labl:'Demo', icon:'', hint:'Buttom', name:'', form:'', subm:false, attr:'', akey:'', kind:'save', simu:false);
+    htm_Card_end(labl:'Demo', icon:'', hint:'Buttom', name:'', form:'', subm:false, attr:'', akey:'', kind:'save', simu:false);
     
-htm_Page_00();
+htm_Page_end();
 ?>

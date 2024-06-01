@@ -1,5 +1,5 @@
-<?php   $DocFil= './Proj.demo/files.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './Proj.demo/files.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
  
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
@@ -11,17 +11,12 @@ $needFontawesome= '2';
 $needTinymce=     '0';
 
 require_once ($sys.'php2html.lib.php');
-// require_once ($sys.'menu.inc.php');
-// require_once ($sys.'translate.inc.php');
-// require_once ($sys.'filedata.inc.php');
 
-htm_Page_0(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag:$gbl_ProgRoot.'_accessories/_background.png', pbrd:false);
-    // Menu_Topdropdown(true); htm_nl(1);
-    
+htm_Page_(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag:$gbl_ProgRoot.'_accessories/_background.png', pbrd:false);
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
-    htm_Card_0(capt:'Naming System-files', icon:'fas fa-file',hint: '',form: 'head', acti: '',clas:'cardW640', wdth: '',styl: 'background-color: white;',attr: '');
+    htm_Card_(capt:'Naming System-files', icon:'fas fa-file',hint: '',form: 'head', acti: '',clas:'cardW640', wdth: '',styl: 'background-color: white;',attr: '');
     htm_nl(1);
 
     htm_TextPre('The PHP2HTML-system uses this file naming system:      <br>
@@ -51,10 +46,7 @@ htm_Page_0(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag
        translate.<b>page</b>.php   Intro...
        And more...<br>','left',$marg='8px',$attr='line-height: 1.4;');
        
-    //htm_TextTip($capt='TIP',$body='Body tekst',$width='150px',$colr='yellow');
-    htm_Card_00();
+    htm_Card_end();
 
-    //Menu_Bottom();  
-
-htm_Page_00();
+htm_Page_end();
 ?>

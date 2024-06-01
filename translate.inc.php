@@ -1,5 +1,5 @@
-<? $DocFile='../translate.inc.php';    $DocVer='1.3.0';    $DocRev='2023-04-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2022 EV-soft *** See the file: LICENSE';
+<? $DocFile='../translate.inc.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 require_once ($sys.'php2html.lib.php');
@@ -27,7 +27,21 @@ function scannLngStrings($code= 'dk') {
         ## Other project files to scann:
                 $gbl_ProgRoot.'Demo.page.php',
                 $gbl_ProgRoot.'CustomerOrder.page.php',
-                $gbl_ProgRoot.'accountPlan.page.php'
+                $gbl_ProgRoot.'accountPlan.page.php',
+                $gbl_ProgRoot.'tinyEditor.page.php',
+                $gbl_ProgRoot.'functions.page.php',
+                $gbl_ProgRoot.'PHP2HTML-intro.page.php',
+                $gbl_ProgRoot.'card.page.php',
+                $gbl_ProgRoot.'input.page.php',
+                $gbl_ProgRoot.'table.page.php',
+                $gbl_ProgRoot.'pages.page.php',
+                $gbl_ProgRoot.'translate.page.php',
+                $gbl_ProgRoot.'files.page.php',
+                $gbl_ProgRoot.'navigate.page.php',
+                $gbl_ProgRoot.'description.page.php',
+                $gbl_ProgRoot.'support.page.php',
+                $gbl_ProgRoot.'other.page.php'
+                
                 // './Proj.demo/CustomerOrder.page.php'
                 //  $gbl_ProgRoot.'folder-explorer.php'
                 ];
@@ -191,20 +205,11 @@ function scannLngStrings($code= 'dk') {
               $type= 'area',$name='goog',$valu= file_get_contents ("sys_2Google.txt"),
               $form='',$wdth='930px',$algn='left',$attr=' wrap = "off";',$rtrn=false,$unit='',$disa=false,$rows='10');
     htm_nl(2);
-    
-/* 
-    $i= 0;
-    echo '<br><br><b>Missing translate ?</b><br>Keys in language "'.$App_Conf['language'].' / '.$nati.'" with string the same as the key:<br>';
-    foreach ($arrLang[$code] ?? [] as $key => $value) { 
-        if (in_array($key,$arrLang[$code])) echo '<br>Same: '.$i++.' '.$key; 
-    }
-    if ($i==0) echo 'None<br>';
-    echo '<br><br>';
- */
+
     $i= 0;
     echo '<br><b>Outdated keys ?</b><br>Unused keys in language "'.$App_Conf['language'].' / '.$nati.'" in this project (maybe renamed key):<br>';
     foreach ($arrLang[$code] ?? [] as $key => $value) {
-       if (!in_array($key,$arrLang['en'])) echo '<br>Outd: '.$i++.' '.$key;
+       if (!in_array($key,$arrLang['en'])) echo '<br>Outd: '.$i++.' '.$key; # FIXIT ?
     }
     if ($i==0) echo 'None<br>';
     
@@ -248,22 +253,6 @@ function SelNew($langList) {
          '</div>';
 }
 
-
-    // $ISO639= ReadCSV($filepath='ISO639-1.csv');
-    // arrPrint($ISO639,'ISO639'); 
-#    foreach ($ISO639  as $lang) if (strlen($lang[0])==2) {
-#      echo '<br>'.'{';
-#      echo '<br>'.'  "code": "'.$lang[0].'",';
-#      echo '<br>'.'  "name": "'.$lang[1].'",';
-#      echo '<br>'.'  "native": "'.$lang[2].'",';
-#      echo '<br>'.'  "author": "-none-",';
-#      echo '<br>'.'  "note": "'.date("Y-m-d").'",';
-//                     DateTime
-#      echo '<br>'.'  "translation": {';
-#      echo '<br>'.'  }';
-#      echo '<br>'.'},';
-#    }
-
 function DBcorrect() {
        $content = file_get_contents('../_trans.sys.json');
        $temp_list= [];
@@ -275,8 +264,8 @@ function DBcorrect() {
                 $lang_rec["name"]        = $value["name"];                  // $value["name"];      Name in english
                 $lang_rec["native"]      = $value["native"];                // $value["native"];    Name translated from english
                 $lang_rec["author"]      = $value["author"];                // $value["author"];
-                $lang_rec["note"]        = $value["DateTime"];                  // $value["note"];
-                $lang_rec["DateTime"]    = $value["note"];              // $value["DateTime"]; // setlocale(LC_TIME, 'da_DK','da','da_DK.utf8'); ?
+                $lang_rec["note"]        = $value["DateTime"];              // $value["note"];
+                $lang_rec["DateTime"]    = $value["note"];                  // $value["DateTime"]; // setlocale(LC_TIME, 'da_DK','da','da_DK.utf8'); ?
                 $lang_rec["translation"] = $value["translation"];
 
                 $temp_list[]= $lang_rec;
@@ -284,7 +273,6 @@ function DBcorrect() {
             $temp_list= json_encode($temp_list,JSON_PRETTY_PRINT);
             $out = fopen('temp_list.out', "w"); fwrite($out, PHP_EOL. ($temp_list)); fclose($out);  // save pretty JSON-file
         }
-}
-// DBcorrect();
+}   // DBcorrect();
 
 ?>

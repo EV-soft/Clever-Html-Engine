@@ -1,9 +1,9 @@
-<?   $DocFileLib='Project.notes.txt';    $DocVer='1.3.2';    $DocRev='2024-01-26';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?   $DocFileLib='Project.notes.txt';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNo=0; ## File informative only
 
 Notes regarding php2html.lib.php:
 
 
-##  ToDo: 
+##  ToDo:
  #  FIX: removeRow()
  #  FIX: clone: plusbtn
 
@@ -45,7 +45,7 @@ Notes regarding php2html.lib.php:
 // ([ ,(])([A-z]{4})(:['[ $ft]) # xxxx:
 // '\1$\2=\3'                   # $xxxx=
 
-
+/*
 Changelog.txt:
 
 v1.1.0:
@@ -186,6 +186,7 @@ expo - export table to file
 labl capt body plho icon hint type name valu form subm acti clas wdth algn marg styl attr font colr llgn link targ akey kind echo unit disa rows rows step bord rtrn titl info inis gbl_imag gbl_bord simu clck stck cntx html capt butt mess tplc tsty ftop head tblcapt rowpref rowbody rowsuff tblnote 
 tbldata filteron sorteron createrec modifyrec viewheight calledfrom tblstyle multilist exportto
 ]
+The KeyWord-list is now only uptodate in file: functions.page.php
 
 ###########
 Upgrade: font-awesome 5 to font-awesome 6
@@ -231,6 +232,20 @@ New: htm_CodeBox()
 New: htm_Figure(()
 New: htm_Details()
 New: \Quick_Proj\quickstart.page.php
+
+
+###########
+v1.4.0:
+Changed: htm_Card_0() parameters, Caption split in 3 parts ("Program-mode")
+New: htm_Form()
+New: htm_iFrame()
+New: htm_GoTopButt()
+New: htm_List_()
+Rename: Block functions htm_****_0()  to htm_****_()
+Rename: Block functions htm_****_00() to htm_****_end()
+Rename: htm_Field_0_end() to htm_Field() 
+Changed: some CSS-style
+Upgrade: font-awesome 6 to font-awesome 7
 
 */
 

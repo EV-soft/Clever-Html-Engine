@@ -1,5 +1,5 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';   $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';   $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
  
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -15,13 +15,11 @@ $needFontawesome= '2';
 $needTinymce=     '0';
 
 require_once ($sys.'php2html.lib.php'); // 'php2html.lib.min.php'
-// require_once ($sys.'menu.inc.php');
-// require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php'); // sql_/dbi_-functions
 
 
 ### SPECIAL this page only:
-require_once('../Data.demo/datainit.inc.php');
+require_once('./Data.demo/datainit.inc.php');
 
 function refresh($name) {if (isset($_POST[$name]))  {$_SESSION[$name]= $$name= htmlspecialchars($_POST[$name]); return $$name; } } //  A variabel with name: $name is updated and remembered in _SESSION. The value is returned
 function set_FormVars ($names) { foreach ($names as $name) $$name= refresh($name); }  //  No: $$name is not a typeerror. It is the value of the variable with the name $name
@@ -37,11 +35,6 @@ function indxCheck(&$arrData,$name,$pref='') {
     } $arrData= $arrTemp;
 }
 
-// session_destroy();  //  Slet alle SESSIONS variabler (Luk browser, sletter ikke ! ?)
-/*
-arrPrint($_SESSION,'$_SESSION');
-arrPrint($_POST,'$_POST');
-/*     */
 global $lang;
        
 $test= false;
@@ -137,7 +130,7 @@ function tabl2arr(&$arrData,$pref) { # Copy data from _POST to actual array (sin
     for ($i= 0; $i < $numb; $i++) {
         if ($keys[$i]==$pref) $result[]= $_POST[$keys[$i]];
     }
-    $arrData= $result;    // arrPretty($arrData,'$arrData-'.$pref);
+    $arrData= $result;
     return $arrData;
 }
 
@@ -162,10 +155,9 @@ function post2arr(&$arrData,$pref) { # Fill array with multible records from _PO
 
 
 ##### DATA EXCHANGE:
-$dPath= '../Data.demo/';
+$dPath= './Data.demo/';
 
 ### SAVE to database:    (DEMO: to files)
-
 
 # UPDATE files:
 
@@ -202,7 +194,6 @@ $arrTabls= ['custTbl',   'billTbl',   'deliTbl',   'condTbl',   'mailTbl',   '',
 // if (!isset($arrOrders))
 //   foreach ($arrNames as $arr) $$arr= json_decode(file_get_contents($dPath.$arr.'.dat.json'), true); ## READ data from json files (DEMO)
 $arrContact= json_decode(file_get_contents($dPath.'arrContact.dat.json'), true);
-// arrPretty($arrContact,'$arrContact');
 
 /* manually: */
 $arrContent= json_decode(file_get_contents($dPath.'arrContent.dat.json'), true); // arrPretty($arrContent,'$arrContent from file...'); 
@@ -320,16 +311,14 @@ indxCheck($arrContent,$name='cnt_post');
 
 
 ##### SCREEN OUTPUT:
-#!!!: Remember no OUTPUT to screen, before htm_Page_0() - javascript will fail !
+#!!!: Remember no OUTPUT to screen, before htm_Page_() - javascript will fail !
 
 ### From here this demo is written for PHP 8+ ! 
 ### (the vars order is maintained as for PHP 7, and default vars may not be excluded)
 
-htm_Page_0(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with function key: F11',
+htm_Page_(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with function key: F11',
            info:'@Example: Customer-ORDER Build with <b style="color:darkgreen;">PHP2HTML &nbsp;</b>',
            inis:'', algn:'center', imag:'', attr:'background: linear-gradient(0deg,#03a9f4 0%,#e3f2fd);', pbrd:false);
-    // Menu_Topdropdown(true); 
-    
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
@@ -338,11 +327,11 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
     
     htm_Caption(labl:'@Tiny-Cloud-Accounting',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
     htm_nl(1);
-    htm_Fieldset_0(capt:'@Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'100%; max-width:1150px; background-color:whitesmoke',marg:'',
+    htm_Fieldset_(capt:'@Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'100%; max-width:1150px; background-color:whitesmoke',marg:'',
                    attr:'Color: green; font-weight: bold; background-color: white; border-radius: 4px; padding: 0 10px; text-align: center; ',rtrn:false);
 
     //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
-    htm_Card_0(capt: '@Find / select existing order:',icon: 'fas fa-search',hint: '',form: $f='orders',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '',head:$headbg);
+    htm_Card_(capt: '@Find / select existing order:',icon: 'fas fa-search',hint: '',form: $f='orders',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '',head:$headbg);
 
         htm_Table(
             capt: [  ['@Customer orders', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', ''] ],
@@ -357,7 +346,7 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
                     ['@Amount',      '10%','text', '2d', ['right' ], 'ord_amou',    '@The total order sum',                         '@Amount...'],
                     ['@Currency',     '4%','ddwn', '',   ['center'], 'ord_currency','@Currency code for the currency used on the specification.','@Curr...','',[CurrencyArr(),'width: 55px;']],
                     ['@Maturity',     '4%','date', '',   ['center'], 'ord_duedate', '@Due date of the amount',                      '@Due...'],
-                    ['@Status',       '9%','ddwn', '',   ['left'  ], 'ord_stat',    '@Status','@Status...',  '', [OrdrStatu(),'width: 70px;']], //  ORD_Status()
+                    ['@Status',      '11%','ddwn', '',   ['left'  ], 'ord_stat',    '@Status','@Status...',  '', [OrdrStatu(),'width: 70px;']], //  ORD_Status()
                  ],
             suff: [],
             note:    '',
@@ -373,7 +362,7 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
             expo: ''      
             // , dropFirst:true
           );
-    htm_Card_00(labl:'@Save', icon:'', hint:'@Remember to save here...', name:'tabl', form:$f,subm:true, attr:'', akey:'', kind:'save', simu:false);
+    htm_Card_end(labl:'@Save', icon:'', hint:'@Remember to save here...', name:'tabl', form:$f,subm:true, attr:'', akey:'', kind:'save', simu:false);
 
 ## Naming variables in this project:
 #   Form name is used as Prefix in variable names (4 characters)
@@ -381,13 +370,13 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
 
 // btn_sav_conderror_reporting(0);
 
-    htm_Card_0(capt: lang('@Create new or modify order: ').$strOrder,
+    htm_Card_(capt: lang('@Create new or modify order: ').$strOrder,
                 icon: 'fas fa-pen',hint: '@Demo ! <br>No connection to a DataBase. <br>Read/save from/to JSON-files.',
                 form: '',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '', head:$headbg,vhgh:'1000px');
                 
         htm_Caption(labl:'@Debtor card',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
         htm_nl(1);
-        htm_Card_0(capt: '@Customer:',icon: 'fas fa-user',hint: '',form: $fm='cust',
+        htm_Card_(capt: '@Customer:',icon: 'fas fa-user',hint: '',form: $fm='cust',
                     acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
             htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
                       vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
@@ -416,9 +405,9 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
                       vrnt:'text',name:$n='custhome',   valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
             htm_MiniNote('<span class="colrorange">'.lang('@Orange ').'</span>'.lang('@frames are required fields.'));
             htm_MiniNote('<span class="colrgreen">' .lang('@Green ').'</span>'. lang('@frames - restricted use.'));
-        htm_Card_00(labl:'@Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);
+        htm_Card_end(labl:'@Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        htm_Card_0( capt: '@Conditions:', icon: 'far fa-credit-card', hint: '',form: $fm='cond', 
+        htm_Card_( capt: '@Conditions:', icon: 'far fa-credit-card', hint: '',form: $fm='cond', 
                     acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
             htm_Input(labl:'@Order number',             plho:'-',     icon:'',  hint:'Can not be changed here !',                 
                       vrnt:'text',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'100%', algn:'left',attr:'',        rtrn:false,unit:'',disa:true,rows:'3',step:'',list:[]); 
@@ -433,16 +422,16 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
             htm_Input(labl:'@Customer reference',/*plho:'Ref...',icon:'',*/     hint:'@for example. Requisitions no',                   
                       vrnt:'text', 
 name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
-        htm_Card_00(labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
+        htm_Card_end(labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
 
         $body= '<small><i>Business only !</i><br>
             Copy or check data in the public company register.<br>
             Data is provided by CVR API<br></small>';
 
-        htm_Card_0( capt: '@CVR-lookup:', icon: 'fas fa-database', hint: '',
+        htm_Card_( capt: '@CVR-lookup:', icon: 'fas fa-database', hint: '',
                      form: $fm='cvr_', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
 
-            htm_Fieldset_0( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
+            htm_Fieldset_( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
             
             htm_TextDiv($body,algn:'left',marg:'8px',styl:'',attr:'');
             set_FormVars(['cvrLand','cvrKode','cvrSoeg'/*, 'cvrNumm','cvrNavn','cvrTelf','cvrAddr','cvrPost','cvrBy','cvrDiv' */]);  // Opdater alle variabler på form 'cvrform' :
@@ -483,10 +472,10 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             htm_hr('lightgray');
             htm_AcceptButt( labl:'@Search',  icon:'', hint:'@Start search in the CVR register', 
                             form:'cvrform', wdth:'', attr:'', akey:'s', kind:'crea', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
-            htm_Fieldset_00();
+            htm_Fieldset_end();
             
             // htm_hr('green');
-            htm_Fieldset_0( capt:'@Register data:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
+            htm_Fieldset_( capt:'@Register data:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
             htm_Input(labl:'@CVR-number',  plho:'@CVR...', icon:'',hint:'@Retrieved from the CVR register',
                       vrnt:'text', name:$n='cvr_Numm', valu:$cvrNumm ?? '',form:'',wdth:'30%');
             htm_Input(labl:'@Company Name',plho:'@Name...',icon:'',hint:'@Retrieved from the CVR register',
@@ -501,10 +490,10 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                       vrnt:'text', name:$n='cvr_town',   valu:$cvrBy   ?? '',form:'',wdth:'66%');
             htm_AcceptButt('@Use',lang('@Use the data shown in your registration of ').($hvem ?? '').'. <br>'. lang('@Warning: Possibly previous data is overwritten! (Fields without content, do not affect external data). <br> Not working yet'), $btnKind='save', $frmName='cvrform', $width='', $akey='b', $rtrn=false);
             htm_Input(labl:'@Other things',plho:'@Various...',icon:'',hint:'@Retrieved from the CVR register, various supplementary data',vrnt:'area', name:'cvrDiv',valu: $cvrDiv ?? '',wdth:'100%');
-            htm_Fieldset_00();
-        htm_Card_00( labl:'@Update', icon:'', hint:'Overwrite existing data with CVR-register data !', name:'', form:'cvr_', subm:true, attr:'', akey:'', kind:'save', simu:false);
+            htm_Fieldset_end();
+        htm_Card_end( labl:'@Update', icon:'', hint:'Overwrite existing data with CVR-register data !', name:'', form:'cvr_', subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        htm_Card_0(capt: '@Billing:',icon: 'fas fa-pen',hint: '',form: $fm='bill',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
+        htm_Card_(capt: '@Billing:',icon: 'fas fa-pen',hint: '',form: $fm='bill',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
             htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
                       vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
             htm_Input(labl:'@Order info',               plho:'@Order:... Date:...',icon:'',hint:'@@Systemfield: Auto fill out, when order is created/saved',
@@ -543,11 +532,11 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             htm_Input(labl:'@Rebills',                  plho:'@Date...',              icon:'',hint:'@When to rebill date',                                     
                       vrnt:'date',name:$n='condrebi',   valu:$arrBilling[$n], form:'',wdth:'48%');
             htm_MiniNote('<span class="colrorange">'.lang('@Orange ').'</span>'.lang('@frames are required fields.'));
-        htm_Card_00(labl:'Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);
+        htm_Card_end(labl:'Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        htm_Card_0( capt: '@Mail-invoice:', icon: 'fas fa-envelope', hint: '',
+        htm_Card_( capt: '@Mail-invoice:', icon: 'fas fa-envelope', hint: '',
                      form: $fm='mail', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
-//  htm_Card_0($frmName='mailinv', $capt=lang('Mail-invoice:'), $parms='', $icon='fas fa-envelope', $class='cardW280', $where=__FILE__, $attr='', $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
+//  htm_Card_($frmName='mailinv', $capt=lang('Mail-invoice:'), $parms='', $icon='fas fa-envelope', $class='cardW280', $where=__FILE__, $attr='', $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
             htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
                       vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
             htm_Input(labl:'@Mail subject',             plho:'@Subj...',icon:'',hint:'@Enter Mail subject',                                             
@@ -560,8 +549,8 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                       vrnt:'text',name:$n='mail__cc',   valu:$arrMailing[$n]);
             htm_Input(labl:'@Blind-copy to',            plho:'BCopy...',icon:'',hint:'@Enter mail address to receive one BC-copy (hidden) of sent mail',
                       vrnt:'text',name:$n='mail__bc',   valu:$arrMailing[$n]);
-        htm_Card_00( labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
-//  htm_Card_00($labl='@Save', $subm=true, $hint='', $btnKind='save', $akey='', $simu=false, $frmName);
+        htm_Card_end( labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
+//  htm_Card_end($labl='@Save', $subm=true, $hint='', $btnKind='save', $akey='', $simu=false, $frmName);
 
         $custFld= [
         //[ 0:Label,         1:Hint,                  2:Placeholder]
@@ -572,7 +561,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
           ['@Extra Field 5','@Extras - Fill in the field 5','@Field 5...']
         ];
      //   $custFld= $arrCustfld['custFld'];
-        htm_Card_0( capt: '@Extra fields:', icon: 'fas fa-plus', hint: '',
+        htm_Card_( capt: '@Extra fields:', icon: 'fas fa-plus', hint: '',
                      form:$fm='csto', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
             htm_Input(labl:'@Order number',             plho:'Hidden field',        icon:'', hint:'Hidden field',                 
                       vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],       form:'', wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
@@ -586,9 +575,9 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                       vrnt:'text', name:$n=$fm.'Fld4',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
             htm_Input(labl: lang($custFld[4][0]),       plho: lang($custFld[4][2]), icon:'', hint: lang($custFld[4][1]), 
                       vrnt:'text', name:$n=$fm.'Fld5',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
-        htm_Card_00( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+        htm_Card_end( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
         
-        htm_Card_0(capt: '@Delivery:',icon: 'fas fa-truck',hint: '',form: $fm='deli',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
+        htm_Card_(capt: '@Delivery:',icon: 'fas fa-truck',hint: '',form: $fm='deli',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
             htm_Input(labl:'@Order number',             plho:'Hidden field', icon:'',hint:'Hidden field', vrnt:'hidd',
                       name:$n='ordrnumb',   valu:$arrCustomr[$n],       form:'',wdth:'0%', algn:'left',attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
             htm_Input(labl:'@Delivered to invoice address', plho:'Name...', icon:'',hint:'@Check here if the delivery address is the same as the invoice address', vrnt:'chck', 
@@ -637,9 +626,9 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             htm_AcceptButt(labl:'@Delivery note', icon:'', hint:'@Show delivery note for delivery', form:'deliver', wdth:'', attr:'', akey:'l', kind:'sear', rtrn:false,  tplc:'LblTip_text', tsty:'',
                             acti:"toast(\"<b>DEMO:</b><br>$delName <br>$delAddr <br>$delPlac <br>$del_Zip - $delCity\",\"lightyellow\",\"black\")", idix:'');
             htm_MiniNote('<span class="colrblue">'.lang('@Blue ').'</span>'.lang('@frames and customer type, Used for map lookup.'));
-        htm_Card_00( labl:'@Save',icon:'',hint:'',name:'',form:$fm, subm:true,attr:'',akey:'',kind:'save',simu:false);
+        htm_Card_end( labl:'@Save',icon:'',hint:'',name:'',form:$fm, subm:true,attr:'',akey:'',kind:'save',simu:false);
 
-        htm_Card_0( capt: '@Person contact:', icon: 'fas fa-phone-square', hint: '',
+        htm_Card_( capt: '@Person contact:', icon: 'fas fa-phone-square', hint: '',
                      form: $fm='cont', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
 
             function ContaktPers($arrCont,$no='') {
@@ -669,9 +658,9 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             }
             else htm_Caption('@No contacts created.');
             htm_AcceptButt( labl:'@Create new',  icon:'', hint:'@Create a new contact <br> (DEMO yet!)',  form:$fm,  wdth:'',  attr:'', akey:'', kind:'crea', rtrn:false, tplc:'', tsty:'position: absolute;', acti:'toast("Create contact<br>Cant do it yet !","lightyellow","black")');
-        htm_Card_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+        htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-        htm_Card_0( capt: '@Order notes:', icon: 'fas fa-plus', hint: '',
+        htm_Card_( capt: '@Order notes:', icon: 'fas fa-plus', hint: '',
                      form:$fm='cstn', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
             htm_Input(labl:'@Order ',                   plho:'Hidden field',    icon:'',hint:'Hidden field',                 
                       vrnt:'hidd',name:$n='ordrnumb',   valu: $arrCustomr[$n],       form:'', wdth:'0%', algn:'left',attr:'',   rtrn:false); 
@@ -679,11 +668,11 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                       vrnt:'date', name:$n=$fm.'date',  valu: $arrCustnot[$n] ?? '', form:'', wdth:'96%',rows:'9');
             htm_Input(labl: '@Notes',                   plho: '@Write here...', icon:'', hint: '@Notes associated with the order', 
                       vrnt:'area', name:$n=$fm.'note',  valu: $arrCustnot[$n] ?? '', form:'', wdth:'96%',rows:'9');
-        htm_Card_00( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+        htm_Card_end( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-    htm_Card_00( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+    htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-    htm_Card_0( capt: '@Content of the order:'.$strOrder.' - '.$status, icon: 'fas fa-pen', hint: '',
+    htm_Card_( capt: '@Content of the order:'.$strOrder.' - '.$status, icon: 'fas fa-pen', hint: '',
                  form: $f='content', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '',head:$headbg, vhgh:'800px');
         global $ordrTotal;
         $link= '#';
@@ -761,11 +750,11 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             vhgh: '250px',    
             from: __FUNCTION__
         ); // htm_Table
-    htm_Card_00( labl:'@Save',  icon:'',  hint:'',  name:'cont',  form:$f, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+    htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'cont',  form:$f, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
 
 
-    htm_Card_0( capt:'@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px');
+    htm_Card_( capt:'@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px');
         $heading= [['@Pos.','center'],['@Item no.','center'],['@Quantity','right'],['@Unit','left'],['@Description','left'],['@VAT','center'],
                    ['@Price','right'],['@%','right'],['@Total','right'],['@Currency','center']];
         $body= '<small><table style="margin: 0 auto; width:675px;"><thead>';    // Content Preview:<br>
@@ -806,7 +795,6 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
         htm_Input(labl:'<b>'.lang('@Total:').'</b>',    plho:'',icon:'far fa-credit-card',   hint:'@System field: Amount incl. VAT',
                   vrnt:'dec2',name:'totl',valu:$ordrTotal,form:'',wdth:'120px',algn:'center',attr:'',rtrn:false,unit:' DKK ',disa:true,rows:'1',step:'');
         htm_nl(2);
-                    # $labl='',$icon,$hint='',$form='',$wdth='',$attr,$akey='',$kind='',$rtrn=true,$tplc='LblTip_text',$tsty='',$clicking='',$idix='');
         htm_AcceptButt(labl:'@Create / update', icon:'',hint:lang('@Save the order'),                                        form:'handling', wdth:'120px',attr:'' ,akey:'', kind:'save',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;');
         htm_nl(2);                          //  icon:'',hint:                                                                form:,wdth:,$attr,                :'' ,                             :                                   :
       //htm_AcceptButt(labl:'@Lookup',          icon:'',hint:lang('@Browse other existing orders'),                          form:'doLookup' wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Lookup<br>Cant search yet !","orange","black")');
@@ -814,20 +802,19 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
         htm_AcceptButt(labl:'@Save as Order',   icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
         htm_AcceptButt(labl:'@Save as a role model',icon:'',hint:lang('@Reuse content for re-creation'),                     form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
         htm_AcceptButt(labl:'@Create Invoice',  icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
-    //htm_AcceptButt(labl:'@Make Delivery Note',icon:'',hint:lang('@Make delivery note for the shipment of the order'),      form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Make delive note<br>Cant create yet !","orange","black")');
+      //htm_AcceptButt(labl:'@Make Delivery Note',icon:'',hint:lang('@Make delivery note for the shipment of the order'),      form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Make delive note<br>Cant create yet !","orange","black")');
         htm_AcceptButt(labl:'@Give credit',     icon:'',hint:lang('@Reset by crediting the order - if it is invoiced'),      form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Give credit<br>Cant do it yet !","orange","black")');
         htm_AcceptButt(labl:'@Delete',          icon:'',hint:lang('@Delete the order - provided the invoice is not formed'), form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Delete<br>Cant erase yet !","orange","black")');
         //  $rtrn=true, $tipplc='LblTip_text', $tipstyl='',$clickFunction='', $attr )
         htm_nl(2);
-    htm_Card_00( labl:'',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+    htm_Card_end( labl:'',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-    htm_Fieldset_00(); 
+    htm_Fieldset_end(); 
     htm_nl(3);
 
-    htm_Card_0( capt: '@Settings:', icon: 'fas fa-wrench', hint: '', form: 'language', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: white;', attr: '');
+    htm_Card_( capt: '@Settings:', icon: 'fas fa-wrench', hint: '', form: 'language', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: white;', attr: '');
         htm_TextDiv('@Change the language for this project: <br>');
 
-           # PHP7: $labl='',$plho='@Enter...',$icon='',$hint='',$type= 'text',$name='',$valu='',$form='',$wdth='',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='2',$step='',$list=[],$llgn='R',$bord='',$ftop='');
         htm_Input(labl:'@Select language',plho:'',icon:'',hint:'@Select among installed languages',
                   vrnt:'opti',name:'language',valu:$lang,form:'',wdth:'50%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                   list: [['en','@English','@Select english language'], 
@@ -835,38 +822,38 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                          ['de','@German','@Select german language'],
                          ['da','@Dansk','@Select danish language']]);
         htm_TextDiv('@Note: The translate is not complete !<br>It is created with Google Translate, <br>and needs proofread.<br>');
-    htm_Card_00(labl:'@Save and use',  icon:'',  hint:'',  name:'', form:'language',  subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+    htm_Card_end(labl:'@Save and use',  icon:'',  hint:'',  name:'', form:'language',  subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-    htm_Card_0(capt: '@Info about this page:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
+    htm_Card_(capt: '@Info about this page:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
         htm_TextDiv('@This is a demo under development !<br>It partly stores data to JSON text files.<br>
                      Translations from English lack <br>proofreading, on Google translate. <br>
                      There is also a lack of functionality.<br>Code written for PHP 8+ !<br>');
-    htm_Card_00(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
+    htm_Card_end(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
 
     htm_nl(1);
-    htm_Card_0( capt: '@Overview of all variables:', icon: 'fas fa-info', hint: '@Here you can see all variables on the page.', form:$form='demo', acti: '', 
+    htm_Card_( capt: '@Overview of all variables:', icon: 'fas fa-info', hint: '@Here you can see all variables on the page.', form:$form='demo', acti: '', 
                  clas: 'cardWaut', wdth: '320px', styl: 'background-color: lightyellow;', attr: '');
         arrPretty(get_defined_vars(),'Defined_vars:');
-    htm_Card_00( labl:'@Save',  icon:'',  hint:'',  name:'', form:$form,  subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+    htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'', form:$form,  subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
 
     htm_nl(0);
-    htm_Card_0(capt: '@Adaptive - Tip:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
+    htm_Card_(capt: '@Adaptive - Tip:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
         htm_TextDiv('@To see how it adapts to narrow screens,<br> 
                      close the cards with wide tables.<br>
-                     <br>'); 
-    htm_Card_00(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
+                     before resizing the window.<br><br>'); 
+    htm_Card_end(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
 
     htm_hr('gray; height:2px;border-width:0;');
     
     /// echo '<div style="text-align:left;">'.$report.'</div>';
     echo lang('@Layout is best displayed with a window width of 1000-1200px');
-htm_Page_00();
+htm_Page_end();
  
     run_Script('toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","blacck",1500)');
 
 $savedBytes= 0;
     if ($savedBytes== 0) {   // page just opened
-        CardOff(frst: 3,last:12); // Close card 3 to 11,
+        CardOff(frst: 3,last:12); // Close card 3 to 12,
         CardOff(frst:13,last:17);
         CardOff(frst: 1,last: 1);
     }

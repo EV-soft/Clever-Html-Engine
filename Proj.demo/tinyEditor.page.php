@@ -1,5 +1,5 @@
-<?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
 $gbl_ProgRoot= './../';
@@ -9,22 +9,22 @@ $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
 $needFontawesome= '2';
-$needTinymce=     '2';
+$needTinymce=     '3';
 
 require_once ($sys.'php2html.lib.php');
-// require_once ($sys.'menu.inc.php');
 
+if (isset($_POST['UploadFile'])) $UploadFile = $_POST['UploadFile']; 
+                            else $UploadFile = '';
 
-htm_Page_0(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:'File: '.$DocFile.' - Ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
-    // Menu_Topdropdown(true);     // htm_nl(1);
+htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:'File: '.$DocFile.' - Ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
     echo '<style> body { padding-top: 0; margin-top:0; } </style>';
     
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_Menu_TopDown(capt:'@Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
     
-    htm_Card_0(capt: '@Working with tiny Editor:', icon: 'fas fa-info', hint: '@HINT for this card', form: 'head6', acti: '', clas: 'cardWmax', wdth: '640', styl: 'background-color: white;', attr: '',  show : true,  head: $headbg, vhgh:'1200px');
-        if (LIB_TINYMCE[0] > 0) # Config editor: https://www.tiny.cloud/docs/tinymce/6/basic-setup/ 
+    htm_Card_(capt: '@Working with tiny Editor:', icon: 'fas fa-info', hint: '@HINT for this card', form: 'head6', acti: '', clas: 'cardW100', wdth: '640', styl: 'background-color: white;', attr: '',  show : true,  head: $headbg, vhgh:'1200px');
+        if ($LIB_TINYMCE[0] > 0) # Config editor: https://www.tiny.cloud/docs/tinymce/6/basic-setup/ 
         echo 
             " <script type=\"text/javascript\">
               tinymce.init({
@@ -34,12 +34,12 @@ htm_Page_0(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info
                 content_css: 'dark',
                 promotion: false,
                 plugins: [
-                  'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+                  'accordion', 'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
                   'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
-                  'media', 'table', 'emoticons', 'template', 'help', 'save', 'visualchars'
+                  'media', 'table', 'emoticons', 'help', 'save', 'visualchars'
                 ],
                 toolbar: 'save | undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
-                  'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+                  'bullist numlist outdent indent | link image | print preview media fullscreen | accordion | ' +
                   'forecolor backcolor emoticons | help save visualchars',
                 menu: {
                   favs: { title: 'My Favorites', items: 'code | visualaid | searchreplace | emoticons' }
@@ -48,27 +48,45 @@ htm_Page_0(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info
                 content_css: 'writer' /* 'css/content.css' */
               });
               </script>";
-        $docFile= 'EditContent.htm';
+        $EditFile= 'EditContent.htm';
         if (isset($_POST['TinyTextarea'])) {                                                    # Save content:
-            file_put_contents($docFile, $_POST['TinyTextarea']);
+            file_put_contents($EditFile, $_POST['TinyTextarea']);
         }
-        $docContent= /* iconv('ISO-8859-1', "UTF-8",  */ file_get_contents($docFile) /* ) */ ;  # Load content
-        htm_Input(labl:'This is the editor', plho:'@Enter your text here...', icon:'', hint:'Based on open source: tinyMCE',vrnt: 'area',
-                  name:'TinyTextarea' /* Name must match selector in tinymce.init() */, valu:$docContent, form:'', wdth:'', algn:'left',
-                  attr:'', rtrn:false, unit:'', disa:false, rows:'60', step:'' ,list:[], llgn:'R', bord:'', ftop:'');
+        $docContent= /* iconv('ISO-8859-1', "UTF-8", */ file_get_contents($EditFile) /* ) */ ;  # Load content
+        htm_Input(labl:'@This is the HTML editor', 
+                  plho:'@Enter your text here...', icon:'', 
+                  hint:'@Based on open source: tinyMCE',vrnt: 'area',
+                  name:'TinyTextarea' /* Name must match selector in tinymce.init() */, 
+                  valu:$docContent, form:'', wdth:'', algn:'left',
+                  attr:'', rtrn:false, unit:'', disa:false, rows:'60', step:'' ,list:[], llgn:'C', bord:'', ftop:'');
         
-        htm_textdiv('<b>Info:</b> This demo loads/saves data from file: '.$docFile.' '.str_sp('8').
-            htm_Input(labl:'Upload file', plho:'@Enter your filename here...',icon:'',hint:'@Upload file to '.$docFile.'<br>Not working yet !',vrnt: 'file',
-                      name:'ufile' , valu:'', form:'', wdth:'220px', algn:'left',
-                      attr:'', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'',ftop:''). str_sp('4').
-            htm_Input(labl:'Download file', plho:'@Enter your filename here...', icon:'', hint:'@Download '.$docFile.' to a local file<br>Not working yet !',vrnt: 'butt',
-                      name:'dfile', valu:'Download...', form:'', wdth:'120px', algn:'left',
-                      attr:'background-color:green;', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'', ftop:''). str_sp('12'). str_nl(2).
-            htm_textdiv('Alternative you can copy/paste from/to content in Source Code window.', styl:'white-space: nowrap;', rtrn:true)
-            ,attr:'margin: auto; display:inline-block; position: relative;');
-
-        
-    htm_Card_00(labl:'GEM', icon:'', hint:'', name:'', form:'head6', subm:false,  attr:'', akey:'s', kind:'save', simu:false);
-    
-htm_Page_00();
+    htm_Card_end(labl:'GEM', icon:'', hint:'', name:'', form:'head6', subm:false,  attr:'', akey:'s', kind:'save', simu:false);
+   
+    htm_Card_(capt:'@Data-file for tiny Editor: '.$EditFile, icon: 'fas fa-database', form:'fmUpload', acti:'', clas: 'cardW100');
+        htm_textdiv('<b>Info:</b> The editor loads/saves data from file: '.$EditFile.' '. str_sp('8').
+            htm_Field(labl:'Upload local file to edit', body:
+                htm_Input(labl:'', 
+                          plho:'@Enter your filename here...', icon:'', 
+                          hint:'@Upload file to '.$EditFile.'<br>Not working yet !', vrnt:'file', 
+                          name:'UploadFile' , 
+                          valu:$UploadFile,  form:'fmUpload', wdth:'220px', algn:'left',
+                          attr:'', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'',ftop:''). 
+                          // 1:Backup current Editfile, 2:Upload file, 3:saveAs EditContent.htm
+                str_sp('4').
+                htm_AcceptButt(labl:'OK', hint:'Upload now', form:'fmUpload', attr:'margin-top: 6px;', rtrn:true, tplc:'LblTip_text'), 
+                icon:'',hint:'@Upload file to '.$EditFile.'<br>Not working yet !',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:true,ftop:'').
+             
+             htm_Field(labl:'@Download file', body:
+                 htm_Inbox(labl:'@Download file', 
+                           plho:'@Enter your filename here...', icon:'', 
+                           hint:'@Download '.$EditFile.' to a local file<br>Not working yet !', vrnt:'text', name:'dfile', 
+                           valu:'<a href= "'.$EditFile.'" download>'.$EditFile.'</a>', form:'fmUpload', wdth:'', algn:'left',
+                           attr:'', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'', ftop:''), 
+                      icon:'', hint:'@Download file '.$EditFile, name:'fld', wdth:'', styl:'', attr:'', llgn:'C', rtrn:true, ftop:'')
+            );  // 1:Download file, 2:Save as newName,
+            htm_textdiv(body:'@Alternative you can copy/paste from/to content in Source Code window.', styl:'white-space: nowrap;', rtrn:true,
+                        attr:'margin: auto; display:inline-block; position: relative;');
+    htm_Card_end(labl:'GEM', icon:'', hint:'', name:'', form:'fmUpload', subm:false,  attr:'', akey:'s', kind:'save', simu:false);
+     
+htm_Page_end();
 ?>

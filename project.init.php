@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.3.2';    $DocRev='2024-01-27';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= 'project.init.php';    $DocVers='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** 
 #  This file is included from start of php2html.lib.php 
 
@@ -20,7 +20,7 @@
     $gbl_CardsBgrd= 'background-color: white;';      # Cards hideble background
     $gbl_GridOn= true;                  # Use grid to place objects in rows / colums
     $gbl_progZoom = 'small';            # Global tag "font-scale"
-    $GLOBALS["gbl_ProgRoot"]= './';
+    // $GLOBALS["gbl_ProgRoot"]= './';
     $gbl_labelAlgn= 'R';                # L/C/R - Align label for htm_Input() and htm_Inbox()
     
     if (!file_get_contents('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js') > '')
@@ -37,7 +37,9 @@
             ['Next','fas fa-info black',    '@Demo',        '', '@See and try examples of nearly all modules in the system...','Demo.page.php',[],''],
             ['Next','fas fa-info black',    '@Tiny editor', '', '@Try the advanced online HTML editor','tinyEditor.page.php ',[],''],
             ['Next','fa-regular fa-credit-card black', '@ Advanced example', '','@Example of an Accounting program','CustomerOrder.page.php',[],''],
-            ['Last','fa-regular fa-credit-card black', '@ Danish account plan', '','@Example of an account plan','accountPlan.page.php',[],'']
+            ['Next','fa-regular fa-credit-card black', '@ Danish account plan', '','@Example of an account plan','accountPlan.page.php',[],''],
+            ['Last','fa-solid fa-book black', '@ Documentation', '','@Documentation of the system','documentation.page.php',[],'']
+           
         ]],
         ['Next','fas fa-cubes colrorange',  '@MODULES',          '@Systm modules',                      '@','input.page.php', [
             ['Next','fas fa-cubes black',   '@htm_Input',        '@htm_Input() used for input and output of values of various variables','@','input.page.php', [],'top:350px;'],
@@ -49,15 +51,16 @@
         ],'top:350px;'],
         ['Next','fas fa-file colryellow ',  '@FILES',            '@Go to files.page.php',               '@','files.page.php', [
             ['Next','fas fa-file black',    '@File naming',      '@Go to files.page.php',               '@','files.page.php', [],'top:500px;'],
-            ['Last','fas fa-file black',    '@Folders and files','@Go to support.page.php',             '@','support.page.php', [],'top:500px;']
+            ['Next','fas fa-file black',    '@Folders and files','@Go to support.page.php',             '@','support.page.php', [],'top:500px;'],
+            ['Last','fas fa-info black',    '@Quickstart',       '@How to start the system',            '@','../Quick_Proj/quickstart.page.php', [],'top:500px;']
         ],'top:500px;'],
         ['Next','fas fa-language colrblue', '@TRANSLATE',        '@Go to translate.page.php',           '@','translate.page.php', [],'top:500px;'],
         ['Last','fas fa-code colrcyan',     '@FUNCTIONS',        '@Go to functions.page.php',           '@','functions.page.php', [
             ['Last','fas fa-code colrcyan', '@Overview',         '@Go to functions.page.php',           '@','functions.page.php', [],'top:500px;'],
         ],'top:500px;']
         ]; 
-        
-    $menunote= '@<small>Test site for Clever html engine • Errors may occur and future news can be shown • Now 49 core functions.</small>';
+         
+    $menunote= '@<small>Test site and documentation for Clever html engine • Errors can occur and future news may be shown • ver.'.$DocVers.': 50+ core functions.</small>';
 
 ## Quickstart:
     $menudata_quick= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='', 8:$widt)

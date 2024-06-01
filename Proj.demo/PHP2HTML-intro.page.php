@@ -1,5 +1,5 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.3.1';    $DocRev='2023-09-25';      $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2023 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -19,47 +19,17 @@ require_once ($sys.'php2html.lib.php');
 
 // $darkTheme= true;
 
-htm_Page_0($titl='PHP2HTML - Introduction to the systems most used modules:',$hint=$©,$info='File: '.$DocFile.' - Ver:'.$DocVer, $inis='',$algn='center', $gbl_Imag='', $gbl_Bord=false);
+htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hint=$©,$info='File: '.$DocFile.' - Ver:'.$DocVer, $inis='',$algn='center', $gbl_Imag='', $gbl_Bord=false);
 
     htm_Menu_Leftout(capt:'Clever html engine', data:$menudata, foot:'PHP2HTML', styl:'top:88px;'); 
     run_script('desc_div("narrow","capt");');   // Init htm_Menu_Leftout() to narrow state
     
     htm_Menu_TopDown(capt:'Clever html engine', data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
     htm_nl(5);
-/*     
-$href= $folder2.'PHP2HTML-intro.page.php',$labl='@INTRODUCTION',  $titl='@Introduction to the systems most usable modules');
-$href= $folder2.'PHP2HTML-intro.page.php',$labl='@Introduction',  $titl='@Introduction to the systems most usable modules', $icon='fas fa-info');
-$href= $folder2.'description.page.php',   $labl='@Description',   $titl='@Something about the system',                      $icon='fas fa-info');
-$href= $folder2.'Demo.page.php',          $labl='@Demo',          $titl='@Demonstrate some functions',                      $icon='fas fa-info');
-$href= $folder2.'tinyEditor.page.php',    $labl='@Tiny Editor',   $titl='@Working with tiny Editor:',                       $icon='fas fa-info');
-$href= $folder2.'CustomerOrder.page.php', $labl='@Advanced example', $titl='@Example of order creation (In danish)',        $icon='fas fa-cubes');
-
-
-$href= '',                                $labl='@MODULES',       $titl='@Information about php2html modules (htm_functions)');
-$href= $folder2.'input.page.php',         $labl='@htm_Input()',   $titl='@Something about function htm_Input()',            $icon='fas fa-cubes');
-$href= $folder2.'table.page.php',         $labl='@htm_Table()',   $titl='@Something about function htm_Table()',            $icon='fas fa-cubes');
-$href= $folder2.'card.page.php',          $labl='@htm_Card()',    $titl='@Something about function htm_Card()',             $icon='fas fa-cubes');
-$href= $folder2.'pages.page.php',         $labl='@Page layout',   $titl='@Something about Page and layout',                 $icon='fas fa-cubes');
-$href= $folder2.'navigate.page.php',      $labl='@Navigate',      $titl='@Tools related to navigating',                     $icon='fas fa-cubes');
-$href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions than above',                      $icon='fas fa-cubes');
-
-
-$href= '',                                $labl='@FILES',         $titl='@Information about php2html files');
-$href= $folder2.'files.page.php',         $labl='@File naming',   $titl='@Something about System files',                    $icon='fas fa-file');
-$href= $folder2.'support.page.php',       $labl='@Folders and files', $titl='@Something about Support files',               $icon='fas fa-file');
-
-
-$href= $folder2.'translate.page.php',     $labl='@TRANSLATE',     $titl='@Information about TRANSLATE module');
-$href= $folder2.'translate.page.php',     $labl='@Translate',     $titl='@About the language translate system',             $icon='fas fa-info');
-
-
-$href= $folder2.'functions.page.php',     $labl='@FUNCTIONS',     $titl='@Information about SYSTEN functions');
-$href= $folder2.'other.page.php',         $labl='@Others',        $titl='@Other functions',                                 $icon='fas fa-cubes');
-$href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An overview over the system functions',           $icon='fas fa-info');
- */
+    
 //    echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">';
 
-//  htm_RowCol_0($RowColWdth=1100);
+//  htm_RowCol_($RowColWdth=1100);
     
     htm_TextDiv(body:'
             <p style="margin: 10px; text-align: center; line-height: 1.2;"><span style="font-size: 18pt;"><strong>Clever html engine</strong></span></p>
@@ -70,7 +40,7 @@ $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An ove
             <p style="margin: 12px;" >Library consists of a collection of functions that produce both standard HTML elements and special usefull variants.</p>
             
             <p style="margin: 12px;" >With this library you can program a complete program, both backstage and frontstage, source code in PHP.</p>
-            <p style="margin: 12px;" >From your compact block-structured source code, the generator produces the necessary html code in a 5:1 ratio</p>
+            <p style="margin: 12px;" >From your compact block-structured source code, the generator produces the necessary html code in a >5:1 ratio</p>
             <p style="margin: 12px;" >The PHP2HTML system has built-in integration with several powerful open-source projects, Font-awesome, Tablesorter, Jquery, tinyMCE, which makes it easy to take advantage of these. </p>
             './* '
             <p style="margin: 12px;" >All modules are with a integrated language translation system, which allows the user to exchange all program texts into many different languages.</p>
@@ -82,16 +52,16 @@ $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An ove
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);');
     echo '<br>';
 
-    htm_Card_0(capt:'@Benefits:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@Benefits:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv(body:'
 <table style="border-collapse: collapse; width: 100%; height: 278.125px;" border="0"><colgroup><col style="width: 24%;"><col style="width: 77%;"></colgroup>
 <tbody>
 <tr>
-<td style="height: 26.125px; text-align: center;" colspan="2"><span style="font-size: 14pt;"><strong>Integrated advantages of the system:</strong></span></td>
+<td style="height: 40px; text-align: center;" colspan="2"><span style="font-size: 14pt;"><strong>Integrated advantages of the system:</strong></span></td>
 </tr>
-<tr style="height: 42px;">
-<td style="height: 42px;"><strong>Translation</strong></td>
-<td style="height: 42px;">Advanced translation system for the entire program interface</td>
+<tr style="height: 21px;">
+<td style="height: 21px;"><strong>Translation</strong></td>
+<td style="height: 21px;">Advanced translation system for the entire program interface</td>
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>Icons </strong></td>
@@ -141,7 +111,7 @@ $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An ove
 </table>
 <p style="text-align:center;">
 <br> PHP is the language for producing server-side backend programming.
-<br> With PHP2HTML you can produce client-side frontend programming in PHP.
+<br> With PHP2HTML you can also produce client-side frontend programming in PHP.
 <br> Thus, you can now program your entire project in PHP.
 <br> 
 <br> 
@@ -149,15 +119,14 @@ $href= $folder2.'functions.page.php',     $labl='@Overview',      $titl='@An ove
 <i>Code and Time-saving when you are familiar with the system<br>
 Don\'t reinvent the Wheel, use PHP2HTML…</i></p>
 		',marg:'8px;padding:10px');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt: '@CODE EXAMPLE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt: '@CODE EXAMPLE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'', vhgh:'900px');
 		htm_TextDiv('@Here is an example of how the system generates html code.<br><i>This compact height level code:</i>');
-        $strCode= trim(highlight_words(highlight_str('// php:
+        $strCode= (highlight_words(highlight_str('// php:
 htm_Input(labl:\'@Amount\', icon:\'fas fa-euro\', vrnt:\'dec2\',
-          hint:',true))). trim(highlight_str('\'@Demo of htm_Input Field variant dec2: number with 2 decimal\',')).
-          highlight_words(highlight_str('
-          name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
+          hint:',true))). (highlight_str('         \'@Demo of htm_Input Field variant dec2: number with 2 decimal\',')).
+          highlight_words(highlight_str('          name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
 
 '));
            // echo $strCode;
@@ -201,65 +170,65 @@ $strCode= highlight_str('// HTML:
         htm_TextDiv('@and it will have all the properties: <br> placeholder, validation, hint, colors, dimensions and much more...<br><br>
                     As you can see, the source code is very compact. Less than 1/5 !
                     <br>');
-    htm_Card_00();
+    htm_Card_end();
 
     htm_nl(1);
     htm_Caption('<big>PHP2HTML - Introduction to the systems most useful modules:</big>',$style='',$align='',$hint='@Example of user popup help/info'); 
     htm_nl(1);
-    htm_Card_0(capt:'@PAGE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@PAGE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('A page is a browser window with html objects.<br>
-            It is build with two functions: htm_Page_0() and htm_Page_00()<br>
+            It is build with two functions: htm_Page_() and htm_Page_end()<br>
             Here are the page title, the window background and content align setup.<br>
             All the needed preparing (calling libraries) is done here.<br>
-            Example: htm_Page_0(<abbr class= "hint"><data-hint>htm_Page_0(titl:\'\', hint:\'\', info:\'\', inis:\'\', algn:\'center\', imag:\'\', attr:\'\', pbrd:true);</data-hint>Parameters</abbr>) and htm_Page_00()<br>
+            Example: htm_Page_(<abbr class= "hint"><data-hint>htm_Page_(titl:\'\', hint:\'\', info:\'\', inis:\'\', algn:\'center\', imag:\'\', attr:\'\', pbrd:true);</data-hint>Parameters</abbr>) and htm_Page_end()<br>
             <small><small>Mouse-over "Paremeters" shows hint !</small></small>
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('Cards is a container for html-objects.<br>
-            It is build with two functions: htm_Card_0() and htm_Card_00()<br>
+            It is build with two functions: htm_Card_() and htm_Card_end()<br>
             It consists of: icon + header - a body with content - and a footer that can be hidden.<br>
             The header-caption is automatic translated to the current selected language.<br>
             When clicking the caption-text in the header, it will show/hide the body&footer-content.<br>
             In the headers right side there are icons to open/close all the cards in the window.<br>
             Cards has predefined widths, and its position will swap, if the window-width is to small.<br>
             Cards can be used as a "Local Menu" and to keep overview...<br>
-            Example: htm_Card_0(<abbr class= "hint">
-            <data-hint> htm_Card_0('.  highlight_words(highlight_str(
-                "capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''"),styl:'color:'.'blue; font-style:italic;').
+            Example: htm_Card_(<abbr class= "hint">
+            <data-hint style="background-color:#151515;"> '. highlight_words(highlight_str( 
+                "htm_Card_(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''"),styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
-            Parameters</abbr>) and htm_Card_00(<abbr class= "hint">
-            <data-hint>htm_Card_00('. highlight_words(highlight_str( 
+            Parameters</abbr>) and htm_Card_end(<abbr class= "hint">
+            <data-hint>htm_Card_end('. highlight_words(highlight_str( 
                 "labl:'@Save', icon:'', hint:'', name:'', form:'', subm:true, attr:'', akey:'', kind:'save', simu:false)"),styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>)
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt:'@LAYOUT:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@LAYOUT:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('If you will not let cards fill the window-width, you can use the functions: <br>
-            htm_RowCol_0() / htm_RowCol_next() / htm_RowCol_00() to create a column layout.<br> 
-            Example: htm_RowCol_0(<abbr class= "hint"><data-hint>htm_RowCol_0 (wdth:240)</data-hint> Parameters</abbr>) and htm_RowCol_next(<abbr class= "hint"><data-hint>htm_RowCol_next(wdth:320)</data-hint>Parameters</abbr>)<br>
-            and htm_RowCol_00()
+            htm_RowCol_() / htm_RowCol_next() / htm_RowCol_end() to create a column layout.<br> 
+            Example: htm_RowCol_(<abbr class= "hint"><data-hint>htm_RowCol_0 (wdth:240)</data-hint> Parameters</abbr>) and htm_RowCol_next(<abbr class= "hint"><data-hint>htm_RowCol_next(wdth:320)</data-hint>Parameters</abbr>)<br>
+            and htm_RowCol_end()
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt:'@INPUT:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@INPUT:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('Input fields is the interface to interact with the users data of varies variants.<br>
             It is build with function htm_Input()<br>
-            It contains a Frame, - a Label - and a Data-field<br>
+            It contains a Border, - a Label - and a Data-field<br>
             <small>The Label:</small> is a translated caption for the field. When howering a translated hint will be shown.<br>
             <small>The Data-field:</small> If NULL data, a translated placeholder is shown.<br>
-            <small>The Frame:</small> can be colored to signale special conditions.<br>
+            <small>The Border:</small> can be colored to signale special conditions.<br>
             At this time there are 25 htm_Input() variants: \'intg\', \'text\', \'dec0\', \'dec1\', \'dec2\', <br>
             \'num0\', \'num1\', \'num2\', \'num3\', \'barc\', \'mail\', \'link\', \'sear\', \'file\', \'imag\', <br>
             \'date\', \'time\', \'week\', \'mont\', \'rang\', \'butt\', \'colr\', \'phon\', \'pass\', \'area\'<br>
             Example: htm_Input(<abbr class= "hint"><data-hint>htm_Input(vrnt:\'text\', name:\'deliphon\', valu: arrDeliver[$name], $labl:\'@Phone\', hint:\'@Enter Recipient`s Phone\', plho:\'@Phone...\');</data-hint>Parameters</abbr>)
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt:'@TABLE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@TABLE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('The function htm_Table() is a advanced module to show and input user data.<br>
             It has fixed (sticky) column headers, and Scrolling content-window.<br>
             Column wise it can: Filter - Sort - Width-Resize<br>
@@ -269,21 +238,21 @@ $strCode= highlight_str('// HTML:
             highlight_words('capt:[], pref:[], body:[],suff:[], note:\'\', data:[],filt:true,sort:true,crea:true, modi:true, vhgh:\'400px\',  styl:\'\',  from:__FILE__,list:[],expo:\'\')','','color:'.'red; ').
             '</data-hint>Parameters</abbr>)
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt:'@SPECIAL:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@SPECIAL:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('In addition to standard html features, there are a number of specialized features: <br>
             Examples: <br>
             htm_MultistateButt(); - A button with 3 or more states<br>
             htm_Dialog(); - A system with messages to the user.<br>
-            Pmnu_0(); / Pmnu_00(); - A context popup menu system.<br>
+            Pmnu_(); / Pmnu_end(); - A context popup menu system.<br>
             
             <br>
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-      htm_Card_0(capt:'@NAMING rules:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
-		htm_TextDiv('Rules for Naming Files:<br>
+      htm_Card_(capt:'@NAMING rules:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+		htm_TextDiv('Rules for naming files:<br>
             <i>{file-name}.{content-type}.{file-type}</i><br><br>
             {file-names}: settings index <br>
             {content-types}: .page .inc .lib .min .css .js <small>(the secundary type)</small><br>
@@ -291,24 +260,24 @@ $strCode= highlight_str('// HTML:
             Example: <b>intropage.css.php</b><br>
             <br>
             <br>
-            Rules for Naming Funktions:<br>
-            Block-start: {name}_0<br>
-            Block-end: {name}_00<br>
-            {name} could be htm_page / htm_card<br>
+            Rules for naming funktions:<br>
+            Block-start: <i>{name}_</i><br>
+            Block-end:   <i>{name}_end</i><br>
+            <i>{name}</i> could be htm_page / htm_card<br>
             <br>
 		');
-	htm_Card_00();
+	htm_Card_end();
 
-    htm_Card_0(capt:'@NOTES:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt:'@NOTES:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'');
 		htm_TextDiv('Click on the cards caption to show/hide the content<br>
                      The \'@\'-prefix in strings indicates that it is a translatable text.<br>
                      This introduction is of course developed with the PHP2HTML-system.<br>
 		');  
-	htm_Card_00();
+	htm_Card_end();
     
-//  htm_RowCol_00();
+//  htm_RowCol_end();
     CardOff($First=3,$Last=9);
 
-htm_Page_00();
+htm_Page_end();
 
 ?>
