@@ -13,14 +13,9 @@ When using <i>PHP2HTML</i> your code will be more compact, and easier to read, a
 
 <i>As an example this height level PHP-code:</i>
 
-	PHP7:
-    htm_Input($type='dec2',$name='dec2',$valu=$dec2, $labl='@htm_Input(Dec2)',
-              $hint='@Demo of htm_Input Field type dec2: number with 2 decimal', $plho='', $wdth='',$algn='center',$unit='<$ ');
-or
-
 	PHP8+:
-    htm_Input(type:'dec2',name:'dec2',valu:$dec2, labl:'@htm_Input(Dec2)',
-              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal',algn:'center',$unit='<$ ');
+    htm_Input(type:'dec2', name:'dec2', valu:$dec2, labl:'@htm_Input(Dec2)',
+              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal', algn:'center', unit:'<$ ');
 
 
 <i>will generate this HTML-code:</i>
@@ -49,12 +44,13 @@ and looks like this:
 <li>Block-oriented provides compact code</li>
 <li>Possibility of Font-awesome Icons anywhere</li>
 <li>Hints/Tooltip for all html elements</li>
+<li>Placeholder/validation for all input elements</li>
 <li>Compact layout with advanced collapsible cards</li>
 <li>Option for user defined system blocks</li>
 <li>Advanced tables based on Mottie Table Sorter system</li>
 <li>TinyMCE integrated HTML-editor library</li>
 <li>Optional use of libraries locally or on the Web (CDN)</li>
-<li>Narrow cards suitable for adaptive adaptation</li>
+<li>Narrow cards suitable for automatic adaptation</li>
 <li>Easily enter dates with browsers date picker interface</li>
 </ul>
 
