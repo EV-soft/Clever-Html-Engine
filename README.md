@@ -1,17 +1,11 @@
 # php2html.lib = Clever-Html-Engine
-The fast track to build UI components in a good web applications.
+The fast track to build UI components in your web applications.
 
-<i>php2html.lib.php</i> is a PHP library with functions that generates HTML pages and elements.
+php2html.lib.php also called "HTML clever engine" consists of a PHP library, with 50+ functions that generate HTML code for standard html elements (INPUT / CHECKBOX / RADIO-GROUP / TABLE), as well as other useful functions.
+You get a complete system to form the frontend part of your program.
+Built into the system is the easy use of several open-source modules (icons, advanced tables, HTML editor, jquery), and a complete system for changing user languages.	
 
-If you program html output in php, you can use this library's routines to generate the html code.
-	
-HTML elements INPUT / CHECKBOX / RADIO-GROUP / TABLE and many others, generated from PHP-functions.
-all combined with: **Label**, **ToolTip**, **Placeholder**, dimensions and others.
-
-Included translate system. Font-awesome icons.
-Extended TABLE functions based on Mottie Tablesorter-system.
-	
-Standards: PHP7+/PHP8+, HTML5, CSS3, JavaScript.
+Standards: (PHP7) PHP8+, HTML5, CSS3, JavaScript.
 
 Source must be in UTF-8, with no tabs, indent: 4 chars
 
