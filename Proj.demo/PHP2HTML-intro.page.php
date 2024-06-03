@@ -123,20 +123,17 @@ Don\'t reinvent the Wheel, use PHP2HTML…</i></p>
 
     htm_Card_(capt: '@CODE EXAMPLE:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:'', vhgh:'900px');
 		htm_TextDiv('@Here is an example of how the system generates html code.<br><i>This compact height level code:</i>');
-        $strCode= (highlight_words(highlight_str('// php:
+        $strCode= '// php:
 htm_Input(labl:\'@Amount\', icon:\'fas fa-euro\', vrnt:\'dec2\',
-          hint:',true))). (highlight_str('         \'@Demo of htm_Input Field variant dec2: number with 2 decimal\',')).
-          highlight_words(highlight_str('          name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
+          hint:'. '\'@Demo of htm_Input Field variant dec2: number with 2 decimal\','.
+          'name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
 
-'));
-           // echo $strCode;
-        // esc_code();
-        // $strCode= highlight_string($strCode,true); 
-        // esc_code();
+';
         htm_CodeBox(($strCode));
         
         htm_TextDiv('@<i>will produce css-data and this html code:</i>');
-$strCode= highlight_str('// HTML:
+        
+$strCode= '// HTML:
 <div class="inpField" id="inpBox" style="margin: auto;  width: 150px; display: inline-block;"> 
     <input type= "text"  id="dec2" name="dec2"  value="$ 0,00"  class="boxStyle" 
         style="text-align: center; font-size: 14px; font-weight: 600; " 
@@ -156,11 +153,10 @@ $strCode= highlight_str('// HTML:
         </data-hint>
     </abbr>
 </div>
-
-',true);
+';
 // arrPretty($strCode,'$strCode');
 // arrPretty(preg_replace('/^<\?(.*)(\>)?$/s', '$1',$strCode),'$strCode'); // str_replace()  preg_replace("/<\?/", 'xxx',$strCode),'$strCode')  // 
-        htm_CodeBox((preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "",$strCode)));
+        htm_CodeBox((preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "",$strCode)), rtrn:false);
         htm_TextDiv('@<i>And here are the output:</i>');
         $dec2= 0;
         htm_Input(labl:'@Amount',plho:'@Enter...',icon:'fas fa-euro',hint:'@Demo of htm_Input Field variant dec2: number with 2 decimal',
