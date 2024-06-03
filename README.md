@@ -1,17 +1,11 @@
 # php2html.lib = Clever-Html-Engine
-The fast track to build UI components in a good web applications.
+The fast track to build UI components in your web applications.
 
-<i>php2html.lib.php</i> is a PHP library with functions that generates HTML pages and elements.
+php2html.lib.php also called "HTML clever engine" consists of a PHP library, with 50+ functions that generate HTML code for standard html elements (INPUT / CHECKBOX / RADIO-GROUP / TABLE), as well as other useful functions.
+You get a complete system to form the frontend part of your program.
+Built into the system is the easy use of several open-source modules (icons, advanced tables, HTML editor, jquery), and a complete system for changing user languages.	
 
-If you program html output in php, you can use this library's routines to generate the html code.
-	
-HTML elements INPUT / CHECKBOX / RADIO-GROUP / TABLE and many others, generated from PHP-functions.
-all combined with: **Label**, **ToolTip**, **Placeholder**, dimensions and others.
-
-Included translate system. Font-awesome icons.
-Extended TABLE functions based on Mottie Tablesorter-system.
-	
-Standards: PHP7+/PHP8+, HTML5, CSS3, JavaScript.
+Standards: (PHP7) PHP8+, HTML5, CSS3, JavaScript.
 
 Source must be in UTF-8, with no tabs, indent: 4 chars
 
@@ -19,14 +13,9 @@ When using <i>PHP2HTML</i> your code will be more compact, and easier to read, a
 
 <i>As an example this height level PHP-code:</i>
 
-	PHP7:
-    htm_Input($type='dec2',$name='dec2',$valu=$dec2, $labl='@htm_Input(Dec2)',
-              $hint='@Demo of htm_Input Field type dec2: number with 2 decimal', $plho='', $wdth='',$algn='center',$unit='<$ ');
-or
-
 	PHP8+:
-    htm_Input(type:'dec2',name:'dec2',valu:$dec2, labl:'@htm_Input(Dec2)',
-              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal',algn:'center',$unit='<$ ');
+    htm_Input(type:'dec2', name:'dec2', valu:$dec2, labl:'@htm_Input(Dec2)',
+              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal', algn:'center', unit:'<$ ');
 
 
 <i>will generate this HTML-code:</i>
@@ -55,12 +44,13 @@ and looks like this:
 <li>Block-oriented provides compact code</li>
 <li>Possibility of Font-awesome Icons anywhere</li>
 <li>Hints/Tooltip for all html elements</li>
+<li>Placeholder/validation for all input elements</li>
 <li>Compact layout with advanced collapsible cards</li>
 <li>Option for user defined system blocks</li>
 <li>Advanced tables based on Mottie Table Sorter system</li>
 <li>TinyMCE integrated HTML-editor library</li>
 <li>Optional use of libraries locally or on the Web (CDN)</li>
-<li>Narrow cards suitable for adaptive adaptation</li>
+<li>Narrow cards suitable for automatic adaptation</li>
 <li>Easily enter dates with browsers date picker interface</li>
 </ul>
 
