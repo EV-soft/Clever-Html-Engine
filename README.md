@@ -7,7 +7,7 @@ Built into the system is the easy use of several open-source modules (icons, adv
 
 Standards: (PHP7) PHP8+, HTML5, CSS3, JavaScript.
 
-Source must be in UTF-8, with no tabs, indent: 4 chars
+Source should be in UTF-8, with no tabs, indent: 4 chars
 
 When using <i>PHP2HTML</i> your code will be more compact, and easier to read, and you can have both backend and frontend code in one file.
 
