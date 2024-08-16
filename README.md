@@ -73,11 +73,11 @@ Create project-folder '/world' and create the file: '{public-URL}/hello/world/fi
 <pre><code>< ? 
 $GLOBALS["ØProgRoot"]= '../';
 require_once ('../php2html.lib.php');
-htm_Page_0(titl:'DEMO', info:lang('@PHP2HTML: My first page'), imag:'../_accessories/_background.png, attr:');
+htm_Page_(titl:'DEMO', info:lang('@PHP2HTML: My first page'), imag:'../_accessories/_background.png, attr:');
     htm_Caption(labl:'HELLO WORLD:', hint:'', algn:'center',styl:'color:#550000; font-weight:600; font-size: 18px;');
     htm_nl(2);
     htm_TextDiv(body:'This page is build with PHP2HTML', algn:'center', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray;', attr:'background-color: white;');
-htm_Page_00()
+htm_Page_end()
 ?>
 </code></pre>
 (Correct: '< ?' to '<?' in the first line)
