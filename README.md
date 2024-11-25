@@ -1,5 +1,5 @@
 # php2html.lib = Clever-Html-Engine
-The fast track to build UI components in your web applications.
+Your tool to quickly program html code in your PHP web project.
 
 php2html.lib.php also called "HTML clever engine" consists of a PHP library, with 50+ functions that generate HTML code for standard html elements (INPUT / CHECKBOX / RADIO-GROUP / TABLE), as well as other useful functions.
 You get a complete system to form the frontend part of your program.
