@@ -107,4 +107,7 @@ Use the top menu to view documentation and examples.
                       PHP is the language to make server-side backend programming.
 
             PHP2HTML is your tool/framework to make your client-side frontend programming in PHP.
+     		
+               "HTML clever engine" combines frontend and backend php in a common PHP file.
+
 </b></p>
