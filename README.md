@@ -15,7 +15,8 @@ When using <i>PHP2HTML</i> your code will be more compact, and easier to read, a
 
 	PHP8+:
     htm_Input(type:'dec2', name:'dec2', valu:$dec2, labl:'@htm_Input(Dec2)',
-              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal', algn:'center', unit:'<$ ');
+              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal', 
+              algn:'center', unit:'<$ ');
 
 
 <i>will generate this HTML-code:</i>
