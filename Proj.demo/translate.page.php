@@ -1,9 +1,9 @@
-<?php   $DocFil= './Proj.demo/translate.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './Proj.demo/translate.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -69,6 +69,7 @@ htm_Page_( titl:'translate.page.php', hint:'@Maintenance of project translation'
     htm_nl(2);
 
     htm_Card_( capt:'@Translating language strings:', icon:'fas fa-tools', hint: '', form: '', acti: '', clas:'cardW960', wdth: '', styl: 'background-color: white;', attr: '');
+    htm_TextDiv('Analysing translatibly text in the project:');
     echo '<div style="text-align: left; margin: 20px;">';            
     scannLngStrings($code= substr($App_Conf['language'],0,2));
     echo '</div>';

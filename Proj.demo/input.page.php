@@ -1,9 +1,9 @@
-<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -37,14 +37,14 @@ htm_Page_(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVe
     
     htm_Card_(capt: 'The collection of htm_Input() variants:',icon: 'fas fa-info',hint: '',form: 'test',acti: '',clas: 'cardW720',wdth: '',styl: 'background-color: white;',attr: '');
 
-    htm_Fieldset_(capt:'TEXT variants',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'TEXT variants',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(Text)',plho:'',               icon:'',hint:'@Demo of htm_Input Field type text',                                 vrnt:'text',name:'text',valu:$text,  form:'',wdth:'');
         htm_Input(labl:'@htm_Input(html)',plho:'<div>...</div>', icon:'',hint:'@Demo of htm_Input Field type html: Multi-line formatted html-text', vrnt:'html',name:'html',valu:'',     form:'',wdth:'200px', algn:'left',attr:'',rtrn: false,unit:'',disa:false,rows:'3');
         htm_Input(labl:'@htm_Input(area)',plho:'Enter...',       icon:'',hint:'@Demo of htm_Input Field type area: Multi-line text',                vrnt:'area',name:'area',valu:'',     form:'',wdth:'200px', algn:'left',attr:'',rtrn: false,unit:'',disa:false,rows:'6');
     htm_Fieldset_end();
     htm_nl(2);
     
-    htm_Fieldset_(capt:'NUMBER variants',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'NUMBER variants',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(Intg)',plho:'', icon:'',hint:'@Demo of htm_Input Field type intg: centered integer',                 vrnt:'intg',name:'intg', valu:$intg,form:'',wdth:'', algn:'center');
         htm_Input(labl:'@htm_Input(Dec0)',plho:'', icon:'',hint:'@Demo of htm_Input Field type dec0: centered number with 0 decimals',  vrnt:'dec0',name:'dec0', valu:$dec0,form:'',wdth:'', algn:'center',attr:'',rtrn: false, unit:' %');
         htm_Input(labl:'@htm_Input(Dec1)',plho:'', icon:'',hint:'@Demo of htm_Input Field type dec1: number with 1 decimal ',           vrnt:'dec1',name:'dec1', valu:$dec1,form:'',wdth:'');
@@ -59,7 +59,7 @@ htm_Page_(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVe
     htm_Fieldset_end();
     htm_nl(2);
     
-    htm_Fieldset_(capt:'LIST-type',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'LIST-type',icon:'',hint:'',wdth:'96%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(opti)',plho:'@Enter...',icon:'',hint:'@Demo of htm_Input Field type opti: left aligned number with %-unit', 
                   vrnt:'opti',name:'opti',valu:$text,  form:'',wdth:'120px',  algn:'left',attr:'',rtrn: false,
                   unit:' %',disa:false,rows:'3',step:'',list: [
@@ -108,7 +108,7 @@ htm_Page_(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVe
     htm_Fieldset_end();
     htm_nl(2);
     
-    htm_Fieldset_(capt:'OTHER',icon:'',hint:'',wdth:'',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'OTHER',icon:'',hint:'',wdth:'',marg:'',attr:'',rtrn:false);
         // echo '<input type="date" value="2017-06-01" />';
         htm_Input(labl:'@htm_Input(Date)',plho:'',              icon:'',hint:'@Demo of htm_Input Field type date with browser popup selector',   vrnt:'date',name:'date', valu:$date,    form:'',wdth:'',    algn:'center', attr:'');
         htm_Input(labl:'htm_Input(chck)', plho:'Enter...',      icon:'',hint:'Demo of htm_Input Field type chck: Multi-line formatted chck-text',vrnt:'chck',name:'chck', valu:'',       form:'',wdth:'200px', algn:'left', attr:'',rtrn: false,unit:'',disa:false,rows:'3',step:'',list: [

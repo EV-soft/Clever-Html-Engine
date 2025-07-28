@@ -1,111 +1,96 @@
-﻿<?php   $DocFile= '.\funcscann.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+﻿<?php   $DocFile= '.\funcscann.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModulNr=0; ## File informative only
 
-#  $d = dir("../../saldi-e/'");  ## saldi-e\_base\_tools\funcscann.php   ~/.rcinfo
-#  $d = basename('./saldi-e');
-  $d = dir("../../");  //    var_dump($d);
-  // $paths = glob('../../*/*.{htm,php}',GLOB_BRACE); 
-  $paths = glob('./*/*.{htm,php}',GLOB_BRACE);
-  function sortByKey($a, $b) {
+    $d = dir("../../");  //    var_dump($d);
+    // $paths = glob('../../*/*.{htm,php}',GLOB_BRACE); 
+    $paths = glob('./*/*.{htm,php}',GLOB_BRACE);
+    function sortByKey($a, $b) {
       return $a['key'] > $b['key'];
-  }
-  // echo "<br>";
-#  var_dump($paths);
-  $searchWord= 'function ';
-  if (false) // Not in use !
-  foreach ($paths as $file) {
-    echo "<br>".$file;
-    $fileLines = file($file);  $LinNo=0;
-    foreach ($fileLines as $line_num => $line) {  $LinNo++; 
-            if ($p=strpos(' '.$line,$searchWord)) { 
-            if ($p<5) { //  PLACERING i starten af en linie!
-                if ($s=strpos($line,"{")) $funcN= substr($line,0,$s); else $funcN= $line;
-                $lno= '-----> '.$LinNo;
-                echo "<pre style=\"line-height:5px;\">".$d.' '.$sourceFile.str_repeat("&nbsp;",max(35-strlen($d.$sourceFile),0)).' '.substr($lno,-6).': '.$funcN."</pre>";
-              }
-              if ((strpos($sourceFile,'out_')) and (strpos($sourceFile,'.php'))) {   //  2. KRITERIE: Filename
-                $fras= $line;
-                while (strpos($fras,$searchWord)) {
-                  $p= strpos($fras,$searchWord);  $fras= substr($fras,$p+1);  $b= strpos($fras,"'");
-                  $fras= html_entity_decode($fras);
-                  $fras= strip_tags($fras);
-                  echo  'XXXXXXXXXXXX<br>"'.substr($fras,0,$b).'"'.
-                    str_repeat("&nbsp;",170-strlen(utf8_decode(substr($fras,0,$b)))).',"","","","","",""';  
-                  $f= substr($fras,0,$b);
-                  $fraser[] = ['"'.$f.'"'];
-                } 
-              } $count++; $total++;
-          }}
     }
-    
-    
-    
-  $total= 0;    $buff= array();   $fraser= array(); $d = dir("/");  $html= ''; $arrFunctions= [];
-#  echo "<br>".basename('./../saldi-e')."<br>";
-#  echo $_SERVER['SERVER_NAME'] . dirname(__FILE__);
-#  echo "<br><big>".'Projektskanning: '."</big><br>";
-  
-  ## Supress output: //_// comments
-  //_// echo '<p style="font-family:courier; font-size:11; ">';
-#  echo '<pre>Folder/        File'.str_repeat("&nbsp;",35-15).'Line: Function </pre>';
-  while ((is_object($d)) and (false !== ($entry = $d->read())) )
-  {
-  //if (false !== ($entry = $d->read())) {
+    $searchWord= 'function ';
+
+    if (is_readable('Functions.list')) {
+        $basekeyList= file_get_contents('Functions.list');
+        $basekeyList= explode('/', $basekeyList);        // foreach ($basekeyList as $key) echo '<br>'.$key;
+    }
+
+    $total= 0;    $buff= array();   $fraser= array(); $d = dir("/");  $html= ''; $arrFunctions= [];      $keyList=[];
+    while ((is_object($d)) and (false !== ($entry = $d->read())) )
+    {
+    //if (false !== ($entry = $d->read())) {
     $dir= $entry.'/';
     if (is_dir($entry) ) {
       $files = scandir($dir);
       if ($files)
-      foreach ($files as $sourceFile) 
-      { $count= 0;  $searchWord= 'function ';   $arrFunctions= [];      $nn= 0;
+      foreach ($files as $sourceFile) { 
+        $count= 0;  $searchWord= 'function ';   $arrFunctions= [];      $nn= 0;
         if ( ($sourceFile!=='.') and ($sourceFile!=='..') 
              and (!strpos($sourceFile,'.bak'))   //  Filter:
              and (in_array($sourceFile,[
-                'php2html.lib.php',/* 
+                'php2html.lib.php'  /* ,
                 'customLib.inc.php',
-                'menu.inc.php',
                 'translate.inc.php',
-                'filedata.inc.php' */
+                'menu.inc.php',
+                'filedata.inc.php'  */
             ])) ) 
         {
           $fileLines = file($dir.$sourceFile); 
-          $LinNo= 0;        $prevLine= '';
-          // echo "<pre>".$fileLines[]."</pre>";
-            //echo '<p style="font-family:monospace>"';
-          //_// echo '<br>';
+          $LinNo= 0;        $prevLine= '';      $BlockComm= false;
+          //_//if ($basekeyList) echo 'Checking system functions call in '.$sourceFile.' <br>';
           foreach ($fileLines as $line_num => $line) { $LinNo++;
-            // echo '.';
+            if  (substr($line,0,2)=='/*') $BlockComm= true; else        # Multiline comments
+            if ((substr($line,0,2)=='*/') or (substr($line,0,3)==' */')) $BlockComm= false;
+
+        # Block comment example:    /* This is a comment */
+        #                           p1                   p2
+        #                from:        p1+2           to: p2 is the commentstring
+        
+            if ($p1=strpos($line,'/*')>0) if ($BlockComm= false) $BlockComm= true;
+            if ($p2=strpos($line,'*/')>0) if ($BlockComm= true)  $BlockComm= false;
+                # strings on same line between pos:p1 and pos:p2 are comments
+                
             if ($LinNo==1) { // Get file-info:
                 // <?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.2.0';    $DocRev='2022-03-05';     $DocIni='evs';  $ModulNr=0; ## File informative only
                 $infoline= substr($line,6);
                 $a= strpos($infoline,"'")+1;
                 $b= strpos($infoline,"';");
-                if (strpos($infoline,'$DocVers') > 0) 
-                    $c= strpos($infoline,'$DocVers')+10; else
-                    $c= strpos($infoline,'$DocVer' )+9;
-                // $d= strpos($infoline,'$DocRev')+9;
-                if (strpos($infoline,'$DocRev1') > 0) 
-                    $d= strpos($infoline,'$DocRev1')+10; else
-                    $d= strpos($infoline,'$DocRev' )+9;
+                if (strpos($infoline,'$DocVers') > 0) $c= strpos($infoline,'$DocVers')+10; 
+                else                                  $c= strpos($infoline,'$DocVer' )+9; 
+                if (strpos($infoline,'$DocRev1') > 0) $d= strpos($infoline,'$DocRev1')+10; 
+                else                                  $d= strpos($infoline,'$DocRev' )+9;                
                 $file= substr($infoline,$a,$b-$a);
                 $vers= substr($infoline,$c,5);
                 $date= substr($infoline,$d,10);
                 $html.= '<br><b><big>Source-file:  '.$file.' vers: '.$vers.' date: '.$date.'</big></b><br>'; 
-                //_// echo $html;
+            }
+            ## Statistic on functions call:
+            foreach ($basekeyList as $key) {
+                if (($p= strpos($line,$key.'(')>0) 
+                    and (strpos($line,'unction ')<$p)   # Not the declarations
+                    and (strpos($line,'//')<$p)         # Not in linecomment
+                    and (strpos($line,'#')<$p)          # Not in linecomment
+                    and ($BlockComm == false)           # Not in multilinecomment
+                    or ((($p1+2)<$p) and ($p<$p2))      # Code and comment on same line
+                    )
+                    //_// echo '<br><b>'.$key.'</b>('./* $dir. */ $sourceFile.':'.$LinNo.') '
+                    ;
             }
             // if (strpos(' '.$line,'$DocFil')>0) echo "<pre>".$line."</pre>";
             if ($p=strpos(' '.$line,$searchWord)) { 
             if (($p<6) and               // PLACED at start of line!
-            (strpos($line,'htm_')>0))    // is an html_ function
-            { 
+            (strpos($line,'htm_')>0)) {  // is an html_ function
                 if (strpos(' '.$prevLine,'# ') > 0) 
                      $hint= ' title= "'.str_replace('# ','Concerning: ',$prevLine).'" '; 
                 else $hint= '';
                 if ($s=strpos($line,"{")) $funcN= ' '.substr($line,$p,$s-$p); 
                 else                      $funcN= ' '.substr($line,$p);
-                $funcN= str_replace('(','</b></strong>(<i>',$funcN);                                    // Add format code
+                $x= substr($funcN,strpos($funcN,'htm_'));
+                $x= substr($x,0,strpos($x,'('));
+                $keyList[] = $x;
+                $funcN= str_replace('(','</b></strong>(<i>',$funcN);                                                // Add format code
                 $funcN= str_replace(')',');',$funcN);
                 $funcN= str_replace('# ','',$funcN); // Remove comment flag on function parameters
                 $funcN= highlight_words($funcN,'','color:'.'red; ');
-                $funcN= '<strong style="font-size: 16px;" '.$hint.'>'.substr($funcN,strlen($searchWord)).'</i>';  // Add format code
+                $funcN= '<strong style="font-size: 16px;" '.$hint.'>'.substr($funcN,strlen($searchWord)).'</i>';    // Add format code
                 
                 $lno= $LinNo;
                 $lno= str_pad($lno,5,' ',STR_PAD_LEFT);
@@ -130,14 +115,9 @@
                   $fras= html_entity_decode($fras);
                   $fras= strip_tags($fras);
                   $prettyFras= substr($fras,0,$b);
-                  //$prettyFras= '<b>XXX'.substr($prettyFras,strlen($searchWord),strpos($prettyFras,')')).'</b>';
-                  //_// echo $str;
-                  //_// 
                   $html.= $str;
                   $str= '<br>"'.$prettyFras.'"'.
                     str_repeat("&nbsp;",170-strlen(utf8_decode(substr($fras,0,$b)))).',"","","","","",""';  
-                  //_// echo $str;
-                  //_// 
                   $html.= $str; 
                   $f= substr($fras,0,$b);
                 # $f= strip_tags($f);
@@ -162,8 +142,15 @@
           if ($count>0) $buff[] = '<br>Ialt: '.$count.' '.$nn.' forekomst(er) af: "<font color=red>'.$searchWord.'</font>" i <i>'.$dir.'</i><b>'.$sourceFile.'</b>';
       } } 
       file_put_contents('Functions.html',$html);
+      file_put_contents('Functions.list',implode('/', $keyList));
+      /* 
+      $keyList= file_get_contents('Functions.list');
+      $keyList= explode('/', $keyList);
+      foreach ($keyList as $key) echo '<br>'.$key;
+       */
     }
   }
+  //_// echo '<br>System functions that are not mentioned here, may be removed to optimize the system.<br><br>';
   if (is_object($d)) $d->close();
   //_// echo '</p>';
   /* 

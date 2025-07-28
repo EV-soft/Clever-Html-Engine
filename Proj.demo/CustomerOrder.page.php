@@ -1,13 +1,13 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';   $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
-## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';   $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+## NOTE: In this demo all function-parameters to htm_-functions are shown. In a real project you just need to give parameters different from default values !
  
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 $gbl_progvers= $DocVer;
 $gbl_copydate= $DocRev; 
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -320,18 +320,44 @@ htm_Page_(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with 
            info:'@Example: Customer-ORDER Build with <b style="color:darkgreen;">PHP2HTML &nbsp;</b>',
            inis:'', algn:'center', imag:'', attr:'background: linear-gradient(0deg,#03a9f4 0%,#e3f2fd);', pbrd:false);
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_Menu_TopDown(capt:'@Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;background-color:black;', note:$menunote); 
+    htm_nl(2);
+    
+## Quickstart:
+    $menudata_app= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='', 8:$widt)
+         ['Frst','fa-solid fa-coins colrwhite',          '@FINANCE',  '@FINANCE menu:',  '@', 'xx.page.php', [
+            ['Next','fas fa-file black',                 '@Submenu 1','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+            ['Next','fas fa-file black',                 '@Submenu 2','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+            ['Next','fas fa-file black',                 '@Submenu 3','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+            ['Next','fas fa-file black',                 '@Submenu 4','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'disabled'],                                                                 
+         ['Frst','fa-regular fa-address-card colrwhite', '@DEBTOR',   '@DEBTOR menu:',   '@', 'xx.page.php', [
+            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'active'],                                                                   
+         ['Frst','fa-solid fa-id-card colrwhite',        '@CREDITOR', '@CREDITOR menu:', '@', 'xx.page.php', [
+            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'disabled'],                                                                   
+         ['Frst','fa-solid fa-boxes-stacked colrwhite',  '@STOCK',    '@STOCK menu:',    '@', 'xx.page.php', [
+            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'disabled'],                                                                  
+         ['Frst','fa-solid fa-gear colrwhite',           '@SYSTEM',   '@SYSTEM menu:',   '@', 'xx.page.php', [
+            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'disabled'],
+        ]; 
+    htm_Caption(labl:'@Tiny-Cloud-Accounting',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
+    htm_nl(1);
+    htm_Menu_TopDown(capt:'@Main menu',data:$menudata_app, foot:'', styl:'top:0px; background-color:#696868;', note:'', niv0:'z-index:997;', 
+                                                                                            //  niv1:'background-color:green;"',
+                                                                                              niv2:'top: -35px;'); 
     htm_nl(2);
     
 if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
     
-    htm_Caption(labl:'@Tiny-Cloud-Accounting',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
-    htm_nl(1);
-    htm_Fieldset_(capt:'@Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'100%; max-width:1150px; background-color:whitesmoke',marg:'',
+    htm_Fieldset(capt:'@DEBTOR: Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'100%; max-width:1150px; background-color:whitesmoke',marg:'',
                    attr:'Color: green; font-weight: bold; background-color: white; border-radius: 4px; padding: 0 10px; text-align: center; ',rtrn:false);
 
     //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
-    htm_Card_(capt: '@Find / select existing order:',icon: 'fas fa-search',hint: '',form: $f='orders',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '',head:$headbg);
+    htm_Card_(capt: '@Select existing order:',icon: 'fas fa-search',hint: '',form: $f='orders',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '',head:$headbg);
 
         htm_Table(
             capt: [  ['@Customer orders', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', ''] ],
@@ -349,11 +375,11 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
                     ['@Status',      '11%','ddwn', '',   ['left'  ], 'ord_stat',    '@Status','@Status...',  '', [OrdrStatu(),'width: 70px;']], //  ORD_Status()
                  ],
             suff: [],
-            note:    '',
-            data:    $arrOrders,
+            note:   lang('@Click on order number to select existing order'),
+            data:   $arrOrders,
             filt:   true,     
             sort:   true,     
-            crea:  '@Create new order record',    
+            crea:  '@Create new order ',    
             modi:  true,     
             vhgh: '200px',
             styl:   '',       
@@ -362,7 +388,7 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
             expo: ''      
             // , dropFirst:true
           );
-    htm_Card_end(labl:'@Save', icon:'', hint:'@Remember to save here...', name:'tabl', form:$f,subm:true, attr:'', akey:'', kind:'save', simu:false);
+    htm_Card_end(labl:'@Save', icon:'', hint:'@Remember to save here if data is edited...', name:'tabl', form:$f,subm:true, attr:'', akey:'', kind:'save', simu:false);
 
 ## Naming variables in this project:
 #   Form name is used as Prefix in variable names (4 characters)
@@ -428,10 +454,10 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             Copy or check data in the public company register.<br>
             Data is provided by CVR API<br></small>';
 
-        htm_Card_( capt: '@CVR-lookup:', icon: 'fas fa-database', hint: '',
+        htm_Card_( capt: '@CVR-lookup:', icon: 'fas fa-database', hint: '@Lookup in the CVR register:',
                      form: $fm='cvr_', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
 
-            htm_Fieldset_( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
+            htm_Fieldset( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
             
             htm_TextDiv($body,algn:'left',marg:'8px',styl:'',attr:'');
             set_FormVars(['cvrLand','cvrKode','cvrSoeg'/*, 'cvrNumm','cvrNavn','cvrTelf','cvrAddr','cvrPost','cvrBy','cvrDiv' */]);  // Opdater alle variabler på form 'cvrform' :
@@ -475,7 +501,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             htm_Fieldset_end();
             
             // htm_hr('green');
-            htm_Fieldset_( capt:'@Register data:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
+            htm_Fieldset( capt:'@Register data:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
             htm_Input(labl:'@CVR-number',  plho:'@CVR...', icon:'',hint:'@Retrieved from the CVR register',
                       vrnt:'text', name:$n='cvr_Numm', valu:$cvrNumm ?? '',form:'',wdth:'30%');
             htm_Input(labl:'@Company Name',plho:'@Name...',icon:'',hint:'@Retrieved from the CVR register',
@@ -624,7 +650,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                           targ:'_blank', rtrn:false);
                          # labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'', rtrn:true, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
             htm_AcceptButt(labl:'@Delivery note', icon:'', hint:'@Show delivery note for delivery', form:'deliver', wdth:'', attr:'', akey:'l', kind:'sear', rtrn:false,  tplc:'LblTip_text', tsty:'',
-                            acti:"toast(\"<b>DEMO:</b><br>$delName <br>$delAddr <br>$delPlac <br>$del_Zip - $delCity\",\"lightyellow\",\"black\")", idix:'');
+                            acti:"htm_Toast(\"<b>DEMO:</b><br>$delName <br>$delAddr <br>$delPlac <br>$del_Zip - $delCity\",\"lightyellow\",\"black\")", idix:'');
             htm_MiniNote('<span class="colrblue">'.lang('@Blue ').'</span>'.lang('@frames and customer type, Used for map lookup.'));
         htm_Card_end( labl:'@Save',icon:'',hint:'',name:'',form:$fm, subm:true,attr:'',akey:'',kind:'save',simu:false);
 
@@ -647,7 +673,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                 htm_Input(labl:'@Remark',        plho:'@Note...',    icon:'',hint:'@Enter note to the contact, e.g. role (director / secretary / driver)',
                           vrnt:'area',name:$n='contremark',valu:$arrCont[$n],form:'',wdth:'80%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1');
                 htm_hr('lightgray');
-                htm_AcceptButt( labl:'@Delete',  icon:'',hint:'@Remove this contact person <br> (DEMO yet!)', form:'contact_'.$no, wdth:'', attr:'', akey:'',kind:'eras', rtrn:false, tplc:'', tsty:'', acti:'toast("Remove contact<br>Cant do it yet !","lightyellow","black")');
+                htm_AcceptButt( labl:'@Delete',  icon:'',hint:'@Remove this contact person <br> (DEMO yet!)', form:'contact_'.$no, wdth:'', attr:'', akey:'',kind:'eras', rtrn:false, tplc:'', tsty:'', acti:'htm_Toast("Remove contact<br>Cant do it yet !","lightyellow","black")');
                 htm_hr('green'.'; height: 2px');
                 htm_nl(1);
             }
@@ -657,7 +683,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                 for ($i= 0; $i < $max; $i++) { ContaktPers($arrContact[$i],$no=$i); } 
             }
             else htm_Caption('@No contacts created.');
-            htm_AcceptButt( labl:'@Create new',  icon:'', hint:'@Create a new contact <br> (DEMO yet!)',  form:$fm,  wdth:'',  attr:'', akey:'', kind:'crea', rtrn:false, tplc:'', tsty:'position: absolute;', acti:'toast("Create contact<br>Cant do it yet !","lightyellow","black")');
+            htm_AcceptButt( labl:'@Create new',  icon:'', hint:'@Create a new contact <br> (DEMO yet!)',  form:$fm,  wdth:'',  attr:'', akey:'', kind:'crea', rtrn:false, tplc:'', tsty:'position: absolute;', acti:'htm_Toast("Create contact<br>Cant do it yet !","lightyellow","black")');
         htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
         htm_Card_( capt: '@Order notes:', icon: 'fas fa-plus', hint: '',
@@ -722,7 +748,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                 ['@Und.', '2%','text', '',  ['center'],
                               lang('@Undo posting! <br> Refund the amount by clicking on the icon.').' '.
                               lang('@If the order is invoiced, the item can be returned until the order has been posted. Then it must be done by crediting the customer!'),
-                            /*   '<button style="padding: 2px 4px;" onclick=\'toast("Reverse this post<br>Cant do it yet !","lightyellow","black")\'><ic class="fas fa-undo" style="font-size:14px; color:orange;" title="'.
+                            /*   '<button style="padding: 2px 4px;" onclick=\'htm_Toast("Reverse this post<br>Cant do it yet !","lightyellow","black")\'><ic class="fas fa-undo" style="font-size:14px; color:orange;" title="'.
                               lang('@Reverse this entry, e.g. undo reminder fee').'"></ic></button>' */
                 htm_ModalDialog(type:'warn',capt:'@DEMO page!', 
                           mess:'@The site is still under development.<br>The function to undo posting is not finished yet.', 
@@ -738,7 +764,7 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                           butt:[ ['@clos'],['@succ','','@Got it'] ],  html:
                           '<ic class="fas fa-arrows-alt-v" style="font-size:14px; color:green;" title="'.
                           lang('@Can`t move an entry up or down yet.').'"></ic>')
-                ] // /* toast("Moving this post<br>Cant do it yet !","lightyellow","black") */
+                ] // /* htm_Toast("Moving this post<br>Cant do it yet !","lightyellow","black") */
                 
             ],            # Felt 4: ($fieldModes), er sammensat af: [horJust, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
             note :   '<small>This table contains an example of on the fly automatic calculation:<br>$total= ($DataRow[2]*$DataRow[6])*(100-$DataRow[7])/100*(100+$DataRow[5])/100;</small>',
@@ -797,14 +823,14 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
         htm_nl(2);
         htm_AcceptButt(labl:'@Create / update', icon:'',hint:lang('@Save the order'),                                        form:'handling', wdth:'120px',attr:'' ,akey:'', kind:'save',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;');
         htm_nl(2);                          //  icon:'',hint:                                                                form:,wdth:,$attr,                :'' ,                             :                                   :
-      //htm_AcceptButt(labl:'@Lookup',          icon:'',hint:lang('@Browse other existing orders'),                          form:'doLookup' wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Lookup<br>Cant search yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as Offer',   icon:'',hint:lang('@Create offer for registration'),                         form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as Order',   icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as a role model',icon:'',hint:lang('@Reuse content for re-creation'),                     form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Create Invoice',  icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Create invoice<br>Cant create yet !","orange","black")');
-      //htm_AcceptButt(labl:'@Make Delivery Note',icon:'',hint:lang('@Make delivery note for the shipment of the order'),      form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Make delive note<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Give credit',     icon:'',hint:lang('@Reset by crediting the order - if it is invoiced'),      form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Give credit<br>Cant do it yet !","orange","black")');
-        htm_AcceptButt(labl:'@Delete',          icon:'',hint:lang('@Delete the order - provided the invoice is not formed'), form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'toast("Delete<br>Cant erase yet !","orange","black")');
+      //htm_AcceptButt(labl:'@Lookup',          icon:'',hint:lang('@Browse other existing orders'),                          form:'doLookup' wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Lookup<br>Cant search yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as Offer',   icon:'',hint:lang('@Create offer for registration'),                         form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as Order',   icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as a role model',icon:'',hint:lang('@Reuse content for re-creation'),                     form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Create Invoice',  icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+      //htm_AcceptButt(labl:'@Make Delivery Note',icon:'',hint:lang('@Make delivery note for the shipment of the order'),      form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Make delive note<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Give credit',     icon:'',hint:lang('@Reset by crediting the order - if it is invoiced'),      form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Give credit<br>Cant do it yet !","orange","black")');
+        htm_AcceptButt(labl:'@Delete',          icon:'',hint:lang('@Delete the order - provided the invoice is not formed'), form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Delete<br>Cant erase yet !","orange","black")');
         //  $rtrn=true, $tipplc='LblTip_text', $tipstyl='',$clickFunction='', $attr )
         htm_nl(2);
     htm_Card_end( labl:'',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
@@ -846,10 +872,10 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
     htm_hr('gray; height:2px;border-width:0;');
     
     /// echo '<div style="text-align:left;">'.$report.'</div>';
-    echo lang('@Layout is best displayed with a window width of 1000-1200px');
+    echo lang('@Layout is optimally displayed with a window width of 1000-1200px');
 htm_Page_end();
  
-    run_Script('toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","blacck",1500)');
+    run_Script('htm_Toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","blacck",1500)');
 
 $savedBytes= 0;
     if ($savedBytes== 0) {   // page just opened

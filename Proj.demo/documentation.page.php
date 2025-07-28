@@ -1,5 +1,5 @@
-<?php   $DocFile= './Proj.demo/documentation.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/documentation.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../'; 
@@ -37,6 +37,15 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
 
     htm_Card_end();
     
-    CardOff($First=2,$Last=2);
+   htm_Card_(capt:'@User manual:', icon: 'fas fa-info', hint:'', form:'', acti:'', clas:'cardW800', wdth:'', styl:'background-color: white;', attr: '');
+
+    htm_TextDiv('Help to the program user:<br><br>
+        Following is shown instruktions to handle some complex objects<br>'
+    );
+    htm_Embed('Data.demo/User-manual.pdf');
+
+    htm_Card_end();
+    
+    CardOff($First=1,$Last=2);
 htm_Page_end();
 ?>

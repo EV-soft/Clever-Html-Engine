@@ -1,11 +1,11 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -34,13 +34,14 @@ htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hin
     htm_TextDiv(body:'
             <p style="margin: 10px; text-align: center; line-height: 1.2;"><span style="font-size: 18pt;"><strong>Clever html engine</strong></span></p>
             <p style="margin: 10px; text-align: center; line-height: 1.2;"><strong>Procedural block-structured programming with the PHP2HTML</strong></p>
-            <p style="margin: 10px; text-align: center; line-height: 1;"><strong>&nbsp;library gives you easy central maintenance of your code.</strong></p>
+            <p style="margin: 10px; text-align: center; line-height: 1;"><strong>&nbsp;library gives you easy central maintenance of your UI-code.</strong></p>
             <p>&nbsp;</p>
             <p style="margin: 12px;" >The PHP2HTML library are used in PHP applications to produce dynamic HTML/CSS/JS code with advanced features.</p>
             <p style="margin: 12px;" >Library consists of a collection of functions that produce both standard HTML elements and special usefull variants.</p>
             
             <p style="margin: 12px;" >With this library you can program a complete program, both backstage and frontstage, source code in PHP.</p>
             <p style="margin: 12px;" >From your compact block-structured source code, the generator produces the necessary html code in a >5:1 ratio</p>
+            <p style="margin: 12px;" >In other words, you only have to write code that takes up 20% of the final code...</p>
             <p style="margin: 12px;" >The PHP2HTML system has built-in integration with several powerful open-source projects, Font-awesome, Tablesorter, Jquery, tinyMCE, which makes it easy to take advantage of these. </p>
             './* '
             <p style="margin: 12px;" >All modules are with a integrated language translation system, which allows the user to exchange all program texts into many different languages.</p>
@@ -61,7 +62,7 @@ htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hin
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>Translation</strong></td>
-<td style="height: 21px;">Advanced translation system for the entire program interface</td>
+<td style="height: 21px;">Advanced translation system for your entire program interface</td>
 </tr>
 <tr style="height: 21px;">
 <td style="height: 21px;"><strong>Icons </strong></td>
@@ -125,8 +126,8 @@ Don\'t reinvent the Wheel, use PHP2HTML…</i></p>
 		htm_TextDiv('@Here is an example of how the system generates html code.<br><i>This compact height level code:</i>');
         $strCode= '// php:
 htm_Input(labl:\'@Amount\', icon:\'fas fa-euro\', vrnt:\'dec2\',
-          hint:'. '\'@Demo of htm_Input Field variant dec2: number with 2 decimal\','.
-          'name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
+          hint:'. '\'@Demo of htm_Input Field variant dec2: number with 2 decimal\',
+          name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
 
 ';
         htm_CodeBox(($strCode));
@@ -154,15 +155,11 @@ $strCode= '// HTML:
     </abbr>
 </div>
 ';
-// arrPretty($strCode,'$strCode');
-// arrPretty(preg_replace('/^<\?(.*)(\>)?$/s', '$1',$strCode),'$strCode'); // str_replace()  preg_replace("/<\?/", 'xxx',$strCode),'$strCode')  // 
         htm_CodeBox((preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "",$strCode)), rtrn:false);
         htm_TextDiv('@<i>And here are the output:</i>');
         $dec2= 0;
         htm_Input(labl:'@Amount',plho:'@Enter...',icon:'fas fa-euro',hint:'@Demo of htm_Input Field variant dec2: number with 2 decimal',
                   vrnt: 'dec2',name:'dec2',valu:$dec2,form:'',wdth:'150px',algn:'center',attr:'',rtrn:false,unit:'<$ ',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'',ftop:'');
-        /* htm_Input(vrnt:'dec2',name:'dec2',valu:'$dec2', labl:'@Amount',hint:'@Demo of htm_Input Field variant dec2: number with 2 decimal',
-                  wdth:'150px',algn:'center',unit:'<$ '); */
         htm_TextDiv('@and it will have all the properties: <br> placeholder, validation, hint, colors, dimensions and much more...<br><br>
                     As you can see, the source code is very compact. Less than 1/5 !
                     <br>');

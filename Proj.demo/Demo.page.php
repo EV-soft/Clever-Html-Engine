@@ -1,5 +1,5 @@
-<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters can be shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= './../';
@@ -7,12 +7,13 @@ $gbl_ProgRoot= './../';
 // $jsScripts= '';
 $lateScripts= '';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
 $needFontawesome= '2';
 $needTinymce=     '0';
+$needPdfview=     '2';
 
 
 require_once ($sys.'php2html.lib.php');
@@ -21,17 +22,18 @@ require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'filedata.inc.php');
  
  
-$tblData=               # = array(),
-        array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], 
-               [['2'],[''],[''],[''],[''] ], 
-               [['3'],[''],[''],[''],[''] ], 
-               [['4'],[''],[''],[''],[''] ], 
-               [['5'],[''],[''],[''],[''] ], 
+$tblData=     # = array(),
+              #  No.',Description,Account',%-rate',Note',  
+        array( [['1'],['@Input VAT'],['66200'],['25,00'],['']],
+               [['2'],[''],[''],[''],[''] ],                    
+               [['3'],[''],[''],[''],[''] ],                    
+               [['4'],[''],[''],[''],[''] ],                    
+               [['5'],[''],[''],[''],[''] ],                       
                [['6'],[''],[''],[''],[''] ], 
                [['7'],[''],[''],[''],[''] ] );
 
 
-htm_Page_( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:'',algn:'center', imag: $bodybg='../_accessories/_background.png', pbrd:true);
+htm_Page_( titl:'@DEMO  and examples', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:'',algn:'center', imag: $bodybg='../_accessories/_background.png', pbrd:true);
     echo '<div style="text-align: center;"><br><b>Clever-Html-Engine</b> / php2html-Demo:';  htm_nl(2);
 
 ### Program mainmenu:
@@ -44,7 +46,7 @@ htm_Page_( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:
     // $menudata is set in: project.init.php
     // htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;');
     htm_nl(1);
-    htm_Caption(labl:'@Be inspired - Here you can see examples of almost all system functions...',styl:'font-size:20px;');
+    htm_Caption(labl:'@Be inspired - Here you can see examples of almost all htm_ system functions...',styl:'font-size:20px;');
     htm_nl(2);
     
 // arrPrint($_POST,'$_POST');
@@ -63,13 +65,13 @@ htm_Page_( titl:'DEMO', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:
     $date= date("Y-m-d");
     htm_Card_( capt:'The variants of Input / Output:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW960', wdth:'640px', styl:'background-color: white;', attr:'',  show:true,  head:$headbg, help:'CustHelp.htm');
     htm_nl();
-    htm_Fieldset_(capt:'TEXT variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'TEXT variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(Text)', plho:'?:',  icon:'', hint:'@Demo of htm_Input Field type single-line text',                      vrnt:'text', name:'text', valu:$text='text', form:'', wdth:'160px');
         htm_Input(labl:'@htm_Input(barc)', plho:'',    icon:'', hint:'@Demo of htm_Input Field type barc: shown with font barcode',         vrnt:'barc', name:'barc', valu:'BARCode39',   form:'', wdth:'160px;',   algn:'center');                                
         htm_Input(labl:'@htm_Input(html)', plho:'</>', icon:'', hint:'@Demo of htm_Input Field type html: Multi-line formatted html-text',  vrnt:'html', name:'html1', valu:'',          form:'', wdth:'140px;',   algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[], llgn:'R', bord:'', ftop:''); 
         htm_nl();   
         htm_Input(labl:'@htm_Input(area)', plho:'Multiline </>:', icon:'', hint:'@Demo of htm_Input Field type area: Multi-line text',      vrnt:'area', name:'area', valu:'',          form:'', wdth:'140px',    algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'6', step:'', list:[], llgn:'R', bord:'', ftop:'');
-        $text= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & © 2019-2024 EV-soft'; 
+        $text= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & © 2019-2025 EV-soft'; 
         $html= '<a href="" border="0" style="cursor:help;" rel="nofollow" title="'.$text.'">
                 <img style="width: 70%;" src=
                "https://qrcode.tec-it.com/API/QRCode?data='.urlencode($text).'&codepage=UTF8&size=small"></a>';
@@ -103,7 +105,7 @@ method          Method used for returning the created QR code image (PNG): BASE6
         htm_Input(labl:'@htm_Input(pass)', plho:'', icon:'', hint:'@Demo of htm_Input Field type pass with "hidden" output',                vrnt:'pass', name:'pass1', valu:'',         form:'', wdth:'160px;',   algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[], llgn:'R', bord:'', ftop:'');
     htm_Fieldset_end();
     htm_nl(2);
-    htm_Fieldset_(capt:'NUMBER variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'NUMBER variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(Intg)', plho:'', icon:'', hint:'@Demo of htm_Input Field type intg: centered integer',                   vrnt:'intg', name:'intg', valu:$intg='9999', form:'', wdth:'160px', algn:'center');
         htm_Input(labl:'@htm_Input(Dec0)', plho:'', icon:'', hint:'@Demo of htm_Input Field type dec0: centered number with 0 decimals',    vrnt:'dec0', name:'dec0', valu:$dec0='9999', form:'', wdth:'160px', algn:'center', attr:'', rtrn:false, unit:' %');
         htm_Input(labl:'@htm_Input(Dec1)', plho:'', icon:'', hint:'@Demo of htm_Input Field type dec1: number with 1 decimal ',             vrnt:'dec1', name:'dec1', valu:$dec1='9999', form:'', wdth:'160px', algn:'left',   attr:'', rtrn:false, unit:'<Unit prefix ');
@@ -118,7 +120,7 @@ method          Method used for returning the created QR code image (PNG): BASE6
         htm_Input(labl:'@htm_Input(Date)', plho:'', icon:'', hint:'@Demo of htm_Input Field type date with browser popup selector',         vrnt:'date', name:'date',  valu:$date,       form:'', wdth:'160px',  algn:'center');
     htm_Fieldset_end();
     htm_nl(2);
-    htm_Fieldset_(capt:'SELECT variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'SELECT variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(opti)', plho:'@?...', icon:'', hint:'@Demo of htm_Input Field type opti: left aligned number with %-unit', vrnt:'opti', name:'opti', valu:'87654321', form:'', wdth:'160px', algn:'left', attr:'', rtrn:false, unit:' %', disa:false, rows:'3', step:'', list:[
             ['name1','@private','@Details about private'],
             ['name2','@proff','@Details about profession'],
@@ -158,7 +160,7 @@ method          Method used for returning the created QR code image (PNG): BASE6
         ]);
     htm_Fieldset_end();
     htm_nl(2);
-    htm_Fieldset_(capt:'OTHER variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'OTHER variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'<i class=\'fas fa-search\'></i> '.lang('@htm_Input(sear)'),
                                             plho:'?', icon:'', hint:'@Demo of htm_Input Field type search',                                 vrnt:'sear', name:'sear', valu:'',        form:'', wdth:'',      algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
         htm_Input(labl:'@htm_Input(time)',  plho:'',  icon:'', hint:'@Demo of htm_Input Field type time<br>NOT supported by all browsers',  vrnt:'time', name:'time', valu:'',        form:'', wdth:'100px', algn:'left',   attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'');
@@ -241,7 +243,7 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[], filt:
         htm_TextDiv(body:'The system includes the following functions of container-type:.<br>
               htm_Page_()<br>
               htm_Card_()<br>
-              htm_Fieldset_()<br>
+              htm_Fieldset()<br>
               htm_wrapp_()<br><br>
               An example of htm_Page_() is this actual page.<br>
               On this page you also see examples on multiple cards<br>
@@ -249,11 +251,11 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[], filt:
               ');
         htm_nl(1);
         
-        htm_Fieldset_(capt:'@Caption: ', icon:'', hint:'@You can use hints', wdth:'180px', marg:'', attr:'background-color:lightyellow', rtrn:false);
+        htm_Fieldset(capt:'@Caption: ', icon:'', hint:'@You can use hints', wdth:'180px', marg:'', attr:'background-color:lightyellow', rtrn:false);
         echo 'You place your html-objects here inside fieldset-frames...<br>';
         htm_Fieldset_end( rtrn:false);
         
-        htm_Fieldset_(capt:'@Caption: ', icon:'', hint:'@You can use hints', wdth:'180px', marg:'', attr:'background-color:MintCream', rtrn:false);
+        htm_Fieldset(capt:'@Caption: ', icon:'', hint:'@You can use hints', wdth:'180px', marg:'', attr:'background-color:MintCream', rtrn:false);
         echo 'You place your html-objects here inside fieldset-frames...<br>';
         htm_Fieldset_end( rtrn:false);
 
@@ -263,20 +265,20 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[], filt:
 $strCode= 
 <<< 'STRING'
 // PHP7-syntax:
-htm_Fieldset_($capt='@Caption: ',
+htm_Fieldset($capt='@Caption: ',
               $hint='@You can use hints',$icon='',
               $wdth='180px',$marg='',
               $attr='background-color:MintCream',
               $rtrn=false); 
 
 // PHP8-syntax:
-htm_Fieldset_(capt:'@Caption: ',
+htm_Fieldset(capt:'@Caption: ',
               hint:'@You can use hints',
               wdth:'180px',
               attr:'background-color:MintCream'),
               rtrn:false); 
 
-    // htm_Fieldset_() must be followed by the html-content and htm_Fieldset_end() !
+    // htm_Fieldset() must be followed by the html-content and htm_Fieldset_end() !
     
 htm_Fieldset_end(rtrn:false);
 STRING
@@ -311,7 +313,7 @@ STRING
         
         
         
-        htm_wrapp_($ViewHeight='60px');
+        htm_wrapp_($vhgh='60px');
         echo 'You place your html-objects here inside Wrapper-window...<br><br>
         A Wrapper-window is a window with a fixed height<br>
         in with you can scroll the content<br>
@@ -358,13 +360,19 @@ STRING
     htm_nl(2);
     $ic= ''; // iconStack($cl1='fa-stack fa-2x',$cl2='fa-solid fa-square fa-stack-2',$cl3='fab fa-twitter fa-stack-1x fa-inverse',$rtrn=false)
     htm_Card_(capt:'@Signup: ', icon:'fas fa-user-check', hint:'', form:'head1', acti:'', clas:'cardW240', wdth:'640px', styl:'background-color: lightcyan;', attr:'', help:'',poup:false);
-        htm_Input(labl:'@Financial Accounting'.$ic, plho:'@Account...',  icon:'', hint:'@The name of the accounting for wich you have access', vrnt:'text', name:'text1', valu:$text1='Account A', form:'', wdth:'80%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3',  step:'');
-        htm_Input(labl:'@Your account',         plho:'@Email...',    icon:'', hint:'@Type your email as your accont',                          vrnt:'mail', name:'mail2', valu:$mail2='Bookkeeper', form:'', wdth:'80%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3',  step:'');
-        htm_Input(labl:'@Your password',        plho:'@Password...', icon:'', hint:'@Type your password for your account',                     vrnt:'pass', name:'pass3', valu:$pass3='xx', form:'', wdth:'80%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3',  step:'', list:[], llgn:'R', bord:'', ftop:'');
+        htm_Input(labl:'@Financial Accounting'.$ic, plho:'@Account...',  icon:'', hint:'@The name of the accounting for wich you have access', vrnt:'text', name:'text1', valu:$text1='Account A', form:'', wdth:'80%', algn:'left', attr:'required', rtrn:false, unit:'', disa:false, rows:'3',  step:'');
+        htm_Input(labl:'@Your account',         plho:'@Email...',    icon:'', hint:'@Type your email as your accont',                          vrnt:'mail', name:'mail2', valu:$mail2='Bookkeeper', form:'', wdth:'80%', algn:'left', attr:'required', rtrn:false, unit:'', disa:false, rows:'3',  step:'');
+        htm_Input(labl:'@Your password',        plho:'@Password...', icon:'', hint:'@Type your password for your account',                     vrnt:'pass', name:'pass3', valu:$pass3='xx', form:'', wdth:'80%', algn:'left', attr:'required', rtrn:false, unit:'', disa:false, rows:'3',  step:'', list:[], llgn:'R', bord:'', ftop:'');
                  // $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
                    # $labl='',$icon='',$hint='',$type='submit',$name='',$link='',$acti='',$font='32px',$fclr='gray',$bclr='white',$akey='',$rtrn=false
         htm_IconButt(labl:'@Forgotten password ?', icon:'fas fa-key', hint:'@Click to request a new password', type:'button', name:'lost', link:'', evnt:'', wdth:'', font:'18px', fclr:'gray', bclr:'white', akey:'', rtrn:false);
         htm_nl(2);
+        htm_Input(labl:'@Stay logged in',  plho:'@Stay...',    icon:'', hint:'@Remember me', vrnt:'rado', name:'p2h_chk', valu:$p2h_stay='stay1', form:'', wdth:'80%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'',list:[
+            ['stay0','@Yes','@Do not auto-logout'],
+            ['stay1','@No','@Do auto-logout']
+            ]);
+        
+        htm_nl(1);
         $html= htm_Humantest(capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', 
                              form:'human', wdth:'100%', hght:'22px', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO',rtrn:true);
         htm_Inbox(labl:'@Robot ?',  plho:'', icon:'',hint:'@Confirm you are not a robot',
@@ -410,7 +418,7 @@ STRING
         htm_nl(0);
     htm_Card_end(labl:'Save',    icon:'', hint:'@Save data in this card', name:'', form:'', subm:true, attr:'', akey:'s',  kind:'save', simu:false);
     
-    echo '</div>'; // DEMO
+   ## echo '</div>'; // DEMO
     
     htm_nl(4);
     htm_Card_( capt:'@User rights:', icon:'fas fa-pen-square', hint:'@In this card, you see a DEMO of the Multi-state button', form:'head3', acti:'', clas:'cardW800', wdth:'640', styl:'background-color: white;', attr:'',  show: true,  head: $headbg, help:'CustHelp.htm');           
@@ -448,6 +456,7 @@ STRING
         td span { writing-mode: vertical-lr; transform: rotate(180deg); height: '.($w*7.5).'px; }
         </style>';
         
+    htm_Fieldset(capt:'@Users',icon:'',hint:'',wdth:'90%',marg:'',attr:'scale:80%;',rtrn:false);
     echo '<table style="margin: auto; font-size: smaller; "><tr style="padding:5px;">
     <td style="vertical-align: bottom;"><i>'.lang('@Name:').'</i></td> 
     <td style="vertical-align: bottom;"><i>'.lang('@Title:').'</i></td>';
@@ -459,9 +468,15 @@ STRING
         echo '</tr>';
     }
     echo '<tr><td>&nbsp;</td></tr>';
+    echo '</table>';
+    htm_Fieldset_end();
+    
+    htm_Fieldset(capt:'@Create New User',icon:'',hint:'',wdth:'90%',marg:'',attr:'scale:80%;',styl:'text-align: center;',rtrn:false);
+    echo '<table style="width:94%;">';
     echo '
-    <tr><td colspan="2" ><i>'.lang('@Create New:').'</i></td>';
-    for ($i=0; $i<count($task); $i++) echo '<td style="height: 22px; width: 22px; text-align: center;">'. htm_MultistateButt(name:'newROWyCOL'.$i, valu:2) .'</td>';
+    <tr><td colspan="2" style="text-align:right; scale:80%;"><i scale:"80%">'.lang('@Rights:').'</i></td>';
+    for ($i=0; $i<count($task); $i++) echo '<td style="height: 22px; width: 33px; text-align: center;">'. htm_MultistateButt(name:'newROWyCOL'.$i, valu:2) .'</td>';
+    
     echo '<tr>
     <td><input type= "text" name="name1" value="" style="width: 50px; border: 1px solid var(--grayColor);" placeholder="name..." /></td>
     <td><input type= "text" name="titl1" value="" style="width: 100px; border: 1px solid var(--grayColor);" placeholder="titl..." /></td>
@@ -480,6 +495,7 @@ STRING
     echo '</span>';
     htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'creat', rtrn:false, 
                    tplc:'LblTip_text', tsty:'left: auto; top: 0; position: relative;',acti:'htm_Toast("Create new user<br>Cant create yet !","orange","black")');
+    htm_Fieldset_end();
     htm_MiniNote('This is an example of using the multi-state button.');
     htm_nl(1);
     
@@ -535,7 +551,7 @@ STRING
         htm_nl(2);
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'head4', subm:false, attr:'', akey:'s', kind:'save', simu:false);
     
-    htm_Card_(capt:'@Switch buttons: (working on it)',icon:'fas fa-pen-square',hint:'',form:'sw',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'');           
+    htm_Card_(capt:'@Switch buttons: (Under development)',icon:'fas fa-pen-square',hint:'',form:'sw',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'');           
     htm_SwitchButt(labl:'@Switch conneting',hint:'@Click to toggle setting', name:'switchbox_id1', valu:'presssed', 
                    list:['@Connect','@disconnect'], wdth:'6em', bclr:'blue', styl:'style="padding:1px;"', 
                    rtrn:false);
@@ -554,7 +570,7 @@ STRING
             Above and underneth the table, you can use special captions and notes.<br><br>
             Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, $TblNote, &$TblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $TblStyle, $CalledFrom, $MultiList)</data-hint>Parameters</abbr>)
         ';
-    $strcards= 'cards is a container for html-objects.<br>
+    $strCards= 'cards is a container for html-objects.<br>
             It is build with two functions: htm_Card_() and htm_Card_end()<br><br>
             It consists of: icon + header - a body with content - and a footer that can be hidden.<br>
             The header-caption is automatic translated to the current selected language.<br>
@@ -573,7 +589,7 @@ STRING
         ';
     htm_Tabs_(head:'<small>Here you see the htm_Tabs_() - Toggleable tabs system:</small>', styl:'text-align:left;', rtrn:false);
     htm_Tab(labl:'@HTML Page',body:$strPage,  name:'HTMLPage', styl:'text-align:left;',    bclr:'white',      vhgh:'200px');
-    htm_Tab(labl:'@Cards',    body:$strcards, name:'cards',    styl:'text-align:left;',    bclr:'lightyellow',vhgh:'200px');
+    htm_Tab(labl:'@Cards',    body:$strCards, name:'cards',    styl:'text-align:left;',    bclr:'lightyellow',vhgh:'200px');
     htm_Tab(labl:'@Tables',   body:$strTabel, name:'Tables',   styl:'text-align:left;',    bclr:'lightcyan',  vhgh:'200px');
     htm_Tab(labl:'@Input',    body:'',        name:'input',    styl:'text-align:left;',    bclr:'lightgray', );
     htm_Tabs_end(foot:'@FOOTER for Toggleable Tabs', styl:'font-size: smaller;', rtrn:false);
@@ -582,7 +598,7 @@ STRING
 
      
     htm_Card_(capt:'@Containers:',icon:'fas fa-info',hint:'@HINT for this card',form:'',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);           
-    htm_Fieldset_(capt:'This is af fieldSet container',icon:'',hint:'',wdth:'80%',marg:'',attr:'',rtrn:false);
+    htm_Fieldset(capt:'This is af fieldSet container',icon:'',hint:'',wdth:'80%',marg:'',attr:'',rtrn:false);
     htm_TextDiv('Tabels, Cards, Tabs and Fieldsets is areas that contains other elements.');
     htm_Fieldset_end();
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'tb', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
@@ -643,28 +659,28 @@ STRING
         htm_TextDiv(body:'@Also new in 2024 is htm_GoTopButt()<br>You see it on this page button to the right.', 
                 algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white;', rtrn:false );
         
-        htm_Fieldset_(capt:'@Demo of htm_List_()',icon:'',hint:'@li list type<br>Marker: upper-roman',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
+        htm_Fieldset(capt:'@Demo of htm_List_()',icon:'',hint:'@li list type<br>Marker: upper-roman',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
             htm_List_(capt:'htm_List_(li):', vrnt:'li', type:'upper-roman', styl:'text-align:left;', rtrn:false);
                 htm_List_item(labl:'@Label1', body:'@Description1', rtrn:false);
                 htm_List_item(labl:'@Label2', body:'@Description2', rtrn:false);
                 htm_List_item(labl:'@Label3', body:'@Description3', rtrn:false);
             htm_List_end();
         htm_Fieldset_end();
-        htm_Fieldset_(capt:'@Demo of htm_List_()',icon:'',hint:'@ul unordered type',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
+        htm_Fieldset(capt:'@Demo of htm_List_()',icon:'',hint:'@ul unordered type',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
             htm_List_(capt:'htm_List_(ul):', vrnt:'ul', strt:'10', styl:'text-align:left;', rtrn:false);
                 htm_List_item(labl:'@Label1', body:'@Description1', rtrn:false);
                 htm_List_item(labl:'@Label2', body:'@Description2', rtrn:false);
                 htm_List_item(labl:'@Label3', body:'@Description3', rtrn:false);
             htm_List_end();
         htm_Fieldset_end();
-        htm_Fieldset_(capt:'@Demo of htm_List_()',icon:'',hint:'@ol ordered type<br>Marker: square',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
+        htm_Fieldset(capt:'@Demo of htm_List_()',icon:'',hint:'@ol ordered type<br>Marker: square',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
             htm_List_(capt:'htm_List_(ol):', vrnt:'ol', type:'square',strt:'10', styl:'text-align:left;', rtrn:false);
                 htm_List_item(labl:'@Label1', body:'@Description1', rtrn:false);
                 htm_List_item(labl:'@Label2', body:'@Description2', rtrn:false);
                 htm_List_item(labl:'@Label3', body:'@Description3', rtrn:false);
             htm_List_end();
         htm_Fieldset_end();
-        htm_Fieldset_(capt:'@Demo of htm_List_()',icon:'',hint:'@dl destriptive type',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
+        htm_Fieldset(capt:'@Demo of htm_List_()',icon:'',hint:'@dl destriptive type',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);
             htm_List_(capt:'htm_List_(dl):', vrnt:'dl', strt:10, styl:'text-align:left;', rtrn:false);
                 htm_List_item(labl:'@Label1', body:'@Description1', rtrn:false);
                 htm_List_item(labl:'@Label2', body:'@Description2', rtrn:false);
@@ -685,7 +701,42 @@ STRING
         htm_TextDiv(body:'@The htm_Card() can also be used as a program window, <br>with icon-links for menu and settings to the right.', 
                     algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white;', rtrn:false );
         htm_nl(1);
-     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'head7', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
+     htm_Card_end(labl:'', icon:'', hint:'Hint', name:'', form:'head7', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
+
+     htm_nl(2);
+     echo 'The htm_DataGroup() function<br>';
+     htm_DataGroup(capt: 'Caption', icon:'fa-regular fa-address-card', head: 'Header', hint:'Hint for this datagroup', 
+                   data: [
+                            ['Label1:','Data1','font-weight: 600;','font-style: italic;'],
+                            ['Label2:','Data2','font-weight: 600;'],
+                            ['Label3:','Data3','font-weight: 600;'],
+                            ['Label4:','Data4','font-weight: 600;'] 
+                         ], 
+                   foot:'Footer', wdth: '220px', vhgh: '180px', attr:'background-color:white;', bord: '3px solid #900000;');
+
+    htm_nl(2);
+    htm_DataList(data:['Itm1','Itm2','Itm3','Itm4','Itm5','Itm6']);
+    
+    htm_nl(3);   
+    if (!isset($pdf_file)) $pdf_file= 'imapsync_2020_gulliver_fdln.pdf'; 
+    htm_Card_(capt:'@PDF-viewer: '.$pdf_file, icon:'fa-regular fa-address-card',
+               hint:'@HINT for this card',form:'head8', acti:'',clas:'cardW800',wdth:'640' );
+        htm_Input(labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'file', name:'pdf_file', valu:$pdf_file, form:'', wdth:'100%',attr:'accept=".pdf" ');
+        htm_nl(1);
+        echo '<div class="pagination">
+                <div class="wrap">
+                    <button id="prev">'.lang('@Previous').'</button>
+                    <button id="next">'.lang('@Next').'</button>
+                    &nbsp; &nbsp;
+                    <span style="font-size: smaller;">'.lang('@Page: ').'<span id="page_num"></span> / 
+                    <span id="page_count"></span></span>
+                </div>
+             </div>
+             <canvas id="the-canvas"></canvas>'
+             ;
+
+        htm_nl(1);
+    htm_Card_end(labl:'', icon:'', hint:'Hint', name:'', form:'head7', subm:false, attr:'', akey:'s',  kind:'save', simu:false, foot:'Under development');
 
     htm_GoTopButt();
     CardOff(frst:3,last:6);

@@ -1,5 +1,5 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
-## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** 
+<?php   $DocFil= 'project.init.php';    $DocVers='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModulNr=0; ## File informative only
+## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** 
 #  This file is included from start of php2html.lib.php 
 
 ## Initiate Global variables:
@@ -30,11 +30,12 @@
     // echo $LibIx;
 
 ## Demo-system:
+    ## Global menusystem to be used in multible pages:
     $menudata= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='')
         ['Frst','fas fa-info colrwhite',    '@INTRODUCTION','', '@Here you can read about the systems most useful modules:','PHP2HTML-intro.page.php',[
             ['Next','fas fa-info black',    '@PHP2HTML ?',  '', '@What is Clever html engine ?','PHP2HTML-intro.page.php',[],''],
             ['Next','fas fa-info black',    '@Description', '', '@What is PHP2HTML ?','description.page.php',[],''],
-            ['Next','fas fa-info black',    '@Demo',        '', '@See and try examples of nearly all modules in the system...','Demo.page.php',[],''],
+            ['Next','fas fa-info black',    '@Examples',    '', '@See and try examples of nearly all modules in the system...','Demo.page.php',[],''],
             ['Next','fas fa-info black',    '@Tiny editor', '', '@Try the advanced online HTML editor','tinyEditor.page.php ',[],''],
             ['Next','fa-regular fa-credit-card black', '@ Advanced example', '','@Example of an Accounting program','CustomerOrder.page.php',[],''],
             ['Next','fa-regular fa-credit-card black', '@ Danish account plan', '','@Example of an account plan','accountPlan.page.php',[],''],
@@ -52,7 +53,8 @@
         ['Next','fas fa-file colryellow ',  '@FILES',            '@Go to files.page.php',               '@','files.page.php', [
             ['Next','fas fa-file black',    '@File naming',      '@Go to files.page.php',               '@','files.page.php', [],'top:500px;'],
             ['Next','fas fa-file black',    '@Folders and files','@Go to support.page.php',             '@','support.page.php', [],'top:500px;'],
-            ['Last','fas fa-info black',    '@Quickstart',       '@How to start the system',            '@','../Quick_Proj/quickstart.page.php', [],'top:500px;']
+            ['Last','fas fa-info black',    '@Quickstart',       '@How to start the system',            '@','../Quick_Proj/quickstart.page.php', [],'top:500px;'],
+            ['Last','fas fa-info black',    '@Minimal setup',    '@How to create a mini system',        '@','../Quick_Proj/minisetup.page.php', [],'top:500px;']
         ],'top:500px;'],
         ['Next','fas fa-language colrblue', '@TRANSLATE',        '@Go to translate.page.php',           '@','translate.page.php', [],'top:500px;'],
         ['Last','fas fa-code colrcyan',     '@FUNCTIONS',        '@Go to functions.page.php',           '@','functions.page.php', [
@@ -60,12 +62,13 @@
         ],'top:500px;']
         ]; 
          
-    $menunote= '@<small>Test site and documentation for Clever html engine • Errors can occur and future news may be shown • ver.'.$DocVers.': 50+ core functions.</small>';
+    $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.$DocVers.': 60+ core functions.</small>';
 
 ## Quickstart:
     $menudata_quick= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='', 8:$widt)
         ['Frst','fas fa-info colrwhite',    '@Quick Project','', '@Start your first project:',              'quickstart.page.php',[]
          ],
+         /* 
         ['Next','fas fa-file colryellow ',  '@FILES',            '@Go to files.page.php',               '@','files.page.php', [
             ['Next','fas fa-file black',    '@File naming',      '@Go to files.page.php',               '@','files.page.php', [],'top:500px;'],
             ['Last','fas fa-file black',    '@Folders and files','@Go to support.page.php',             '@','support.page.php', [],'top:500px;']
@@ -74,6 +77,7 @@
         ['Last','fas fa-code colrcyan',     '@FUNCTIONS',        '@Go to functions.page.php',           '@','functions.page.php', [
             ['Last','fas fa-code colrcyan', '@Overview',         '@Go to functions.page.php',           '@','functions.page.php', [],'top:500px;'],
         ],'top:500px;']
+         */
         ]; 
         
     $menunote_quick= '@<small>This is a guide to quickly get started with a new project.</small>';

@@ -1,4 +1,4 @@
-<?   $DocFileLib='Project.notes.txt';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?   $DocFileLib='Project.notes.txt';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
 
 Notes regarding php2html.lib.php:
 
@@ -243,9 +243,21 @@ New: htm_GoTopButt()
 New: htm_List_()
 Rename: Block functions htm_****_0()  to htm_****_()
 Rename: Block functions htm_****_00() to htm_****_end()
-Rename: htm_Field_0_end() to htm_Field() 
+Rename: htm_Field_0_end()             to htm_Field() 
 Changed: some CSS-style
+
+###########
+v1.4.1:
 Upgrade: font-awesome 6 to font-awesome 7
+Rename: function toast() to htm_Toast()
+Rename: htm_Fieldset_()  to htm_Fieldset()
+New: htm_Page_Sect()
+New: htm_Embed()
+New: htm_DataGroup()
+New: niv0, niv1,... Style override on various niveaus
+Error fixes
+Minor changes
+(New: PDF-viewer)
 
 */
 

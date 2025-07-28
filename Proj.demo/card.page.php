@@ -1,9 +1,9 @@
-<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -135,7 +135,7 @@ htm_Page_(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocV
               unit:'',disa:false,rows:'3',step:'',list:[],llgn:'R',bord:'',ftop:'');
 
     htm_Card_end(labl:'Save', icon:'', hint:'@Save data in this card', 
-                name:'', form:'xxx',subm:true, attr:'', akey:'s', kind:'save', simu:false);
+                name:'', form:'xxx',subm:true, attr:'', akey:'s', kind:'save', simu:false, foot:'@If data edited, <br>remember to save data in this card !');
     
     // htm_RowCol_next($RowColWdth=480);
 
@@ -153,20 +153,20 @@ htm_Page_(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocV
                    form: '',acti: '',clas: 'cardW560',wdth: '',styl: 'background-color: white; text-align:left;',attr: '');
 $strCode= "
 htm_Card_(capt: '@PHP Source-code:',        # string: The card caption
-           icon: 'fas fa-code',              # string: Class: icon to the left of caption
-           hint: '',                         # string: The hint on hover caption
-           form: '',                         # string: form id/name (No form without a name)
-           acti: '',                         # string: form action 
-                                             
-           clas: 'cardW480',                 # string: The card class (general CSS-data)
-           wdth: '',                         # string: The closed card width
-           styl: 'background-color: white;', # string: The card body style
-           attr: '',                         # string: general attributes (style) for the card-container
-           
-           show: true,                       # bool:   Show card-buttons top-right
-           head: '',                         # string: Style for Header background
-           vhgh: '600px',                    # string: MaxHeight (ViewHeight) for span (HideBody) with scrollable content
-           help: ''                          # string: Link to custom Card-help
+          icon: 'fas fa-code',              # string: Class: icon to the left of caption
+          hint: '',                         # string: The hint on hover caption
+          form: '',                         # string: form id/name (No form without a name)
+          acti: '',                         # string: form action 
+                                            
+          clas: 'cardW480',                 # string: The card class (general CSS-data)
+          wdth: '',                         # string: The closed card width
+          styl: 'background-color: white;', # string: The card body style
+          attr: '',                         # string: general attributes (style) for the card-container
+          
+          show: true,                       # bool:   Show card-buttons top-right
+          head: '',                         # string: Style for Header background
+          vhgh: '600px',                    # string: MaxHeight (ViewHeight) for span (HideBody) with scrollable content
+          help: ''                          # string: Link to custom Card-help
 );
 
 // Placed here the cardcontent...

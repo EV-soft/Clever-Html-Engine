@@ -1,10 +1,10 @@
-<?php   $DocFile= './Proj.demo/pages.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/pages.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../'; 
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -41,7 +41,7 @@ htm_Page_(titl:'pages.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
         In between, you add your content.             <br><br>
         <small>See the source in php2html.lib.php to manage the function parameters.</small>');
 
-    htm_Card_(capt:'@PHP Source-code:', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'cardW480', wdth:'',styl:'background-color: white;', attr:'margin:0;');
+        htm_Card_(capt:'@PHP Source-code:', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'cardW480', wdth:'',styl:'background-color: white;', attr:'margin:0;');
 
 $strCode= 
 /* str_Pars(  */
@@ -58,7 +58,7 @@ htm_Page_end();
 STRING
 ; 
         htm_CodeBox($strCode);
-    htm_Card_end();
+        htm_Card_end();
 
     htm_Card_end();
     

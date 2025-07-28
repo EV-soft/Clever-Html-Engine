@@ -1,9 +1,9 @@
-<?php   $DocFil= './functions.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';     $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './functions.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Loscal-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -24,7 +24,7 @@ htm_Page_( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center', 
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
     
-    htm_Card_( capt: '@The overview over the system functions:', icon: 'fas fa-info', 
+    htm_Card_( capt: '@Overview over the system functions:', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
         htm_TextPre('<big>FUNCTIONS - vers. '.$DocVer.' - '.date("Y-m-d").':</big><br>'.
             file_get_contents('Functions.html'));
@@ -143,6 +143,16 @@ htm_Page_( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center', 
             ['code','Flag to convert html special characters',''],
             ['synt','Flag rel syntax output',''],
             ['repl','Flag rel formattet string',''],
+            ['fmat','Format string',''],
+            ['vlue','Value to replace ',''],
+            ['niv0','Xtra style attribute= value in niveau 0',''],
+            ['niv1','Xtra style attribute= value in niveau 1','Not active'],
+            ['niv2','Xtra style attribute= value in niveau 2','Not active'],
+            ['niv3','Xtra style attribute= value in niveau 3','Not active'],
+            ['niv4','Xtra style attribute= value in niveau 4','Not active'],
+            ['niv5','Xtra style attribute= value in niveau 5','Not active'],
+            ['niv6','Xtra style attribute= value in niveau 6','Not active'],
+            ['niv7','Xtra style attribute= value in niveau 7','Not active'],
             ['tout','Timeout','']  /* ,
             ['dec0','htm_Input() Variant',''],
             ['dec1','htm_Input() Variant',''],
@@ -404,7 +414,42 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:t
 ##--------------------------------------------
             htm_Tab(labl:'PHP',   body:'PHP-code for calling htm_Card():<br> '.
                     htm_CodeBox("
-function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'', show:true, head:'', vhgh:'600px', help:'');
+function htm_Card_(
+    capt: '',                           # string: The card caption
+    icon: '',                           # string: icon to the left of caption
+    hint: '',                           # string: The hint on hover caption
+    form: '',                           # string: form id/name (No form without a name)
+    acti: '',                           # string: form action 
+    clas: 'cardWmax',                   # string: The card class (general CSS-data)
+    wdth: '',                           # string: The closed card width
+    styl: 'background-color: white;',   # string: The card body style
+    attr: '',                           # string: general attributes (style) for the card-container
+    show: true,                         # bool:   Show card-buttons top-right
+    head: 'background-color: white;',   # string: Style for Header background
+    vhgh: '600px',                      # string: MaxHeight (ViewHeight) for span (HideBody) with scrollable content
+    help: ''                            # string: Link to custom Card-help
+)
+
+function htm_Card_end(
+    labl: '',           # string: Label on the submit button
+    icon: '',           # string: Icon left to label
+    hint: '',           # string: Hint on hover the submit button
+    name: '',           # string: The name of the button to submit
+    form: '',           # string: The name of the form to submit
+    subm: false,        # bool:   Submit button shown and active
+    attr: '',           # string: Button attributes. Generel use e.g. action= \"\$link\"
+    akey: '',           # string: Shortcut to activate the button
+    kind: 'save',       # string: The button appearance 
+    simu: false         # bool:   Button only simulate
+)
+", rtrn:true)
+            ,
+                    name:'php1',  styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: lightcyan;', bclr:'lightcyan');
+            htm_Tab(labl:'HTML',  body:'The generated HTML-code:<br> Comming soon !'.preCode(''), 
+                    name:'htm1',  styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: lightgray;', bclr:'lightgray');
+            htm_Tab(labl:'Doc',   body:'Declaring of the function:'.
+                                htm_CodeBox("
+function htm_Card_(
     \$capt = '',                         # string: The card caption
     \$icon = '',                         # string: icon to the left of caption
     \$hint = '',                         # string: The hint on hover caption
@@ -422,25 +467,20 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     \$help = ''                          # string: Link to custom Card-help
 )
 
-function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false)
-    \$labl = '',       # string: Label on the submit button
-    \$icon = '',       # string: Icon left to label
-    \$hint = '',       # string: Hint on hover the submit button
-    \$name = '',       # string: The name of the button to submit
-    \$form = '',       # string: The name of the form to submit
-             
-    \$subm = false,    # bool:   Submit button shown and active
-    \$attr = '',       # string: Button attributes. Generel use e.g. action= \"\$link\"
-    \$akey = '',       # string: Shortcut to activate the button
-    \$kind = 'save',   # string: The button appearance 
-    \$simu = false     # bool:   Button only simulate
+function htm_Card_end(
+    \$labl = '',            # string: Label on the submit button
+    \$icon = '',            # string: Icon left to label
+    \$hint = '',            # string: Hint on hover the submit button
+    \$name = '',            # string: The name of the button to submit
+    \$form = '',            # string: The name of the form to submit
+                    
+    \$subm = false,         # bool:   Submit button shown and active
+    \$attr = '',            # string: Button attributes. Generel use e.g. action= \"\$link\"
+    \$akey = '',            # string: Shortcut to activate the button
+    \$kind = 'save',        # string: The button appearance 
+    \$simu = false          # bool:   Button only simulate
 )
-", rtrn:true)
-            ,
-                    name:'php1',  styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: lightcyan;', bclr:'lightcyan');
-            htm_Tab(labl:'HTML',  body:'The generated HTML-code:<br> Comming soon !'.preCode(''), 
-                    name:'htm1',  styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: lightgray;', bclr:'lightgray');
-            htm_Tab(labl:'Doc',   body:'Declaring of the function:<br> Comming soon !', 
+", rtrn:true), 
                     name:'doc1',  styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: lightyellow;', bclr:'lightyellow');
             htm_Tab(labl:'Notes', body:'Some special notes:<br> '. 'htm_Card() do not exist, but <br>
                                         htm_Card_() - to prepare the card <br>
@@ -506,17 +546,15 @@ function htm_Input(# labl:'',plho:'@Enter...',icon:'',hint:'',vrnt: 'text',name:
                     name:'out4',  styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', bclr:'white');
             htm_Tab(labl:'PHP',   body:'PHP-code for calling htm_Page():<br> '.
                 htm_CodeBox("
-function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', gbl_Imag:'', attr:'', gbl_Bord:true) 
-    \$titl='',           # string: Page title
-    \$hint='',           # string: Page tip  (vertical text - left)
-    \$info='',           # string: Page into (vertical text - right)
-                 
-    \$inis='',           # string: Initial CSS/js script in page header
-    \$algn='center',     # string: align background-image
-
-    \$imag='',           # string: Page background-image
-    \$attr='',           # string: Page attributes
-    \$pbrd=true          # bool:   Draw border around the page body-div
+function htm_Page_(
+    titl:'',           # string: Page title
+    hint:'',           # string: Page tip  (vertical text - left)
+    info:'',           # string: Page into (vertical text - right)
+    inis:'',           # string: Initial CSS/js script in page header
+    algn:'center',     # string: align background-image
+    imag:'',           # string: Page background-image
+    attr:'',           # string: Page attributes
+    pbrd:true          # bool:   Draw border around the page body-div
 ) 
 
 function htm_Page_end();  # End of page - has no parameters
@@ -635,8 +673,8 @@ They are usable in your project, but are only documented in php2html.php<br>
     htm_Card_end();
 
 // arrPretty(get_defined_vars(),'Defined_vars:');
-
-
+htm_Page_Sect('<small>'.$©.'</small>','border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:#ebeaea;');
+ 
 htm_Page_end();
 CardOff(frst:1,last:5);
 ### :PAGE_END
