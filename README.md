@@ -1,3 +1,56 @@
+# 🧠 Clever HTML Engine – Functional HTML with PHP
+A modern, semantic PHP library for generating HTML interfaces with compact code, multilingual support, and responsive layouts.
+
+# 🚀 Features
+- UI components like htm_Input(), htm_Table(), htm_Page_()
+
+- Multilingual labels with internal translation engine (@Label)
+
+- Responsive layout with hints, tooltips, collapsible cards
+
+- Integration with Font Awesome, jQuery UI, TinyMCE, and more
+
+# 📦 Installation
+bash 
+
+	git clone https://github.com/EV-soft/Clever-Html-engine.git
+Include the library in your PHP project:
+
+	php
+	require_once 'php2html.lib.php';
+# 💡 Examples
+Input field with currency
+
+```php
+	php
+	htm_Input(
+  	  type: 'dec2',
+  	  name: 'price',
+  	  valu: 123.45,
+  	  labl: '@Price',
+  	  hint: '@Enter amount with 2 decimals',
+  	  unit: 'US$'
+	);
+```
+Simple table
+```php
+	php
+	htm_Table(
+	  data: [['Name', 'Age'], ['Anna', 32], ['Bent', 45]],
+	  head: true
+	);
+```
+# 🌐 Resources
+- Demo & Documentation on GitHub
+
+- Live Examples from EV-soft
+
+# 🤝 Community
+Got ideas or improvements? Contribute via GitHub Pull Requests or open an Issue. Collaboration is welcome!
+
+***
+
+
 # php2html.lib = Clever-Html-Engine
 Your tool to quickly program html code in your PHP web project.
 
