@@ -15,14 +15,14 @@ bash
 
 	git clone https://github.com/EV-soft/Clever-Html-engine.git
 Include the library in your PHP project:
+php
 
-	php
 	require_once 'php2html.lib.php';
 # 💡 Examples
 Input field with currency
 
-```php
-	php
+php
+```
 	htm_Input(
   	  type: 'dec2',
   	  name: 'price',
@@ -33,12 +33,25 @@ Input field with currency
 	);
 ```
 Simple table
-```php
-	php
+
+php
+```
+	$data = [
+	  ['Alice', 30, 'alice@example.com'],
+	  ['Bob', 42, 'bob@example.com'],
+ 	  ['Charlie', 25, 'charlie@example.com']
+	];
+
 	htm_Table(
-	  data: [['Name', 'Age'], ['Anna', 32], ['Bent', 45]],
-	  head: true
-	);
+	  $capt= [],$pref= [],
+	  $body= [
+	          ['@Name.', '40%','text','',['left'],'f1'],
+	          ['@Age',   '20%','text','',['right'],'f2'],
+	          ['@Email', '40%','text','',['center'],'f3']
+	        ],
+	  $suff= [],$note= '',
+	  data: $data,
+);
 ```
 # 🌐 Resources
 - Demo & Documentation on GitHub
