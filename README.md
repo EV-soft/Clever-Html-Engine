@@ -42,16 +42,16 @@ php
  	  ['Charlie', 25, 'charlie@example.com']
 	];
 
-	htm_Table(
-	  $capt= [],$pref= [],
-	  $body= [
-	          ['@Name.', '40%','text','',['left'],'f1'],
-	          ['@Age',   '20%','text','',['right'],'f2'],
-	          ['@Email', '40%','text','',['center'],'f3']
-	        ],
-	  $suff= [],$note= '',
-	  data: $data,
-	);
+    	htm_Table(
+      	  capt: [],pref: [],
+      	  body: [
+              ['@Name.',    '40%','text','',['left'],'f1'],
+              ['@Age',      '20%','text','',['right'],'f2'],
+              ['@Email',    '40%','text','',['center'],'f3']
+            ],
+          suff: [],note: '',
+          data: $data,
+    	);
 ```
 # 🌐 Resources
 - Demo & Documentation on GitHub
