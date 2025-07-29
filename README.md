@@ -51,7 +51,7 @@ php
 	        ],
 	  $suff= [],$note= '',
 	  data: $data,
-);
+	);
 ```
 # 🌐 Resources
 - Demo & Documentation on GitHub
