@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.4.0';    $DocRev='24-06-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.4.1';    $DocRev='24-07-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -26,8 +26,8 @@ htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver
     // arrPretty($accoPlan,'$accoPlan');
     
     htm_Card_($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',$form= $fm='plan',$acti= '',$clas= 'panelW110',$wdth= '',$styl= 'background-color: white;',$attr= '');
-    htm_Table(capt:[['@@Kontoplan baseret på Erhvervsstyrelsens standard.', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', '']],
-        pref:[],
+    htm_Table(capt:[['@Danish Business Authority\'s standard.', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', '']],
+        pref:[],    #  Kontoplan baseret på Erhvervsstyrelsens standard.
         body:[
               ['@Id.',          '0%','hidd','',   ['center'],                         'pln_id__', '@Index maintained by the system','serial...'],
               ['@Account no.',  '5%','indx','',   ['center','transparent'],           'pln_nmbr', '@Account number. Unique number code, which is used for sorting, totaling, etc. If you enter an unused one, a new account will be created, otherwise you can correct the account.','@Konto...'],
@@ -53,9 +53,10 @@ htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver
                             attr:'', link:'accountPlan-print.page.php');     // https://ev-soft.work/p2h/v1.2.0/Proj.demo/accountPlan-print.page.php
         
     htm_Card_end('@Save','','@Save to database','save',$fm,true); 
-    htm_nl();
-    echo str_WithHint($labl='@Kontoplan ?',$hint='@Erhvervsstyrelsen har udgivet en standard kontoplan med tilhørende vejledning til postering på kontiene.',$icon='').'<br><br>';
-    echo '<a href="https://erhvervsstyrelsen.dk/sites/default/files/2019-03/Vejledning%20til%20den%20frivillige%20standardkontoplan%20V.1.pdf" target="_blank">Vejledning til standard kontoplanen</a><br><br>';
+    htm_nl();                                     # Erhvervsstyrelsen har udgivet en standard kontoplan med tilhørende vejledning
+    echo str_WithHint($labl='@Kontoplan v1, 2019',$hint='@The Danish Business Authority has published a standard chart of accounts with accompanying guidance til postering på kontiene.',$icon='').'<br><br>';
+//  echo '<a href="https://erhvervsstyrelsen.dk/sites/default/files/2019-03/Vejledning%20til%20den%20frivillige%20standardkontoplan%20V.1.pdf" target="_blank">Vejledning til standard kontoplanen</a><br><br>';
+    echo '<a href="https://virksomhedsguiden.dk/content/ydelser/kontoplan/9b708a7a-25ab-4d81-b37b-75da27a07a6b/" target="_blank">Vejledning til standard kontoplanen</a><br><br>';
 
     // file_put_contents('accountPlan.print.htm','<body style="margin:0; padding:0;">'.$spool.'</body>');
 

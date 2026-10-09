@@ -82,7 +82,7 @@ htm_Page_(titl:'minisetup.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.
         ');
     htm_Card_end();
        
-    CardOff($First=2,$Last=3); // Close card 2 and 3 on page open
+   // CardOff($First=2,$Last=3); // Close card 2 and 3 on page open
 
 ##### Replace to here
 

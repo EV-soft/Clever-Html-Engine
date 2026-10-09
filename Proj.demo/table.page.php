@@ -1,9 +1,9 @@
-<?php $DocFile= './Proj.demo/table.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php $DocFile= './Proj.demo/table.page.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE'; 
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -30,12 +30,12 @@ require_once($sys.'php2html.lib.php');
         pref: array( # ['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horAlgn_mv]', '5:ColTip'                                        ], ['Næste record'],... # Generel struktur!
     //      ['@Pref',       '4%','butt','',['center'],'@Row prefix', '<ic class="fas fa-check" style="color:green; font-size:13px; "></ic>'],
             ),           // if (($ModifyRec) or ($RowBody[0][2]!='indx')) er 2% ColWidth benyttet til => butt
-        body: array( # ['0:ColLabl', '1:ColWidth', '2:InpType', '3:Format', '4:[horAlgn_mv]', '5:ColTip', '6:placeholder','7:default','8:select'], ['Næste record'],... # Generel struktur! 
-          ['@No.',         '10%','text','',['center'],'@Position number in the group','.No.'],
-          ['@Description', '26%','data','',['left'  ],'@Item Description. A descriptive text of your choice','@Enter text...'],
-          ['@Account',     '10%','data','',['center'],'@The number in the statement of account to which the sales tax must be posted.','Account...'],
-          ['@%-rate',      '10%','data','',['center'],'@VAT % rate','25 %...'],
-          ['@Note',        '40%','text','',['left'  ],'@Note about the record','.?.'],
+        body: array( # ['0:ColLabl', '1:ColWidth', '2:InpType', '3:Format', '4:[horAlgn_mv]', '5:fldKey', '6:ColTip', '7:placeholder','8:default','9:select'], ['Næste record'],... # Generel struktur! 
+          ['@No.',         '10%','text','',['center'],'vat_no',  '@Position number in the group','.No.'],
+          ['@Description', '26%','data','',['left'  ],'vat_desc','@Item Description. A descriptive text of your choice','@Enter text...'],
+          ['@Account',     '10%','data','',['center'],'vat_acc', '@The number in the statement of account to which the sales tax must be posted.','Account...'],
+          ['@%-rate',      '10%','data','',['center'],'vat_rate','@VAT % rate','25 %...'],
+          ['@Note',        '40%','text','',['left'  ],'vat_note','@Note about the record','.?.'],
         ),
         suff: array( # ['0:ColLabl', '1:ColWidth', '2:InpType', '3:OutFormat', '4:[horAlgn_mv]', '5:ColTip', '6:value!     '                       ], ['Næste record'],... # Generel struktur! 
           ['@Delete',       '4%','butt','',['center'],'@Click the red cross to delete a entry', '<ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>'],
@@ -50,12 +50,14 @@ require_once($sys.'php2html.lib.php');
         styl: 'background-image: none;',
         from:  __FILE__,
         list: ['',''],  
-        expo: '',
+        expo: 'tableexport.csv',   # The table data is also written to this CSV file (see the link below)
         rtrn: false
     );
+    htm_nl();
+    htm_LinkButt(labl:'@Download the table as CSV (expo:)', hint:'@Text starting with = + - @ is written with a leading apostrophe, so Excel does not run it as a formula', link:'tableexport.csv', targ:'_blank');
     htm_Card_end(labl:'Save', icon:'', hint:'@Save data in this card', name:'', form:'', subm:true, attr:'', akey:'s', kind:'save', simu:false);
    
-    htm_Card_(capt: 'Destription of htm_Table():', icon:'fas fa-info', hint:'', form:'head', acti:'', clas:'cardW800', wdth:'', styl:'background-color: white;', attr:'');
+    htm_Card_(capt: 'Destription of htm_Table():', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW800', wdth:'', styl:'background-color: white;', attr:'');
         htm_TextDiv('
 The htm_Table() has the following features:<br>
 It has fixed (sticky) column headers, and Scrolling content-window.<br>

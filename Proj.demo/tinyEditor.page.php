@@ -1,10 +1,10 @@
-<?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+<?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
 $gbl_ProgRoot= './../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -29,6 +29,7 @@ htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:
             " <script type=\"text/javascript\">
               tinymce.init({
                 selector: '#TinyTextarea',
+                license_key: 'gpl',
                 language: 'en',
                 skin: 'oxide-dark',
                 content_css: 'dark',
@@ -49,10 +50,45 @@ htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:
               });
               </script>";
         $EditFile= 'EditContent.htm';
-        if (isset($_POST['TinyTextarea'])) {                                                    # Save content:
-            file_put_contents($EditFile, $_POST['TinyTextarea']);
-        }
-        $docContent= /* iconv('ISO-8859-1', "UTF-8", */ file_get_contents($EditFile) /* ) */ ;  # Load content
+/* 
+https://www.tiny.cloud/docs/tinymce/latest/plugins/#open-source-plugins
+Free plugins: (In demo | Indented: not used)
+Accordion
+Anchor
+Autolink
+    Autoresize
+    Autosave
+    Character Map
+Code
+    Code Sample
+    Directionality
+Emoticons
+Full Screen
+Help
+Image
+    Import CSS
+Insert Date/Time
+Link
+Lists
+    List Styles
+Media
+    Nonbreaking Space
+Page Break
+Preview
+    Quick Toolbars
+Save
+Search and Replace
+Table
+Visual Blocks
+Visual Characters
+Word Count
+*/
+
+        # Save content: in this visitor's session only. Writing to the shared file let any visitor put
+        # HTML/JavaScript on the page for everybody else. The file is the read-only starting template.
+        if (isset($_POST['TinyTextarea']) and is_string($_POST['TinyTextarea']))
+            $_SESSION['tinyEditDoc']= substr($_POST['TinyTextarea'], 0, 200000);
+        $docContent= $_SESSION['tinyEditDoc'] ?? file_get_contents($EditFile);                # Load content
         htm_Input(labl:'@This is the HTML editor', 
                   plho:'@Enter your text here...', icon:'', 
                   hint:'@Based on open source: tinyMCE',vrnt: 'area',
@@ -73,7 +109,7 @@ htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:
                           attr:'', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'',ftop:''). 
                           // 1:Backup current Editfile, 2:Upload file, 3:saveAs EditContent.htm
                 str_sp('4').
-                htm_AcceptButt(labl:'OK', hint:'Upload now', form:'fmUpload', attr:'margin-top: 6px;', rtrn:true, tplc:'LblTip_text'), 
+                htm_AcceptButt(labl:'OK', hint:'Upload now', form:'fmUpload', rtrn:true, tplc:'LblTip_text'), 
                 icon:'',hint:'@Upload file to '.$EditFile.'<br>Not working yet !',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:true,ftop:'').
              
              htm_Field(labl:'@Download file', body:

@@ -1,5 +1,5 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';   $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';   $DocIni='evs';  $ModulNr=0; ## File informative only
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters to htm_-functions are shown. In a real project you just need to give parameters different from default values !
  
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -14,7 +14,7 @@ $needPolyfill=    '0';
 $needFontawesome= '2';
 $needTinymce=     '0';
 
-require_once ($sys.'php2html.lib.php'); // 'php2html.lib.min.php'
+require_once ($sys.'php2html.lib.php'); // System libary
 require_once ($sys.'filedata.inc.php'); // sql_/dbi_-functions
 
 
@@ -35,16 +35,29 @@ function indxCheck(&$arrData,$name,$pref='') {
     } $arrData= $arrTemp;
 }
 
-global $lang;
-       
+global $lang, $mode;
 $test= false;
 $debug= false;
 $report= '';
 
+$temp_mode = refresh('mode');   // Hent værdien (som kan være "checked " eller tom)
+// Konverter til ren boolean: Hvis den indeholder "checked", sæt den til true. Ellers false.
+if (trim((string)$temp_mode) === 'checked' || $temp_mode === true || $temp_mode === '1' || $temp_mode === 'on')
+    { $mode = true;} else { $mode = false; }
+$_SESSION['mode'] = $mode;  // Hvis du bruger sessions til at huske det:
+
+$removeMenu= refresh('removeMenu');
+$_SESSION['removeMenu'] = $removeMenu; 
+
+
+
+// if (!isset($removeMenu)) $removeMenu= false;
+$removeMenu= isset($_POST['remm']);
+
 if ($test) arrPrint($_POST,'$_POST');
 
-
-function sql_CreateTable($pref='tca_',$table,$arrName,$tblComm='AutoComment') { # Create or reset empty dbTable with fieldnames from array
+##### Future SQL-libary:
+function sql_CreateTable($pref,$table,$arrName,$tblComm='AutoComment') { # Create or reset empty dbTable with fieldnames from array
     global $report;                                                     $report.= 'sql_CreateTable: '; // form2arr($arrName);
     $keys= array_keys($arrName);
     $table= $pref.$table; // Prefix: 'tca_' = Tiny-Cloud-Accounting
@@ -86,6 +99,7 @@ function sql_Insert($table,$arrData) {
 function sql_Fetch() {
     
 }
+##### Future SQL-libary: end
 
 function btnSaveArr($pref,$name,&$arrData,$table='') {
     $arr=$arrData;
@@ -153,11 +167,11 @@ function post2arr(&$arrData,$pref) { # Fill array with multible records from _PO
     }
 }
 
-
+       
 ##### DATA EXCHANGE:
 $dPath= './Data.demo/';
 
-### SAVE to database:    (DEMO: to files)
+### SAVE to database:    (DEMO: to json files)
 
 # UPDATE files:
 
@@ -200,12 +214,11 @@ $arrContent= json_decode(file_get_contents($dPath.'arrContent.dat.json'), true);
 $id=0; foreach ($arrContent as $row) { $result[]= array_merge(['id'=>$id++],$row); }; $arrContent= $result; ## Add id-field
 /* manually: */
 
-
-
+   
 ## define('DB_TYPE', 'mysql');  ## See: customLib.inc.php
 $pref='tca_'; // Tiny-Cloud-Accounting
 if (false) { # Not in use. Demo gets data from single JSON-file.
-    $db_Link= dbi_connect($sqhost='mysql62.unoeuro.com', $squser='viuff_info', $sqpass='M4d73yxanU8j', $sqdb='viuff_info_db8');
+    $db_Link= dbi_connect($sqhost='localhost', $squser='db_user', $sqpass='db_password', $sqdb='db_name');
     // arrPrint($db_Link,'$db_Link');
     // "CREATE DATABASE $db_navn with encoding = 'UTF8'"
 
@@ -237,7 +250,6 @@ if (false) { # Not in use. Demo gets data from single JSON-file.
 
 ### READ from database:
 # INIT variables:
-
     ################### Fetch from DataBase: ###################
     $arrOrders = sql_readAssoc($strQuery='SELECT * FROM tca_OrdersTbl' ); // array_shift($arrOrders);
     // $arrContent= sql_readAssoc($strQuery='SELECT * FROM tca_ContentTbl');
@@ -285,7 +297,7 @@ else # Data from JSON-files ( MYSQL-DB exported to JSON-file )
             // arrPretty($table['data'],"$tblName"); 
         }
 }
-
+ 
 if (true) {
 ################### Save data in cards to DataBase if pusbed save button: ###################
     btnSaveArr($pref,'cust',$arrCustomr);
@@ -319,45 +331,62 @@ indxCheck($arrContent,$name='cnt_post');
 htm_Page_(titl:'@OrderCreate.page.php', hint:'@Tip: Toggle fullscreen-mode with function key: F11',
            info:'@Example: Customer-ORDER Build with <b style="color:darkgreen;">PHP2HTML &nbsp;</b>',
            inis:'', algn:'center', imag:'', attr:'background: linear-gradient(0deg,#03a9f4 0%,#e3f2fd);', pbrd:false);
+           
+if (!$removeMenu) {
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'@Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;background-color:black;', note:$menunote); 
     htm_nl(2);
-    
+    htm_TextDiv(body:'@Below you see the advanced example of a page with customer data and order data:',algn:'center');
+    htm_hr();
+}
 ## Quickstart:
     $menudata_app= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='', 8:$widt)
-         ['Frst','fa-solid fa-coins colrwhite',          '@FINANCE',  '@FINANCE menu:',  '@', 'xx.page.php', [
-            ['Next','fas fa-file black',                 '@Submenu 1','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
-            ['Next','fas fa-file black',                 '@Submenu 2','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
-            ['Next','fas fa-file black',                 '@Submenu 3','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
-            ['Next','fas fa-file black',                 '@Submenu 4','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ['Frst','fa-solid fa-coins fa-fw colrcyan',           '@FINANCE',  '@FINANCE menu:
+                                                                             Accounting processing',  '@', 'xx.page.php', [
+            ['Next','fas fa-file fa-fw black',                 '@Submenu 1','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+            ['Next','fas fa-file fa-fw black',                 '@Submenu 2','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+            ['Next','fas fa-file fa-fw black',                 '@Submenu 3','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+            ['Next','fas fa-file fa-fw black',                 '@Submenu 4','@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
          ],'disabled'],                                                                 
-         ['Frst','fa-regular fa-address-card colrwhite', '@DEBTOR',   '@DEBTOR menu:',   '@', 'xx.page.php', [
-            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ['Frst','fa-regular fa-address-card fa-fw colryellow','@DEBTOR',   '@DEBTOR menu:
+                                                                            Sales-related',   '@', 'xx.page.php', [
+            ['Next','fas fa-file fa-fw black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
          ],'active'],                                                                   
-         ['Frst','fa-solid fa-id-card colrwhite',        '@CREDITOR', '@CREDITOR menu:', '@', 'xx.page.php', [
-            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ['Frst','fa-solid fa-id-card fa-fw colrred',          '@CREDITOR', '@CREDITOR menu:
+                                                                            Purchasing-related', '@', 'xx.page.php', [
+            ['Next','fas fa-file fa-fw black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
          ],'disabled'],                                                                   
-         ['Frst','fa-solid fa-boxes-stacked colrwhite',  '@STOCK',    '@STOCK menu:',    '@', 'xx.page.php', [
-            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ['Frst','fa-solid fa-boxes-stacked fa-fw colrgold',   '@STOCK',    '@STOCK menu:
+                                                                            warehouse flow',    '@', 'xx.page.php', [
+            ['Next','fas fa-file fa-fw black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
          ],'disabled'],                                                                  
-         ['Frst','fa-solid fa-gear colrwhite',           '@SYSTEM',   '@SYSTEM menu:',   '@', 'xx.page.php', [
-            ['Next','fas fa-file black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ['Frst','fa-solid fa-industry fa-fw colrblue',        '@PRODUCTION','@PRODUCTION menu:
+                                                                            Production management',   '@', 'xx.page.php', [
+            ['Next','fa-solid fa-industry gray',               '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'disabled'],
+         ['Frst','fa-solid fa-gear fa-fw colrorange',          '@SYSTEM',   '@SYSTEM menu:
+                                                                            Program settings',   '@', 'xx.page.php', [
+            ['Next','fas fa-file fa-fw black',                 '@Submenu',  '@Go to Submenu',  '@', 'xx.page.php',[],'disabled'],
+         ],'disabled'],
+         ['Frst','fa-solid fa-user fa-fw synt-variable',                     '@Log out',  '@Leave program:', '@', 'xx.page.php', [
          ],'disabled'],
         ]; 
-    htm_Caption(labl:'@Tiny-Cloud-Accounting',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
+    htm_Caption(labl:'@Free finance management',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
     htm_nl(1);
-    htm_Menu_TopDown(capt:'@Main menu',data:$menudata_app, foot:'', styl:'top:0px; background-color:#696868;', note:'', niv0:'z-index:997;', 
+    htm_Menu_TopDown(capt:'' /* '@TCA menu' */,data:$menudata_app, foot:'', styl:'top:0px; background-color:#505050;', note:'', niv0:'z-index:997;', 
                                                                                             //  niv1:'background-color:green;"',
-                                                                                              niv2:'top: -35px;'); 
+                                                                                              niv2:'top: -35px;', them:false, view:false); 
     htm_nl(2);
     
-if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
+// if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
     
-    htm_Fieldset(capt:'@DEBTOR: Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'100%; max-width:1150px; background-color:whitesmoke',marg:'',
+    htm_Fieldset(capt:'@DEBTOR: Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'auto; max-width:1150px; background-color:whitesmoke',marg:'',
                    attr:'Color: green; font-weight: bold; background-color: white; border-radius: 4px; padding: 0 10px; text-align: center; ',rtrn:false);
 
     //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
-    htm_Card_(capt: '@Select existing order:',icon: 'fas fa-search',hint: '',form: $f='orders',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '',head:$headbg);
+    htm_Card_(capt: '@Select existing order:', icon: 'fas fa-search', 
+              hint: '@Find and select an already created order', form: $f='orders', acti: '', clas: 'cardWaut', wdth: '280px',
+              styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '', head:$headbg, simp:$mode);
 
         htm_Table(
             capt: [  ['@Customer orders', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', ''] ],
@@ -367,11 +396,11 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
                     ['@Order Date',   '4%','date', '',   ['left'  ], 'ord_odate',   '@Order Date',                                  'YYYY-MM-DD'],
                     ['@Deliv. date',  '4%','date', '',   ['left'  ], 'ord_ddate',   '@Delivery date',                               'YYYY-MM-DD'],
                     ['@Account',      '8%','text', '',   ['center'], 'ord_acco',    '@Debtor Account number',                       '@Acco...'],
-                    ['@Company name','36%','text', '',   ['left'  ], 'ord_name',    '@Company name',                                '@Firm...'],
+                    ['@Company name','45%','text', '',   ['left'  ], 'ord_name',    '@Company name',                                '@Firm...'],
                     ['@Seller',       '7%','text', '',   ['left'  ], 'ord_sell',    '@The employer with contact to the customer',   '@Sell...'],
                     ['@Amount',      '10%','text', '2d', ['right' ], 'ord_amou',    '@The total order sum',                         '@Amount...'],
                     ['@Currency',     '4%','ddwn', '',   ['center'], 'ord_currency','@Currency code for the currency used on the specification.','@Curr...','',[CurrencyArr(),'width: 55px;']],
-                    ['@Maturity',     '4%','date', '',   ['center'], 'ord_duedate', '@Due date of the amount',                      '@Due...'],
+                    ['@Due date',     '4%','date', '',   ['center'], 'ord_duedate', '@Due date of the amount',                      '@Due...'],
                     ['@Status',      '11%','ddwn', '',   ['left'  ], 'ord_stat',    '@Status','@Status...',  '', [OrdrStatu(),'width: 70px;']], //  ORD_Status()
                  ],
             suff: [],
@@ -385,7 +414,8 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
             styl:   '',       
             from: 'Fi:'. __FILE__ .' Li:'. __LINE__ .' Fu:'. __FUNCTION__,
             list:  ['',''],
-            expo: ''      
+            expo: '',
+            wdth: '900px'
             // , dropFirst:true
           );
     htm_Card_end(labl:'@Save', icon:'', hint:'@Remember to save here if data is edited...', name:'tabl', form:$f,subm:true, attr:'', akey:'', kind:'save', simu:false);
@@ -395,67 +425,123 @@ if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data
 #   Variable names are used as field names in arrays (4+4 characters)
 
 // btn_sav_conderror_reporting(0);
-
-    htm_Card_(capt: lang('@Create new or modify order: ').$strOrder,
-                icon: 'fas fa-pen',hint: '@Demo ! <br>No connection to a DataBase. <br>Read/save from/to JSON-files.',
-                form: '',acti: '',clas: 'cardWaut',wdth: '',styl: 'background-color: rgba(240, 240, 240, 0.80);',attr: '', head:$headbg,vhgh:'1000px');
+        htm_Card_(capt: lang('@Create new or modify order: ').$strOrder, icon: 'fas fa-pen',
+                  hint: '@Demo ! <br>No connection to a DataBase. <br>Read/save from/to JSON-files.', form: '', acti: '', clas: 'cardWaut', wdth: '',
+                  styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '', head:$headbg,vhgh:'1000px', simp:$mode);
                 
         htm_Caption(labl:'@Debtor card',icon:'',hint:'',algn:'center',styl:'color:'.$gbl_TitleColr.'; font-weight:600; font-size: 18px;');
         htm_nl(1);
-        htm_Card_(capt: '@Customer:',icon: 'fas fa-user',hint: '',form: $fm='cust',
-                    acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
-            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Customer nr.',             plho:'@..auto..',       icon:'',hint:'@Customer nr: Can not be edited, onlu created. The system sets this',
-                      vrnt:'text',name:$n='custkont',   valu:$arrCustomr[$n],   form:'',wdth:'30%');
-            htm_Input(labl:'@Customer Lookup',          plho:'@Select',         icon:'',hint:'@Here you select which existing customer to select',                 
-                      vrnt:'opti',name:$n='custopsl',   valu:$arrCustomr[$n],   form:'',wdth:'63%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
-            htm_Input(labl:'@Customer type',            plho:'@Select',         icon:'',hint:'@Customer kategori',                                                 
-                      vrnt:'rado',name:$n='custkate',   valu:$arrCustomr[$n],   form:'',wdth:'97%', algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'',
+        $required= ' <i class="fa-solid fa-circle-info colrorange"></i>';
+        htm_Card_(capt: lang('@Customer:').$required,icon: 'fas fa-user',
+                  hint: lang('@Info about the customer').'<br>'. lang('@Required fields occur'), form: $fm='cust', acti: '', clas: 'cardW280', wdth: '', 
+                  styl: 'background-color: white;', attr: '', mode:'1', head:$headbg, vhgh:'400px', simp:$mode);
+            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',
+                      hint:'Hidden field',                 
+                      vrnt:'hidd',name:$n='ordrnumb',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',
+                      attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
+            htm_Input(labl:'@Customer nr.',             plho:'@..auto..',       icon:'',
+                      hint:'@Customer nr: Can not be edited, onlu created. The system sets this',
+                      vrnt:'text',name:$n='custkont',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'30%');
+            htm_Input(labl:'@Customer Lookup',          plho:'@Select',         icon:'',
+                      hint:'@Here you select which existing customer to select',                 
+                      vrnt:'opti',name:$n='custopsl',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'66%', algn:'left',
+                      attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]);
+            htm_Input(labl:'@Customer type',            plho:'@Select',         icon:'',
+                      hint:'@Customer kategori',                                                 
+                      vrnt:'rado',name:$n='custkate',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'97%', algn:'left',
+                      attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'',
                       list:[['priv', '@private', '@private'], ['prof', '@professional', '@professional']]);                                                                                                                                  
-            htm_Input(labl:'@CVR',                      plho:'@Business only !',icon:'',hint:'@CVR - Virksomheds ID.',                                             
-                      vrnt:'text',name:$n='cust_cvr',   valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
-            htm_Input(labl:'@EAN',                      plho:'@Business only !',icon:'',hint:'@EAN - Elektronisk-betalings ID',                                    
-                      vrnt:'text',name:$n='cust_ean',   valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
-            htm_Input(labl:'@Bank reg.',                plho:'Reg...',          icon:'',hint:'@Bank reg.',                                                         
-                      vrnt:'text',name:$n='custbreg',   valu:$arrCustomr[$n],   form:'',wdth: '30%');          
-            htm_Input(labl:'@Bank account',             plho:'Account...',      icon:'',hint:'@Bank account',                                                      
-                      vrnt:'text',name:$n='custbkto',   valu:$arrCustomr[$n],   form:'',wdth: '66%');          
-            htm_Input(labl:'@Institution',              plho:'@Business only !',icon:'',hint:'@Additional information',                                            
-                      vrnt:'text',name:$n='custinst',   valu:$arrCustomr[$n] ,  form:'',wdth:'100%',algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
-            htm_Input(labl:'@Customer manager',         plho:'@Mana...',        icon:'',hint:'@Customer manager',                                                  
-                      vrnt:'text',name:$n='custansv',   valu:$arrCustomr[$n],   form:'',wdth:'100%');          
-            htm_Input(labl:'@Billing Language',         plho:'@if the language is not local',icon:'',hint:'@The language to be used on invoice transcripts',                    
-                      vrnt:'text',name:$n='custlang',   valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'R',bord:'border: 1px solid green;');
-            htm_Input(labl:'@Homepage',                 plho:'@Business only!', icon:'',hint:'@The customer Homepage',                                             
-                      vrnt:'text',name:$n='custhome',   valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+            htm_Input(labl:'@CVR',                      plho:'@Business only !',icon:'',
+                      hint:'@CVR - Virksomheds ID.',                                             
+                      vrnt:'text',name:$n='cust_cvr',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',
+                      attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+            htm_Input(labl:'@EAN',                      plho:'@Business only !',icon:'',
+                      hint:'@EAN - Elektronisk-betalings ID',                                    
+                      vrnt:'text',name:$n='cust_ean',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+            htm_Input(labl:'@Bank reg.',                plho:'Reg...',          icon:'',
+                      hint:'@Bank reg.',                                                         
+                      vrnt:'text',name:$n='custbreg',   
+                      valu:$arrCustomr[$n],   form:'',wdth: '30%');          
+            htm_Input(labl:'@Bank account',             plho:'Account...',      icon:'',
+                      hint:'@Bank account',                                                      
+                      vrnt:'text',name:$n='custbkto',   
+                      valu:$arrCustomr[$n],   form:'',wdth: '66%');          
+            htm_Input(labl:'@Institution',              plho:'@Business only !',icon:'',
+                      hint:'@Additional information',                                            
+                      vrnt:'text',name:$n='custinst',   
+                      valu:$arrCustomr[$n] ,  form:'',wdth:'100%',algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
+            htm_Input(labl:'@Customer manager',         plho:'@Mana...',        icon:'',
+                      hint:'@Customer manager',                                                  
+                      vrnt:'text',name:$n='custansv',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'100%');          
+            htm_Input(labl:'@Billing Language',         plho:'@if the language is not local',icon:'',
+                      hint:'@The language to be used on invoice transcripts',                    
+                      vrnt:'text',name:$n='custlang',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'R',bord:'border: 1px solid green;');
+            htm_Input(labl:'@Homepage',                 plho:'@Business only!', icon:'',
+                      hint:'@The customer Homepage',                                             
+                      vrnt:'text',name:$n='custhome',   
+                      valu:$arrCustomr[$n],   form:'',wdth:'100%',algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid green;');
             htm_MiniNote('<span class="colrorange">'.lang('@Orange ').'</span>'.lang('@frames are required fields.'));
             htm_MiniNote('<span class="colrgreen">' .lang('@Green ').'</span>'. lang('@frames - restricted use.'));
         htm_Card_end(labl:'@Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        htm_Card_( capt: '@Conditions:', icon: 'far fa-credit-card', hint: '',form: $fm='cond', 
-                    acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
-            htm_Input(labl:'@Order number',             plho:'-',     icon:'',  hint:'Can not be changed here !',                 
-                      vrnt:'text',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'100%', algn:'left',attr:'',        rtrn:false,unit:'',disa:true,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Debtor group',      plho:'@Select',      icon:'',  hint:'@Choose which group the customer belongs to',     
-                      vrnt:'opti', name:$n='condgrup', valu: $arrConditi[$n],   form:'',wdth:'100%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Grup() );
-            htm_Input(labl:'@Payment method',    plho:'@Select',      icon:'',  hint:'@How to pay',                                     
-                      vrnt:'opti', name:$n='condpaym', valu: $arrConditi[$n],   form:'',wdth:'100%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Betl() );
-            htm_Input(labl:'@Payment deadline',  plho:'@Select',      icon:'',  hint:'@How long is the deadline for payment',           
-                      vrnt:'opti', name:$n='conddead', valu: $arrConditi[$n],   form:'',wdth:'100%',  algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Frist() );
-            htm_Input(labl:'@Print to',          plho:'@Select',      icon:'',  hint:'@Choose how to print, save or send the document.',
-                      vrnt:'opti', name:$n='condoutp', valu: $arrConditi[$n],   form:'',wdth:'68%',   algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', list: DEB_Dok() );
-            htm_Input(labl:'@Customer reference',/*plho:'Ref...',icon:'',*/     hint:'@for example. Requisitions no',                   
-                      vrnt:'text', 
-name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
+        htm_Card_( capt: '@Conditions:', icon: 'far fa-credit-card', 
+                   hint: '@Paymend conditions' ,form: $fm='cond', acti: '', clas: 'cardW280', wdth: '', 
+                   styl: 'background-color: white;', attr: '',mode:'1', vhgh:'400px', simp:$mode);
+            htm_Input(labl:'@Order number',             plho:'-',     icon:'',  
+                      hint:'Can not be changed here !',                 
+                      vrnt:'text',name:$n='ordrnumb',   
+                      valu:$arrCustomr[$n],   form:'', wdth:'100%', algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:true,rows:'3',step:'',
+                      list:[]); 
+            htm_Input(labl:'@Debtor group',      plho:'@Select',      icon:'',  
+                      hint:'@Choose which group the customer belongs to',     
+                      vrnt:'opti', name:$n='condgrup', 
+                      valu: $arrConditi[$n],   form:'',wdth:'100%',  algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', 
+                      list: DEB_Grup() );
+            htm_Input(labl:'@Payment method',    plho:'@Select',      icon:'',  
+                      hint:'@How to pay',                                     
+                      vrnt:'opti', name:$n='condpaym', 
+                      valu: $arrConditi[$n],   form:'',wdth:'100%',  algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', 
+                      list: DEB_Betl() );
+            htm_Input(labl:'@Payment deadline',  plho:'@Select',      icon:'',  
+                      hint:'@How long is the deadline for payment',           
+                      vrnt:'opti', name:$n='conddead', 
+                      valu: $arrConditi[$n],   form:'',wdth:'100%',  algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', 
+                      list: DEB_Frist() );
+            htm_Input(labl:'@Print to',          plho:'@Select',      icon:'',  
+                      hint:'@Choose how to print, save or send the document.',
+                      vrnt:'opti', name:$n='condoutp', 
+                      valu: $arrConditi[$n],   form:'',wdth:'68%',   algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'', 
+                      list: DEB_Dok() );
+            htm_Input(labl:'@Customer reference',/*plho:'Ref...',icon:'',*/     
+                      hint:'@for example. Requisitions no',                   
+                      vrnt:'text', name:$n='condrefr', 
+                      valu: $arrConditi[$n],   form:'',wdth:'100%');
         htm_Card_end(labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        $body= '<small><i>Business only !</i><br>
+        $body= lang('@<small><i>Business only !</i><br>
             Copy or check data in the public company register.<br>
-            Data is provided by CVR API<br></small>';
+            Data is provided by CVR API<br></small>');
 
-        htm_Card_( capt: '@CVR-lookup:', icon: 'fas fa-database', hint: '@Lookup in the CVR register:',
-                     form: $fm='cvr_', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
+        htm_Card_( capt: '@CVR-lookup:', icon: 'fas fa-database', 
+                   hint: '@Lookup in the CVR register:', form: $fm='cvr_', acti: '', clas: 'cardW280', wdth: '', 
+                   styl: 'background-color: white;', attr: '',mode:'1', vhgh:'400px', simp:$mode);
 
             htm_Fieldset( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
             
@@ -486,15 +572,32 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                         $ix= 0; while ($svar['productionunits'][$ix]['pno']) {$cvrDiv.= lang('@P-nr').': '. $svar['productionunits'][$ix]['pno'].'&#xa;'; $ix++;}
                     }
                 }
-            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Land registry',            plho:'',                icon:'',hint:'@In what country do you want to apply?',                       
-                      vrnt:'opti', name:$n='cvr_Land',  valu: $cvrLand='dk',    form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list: CVR_Land(), llgn:'R',bord:'border: 1px solid green;');
-            htm_Input(labl:'@Search for',               plho:'',                icon:'',hint:'@What do you know?',                                           
-                      vrnt:'opti', name:$n='cvr_Kode',  valu: $cvrKode='search',form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list: CVR_Liste(),llgn:'R',bord:'border: 1px solid green;');
-            htm_Input(labl:'@CVR/P-uni./Phon/Name',     plho:'@Business only !',icon:'',hint:'@Enter here, data or company name that you want to search for',
-                      vrnt:'text', name:$n='cvr_Soeg',  valu: $cvrSoeg,         form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],          llgn:'R',bord:'border: 1px solid green;');
-            htm_MiniNote('<span class="colrgreen">'.lang('@Green ').'</span>'.lang('@frames are the basis for entry in CVR.'));
+            htm_Input(labl:'@Order number',     plho:'Hidden field',    icon:'',
+                      hint:'Hidden field',                 
+                      vrnt:'hidd', name:$n='ordrnumb',  
+                      valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',
+                      list:[]); 
+            htm_Input(labl:'@Land registry',    plho:'',    icon:'',
+                      hint:'@In what country do you want to apply?',                       
+                      vrnt:'opti', name:$n='cvr_Land',  
+                      valu: $cvrLand='dk',    form:'',wdth:'50%', algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+                      list: CVR_Land(), llgn:'R',bord:'border: 1px solid green;');
+            htm_Input(labl:'@Search for',       plho:'',    icon:'',
+            
+                      hint:'@What do you know?',                                           
+                      vrnt:'opti', name:$n='cvr_Kode',  
+                      valu: $cvrKode='search',form:'',wdth:'50%', algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+                      list: CVR_Liste(),llgn:'R',bord:'border: 1px solid green;');
+            htm_Input(labl:'@CVR/P-uni./Phon/Name',     plho:'@Business only !',icon:'',
+                      hint:'@Enter here, data or company name that you want to search for',
+                      vrnt:'text', name:$n='cvr_Soeg',  
+                      valu: $cvrSoeg, form:'',wdth:'100%', algn:'left',
+                      attr:'',rtrn:false,unit: '', disa:false, rows:'3', step:'',
+                      list: [], llgn:'R', bord:'border: 1px solid green;');
+            htm_MiniNote('<span class="colrgreen">'.lang('@Green ').' </span>'.lang('@frames are the basis for entry in CVR.'));
             htm_hr('lightgray');
             htm_AcceptButt( labl:'@Search',  icon:'', hint:'@Start search in the CVR register', 
                             form:'cvrform', wdth:'', attr:'', akey:'s', kind:'crea', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
@@ -502,79 +605,136 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             
             // htm_hr('green');
             htm_Fieldset( capt:'@Register data:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
-            htm_Input(labl:'@CVR-number',  plho:'@CVR...', icon:'',hint:'@Retrieved from the CVR register',
-                      vrnt:'text', name:$n='cvr_Numm', valu:$cvrNumm ?? '',form:'',wdth:'30%');
-            htm_Input(labl:'@Company Name',plho:'@Name...',icon:'',hint:'@Retrieved from the CVR register',
-                      vrnt:'text', name:$n='cvr_Name', valu:$cvrNavn ?? '',form:'',wdth:'66%');
-            htm_Input(labl:'@Phone',       plho:'@Phon...',icon:'',hint:'@Retrieved from the CVR register',
-                      vrnt:'text', name:$n='cvr_phon', valu:$cvrTelf ?? '',form:'',wdth:'30%');
-            htm_Input(labl:'@Address',     plho:'@Addr...',icon:'',hint:'@Retrieved from the CVR register',
-                      vrnt:'text', name:$n='cvr_Adrs', valu:$cvrAddr ?? '',form:'',wdth:'66%');
-            htm_Input(labl:'@ZIP',         plho:'@zip...', icon:'',hint:'@Retrieved from the CVR register',
-                      vrnt:'text', name:$n='cvr_zipp', valu:$cvrPost ?? '',form:'',wdth:'30%');
-            htm_Input(labl:'@City',        plho:'@City...',icon:'',hint:'@Retrieved from the CVR register',
-                      vrnt:'text', name:$n='cvr_town',   valu:$cvrBy   ?? '',form:'',wdth:'66%');
+            htm_Input(labl:'@CVR-number',  plho:'@CVR...', icon:'',
+                      hint:'@Retrieved from the CVR register',
+                      vrnt:'text', name:$n='cvr_Numm', 
+                      valu:$cvrNumm ?? '',form:'',wdth:'30%');
+            htm_Input(labl:'@Company Name',plho:'@Name...',icon:'',
+                      hint:'@Retrieved from the CVR register',
+                      vrnt:'text', name:$n='cvr_Name', 
+                      valu:$cvrNavn ?? '',form:'',wdth:'66%');
+            htm_Input(labl:'@Phone',      plho:'@Phon...',icon:'',
+                      hint:'@Retrieved from the CVR register',
+                      vrnt:'text', name:$n='cvr_phon', 
+                      valu:$cvrTelf ?? '',form:'',wdth:'30%');
+            htm_Input(labl:'@Address',  plho:'@Addr...',icon:'',
+                      hint:'@Retrieved from the CVR register',
+                      vrnt:'text', name:$n='cvr_Adrs', 
+                      valu:$cvrAddr ?? '',form:'',wdth:'66%');
+            htm_Input(labl:'@ZIP',      plho:'@zip...', icon:'',
+                      hint:'@Retrieved from the CVR register',
+                      vrnt:'text', name:$n='cvr_zipp', 
+                      valu:$cvrPost ?? '',form:'',wdth:'30%');
+            htm_Input(labl:'@City',     plho:'@City...',icon:'',
+                      hint:'@Retrieved from the CVR register',
+                      vrnt:'text', name:$n='cvr_town', 
+                      valu: $cvrBy   ?? '',form:'',wdth:'66%');
             htm_AcceptButt('@Use',lang('@Use the data shown in your registration of ').($hvem ?? '').'. <br>'. lang('@Warning: Possibly previous data is overwritten! (Fields without content, do not affect external data). <br> Not working yet'), $btnKind='save', $frmName='cvrform', $width='', $akey='b', $rtrn=false);
-            htm_Input(labl:'@Other things',plho:'@Various...',icon:'',hint:'@Retrieved from the CVR register, various supplementary data',vrnt:'area', name:'cvrDiv',valu: $cvrDiv ?? '',wdth:'100%');
+            htm_Input(labl:'@Other things',plho:'@Various...',icon:'',
+                      hint:'@Retrieved from the CVR register, various supplementary data',
+                      vrnt:'area', name:'cvrDiv',
+                      valu: $cvrDiv ?? '',wdth:'100%');
             htm_Fieldset_end();
         htm_Card_end( labl:'@Update', icon:'', hint:'Overwrite existing data with CVR-register data !', name:'', form:'cvr_', subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        htm_Card_(capt: '@Billing:',icon: 'fas fa-pen',hint: '',form: $fm='bill',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
-            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Order info',               plho:'@Order:... Date:...',icon:'',hint:'@@Systemfield: Auto fill out, when order is created/saved',
-                      vrnt:'area',name:$n='billoref',   valu:$arrBilling[$n] ?? '',form:'', wdth:'100%',algn:'left',attr:'',   rtrn:false,unit:'',disa:true,rows:'1');
-            htm_Input(labl:'@Customer name',            plho:'@Name...',              icon:'',hint:'@Enter costomer name',                                     
-                      vrnt:'text',name:$n='billnavn',   valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Customer address',         plho:'@Address...',           icon:'',hint:'@Enter invoice address',                                   
-                      vrnt:'text',name:$n='billaddr',   valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Customer place',           plho:'@Place...',             icon:'',hint:'@Enter invoice place',                                     
-                      vrnt:'text',name:$n='billsted',   valu:$arrBilling[$n], form:'');    
-            htm_Input(labl:'@ZIP',                      plho:'@ZIP...',               icon:'',hint:'@ZIP code',                                                
-                      vrnt:'text',name:$n='billponr',   valu:$arrBilling[$n], form:'',wdth:'26%', algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Invoice city',             plho:'@City...',              icon:'',hint:'@Invoice city',                                            
-                      vrnt:'text',name:$n='billbynv',   valu:$arrBilling[$n], form:'',wdth:'68%', algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Invoice Country',          plho:'@Country...',           icon:'',hint:'@Invoice Country',                                         
-                      vrnt:'text',name:$n='billland',   valu:$arrBilling[$n], form:'');
+        htm_Card_(capt: lang('@Billing:').$required, icon: 'fa-regular fa-address-card',
+                  hint: lang('@Payment information').'<br>'. lang('@Required fields occur'), form: $fm='bill', acti: '', clas: 'cardW280',wdth: '', 
+                  styl: 'background-color: white;', attr: '', mode:'1',head:$headbg, vhgh:'400px', simp:$mode);
+            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',
+                      hint:'Hidden field',                      vrnt:'hidd',
+                      name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',
+                      attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
+            htm_Input(labl:'@Order info',               plho:'@Order:... Date:...',icon:'',
+                      hint:'@@Systemfield: Auto fill out, when order is created/saved', vrnt:'area',
+                      name:$n='billoref',   valu:$arrBilling[$n] ?? '',form:'', wdth:'100%',algn:'left',
+                      attr:'', rtrn:false,unit:'',disa:true,rows:'1');
+            htm_Input(labl:'@Customer name',            plho:'@Name...',        icon:'',
+                      hint:'@Enter costomer name',              vrnt:'text',
+                      name:$n='billnavn',   valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',
+                      attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Customer address',         plho:'@Address...',     icon:'',
+                      hint:'@Enter invoice address',            vrnt:'text',
+                      name:$n='billaddr',   valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',
+                      attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Customer place',           plho:'@place...',       icon:'',
+                      hint:'@Enter invoice place',              vrnt:'text',
+                      name:$n='billsted',   valu:$arrBilling[$n], form:'');    
+            htm_Input(labl:'@ZIP',                      plho:'@ZIP...',         icon:'',
+                      hint:'@ZIP code',                         vrnt:'text',
+                      name:$n='billponr',   valu:$arrBilling[$n], form:'',wdth:'26%', algn:'left',
+                      attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Invoice city',             plho:'@City...',              icon:'',
+                      hint:'@Invoice city',                     vrnt:'text',
+                      name:$n='billbynv',   valu:$arrBilling[$n], form:'',wdth:'68%', algn:'left',
+                      attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Invoice Country',          plho:'@Country...',           icon:'',
+                      hint:'@Invoice Country',                  vrnt:'text',
+                      name:$n='billland',   valu:$arrBilling[$n], form:'');
             htm_hr($gbl_TitleColr.'; height: 2px');                                                                                                                                                      
-            htm_Input(labl:'@Phone(s)',                 plho:'@Phone...',             icon:'',hint:'@Phone, mobil, fax',                                       
-                      vrnt:'text',name:$n='billtelf',   valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Attention',                plho:'@Att...' ,              icon:'',hint:'@Attention - Customer contact',                            
-                      vrnt:'text',name:$n='bill_att',   valu:$arrBilling[$n], form:'');
-            htm_Input(labl:'@Réquisition number',       plho:'@Ref...' ,              icon:'',hint:'@Customer reference to order',                             
-                      vrnt:'text',name:$n='billrekv',   valu:$arrBilling[$n], form:'');
-            htm_Input(labl:'@Email address',            plho:'@Mail...',              icon:'',hint:'@Customer Email address',                                  
-                      vrnt:'text',name:$n='billmail',   valu:$arrBilling[$n], form:'');
-            htm_Input(labl:'@Remarks',                  plho:'@Rem...' ,              icon:'',hint:'@Notes regarding the customer',                            
-                      vrnt:'text',name:$n='billnote',   valu:$arrBilling[$n], form:'');
+            htm_Input(labl:'@Phone(s)',                 plho:'@Phone...',             icon:'',
+                      hint:'@Phone, mobil, fax',                vrnt:'text',
+                      name:$n='billtelf',   valu:$arrBilling[$n], form:'',wdth:'100%',algn:'left',
+                      attr:'required',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Attention',                plho:'@Att...' ,              icon:'',
+                      hint:'@Attention - Customer contact',     vrnt:'text',
+                      name:$n='bill_att',   valu:$arrBilling[$n], form:'');
+            htm_Input(labl:'@Réquisition number',       plho:'@Ref...' ,              icon:'',
+                      hint:'@Customer reference to order',      vrnt:'text',
+                      name:$n='billrekv',   valu:$arrBilling[$n], form:'');
+            htm_Input(labl:'@Email address',            plho:'@Mail...',              icon:'',
+                      hint:'@Customer Email address',           vrnt:'text',
+                      name:$n='billmail',   valu:$arrBilling[$n], form:'');
+            htm_Input(labl:'@Remarks',                  plho:'@Rem...' ,              icon:'',
+                      hint:'@Notes regarding the customer',     vrnt:'text',
+                      name:$n='billnote',   valu:$arrBilling[$n], form:'');
+            htm_Input(labl:'@Order Date',               plho:'@Date...',              icon:'',
+                      hint:'@Dato for ordrens oprettelse',      vrnt:'date',
+                      name:$n='conddate',   valu:$arrBilling[$n], form:'',wdth:'48%');
+            htm_Input(labl:'@Invoice Date',             plho:'@Date...',              icon:'',
+                      hint:'@Invoice Date',                     vrnt:'date',
+                      name:$n='condinvc',   valu:$arrBilling[$n], form:'',wdth:'48%');
+                      
             if (isset($_POST['use_mail'])) { $use_mail = 'checked'; } 
-            htm_Input(labl:'@Order Date',               plho:'@Date...',              icon:'',hint:'@Dato for ordrens oprettelse',                             
-                      vrnt:'date',name:$n='conddate',   valu:$arrBilling[$n], form:'',wdth:'48%');
-            htm_Input(labl:'@Invoice Date',             plho:'@Date...',              icon:'',hint:'@Invoice Date',                                            
-                      vrnt:'date',name:$n='condinvc',   valu:$arrBilling[$n], form:'',wdth:'48%');
-            htm_Input(labl:'@Mailing',                  plho:'@...',                  icon:'',hint:'@Send invoice with mail',                                  
-                      vrnt:'chck',name:$n='use_mail',   valu:$arrBilling[$n], form:'',wdth:'48%',algn:'left',attr:' margin-left: 10px;',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+            htm_Input(labl:'@Mailing',                  plho:'@...',                  icon:'',
+                      hint:'@Send invoice with mail',                                  
+                      vrnt:'chck',name:$n='use_mail',   valu:$arrBilling[$n], form:'',wdth:'48%',algn:'left',
+                      attr:' margin-left: 10px;',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: [['use_mail','@Use mail','@Mailing for this order is active',$namechck ?? '']]);
-            htm_Input(labl:'@Rebills',                  plho:'@Date...',              icon:'',hint:'@When to rebill date',                                     
+            htm_Input(labl:'@Rebills',                  plho:'@Date...',              icon:'',
+                      hint:'@When to rebill date',                                     
                       vrnt:'date',name:$n='condrebi',   valu:$arrBilling[$n], form:'',wdth:'48%');
             htm_MiniNote('<span class="colrorange">'.lang('@Orange ').'</span>'.lang('@frames are required fields.'));
         htm_Card_end(labl:'Save', icon:'', hint:'', name:'', form:$fm,subm:true, attr:'', akey:'', kind:'save', simu:false);
 
-        htm_Card_( capt: '@Mail-invoice:', icon: 'fas fa-envelope', hint: '',
-                     form: $fm='mail', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
+        htm_Card_( capt: '@Mail-invoice:', icon: 'fas fa-envelope', 
+                   hint: '@Setting mail data', form: $fm='mail', acti: '', clas: 'cardW280', wdth: '', 
+                   styl: 'background-color: white;', attr: '',mode:'1', vhgh:'400px', simp:$mode);
 //  htm_Card_($frmName='mailinv', $capt=lang('Mail-invoice:'), $parms='', $icon='fas fa-envelope', $class='cardW280', $where=__FILE__, $attr='', $BookMark='blindAlley.page.php',$panlBg='background-color: white;');
-            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Mail subject',             plho:'@Subj...',icon:'',hint:'@Enter Mail subject',                                             
-                      vrnt:'text',name:$n='mailemne',   valu:$arrMailing[$n]);
-            htm_Input(labl:'@Mail message',             plho:'@Mess...',icon:'',hint:'@Enter Mail text',                                                
-                      vrnt:'area',name:$n='mailtext',   valu:$arrMailing[$n]);
-            htm_Input(labl:'<i class=\'fas fa-paperclip\'></i> '.lang('@Mail Annex'),plho:'@Annex..',icon:'',hint:'@Enter Attached file',                                            
-                      vrnt:'file',name:$n='mailvedh',   valu:$arrMailing[$n]);
-            htm_Input(labl:'@Copy to',                  plho:'Copy...' ,icon:'',hint:'@Enter mail address to receive one copy of send mail',            
-                      vrnt:'text',name:$n='mail__cc',   valu:$arrMailing[$n]);
-            htm_Input(labl:'@Blind-copy to',            plho:'BCopy...',icon:'',hint:'@Enter mail address to receive one BC-copy (hidden) of sent mail',
-                      vrnt:'text',name:$n='mail__bc',   valu:$arrMailing[$n]);
+            htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',
+                      hint:'Hidden field',                 
+                      vrnt:'hidd', name:$n='ordrnumb',   
+                      valu: $arrCustomr[$n],   form:'',wdth:'0%', algn:'left',attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',
+                      list:[]); 
+            htm_Input(labl:'@Mail subject',             plho:'@Subj...',icon:'',
+                      hint:'@Enter Mail subject',                                             
+                      vrnt:'text', name:$n='mailemne',   
+                      valu: $arrMailing[$n]);
+            htm_Input(labl:'@Mail message',             plho:'@Mess...',icon:'',
+                      hint:'@Enter Mail text',                                                
+                      vrnt:'area', name:$n='mailtext',   
+                      valu: $arrMailing[$n]);
+            htm_Input(labl:'<i class=\'fas fa-paperclip\'></i> '.lang('@Mail Annex'),plho:'@Annex..',icon:'',
+                      hint:'@Enter Attached file',                                            
+                      vrnt:'file', name:$n='mailvedh',   
+                      valu: $arrMailing[$n]);
+            htm_Input(labl:'@Copy to',          plho:'Copy...' ,icon:'',
+                      hint:'@Enter mail address to receive one copy of send mail',            
+                      vrnt:'text', name:$n='mail__cc',   
+                      valu: $arrMailing[$n]);
+            htm_Input(labl:'@Blind-copy to',    plho:'BCopy...',icon:'',
+                      hint:'@Enter mail address to receive one BC-copy (hidden) of sent mail',
+                      vrnt:'text', name:$n='mail__bc',   
+                      valu: $arrMailing[$n]);
         htm_Card_end( labl:'@Save', icon:'', hint:'', name:'', form:$fm, subm:true, attr:'', akey:'', kind:'save', simu:false);
 //  htm_Card_end($labl='@Save', $subm=true, $hint='', $btnKind='save', $akey='', $simu=false, $frmName);
 
@@ -587,57 +747,102 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
           ['@Extra Field 5','@Extras - Fill in the field 5','@Field 5...']
         ];
      //   $custFld= $arrCustfld['custFld'];
-        htm_Card_( capt: '@Extra fields:', icon: 'fas fa-plus', hint: '',
-                     form:$fm='csto', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
+        htm_Card_( capt: '@Extra fields:', icon: 'fas fa-plus', 
+                   hint: '@Data you decide', form:$fm='csto', acti: '', clas: 'cardW280', wdth: '', 
+                   styl: 'background-color: white;', 
+                   attr: '',mode:'1', vhgh:'400px', simp:$mode);
             htm_Input(labl:'@Order number',             plho:'Hidden field',        icon:'', hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$arrCustomr[$n],       form:'', wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl: lang($custFld[0][0]),       plho: lang($custFld[0][2]), icon:'', hint: lang($custFld[0][1]), 
-                      vrnt:'text', name:$n=$fm.'Fld1',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
-            htm_Input(labl: lang($custFld[1][0]),       plho: lang($custFld[1][2]), icon:'', hint: lang($custFld[1][1]), 
-                      vrnt:'text', name:$n=$fm.'Fld2',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
-            htm_Input(labl: lang($custFld[2][0]),       plho: lang($custFld[2][2]), icon:'', hint: lang($custFld[2][1]), 
-                      vrnt:'text', name:$n=$fm.'Fld3',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
-            htm_Input(labl: lang($custFld[3][0]),       plho: lang($custFld[3][2]), icon:'', hint: lang($custFld[3][1]), 
-                      vrnt:'text', name:$n=$fm.'Fld4',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
-            htm_Input(labl: lang($custFld[4][0]),       plho: lang($custFld[4][2]), icon:'', hint: lang($custFld[4][1]), 
-                      vrnt:'text', name:$n=$fm.'Fld5',  valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
+                      vrnt:'hidd',name:$n='ordrnumb',   
+                      valu:$arrCustomr[$n],       form:'', wdth:'0%', algn:'left',
+                      attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
+            htm_Input(labl: lang($custFld[0][0]),   plho: lang($custFld[0][2]), icon:'', 
+                      hint: lang($custFld[0][1]), 
+                      vrnt:'text', name:$n=$fm.'Fld1',  
+                      valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
+            htm_Input(labl: lang($custFld[1][0]),   plho: lang($custFld[1][2]), icon:'', 
+                      hint: lang($custFld[1][1]), 
+                      vrnt:'text', name:$n=$fm.'Fld2',  
+                      valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
+            htm_Input(labl: lang($custFld[2][0]),   plho: lang($custFld[2][2]), icon:'', 
+                      hint: lang($custFld[2][1]), 
+                      vrnt:'text', name:$n=$fm.'Fld3',  
+                      valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
+            htm_Input(labl: lang($custFld[3][0]),   plho: lang($custFld[3][2]), icon:'', 
+                      hint: lang($custFld[3][1]), 
+                      vrnt:'text', name:$n=$fm.'Fld4',  
+                      valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
+            htm_Input(labl: lang($custFld[4][0]),   plho: lang($custFld[4][2]), icon:'', 
+                      hint: lang($custFld[4][1]), 
+                      vrnt:'text', name:$n=$fm.'Fld5',  
+                      valu: $arrCustfld[$n] ?? '',form:'', wdth:'88%');
         htm_Card_end( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
         
-        htm_Card_(capt: '@Delivery:',icon: 'fas fa-truck',hint: '',form: $fm='deli',acti: '',clas: 'cardW280',wdth: '',styl: 'background-color: white;',attr: '',head:$headbg, vhgh:'400px');
-            htm_Input(labl:'@Order number',             plho:'Hidden field', icon:'',hint:'Hidden field', vrnt:'hidd',
-                      name:$n='ordrnumb',   valu:$arrCustomr[$n],       form:'',wdth:'0%', algn:'left',attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-            htm_Input(labl:'@Delivered to invoice address', plho:'Name...', icon:'',hint:'@Check here if the delivery address is the same as the invoice address', vrnt:'chck', 
-                      name:$n='delisame',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+        htm_Card_(capt: '@Delivery:', icon: 'fas fa-truck',
+                  hint: '@Delivery address etc.', form: $fm='deli',acti: '', clas: 'cardW280', wdth: '',
+                  styl: 'background-color: white;',attr: '',mode:'1',head:$headbg, vhgh:'400px', simp:$mode);
+            htm_Input(labl:'@Order number',     plho:'Hidden field', icon:'',
+                      hint:'Hidden field', vrnt:'hidd',
+                      name: $n='ordrnumb',   valu:$arrCustomr[$n],       form:'',wdth:'0%', algn:'left',
+                      attr:'', rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
+            htm_Input(labl:'@Delivered to invoice address', plho:'Name...', icon:'',
+                      hint:'@Check here if the delivery address is the same as the invoice address', vrnt:'chck', 
+                      name: $n='delisame',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: [['delisame','@Same address','@Automatic fillout with the same address as invoice',$namechck ?? '']]);
-            htm_Input(labl:'@Recipient Name',           plho:'@Name...',  icon:'',hint:'@Enter Recipient Name', vrnt:'text', 
-                      name:$n='deliname',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@Delivery Address',         plho:'@Addr..',   icon:'',hint:'@Enter Delivery Address', vrnt:'text', 
-                      name:$n='deliaddr',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@Place of Delivery',        plho:'S@ted...',  icon:'',hint:'@Specify Place of Delivery, supplement to address', vrnt:'text', 
-                      name:$n='deliplac',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%');
-            htm_Input(labl:'@ZIP',                      plho:'@Pnr..',    icon:'',hint:'@Enter Delivery Customer postcode', vrnt:'text', 
-                      name:$n='deli_zip',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'26%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@City Name',                plho:'@City..',   icon:'',hint:'@Enter Delivery City name', vrnt:'text', 
-                      name:$n='delicity',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'68%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
-            htm_Input(labl:'@Delivery Country',         plho:'@Contry...',icon:'',hint:'@Specify Delivery Country', vrnt:'text', 
-                      name:$n='delicoun',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Recipient Name',           plho:'@Name...',  icon:'',
+                      hint:'@Enter Recipient Name', vrnt:'text', 
+                      name: $n='deliname',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@Delivery Address',         plho:'@Addr..',   icon:'',
+                      hint:'@Enter Delivery Address', vrnt:'text', 
+                      name: $n='deliaddr',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%',algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@Place of Delivery',        plho:'S@ted...',  icon:'',
+                      hint:'@Specify Place of Delivery, supplement to address', vrnt:'text', 
+                      name: $n='deliplac',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'100%');
+            htm_Input(labl:'@ZIP',                      plho:'@Pnr..',    icon:'',
+                      hint:'@Enter Delivery Customer postcode', vrnt:'text', 
+                      name: $n='deli_zip',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'26%',algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[],llgn:'',bord:'border: 1px solid blue;');
+            htm_Input(labl:'@City Name',                plho:'@City..',   icon:'',
+                      hint:'@Enter Delivery City name', vrnt:'text', 
+                      name: $n='delicity',  valu: $arrDeliver[$n]  ?? '', form:'',wdth:'68%',algn:'left',
+                      attr:'', rtrn:false,unit:'', disa:false, rows:'3', step:'', list:[], llgn:'', bord:'border: 1px solid blue;');
+            htm_Input(labl:'@Delivery Country',         plho:'@Contry...',icon:'',
+                      hint:'@Specify Delivery Country', vrnt:'text', 
+                      name: $n='delicoun',  valu: $arrDeliver[$n]  ?? '');
             htm_hr($gbl_TitleColr.'; height: 2px');
-            htm_Input(labl:'@Phone(s)',                 plho:'@Phone..' , icon:'',hint:'@Enter Recipient`s Phone', vrnt:'text', 
-                      name:$n='deliphon',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Contact person',           plho:'Name...' , icon:'',hint:'@Contact person at the delivery address', vrnt:'text', 
-                      name:$n='delikont',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Recipient`s Email Address',plho:'@Mail...' , icon:'',hint:'@Enter Recipient`s Email Address', vrnt:'mail', 
-                      name:$n='delimail',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Shipping Method.',         plho:'@Shipp...', icon:'',hint:'@Enter Shipping Information. How / with whom was the package sent?', vrnt:'text', 
-                      name:$n='delimeto',  valu: $arrDeliver[$n]  ?? '');
-            htm_Input(labl:'@Notes to freight forwarder',plho:'@Note...',  icon:'',hint:'@Notes regarding package delivery', vrnt:'area', 
-                      name:$n='delinote',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'100%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1',step:'');
-            htm_Input(labl:'@Status',                   plho:'@Enter...',icon:'',hint:'@Once the service has been sent, amounts can be redeemed', vrnt:'chck', 
-                      name:$n='delistat',  valu: $arrDeliver[$n]  ?? '',form:'',wdth:'50%',algn:'left', attr:'margin: 0 10px;',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+            htm_Input(labl:'@Phone(s)',                 plho:'@Phone..' , icon:'',
+                      hint:'@Enter Recipient`s Phone', vrnt:'text', 
+                      name: $n='deliphon',  valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Contact person',           plho:'Name...' , icon:'',
+                      hint:'@Contact person at the delivery address', vrnt:'text', 
+                      name: $n='delikont',  
+                      valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Recipient`s Email Address',plho:'@Mail...' , icon:'',
+                      hint:'@Enter Recipient`s Email Address', vrnt:'mail', 
+                      name: $n='delimail',  
+                      valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Shipping Method.',         plho:'@Shipp...', icon:'',
+                      hint:'@Enter Shipping Information. How / with whom was the package sent?', vrnt:'text', 
+                      name: $n='delimeto',  
+                      valu: $arrDeliver[$n]  ?? '');
+            htm_Input(labl:'@Notes to freight forwarder',plho:'@Note...',  icon:'',
+                      hint:'@Notes regarding package delivery', vrnt:'area', 
+                      name: $n='delinote',  
+                      valu: $arrDeliver[$n]  ?? '',form:'',wdth:'100%',algn:'left',
+                      attr:'',rtrn:false,unit:'',disa:false,rows:'1',step:'');
+            htm_Input(labl:'@Status',                   plho:'@Enter...',icon:'',
+                      hint:'@Once the service has been sent, amounts can be redeemed', vrnt:'chck', 
+                      name: $n='delistat',  
+                      valu: $arrDeliver[$n]  ?? '',form:'',wdth:'50%',algn:'left', 
+                      attr:'margin: 0 10px;',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: [['shipped_','@Are shipped','@Ready for redemption',$shipped_ ?? '']]);           
            #htm_Input(# $labl='',$plho='@Enter...',$icon='',$hint='',$type= 'text',$name='',$valu='',form:'',$wdth='',$algn='left',$attr='',$rtrn=false,$unit='',$disa=false,$rows='2',$step='',$list=[],$llgn='R',$bord='',$ftop='');
-            htm_Input($labl='@Delivery Date',plho:'@Enter...',icon:'',hint:'@Possibly. shipment date', vrnt:'date', 
-                      name:$n='lev_dato', valu: $arrDeliver[$n]  ?? '', form:'',wdth:'50%'   );
+            htm_Input($labl='@Delivery Date',plho:'@Enter...',icon:'',
+                      hint:'@Possibly. shipment date', vrnt:'date', 
+                      name:$n='lev_dato', 
+                      valu: $arrDeliver[$n]  ?? '', form:'',wdth:'50%' );
 
             $delName= $arrDeliver['deliname'] ?? '';
             $delAddr= $arrDeliver['deliaddr'] ?? '';
@@ -654,26 +859,41 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             htm_MiniNote('<span class="colrblue">'.lang('@Blue ').'</span>'.lang('@frames and customer type, Used for map lookup.'));
         htm_Card_end( labl:'@Save',icon:'',hint:'',name:'',form:$fm, subm:true,attr:'',akey:'',kind:'save',simu:false);
 
-        htm_Card_( capt: '@Person contact:', icon: 'fas fa-phone-square', hint: '',
-                     form: $fm='cont', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
+        htm_Card_( capt: '@Person contact:', icon: 'fas fa-phone-square',
+                   hint: '@Info about various persons', form: $fm='cont', acti: '', clas: 'cardW280', wdth: '', 
+                   styl: 'background-color: white;', attr: '',mode:'1', vhgh:'400px', simp:$mode);
 
             function ContaktPers($arrCont,$no='') {
-                htm_Input(labl:'@No.',           plho:'@auto',        icon:'',hint:'@Specifies the order of the entries',
-                          vrnt:'text',name:$n='contindx' /* 'id' */, valu:$arrCont[$n],form:'',wdth:'15%', algn:'center', attr:'',rtrn:false,unit:'',disa:true,rows:'3',step:'1');
-                htm_Input(labl:'@Contact person',plho:'@Kont...',    icon:'',hint:'@Enter Contact person',              
-                          vrnt:'text',name:$n='contname',  valu:$arrCont[$n],form:'',wdth:'50%');
-                htm_Input(labl:'@Titel',         plho:'@Titl...',    icon:'',hint:'@Enter the persons titel',           
-                          vrnt:'text',name:$n='conttitel', valu:$arrCont[$n],form:'',wdth:'35%');
-                htm_Input(labl:'@Phone',         plho:'@Phon...',    icon:'',hint:'@Enter phone number',                
-                          vrnt:'text',name:$n='contphone', valu:$arrCont[$n],form:'',wdth:'50%');
-                htm_Input(labl:'@Mobil',         plho:'@Mobil/lok..',icon:'',hint:'@Enter Mobilnr. or  lokal',          
-                          vrnt:'text',name:$n='contmobil', valu:$arrCont[$n],form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3');
-                htm_Input(labl:'@E-mail',        plho:'@Mail...',    icon:'',hint:'@Enter E-mail',                      
-                          vrnt:'mail',name:$n='contemail', valu:$arrCont[$n],form:'',wdth:'80%');
-                htm_Input(labl:'@Remark',        plho:'@Note...',    icon:'',hint:'@Enter note to the contact, e.g. role (director / secretary / driver)',
-                          vrnt:'area',name:$n='contremark',valu:$arrCont[$n],form:'',wdth:'80%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1');
+                htm_Input(labl:'@No.',           plho:'@auto',        icon:'',
+                          hint:'@Specifies the order of the entries',
+                          vrnt:'text',name:$n='contindx' /* 'id' */, 
+                          valu: $arrCont[$n], form:'',wdth:'15%', algn:'center', attr:'',rtrn:false,unit:'',disa:true,rows:'3',step:'1');
+                htm_Input(labl:'@Contact person',plho:'@Kont...',   icon:'',
+                          hint:'@Enter Contact person',              
+                          vrnt:'text',name:$n='contname',  
+                          valu: $arrCont[$n],form:'',wdth:'50%');
+                htm_Input(labl:'@Titel',         plho:'@Titl...',   icon:'',
+                          hint:'@Enter the persons titel',           
+                          vrnt:'text',name:$n='conttitel', 
+                          valu: $arrCont[$n],form:'',wdth:'35%');
+                htm_Input(labl:'@Phone',         plho:'@Phon...',   icon:'',
+                          hint:'@Enter phone number',                
+                          vrnt:'text',name:$n='contphone', 
+                          valu: $arrCont[$n],form:'',wdth:'50%');
+                htm_Input(labl:'@Mobil',         plho:'@Mobil/lok..',icon:'',
+                          hint:'@Enter Mobilnr. or  lokal',          
+                          vrnt:'text',name:$n='contmobil', 
+                          valu: $arrCont[$n],form:'',wdth:'50%', algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3');
+                htm_Input(labl:'@E-mail',        plho:'@Mail...',   icon:'',
+                          hint:'@Enter E-mail',                      
+                          vrnt:'mail',name:$n='contemail', 
+                          valu: $arrCont[$n],form:'',wdth:'80%');
+                htm_Input(labl:'@Remark',        plho:'@Note...',   icon:'',
+                          hint:'@Enter note to the contact, e.g. role (director / secretary / driver)',
+                          vrnt:'area',name:$n='contremark',
+                          valu: $arrCont[$n],form:'',wdth:'80%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'1');
                 htm_hr('lightgray');
-                htm_AcceptButt( labl:'@Delete',  icon:'',hint:'@Remove this contact person <br> (DEMO yet!)', form:'contact_'.$no, wdth:'', attr:'', akey:'',kind:'eras', rtrn:false, tplc:'', tsty:'', acti:'htm_Toast("Remove contact<br>Cant do it yet !","lightyellow","black")');
+                htm_AcceptButt( labl:'@Delete',  icon:'', hint:'@Remove this contact person <br> (DEMO yet!)', form:'contact_'.$no, wdth:'', attr:'', akey:'',kind:'eras', rtrn:false, tplc:'', tsty:'', acti:'htm_Toast("Remove contact<br>Cant do it yet !","lightyellow","black")');
                 htm_hr('green'.'; height: 2px');
                 htm_nl(1);
             }
@@ -686,20 +906,29 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
             htm_AcceptButt( labl:'@Create new',  icon:'', hint:'@Create a new contact <br> (DEMO yet!)',  form:$fm,  wdth:'',  attr:'', akey:'', kind:'crea', rtrn:false, tplc:'', tsty:'position: absolute;', acti:'htm_Toast("Create contact<br>Cant do it yet !","lightyellow","black")');
         htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-        htm_Card_( capt: '@Order notes:', icon: 'fas fa-plus', hint: '',
-                     form:$fm='cstn', acti: '', clas: 'cardW280', wdth: '', styl: 'background-color: white;', attr: '', vhgh:'400px');
-            htm_Input(labl:'@Order ',                   plho:'Hidden field',    icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu: $arrCustomr[$n],       form:'', wdth:'0%', algn:'left',attr:'',   rtrn:false); 
-            htm_Input(labl: '@Date',                    plho: '',               icon:'', hint: '@Here you can save a date for writing the notes', 
-                      vrnt:'date', name:$n=$fm.'date',  valu: $arrCustnot[$n] ?? '', form:'', wdth:'96%',rows:'9');
-            htm_Input(labl: '@Notes',                   plho: '@Write here...', icon:'', hint: '@Notes associated with the order', 
-                      vrnt:'area', name:$n=$fm.'note',  valu: $arrCustnot[$n] ?? '', form:'', wdth:'96%',rows:'9');
+        htm_Card_( capt: '@Order notes:', icon: 'fas fa-pen', 
+                   hint: '@Internal notes about the order', form:$fm='cstn', acti: '', clas: 'cardW280', wdth: '', 
+                   styl: 'background-color: white;', attr: '', mode:'1', vhgh:'400px', simp:$mode);
+            htm_Input(labl:'@Order ', plho:'Hidden field', icon:'',
+                      hint:'@Hidden field', 
+                      vrnt:'hidd',name:$n='ordrnumb',   
+                      valu: $arrCustomr[$n], form:'', wdth:'0%', algn:'left', attr:'',   rtrn:false); 
+            htm_Input(labl:'@Date', plho: '', icon:'', 
+                      hint: '@Here you can save a date for writing the notes', 
+                      vrnt:'date', name:$n=$fm.'date',  
+                      valu: $arrCustnot[$n] ?? '', form:'', wdth:'96%',rows:'9');
+            htm_Input(labl:'@Notes', plho: '@Write here...', icon:'', 
+                      hint: '@Notes associated with the order', 
+                      vrnt:'area', name:$n=$fm.'note',  
+                      valu: $arrCustnot[$n] ?? '', form:'', wdth:'96%',rows:'9');
         htm_Card_end( labl:'@Save',  icon:'',  hint:'', name:'',  form:$fm, subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+        htm_nl(2);
 
     htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-    htm_Card_( capt: '@Content of the order:'.$strOrder.' - '.$status, icon: 'fas fa-pen', hint: '',
-                 form: $f='content', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '',head:$headbg, vhgh:'800px');
+    htm_Card_( capt: lang('@Content of the order:').$strOrder.' - '.$status, icon: 'fas fa-pen', 
+               hint: '@What the order contains', form: $f='content', acti: '', clas: 'cardW720', wdth: '', 
+               styl: 'background-color: rgba(240, 240, 240, 0.80);', attr: '',head:$headbg, vhgh:'800px', simp:$mode);
         global $ordrTotal;
         $link= '#';
         $ordrTotal= 0;
@@ -780,7 +1009,9 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
 
 
 
-    htm_Card_( capt:'@Handling the offer/order:'.$strOrder.' '.$status, icon: 'fas fa-check', hint: '', form: 'handling', acti: '', clas: 'cardW720', wdth: '', styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px');
+    htm_Card_( capt:lang('@Handling the offer/order:').$strOrder.' '.$status, icon: 'fas fa-check', 
+               hint: '@What to do when the data is complete', form: 'handling', acti: '', clas: 'cardW720', wdth: '', 
+               styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px', simp:$mode);
         $heading= [['@Pos.','center'],['@Item no.','center'],['@Quantity','right'],['@Unit','left'],['@Description','left'],['@VAT','center'],
                    ['@Price','right'],['@%','right'],['@Total','right'],['@Currency','center']];
         $body= '<small><table style="margin: 0 auto; width:675px;"><thead>';    // Content Preview:<br>
@@ -811,73 +1042,107 @@ name:$n='condrefr', valu: $arrConditi[$n],   form:'',wdth:'100%');
                       valu:htm_TextDiv(body:$body, algn:'center',marg:'8px',styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',rtrn:true),
                       form:'noUse',wdth:'700px',algn:'left',attr:'',rtrn:false,unit:'noUse',disa:false,rows:'noUse',step:'noUse',list:['noUse'],llgn:'C',bord:'2px solid var(--grayColor);',ftop:'');
 
-        
-        htm_Input(labl:'@Order number',             plho:'Hidden field',    icon:'',hint:'Hidden field',                 
-                      vrnt:'hidd',name:$n='ordrnumb',   valu:$ordrnumb,   form:'',wdth:'0%', algn:'left',attr:'',        rtrn:false,unit:'',disa:false,rows:'3',step:'',list:[]); 
-        htm_Input(labl:'<b>'.lang('@Order:').'</b>',    plho:'',icon:'fas fa-hashtag',       hint:'@System field: Order number',    
-                  vrnt:'text',name:'ordr',valu:$ordrnumb,form:'',wdth:'100px',algn:'left',  attr:'',rtrn:false,unit:'',     disa:true,rows:'1',step:'');
-        htm_Input(labl:'<b>'.lang('@Customer:').'</b>', plho:'',icon:'fa-solid fa-user', hint:'@System field: Customer name',   
-                  vrnt:'text',name:'cust',valu:'Customer',form:'',wdth:'400px',algn:'left',  attr:'',rtrn:false,unit:'',     disa:true,rows:'1',step:'');
-        htm_Input(labl:'<b>'.lang('@Total:').'</b>',    plho:'',icon:'far fa-credit-card',   hint:'@System field: Amount incl. VAT',
-                  vrnt:'dec2',name:'totl',valu:$ordrTotal,form:'',wdth:'120px',algn:'center',attr:'',rtrn:false,unit:' DKK ',disa:true,rows:'1',step:'');
+        htm_nl(1);
+        htm_Input(labl:'@Order number', plho:'Hidden field', icon:'',
+                  hint:'@Hidden field', 
+                  vrnt:'hidd',name:$n='ordrnumb', valu:$ordrnumb, form:'', wdth:'0%', algn:'left',
+                  attr:'', rtrn:false,unit:'', disa:false, rows:'3', step:'', list:[]); 
+        htm_Input(labl:'<b>'.lang('@Order:'). '</b>', plho:'', icon:'fas fa-hashtag',
+                  hint:'@System field: Order number', 
+                  vrnt:'text', name:'ordr', valu:$ordrnumb, form:'', wdth:'100px', algn:'left',  
+                  attr:'', rtrn:false,unit:'', disa:true,rows:'1', step:'');
+        htm_Input(labl:'<b>'.lang('@Customer:'). '</b>', plho:'', icon:'fa-solid fa-user', 
+                  hint:'@System field: Customer name',   
+                  vrnt:'text', name:'cust', valu:'Customer', form:'', wdth:'400px', algn:'left',  
+                  attr:'', rtrn:false,unit:'', disa:true,rows:'1', step:'');
+        htm_Input(labl:'<b>'.lang('@Total:'). '</b>', plho:'', icon:'far fa-credit-card',   
+                  hint:'@System field: Amount incl. VAT',
+                  vrnt:'dec2', name:'totl', valu:$ordrTotal, form:'', wdth:'120px', algn:'center',
+                  attr:'', rtrn:false, unit:' DKK ', disa:true, rows:'1', step:'');
         htm_nl(2);
-        htm_AcceptButt(labl:'@Create / update', icon:'',hint:lang('@Save the order'),                                        form:'handling', wdth:'120px',attr:'' ,akey:'', kind:'save',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;');
-        htm_nl(2);                          //  icon:'',hint:                                                                form:,wdth:,$attr,                :'' ,                             :                                   :
-      //htm_AcceptButt(labl:'@Lookup',          icon:'',hint:lang('@Browse other existing orders'),                          form:'doLookup' wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Lookup<br>Cant search yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as Offer',   icon:'',hint:lang('@Create offer for registration'),                         form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as Order',   icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as a role model',icon:'',hint:lang('@Reuse content for re-creation'),                     form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Create Invoice',  icon:'',hint:lang('@Create invoice for (the saved!) Order'),                 form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-      //htm_AcceptButt(labl:'@Make Delivery Note',icon:'',hint:lang('@Make delivery note for the shipment of the order'),      form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Make delive note<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Give credit',     icon:'',hint:lang('@Reset by crediting the order - if it is invoiced'),      form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Give credit<br>Cant do it yet !","orange","black")');
-        htm_AcceptButt(labl:'@Delete',          icon:'',hint:lang('@Delete the order - provided the invoice is not formed'), form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Delete<br>Cant erase yet !","orange","black")');
+        htm_AcceptButt(labl:'@Create / update',     icon:'', hint:lang('@Save the order'),                                       form:'handling', wdth:'120px',attr:'' ,akey:'', kind:'save',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;');
+        htm_nl(2);                          //      icon:'', hint:                                                               form:,wdth:,$attr,                :'' ,                             :                                   :
+      //htm_AcceptButt(labl:'@Lookup',              icon:'', hint:lang('@Browse other existing orders'),                         form:'doLookup' wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Lookup<br>Cant search yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as Offer',       icon:'', hint:lang('@Create offer for registration'),                        form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as Order',       icon:'', hint:lang('@Save content as a new Order'),                          form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as a role model',icon:'', hint:lang('@Reuse content for re-creation'),                        form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Create Invoice',      icon:'', hint:lang('@Create invoice for (the saved!) Order'),                form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+      //htm_AcceptButt(labl:'@Make Delivery Note',  icon:'', hint:lang('@Make delivery note for the shipment of the order'),     form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Make delive note<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Give credit',         icon:'', hint:lang('@Reset by crediting the order - if it is invoiced'),     form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Give credit<br>Cant do it yet !","orange","black")');
+        htm_AcceptButt(labl:'@Delete',              icon:'', hint:lang('@Delete the order - provided the invoice is not formed'),form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Delete<br>Cant erase yet !","orange","black")');
         //  $rtrn=true, $tipplc='LblTip_text', $tipstyl='',$clickFunction='', $attr )
         htm_nl(2);
     htm_Card_end( labl:'',  icon:'',  hint:'',  name:'',  form:'', subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
 
     htm_Fieldset_end(); 
     htm_nl(3);
+    
 
-    htm_Card_( capt: '@Settings:', icon: 'fas fa-wrench', hint: '', form: 'language', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: white;', attr: '');
+    htm_Card_( capt: '@Settings:', icon: 'fas fa-wrench', 
+               hint: '', form: 'settings', acti: '', clas: 'cardW320', wdth: '', 
+               styl: 'background-color: white;', attr: '');
         htm_TextDiv('@Change the language for this project: <br>');
 
-        htm_Input(labl:'@Select language',plho:'',icon:'',hint:'@Select among installed languages',
-                  vrnt:'opti',name:'language',valu:$lang,form:'',wdth:'50%',algn:'left',attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
+        htm_Input(labl:'@Select language',plho:'',icon:'',
+                  hint:'@Select among installed languages',
+                  vrnt:'opti',name:'language',valu:$lang,form:'',wdth:'50%',algn:'left',
+                  attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                   list: [['en','@English','@Select english language'], 
                          ['fr','@French','@Select french language'],
                          ['de','@German','@Select german language'],
                          ['da','@Dansk','@Select danish language']]);
         htm_TextDiv('@Note: The translate is not complete !<br>It is created with Google Translate, <br>and needs proofread.<br>');
-    htm_Card_end(labl:'@Save and use',  icon:'',  hint:'',  name:'', form:'language',  subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
+        htm_nl(1);
+        
+        if ($mode) $valu= 'checked'; else $valu= 'unchecked'; # type bool => string
+        htm_Input(name:'mode_present', vrnt:'hidd', valu:'1'); // Hjælpefelt
+        htm_Input(labl:'@Card header mode',plho:'Enter...', icon:'', 
+                  hint:'@Show simple or advanced Card header',   
+                  vrnt:'rado',name:'mode',valu:$valu, form:'', wdth:'', algn:'left',
+                  attr:'onchange="this.form.submit()"',rtrn: false,
+                  unit:'',disa:false,rows:'1',step:'',list: [
+                    ['checked','@Simple','@Simple mode'],
+                    ['unchecked','@Advanced','@Advanced mode']
+                ]);
+        htm_nl(2);
+        if ($removeMenu) $valu= 'checked'; else $valu= 'unchecked'; # type bool => string
+        htm_Input(name:'menu_present', vrnt:'hidd', valu:'1'); // Hjælpefelt
+        htm_Input(labl:'@Remove DemoMenu',plho:'Click...', icon:'', 
+                  hint:'@Hide top-menu', 
+                  vrnt:'chck',name:'',valu:$valu, form:'', wdth:'200px', algn:'left',
+                  attr:'', rtrn: false, unit:'',disa:false,rows:'',step:'',
+                  list: [['remm','@Remove','@Remove topmenu']]);
+    
+    htm_Card_end(labl:'@Save and use',  icon:'',  hint:'',  name:'', form:'settings',  subm:true,  attr:'',  akey:'',  kind:'save',  simu:false);
 
-    htm_Card_(capt: '@Info about this page:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
+    htm_Card_(capt: '@Info about this page:', icon: 'fas fa-info', hint: '', form: 'demo1', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
         htm_TextDiv('@This is a demo under development !<br>It partly stores data to JSON text files.<br>
                      Translations from English lack <br>proofreading, on Google translate. <br>
                      There is also a lack of functionality.<br>Code written for PHP 8+ !<br>');
     htm_Card_end(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
 
     htm_nl(1);
-    htm_Card_( capt: '@Overview of all variables:', icon: 'fas fa-info', hint: '@Here you can see all variables on the page.', form:$form='demo', acti: '', 
-                 clas: 'cardWaut', wdth: '320px', styl: 'background-color: lightyellow;', attr: '');
-        arrPretty(get_defined_vars(),'Defined_vars:');
-    htm_Card_end( labl:'@Save',  icon:'',  hint:'',  name:'', form:$form,  subm:false,  attr:'',  akey:'',  kind:'save',  simu:false);
+    htm_Card_( capt: '@Overview of all variables:', icon: 'fas fa-info', hint: '@Here you can see all variables on the page.', 
+               form:$form='demo2', acti: '', clas: 'cardWaut', wdth: '320px', styl: 'background-color: lightyellow;', attr: '');
+        arrPretty(get_defined_vars(),lang('@Variables and values'));
+    htm_Card_end( labl:'@Save', icon:'', hint:'', name:'', form:$form, subm:false, attr:'', akey:'', kind:'save',  simu:false);
 
     htm_nl(0);
-    htm_Card_(capt: '@Adaptive - Tip:', icon: 'fas fa-info', hint: '', form: 'demo', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
+    htm_Card_(capt: '@Adaptive - Tip:', icon: 'fas fa-info', hint: '', form: 'demo3', acti: '', clas: 'cardW320', wdth: '', styl: 'background-color: lightyellow;', attr: '');
         htm_TextDiv('@To see how it adapts to narrow screens,<br> 
                      close the cards with wide tables.<br>
                      before resizing the window.<br><br>'); 
-    htm_Card_end(labl:'@Save', icon: '', hint: '', name: '', form: '',subm: false, attr: '', akey: '', kind: 'save', simu: false);
+    htm_Card_end(labl:'@Save', icon: '', hint: '', name: '', form: '', subm: false, attr: '', akey: '', kind: 'save', simu: false);
 
     htm_hr('gray; height:2px;border-width:0;');
     
-    /// echo '<div style="text-align:left;">'.$report.'</div>';
+    // if ($report>'') echo '<div style="text-align:left;">'.$report.'</div>';
     echo lang('@Layout is optimally displayed with a window width of 1000-1200px');
 htm_Page_end();
  
     run_Script('htm_Toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","blacck",1500)');
 
-$savedBytes= 0;
+    $savedBytes= 0;
     if ($savedBytes== 0) {   // page just opened
         CardOff(frst: 3,last:12); // Close card 3 to 12,
         CardOff(frst:13,last:17);

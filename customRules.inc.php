@@ -1,4 +1,4 @@
-<?  $DocFileInc='../customRules.inc.php';   $DocVers='1.3.2';  $DocRev='2024-01-26';   $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php  $DocFileInc='../customRules.inc.php';   $DocVers='1.5.0';  $DocRev='2026-10-09';   $DocIni='evs';  $ModulNo=0; ## File informative only
 
   ## In php2html.lib.php this file is included: 
   ##    if (is_readable('customRules.inc.php')) include('customRules.inc.php');  (related: htm_Table())

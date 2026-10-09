@@ -43,11 +43,12 @@ function CVR_Liste () {return( [  //  vat, name, produ, phone, search
 	]  );
 }
 function OrdrStatu () {return( [
-		['Status',  '@Status',        '@Ordre Status',   'checked'],
-		['Offer',   '@Tilbud',        '@Tilbud',   ''],
-		['Order',   '@Ordre',         '@Ordre',    ''],
-		['Deliv',   '@Afsendt',       '@Afsendt',  ''],
-		['Paid',    '@Betalt',        '@Betalt',   '']
+		['Status',  '@Status',      '@Order Status',   'checked'],
+		['Offer',   '@Offer',       '@Offer',       ''],
+		['Order',   '@Order',       '@Order',       ''],
+		['Paid',    '@Paid',        '@Paid',        ''],
+     	['Shipped', '@Shipped',     '@Shipped',     ''],
+     	['Deliv',   '@Delivered',   '@Delivered',   '']
 	]  );
 }
 function JourStatu () {return( [

@@ -1,0 +1,20 @@
+name: PHP lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: short_open_tag=Off
+      - name: Syntax check (also fails on deprecations)
+        run: |
+          find . -name '*.php' -not -path './_assets/*' -print0 |
+            xargs -0 -n1 sh -c 'out=$(php -d error_reporting=-1 -l "$0" 2>&1); echo "$out"; echo "$out" | grep -q "No syntax errors" && ! echo "$out" | grep -q "Deprecated"'

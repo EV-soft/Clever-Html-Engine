@@ -1,0 +1,5 @@
+# Generated at runtime by the translation demo
+_trans.*.tmp.json
+
+# Written by the table demo (htm_Table expo:)
+Proj.demo/tableexport.csv

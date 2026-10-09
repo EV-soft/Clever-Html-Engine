@@ -1,4 +1,4 @@
-<?  $DocFile0='../menu.inc.php';    $DocVer='1.3.2';    $DocRev='2024-01-26';       $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFile0='../menu.inc.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';       $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 
@@ -146,7 +146,8 @@ function Menu_BottomScroll() { global $arrHref;
     $ix= array_search(explode('/',$_SERVER['REQUEST_URI'])[2],array_column($arrHref, 0));
     // $i= $ix;
     echo '<form action="'.$arrHref[$i][0].'" method="post">
-          <input type="hidden" name="number" id="number" value="'. $i .'" />
+          <input type="hidden" name="number" id="number" value="'. $i .'" />'.
+          (function_exists('csrf_field') ? csrf_field(true) : '').'
           <div style="background-color: lightgray; width: max-content; border: 1px solid lightgray; padding: 3px; position: fixed; bottom: 1px; left: 0; right: 0; margin: auto;"><small>';
           ButtBuild('First',-99,lang('@first'),'double-left');
           ButtBuild('Prev',-1,lang('@previous'),'left');

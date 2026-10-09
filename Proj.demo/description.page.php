@@ -1,10 +1,10 @@
-<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.4.0';    $DocRev='2024-06-01';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.4.1';    $DocRev='2024-07-01';      $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
 $needJquery=      '2';
 $needTablesorter= '2';
 $needPolyfill=    '0';
@@ -86,31 +86,39 @@ htm_Page_( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ve
         Furthermore variables that have a default value can be omitted, <br>
         if no individual values are subsequently required.<br><br>
         <i>PHP 7 Example:</i><br>
-        <b>htm_Input(</b>$vrnt=\'num1\', $name=\'num1\', $valu=\'87654321\',<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;$labl=\'@htm_Input(num1)\', $llgn=\'\', $hint=\'@Demo of htm_Input\',<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;$algn=\'center\'<b><br>
+        <b>htm_Input(</b><br>
+        '."
+        <small><small># labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', name:'', valu:'', form:'', wdth:'100%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list:[], llgn:'R',bord:'', ftop:''
+</small></small><br>".' 
+        &nbsp;&nbsp;&nbsp;&nbsp; $labl=\'@htm_Input(num2)\', \'\', \'\', <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; $hint=\'@Demo of htm_Input\',<br>
+        &nbsp;&nbsp;&nbsp;&nbsp; $vrnt=\'num2\', $name=\'num2\', <br>
+        &nbsp;&nbsp;&nbsp;&nbsp; $valu=\'87654321\', \'\', wdth:\'120px\'<br>  
+        &nbsp;&nbsp;&nbsp;&nbsp; $algn=\'right\'<b><br>
         );</b><br><br>
         <i>Short form:</i><br>
-        <b>htm_Input(</b>\'num1\',\'num1\',\'87654321\',\'@htm_Input(num1)\',\'@Demo of htm_Input\'<b>);</b><br><br>
+        <b>htm_Input(</b>\'@htm_Input(num2)\',  \'\', \'\', \'@Demo of htm_Input\', \'num2\', \'num2\', \'87654321\', \'120px\', \'right\'<b>);</b><br><br>
         <i>PHP 8 Example:</i><br>');
     echo htm_CodeBox(
 "   htm_Input(
-        labl:'@htm_Input(num1)',
+        labl:'@htm_Input(num2)',
         hint:'@Demo of htm_Input',
-        vrnt:'num1',                // Input() Variant
-        name:'num1',
+        vrnt:'num2',                // Input() Variant
+        name:'num2',
         valu:'87654321',
-        wdth:'120px'
+        wdth:'120px',
+        algn:'right'
     ); ", rtrn:true);
     
     echo 'Output in browser: ';
     htm_Input(
-            labl:'@htm_Input(num1)',
+            labl:'@htm_Input(num2)',
             hint:'@Demo of htm_Input',
-            vrnt:'num1',                // Input() Variant
-            name:'num1',
+            vrnt:'num2',                // Input() Variant
+            name:'num2',
             valu:'87654321',
-            wdth:'120px'
+            wdth:'120px',
+            algn:'right'
         );
     htm_nl(3);
     htm_Card_end();
