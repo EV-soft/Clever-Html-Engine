@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-29';      $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
@@ -73,6 +73,10 @@ htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hin
 <td style="height: 21px;">Tooltip, placeholder and pop-up user tip (hint/title) for all html elements</td>
 </tr>
 <tr style="height: 21px;">
+<td style="height: 21px;"><strong>Context Menu </strong></td>
+<td style="height: 21px;">Popup menu-system activated on mouse Rightclick</td>
+</tr>
+<tr style="height: 21px;">
 <td style="height: 21px;"><strong>Cards </strong></td>
 <td style="height: 21px;">Compact adaptive layout with collapsible cards</td>
 </tr>
@@ -101,7 +105,7 @@ htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hin
 <td style="height: 21px;">Checks browser input validation</td>
 </tr>
 <tr style="height: 21px;">
-<td style="height: 21px;"><strong>PHP 8.3+</strong></td>
+<td style="height: 21px;"><strong>PHP 8.5+</strong></td>
 <td style="height: 21px;">Compatible with latest PHP</td>
 </tr>
 <tr style="height: 21px;">

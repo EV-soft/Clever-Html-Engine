@@ -1,0 +1,66 @@
+[
+{"type":"header","version":"4.9.10","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"viuff_info_db8"},
+{"type":"table","name":"tca_billTbl","database":"viuff_info_db8","data":
+[
+{"id":"3","ordrnumb":"00-000","billnavn":"Anders And","billaddr":"Vandløbet 78","billsted":"Ved bredden","billponr":"1234","billbynv":"Andeby","billland":"Paradisøerne","billtelf":"000","bill_att":"ghjhj","billrekv":"","billmail":"","billnote":"","conddate":"2020-06-30","condinvc":"2020-07-01","use_mail":"unchecked","condrebi":""}
+]
+}
+,{"type":"table","name":"tca_condTbl","database":"viuff_info_db8","data":
+[
+{"id":"9","ordrnumb":"00-000","condgrup":"2","condpaym":"2","conddead":"8","condoutp":"email","condrefr":"REFERENCE"}
+]
+}
+,{"type":"table","name":"tca_ContentTbl","database":"viuff_info_db8","data":
+[
+{"id":"496","cnt_post":"1","cnt_product":"45-879","cnt_numb":"3,0","cnt_unit":"stk","cnt_description":"Redekasser","cnt_vat":"25,0","cnt_price":"235,00","cnt_discount":"8,0","cnt_total":"810,75","cnt_currency":"DKK"},
+{"id":"497","cnt_post":"2","cnt_product":"45-876","cnt_numb":"2,0","cnt_unit":"stk","cnt_description":"Redekasser","cnt_vat":"25,0","cnt_price":"100,00","cnt_discount":"0,0","cnt_total":"250,00","cnt_currency":"DKK"},
+{"id":"498","cnt_post":"3","cnt_product":"45-876","cnt_numb":"3,0","cnt_unit":"stk","cnt_description":"Redekasser","cnt_vat":"25,0","cnt_price":"235,00","cnt_discount":"12,0","cnt_total":"775,50","cnt_currency":"DKK"},
+{"id":"499","cnt_post":"4","cnt_product":"45-876","cnt_numb":"3,0","cnt_unit":"stk","cnt_description":"Redekasser","cnt_vat":"25,0","cnt_price":"235,00","cnt_discount":"8,0","cnt_total":"810,75","cnt_currency":"DKK"},
+{"id":"500","cnt_post":"5","cnt_product":"45-877","cnt_numb":"13,0","cnt_unit":"Bakker","cnt_description":"Andeæg","cnt_vat":"25,0","cnt_price":"400,00","cnt_discount":"20,0","cnt_total":"5 200,00","cnt_currency":"EUR"},
+{"id":"501","cnt_post":"6","cnt_product":"","cnt_numb":"2,0","cnt_unit":"","cnt_description":"","cnt_vat":"25,0","cnt_price":"55,00","cnt_discount":"15,0","cnt_total":"116,88","cnt_currency":"DKK"},
+{"id":"502","cnt_post":"7","cnt_product":"","cnt_numb":"","cnt_unit":"","cnt_description":"","cnt_vat":"","cnt_price":"","cnt_discount":"","cnt_total":"0,00","cnt_currency":"DKK"},
+{"id":"503","cnt_post":"8","cnt_product":"45-999","cnt_numb":"","cnt_unit":"","cnt_description":"","cnt_vat":"","cnt_price":"","cnt_discount":"","cnt_total":"0,00","cnt_currency":""},
+{"id":"504","cnt_post":"9","cnt_product":"","cnt_numb":"","cnt_unit":"","cnt_description":"","cnt_vat":"2,0","cnt_price":"","cnt_discount":"","cnt_total":"0,00","cnt_currency":""}
+]
+}
+,{"type":"table","name":"tca_contTbl","database":"viuff_info_db8","data":
+[
+{"id":"10","contname":"Grete","conttitel":"Mor","contphone":"","contmobil":"","contemail":"","contremark":""}
+]
+}
+,{"type":"table","name":"tca_cstnTbl","database":"viuff_info_db8","data":
+[
+{"id":"10","ordrnumb":"00-000","cstndate":"2022-07-24","cstnnote":"cvvcbb"}
+]
+}
+,{"type":"table","name":"tca_cstoTbl","database":"viuff_info_db8","data":
+[
+{"id":"3","ordrnumb":"00-000","cstoFld1":"","cstoFld2":"dsdfd","cstoFld3":"","cstoFld4":"","cstoFld5":""}
+]
+}
+,{"type":"table","name":"tca_custTbl","database":"viuff_info_db8","data":
+[
+{"id":"16","ordrnumb":"00-000","custkont":"007","custopsl":"","custkate":"priv","cust_cvr":"","cust_ean":"","custbreg":"","custbkto":"","custinst":"","custansv":"EV-soft","custlang":"","custhome":""}
+]
+}
+,{"type":"table","name":"tca_deliTbl","database":"viuff_info_db8","data":
+[
+{"id":"14","ordrnumb":"00-000","delisame":"unchecked","deliname":"Andersine And","deliaddr":"Bækken 5","deliplac":"I reden","deli_zip":"","delicity":"vcb","delicoun":"Paradisøerne","deliphon":"","delikont":"","delimail":"","delimeto":"","delinote":"fghdgh","shipped_":"unchecked","lev_dato":"2020-07-09"}
+]
+}
+,{"type":"table","name":"tca_mailTbl","database":"viuff_info_db8","data":
+[
+{"id":"2","ordrnumb":"00-000","mailemne":"Overdue invoice","mailtext":"Mail Message","mailvedh":"","mail__cc":"fghgg","mail__bc":""}
+]
+}
+,{"type":"table","name":"tca_OrdersTbl","database":"viuff_info_db8","data":
+[
+{"id":"16","ord_ix":"45-876","ord_odate":"2020-07-01","ord_ddate":"2020-07-11","ord_acco":"Konto nr.","ord_name":"Firma navn 123","ord_sell":"Sælger","ord_amou":"148,00","ord_currency":"","ord_duedate":"2020-09-02","ord_stat":"Paid"},
+{"id":"17","ord_ix":"45-877","ord_odate":"2020-07-02","ord_ddate":"2020-07-12","ord_acco":"Konto nr.","ord_name":"Firma navn 234","ord_sell":"Sælger","ord_amou":"148,00","ord_currency":"DKK","ord_duedate":"2020-09-29","ord_stat":"Deliv"},
+{"id":"18","ord_ix":"45-878","ord_odate":"2020-07-03","ord_ddate":"2020-07-13","ord_acco":"Konto nr.","ord_name":"Firma navn 345","ord_sell":"Sælger","ord_amou":"48,00","ord_currency":"DKK","ord_duedate":"2020-10-03","ord_stat":"Paid"},
+{"id":"19","ord_ix":"45-879","ord_odate":"2020-07-04","ord_ddate":"2020-07-14","ord_acco":"Konto nr.","ord_name":"Firma navn 456","ord_sell":"Sælger","ord_amou":"148,00","ord_currency":"","ord_duedate":"","ord_stat":"Order"},
+{"id":"20","ord_ix":"","ord_odate":"","ord_ddate":"","ord_acco":"","ord_name":"","ord_sell":"","ord_amou":"2,00","ord_currency":"","ord_duedate":"","ord_stat":"Offer"}
+]
+}
+]

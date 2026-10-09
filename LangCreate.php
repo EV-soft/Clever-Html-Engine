@@ -48,7 +48,7 @@
                                     $a= strpos($str,$search);  $str= substr($str,$a+5);  $b= strpos($str,"')");
                                     $str= html_entity_decode($str);
                                     $str= strip_tags($str);
-                                    $longest= max($longest,strlen(utf8_decode(substr($str,0,$b))));
+                                    $longest= max($longest,mb_strlen((substr($str,0,$b))));
                                     $f= substr($str,0,$b);
                                     $arrStrings[] = ['"'.$f.'"'];
                                 } 
@@ -82,7 +82,7 @@
         foreach ($arrStrings as $string) {
             if (strlen($string[0])>3) {
                 echo '<br>'.str_repeat("&nbsp;",8).$string[0].':'.
-                str_repeat("&nbsp;",$longest+3-strlen(utf8_decode(substr($string[0],0))));
+                str_repeat("&nbsp;",$longest+3-mb_strlen((substr($string[0],0))));
             if (array_key_exists(trim($string[0],'"'),$arrTrans[$compareCode])) {
                 echo '"'.$arrTrans[$compareCode][trim($string[0],'"')].'",'; 
                 $miss++;

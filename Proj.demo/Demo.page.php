@@ -1,4 +1,4 @@
-<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';      $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters can be shown. In a real project you just need to give parameters different from default values !
 
@@ -20,7 +20,7 @@ require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
 // require_once ($sys.'filedata.inc.php');
- 
+
  
 $tblData=     # = array(),
               #  No.',Description,Account',%-rate',Note',  
@@ -259,26 +259,26 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[], filt:
         echo 'You place your html-objects here inside fieldset-frames...<br>';
         htm_Fieldset_end( rtrn:false);
 
-    htm_Card_( capt:'@PHP Source-code: htm_Field_0_();', icon:'fas fa-code', hint:'@HINT for this card', form:'', acti:'', clas:'cardW480', wdth:'640px', styl:'background-color: lightgray;', attr:'margin:0;', help:'CustHelp.htm');
+    htm_Card_( capt:'@PHP Source-code: htm_Field_0_();', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'cardW480', wdth:'640px', styl:'background-color: lightgray;', attr:'margin:0;', help:'CustHelp.htm');
 
 
 $strCode= 
 <<< 'STRING'
-// PHP7-syntax:
+// PHP7-syntax: (Fixed order)
 htm_Fieldset($capt='@Caption: ',
-              $hint='@You can use hints',$icon='',
-              $wdth='180px',$marg='',
-              $attr='background-color:MintCream',
-              $rtrn=false); 
+             $hint='@You can use hints',$icon='',
+             $wdth='180px',$marg='',
+             $attr='background-color:MintCream',
+             $rtrn=false); 
 
-// PHP8-syntax:
+// PHP8-syntax: (Named, free order, can be omitted)
 htm_Fieldset(capt:'@Caption: ',
-              hint:'@You can use hints',
-              wdth:'180px',
-              attr:'background-color:MintCream'),
-              rtrn:false); 
+             hint:'@You can use hints',
+             wdth:'180px',
+             attr:'background-color:MintCream'),
+             rtrn:false); 
 
-    // htm_Fieldset() must be followed by the html-content and htm_Fieldset_end() !
+// htm_Fieldset() must be followed by the html-content and htm_Fieldset_end() !
     
 htm_Fieldset_end(rtrn:false);
 STRING
@@ -365,7 +365,7 @@ STRING
         htm_Input(labl:'@Your password',        plho:'@Password...', icon:'', hint:'@Type your password for your account',                     vrnt:'pass', name:'pass3', valu:$pass3='xx', form:'', wdth:'80%', algn:'left', attr:'required', rtrn:false, unit:'', disa:false, rows:'3',  step:'', list:[], llgn:'R', bord:'', ftop:'');
                  // $usr_name= 'user';  $usr_code= 'Code: PW-test';     $h= calcHash($usr_name,$usr_code);
                    # $labl='',$icon='',$hint='',$type='submit',$name='',$link='',$acti='',$font='32px',$fclr='gray',$bclr='white',$akey='',$rtrn=false
-        htm_IconButt(labl:'@Forgotten password ?', icon:'fas fa-key', hint:'@Click to request a new password', type:'button', name:'lost', link:'', evnt:'', wdth:'', font:'18px', fclr:'gray', bclr:'white', akey:'', rtrn:false);
+        htm_IconButt(labl:'@Forgotten password ?', icon:'fas fa-key', hint:'@Click to request a new password', type:'button', name:'lost', link:'', evnt:'', wdth:'', font:'18px', fclr:'#555', bclr:'white', akey:'', rtrn:false);
         htm_nl(2);
         htm_Input(labl:'@Stay logged in',  plho:'@Stay...',    icon:'', hint:'@Remember me', vrnt:'rado', name:'p2h_chk', valu:$p2h_stay='stay1', form:'', wdth:'80%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'1', step:'',list:[
             ['stay0','@Yes','@Do not auto-logout'],
@@ -379,7 +379,7 @@ STRING
                   vrnt:'',name:'robot',valu:$html, form:'',wdth:'80%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
         htm_nl(2); 
-                
+        echo('<small>Orange frames: required field !</small>');
     htm_Card_end(labl:'Login',    icon:'', hint:'@Login with the given data', name:'butt', form:'head1',     subm:true, attr:'', akey:'',  kind:'navi', simu:false);
     
     htm_nl(2);
@@ -423,24 +423,24 @@ STRING
     htm_nl(4);
     htm_Card_( capt:'@User rights:', icon:'fas fa-pen-square', hint:'@In this card, you see a DEMO of the Multi-state button', form:'head3', acti:'', clas:'cardW800', wdth:'640', styl:'background-color: white;', attr:'',  show: true,  head: $headbg, help:'CustHelp.htm');           
 
-    $task= [['@Chart of Accounts',      'Struktur for regnskabet'],
-            ['@Account settings',       'Angående regnskabet'],
-            ['@Journal Entry ',         'Daglige posteringer'],
-            ['@Financial Accounting',   'Bogførte posteringer'],
-            ['@Financial reports',      'Regnskabs posteringer'],
-            ['@Debtor orders',          'Kunde ordrer'],
-            ['@Debtor accounts',        'Kunde konti'],
-            ['@Debtor reports',         'Kunde oversigter'],
-            ['@Creditor orders',        'Leverandør ordrer'],
-            ['@Creditor accounts',      'Leverandør konti'],
-            ['@Creditor reports',       'Leverandør oversigter'],
-            ['@Item stock',             'Salgs produkter'],
-            ['@Product reception',      'Ankommende produkter'],
-            ['@Product reception',      'Produkt oversigter'],
-            ['@Production orders',      'Bestillinger'],
-            ['@Program setting',        'Setup af program og databaser'],
-            ['@Data backup',            'Sikkerheds kopiering af program og databaser'],
-            ['@Security',               'Administrer bruger rettigheder']
+    $task= [['@Chart of Accounts',      '@Struktur for regnskabet'],
+            ['@Account settings',       '@Angående regnskabet'],
+            ['@Journal Entry ',         '@Daglige posteringer'],
+            ['@Financial Accounting',   '@Bogførte posteringer'],
+            ['@Financial reports',      '@Regnskabs posteringer'],
+            ['@Debtor orders',          '@Kunde ordrer'],
+            ['@Debtor accounts',        '@Kunde konti'],
+            ['@Debtor reports',         '@Kunde oversigter'],
+            ['@Creditor orders',        '@Leverandør ordrer'],
+            ['@Creditor accounts',      '@Leverandør konti'],
+            ['@Creditor reports',       '@Leverandør oversigter'],
+            ['@Item stock',             '@Salgs produkter'],
+            ['@Product reception',      '@Ankommende produkter'],
+            ['@Product reception',      '@Produkt oversigter'],
+            ['@Production orders',      '@Bestillinger'],
+            ['@Program setting',        '@Setup af program og databaser'],
+            ['@Data backup',            '@Sikkerheds kopiering af program og databaser'],
+            ['@Security',               '@Administrer bruger rettigheder']
             ];
 
     $users = [
@@ -474,7 +474,7 @@ STRING
     htm_Fieldset(capt:'@Create New User',icon:'',hint:'',wdth:'90%',marg:'',attr:'scale:80%;',styl:'text-align: center;',rtrn:false);
     echo '<table style="width:94%;">';
     echo '
-    <tr><td colspan="2" style="text-align:right; scale:80%;"><i scale:"80%">'.lang('@Rights:').'</i></td>';
+    <tr><td colspan="2" style="text-align:right; scale:80%;"><i>'.lang('@Rights:').'</i></td>';
     for ($i=0; $i<count($task); $i++) echo '<td style="height: 22px; width: 33px; text-align: center;">'. htm_MultistateButt(name:'newROWyCOL'.$i, valu:2) .'</td>';
     
     echo '<tr>
@@ -501,7 +501,7 @@ STRING
     
     htm_Card_end(labl:'Save changes',    icon:'', hint:'@Save data in this card', name:'', form:'head3',     subm:true, attr:'', akey:'s',  kind:'save', simu:false);
 
-    htm_Card_(capt:'@Popup menues:',icon:'fas fa-pen-square',hint:'@HINT for this card',form:'head4',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg, help:'CustHelp.htm');           
+    htm_Card_(capt:'@Popup menues:',icon:'fas fa-pen-square',hint:'@Examples of context popup menues',form:'head4',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg, help:'CustHelp.htm');           
         htm_TextDiv($content= 'You can build popup-menues with the PHP2HTML-system.<br>
               Both left-click and context right-click triggered.<br><br>
               Here you can test it:');
@@ -551,17 +551,46 @@ STRING
         htm_nl(2);
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'head4', subm:false, attr:'', akey:'s', kind:'save', simu:false);
     
-    htm_Card_(capt:'@Switch buttons: (Under development)',icon:'fas fa-pen-square',hint:'',form:'sw',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'');           
-    htm_SwitchButt(labl:'@Switch conneting',hint:'@Click to toggle setting', name:'switchbox_id1', valu:'presssed', 
-                   list:['@Connect','@disconnect'], wdth:'6em', bclr:'blue', styl:'style="padding:1px;"', 
+    htm_Card_(capt:'@Switch buttons:',icon:'fas fa-pen-square',hint:'',form:'sw',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'');
+    # The switches post 1/0 - keep the state after "Save":
+    $sw1= $_POST['switchbox_id1'] ?? '1';
+    $sw2= $_POST['switchbox_id2'] ?? '0';
+    htm_SwitchButt(labl:'@Switch conneting',hint:'@Click to toggle setting', name:'switchbox_id1', valu:$sw1,
+                   list:['@Connect','@disconnect'], wdth:'6em', bclr:'blue',
                    rtrn:false);
     htm_nl();
-    htm_SwitchButton(labl:'@Switch accepting',name:'switchbox_id2', valu:'', wdth:'6em', bclr:'green', styl:'style="padding:1px;"', hint:'@Here you can toggle setting', 
+    htm_SwitchButton(labl:'@Switch accepting',name:'switchbox_id2', valu:$sw2, wdth:'6em', bclr:'green', hint:'@Here you can toggle setting',
                    list:['@Accept','@Decline'], rtrn:false);
     htm_nl();
+    if (isset($_POST['switchbox_id1']))
+        echo '<small>'.lang('@Received').': switchbox_id1= <b>'.sys_enc($_POST['switchbox_id1']).'</b> &nbsp; switchbox_id2= <b>'.sys_enc($_POST['switchbox_id2'] ?? '').'</b></small>';
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'sw', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
-    htm_Card_(capt:'@Toggleable Tabs:',icon:'fas fa-pen-square',hint:'@HINT for this card',form:'tb',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg );           
+    htm_Card_(capt:'@Theme, dialogs and folding:', icon:'fa-solid fa-circle-half-stroke', hint:'', clas:'cardW800', wdth:'640');
+        htm_Caption(labl:'@Theme (remembered in this browser):'); echo ' ';
+        htm_ThemeButt();
+        htm_nl(2);
+        htm_Caption(labl:'@Your own theme:'); htm_nl();
+        htm_ThemeEditor();
+        htm_nl(2);
+        htm_Caption(labl:'@Theme-aware dialogs:'); echo ' ';
+        echo '<button type="button" onclick="sysAlert('.sys_enc(json_encode(lang('@The data has been saved.'))).')">sysAlert()</button> ';
+        echo '<button type="button" onclick="sysConfirm('.sys_enc(json_encode(lang('@Delete this record?'))).', function(){ document.getElementById(\'dlgResult\').textContent= \'OK\'; }, \'\', function(){ document.getElementById(\'dlgResult\').textContent= \'Cancel\'; })">sysConfirm()</button> ';
+        echo '<button type="button" onclick="sysPrompt('.sys_enc(json_encode(lang('@What is your name?'))).', function(v){ document.getElementById(\'dlgResult\').textContent= v; }, \'\')">sysPrompt()</button> ';
+        echo ' &nbsp; '.lang('@Result').': <b id="dlgResult"></b>';
+        htm_nl(2);
+        htm_Caption(labl:'@All cards:'); echo ' ';
+        echo '<button type="button" onclick="p2hCardsAll(false)">'.lang('@Fold all').'</button> ';
+        echo '<button type="button" onclick="p2hCardsAll(true)">'.lang('@Open all').'</button>';
+        htm_nl();
+    htm_Card_end();
+
+    htm_Card_(capt:'@This card starts folded - click the caption to open it', icon:'fa-solid fa-folder', hint:'', clas:'cardW800', wdth:'640', fold:'closed');
+        htm_TextDiv(body: lang('@Use').' <code>fold:\'closed\'</code> '.lang('@in htm_Card_() for long or rarely used content.'));
+    htm_Card_end();
+
+    htm_Card_(capt:'@Toggleable Tabs:',icon:'fas fa-pen-square',hint:'@How to use Toggleable Tabs',
+              form:'tb',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg );           
 
     $strTabel= 'The function htm_Table() is a advanced module to show and input user data.<br>
             It has fixed (sticky) column headers, and Scrolling content-window.<br>
@@ -597,20 +626,20 @@ STRING
     htm_Card_end(labl:'', icon:'', hint:'', name:'tb', form:'tb', subm:false, attr:'', akey:'s', kind:'save', simu:false);
 
      
-    htm_Card_(capt:'@Containers:',icon:'fas fa-info',hint:'@HINT for this card',form:'',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);           
+    htm_Card_(capt:'@Containers:',icon:'fas fa-info',hint:'@The fieldset container',form:'',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);           
     htm_Fieldset(capt:'This is af fieldSet container',icon:'',hint:'',wdth:'80%',marg:'',attr:'',rtrn:false);
     htm_TextDiv('Tabels, Cards, Tabs and Fieldsets is areas that contains other elements.');
     htm_Fieldset_end();
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'tb', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
 
-    htm_Card_(capt:'@Navigate functions:',icon:'fas fa-info',hint:'@HINT for this card',form:'',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);           
+    htm_Card_(capt:'@Navigate functions:',icon:'fas fa-info',hint:'@Various buttons to link to project pages',form:'',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);           
     htm_TextDiv('To navigate in your project, you can use the Menu_Topdropdown() shown on top of all demo pages.<br>
                  You can also use various buttons for that...
     ');
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'tb', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
 
-    htm_Card_(capt:'@About function parameters:',icon:'fas fa-info',hint:'@HINT for this card',form:'head5',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);
+    htm_Card_(capt:'@About function parameters:',icon:'fas fa-info',hint:'@PHP rules for reference to functions parameters',form:'head5',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);
 
     function b($s) {return '<b>'.$s.'</b>';}
     htm_TextDiv('
@@ -632,7 +661,7 @@ STRING
         ');
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'head4', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
        
-    htm_Card_(capt:'@Demo of most recent functions (2024):',icon:'fas fa-info',hint:'@HINT for this card',form:'head6',acti:'',
+    htm_Card_(capt:'@Demo of most recent functions (2024):',icon:'fas fa-info',hint:'@System functions developed in 2024',form:'head6',acti:'',
               clas:'cardW800',wdth:'640',styl:'background-color: lightgray;',attr:'', show: true, head: $headbg, vhgh:'700px');
         htm_nl(2);
         htm_Field(labl:'@Demo of htm_Figure()', 
@@ -692,7 +721,7 @@ STRING
     
     htm_nl(3);   
     htm_Card_(capt:'@Program name',icon:'fa-regular fa-address-card',
-               hint:'@HINT for this card',form:'head7', acti:'',clas:'cardW800',wdth:'640',
+               hint:'',form:'head7', acti:'',clas:'cardW800',wdth:'640',
                styl:'background-color: snow; ',attr:'', show: false, mode:'0', poup:false,
                help:'', fclr: "text-align:center; ",  
                frst:'<i class="fa-solid fa-bars" title="'.lang('@Use this as a menu-button').'"></i>', 
@@ -718,25 +747,50 @@ STRING
     htm_DataList(data:['Itm1','Itm2','Itm3','Itm4','Itm5','Itm6']);
     
     htm_nl(3);   
-    if (!isset($pdf_file)) $pdf_file= 'imapsync_2020_gulliver_fdln.pdf'; 
+    if (!isset($pdf_file)) $pdf_file= 'Data.demo/User-manual.pdf'; 
     htm_Card_(capt:'@PDF-viewer: '.$pdf_file, icon:'fa-regular fa-address-card',
-               hint:'@HINT for this card',form:'head8', acti:'',clas:'cardW800',wdth:'640' );
+               hint:'',form:'head8', acti:'',clas:'cardW800',wdth:'640' );
         htm_Input(labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'file', name:'pdf_file', valu:$pdf_file, form:'', wdth:'100%',attr:'accept=".pdf" ');
         htm_nl(1);
         echo '<div class="pagination">
                 <div class="wrap">
-                    <button id="prev">'.lang('@Previous').'</button>
-                    <button id="next">'.lang('@Next').'</button>
+                    <button type="button" id="prev">'.lang('@Previous').'</button>
+                    <button type="button" id="next">'.lang('@Next').'</button>
                     &nbsp; &nbsp;
                     <span style="font-size: smaller;">'.lang('@Page: ').'<span id="page_num"></span> / 
                     <span id="page_count"></span></span>
                 </div>
              </div>
-             <canvas id="the-canvas"></canvas>'
+             <canvas id="the-canvas" data-pdf="'.sys_enc($pdf_file).'" style="width: 98%"></canvas>'
              ;
 
         htm_nl(1);
     htm_Card_end(labl:'', icon:'', hint:'Hint', name:'', form:'head7', subm:false, attr:'', akey:'s',  kind:'save', simu:false, foot:'Under development');
+
+    htm_Card_(capt:'@Simple table: ', icon:'fa-regular fa-address-card',
+               hint:'@Just a demo',form:'head9', acti:'',clas:'cardW800',wdth:'640' );
+    $data = [
+      // ['Name', 'Age', 'Email'],      // Header row
+      ['Alice', 30, 'alice@example.com'],
+      ['Bob', 42, 'bob@example.com'],
+      ['Charlie', 25, 'charlie@example.com']
+    ];
+
+    htm_Table(
+      capt: [],pref: [],
+      body: [
+              ['@Name.',    '40%','text','',['left'],'f1'],
+              ['@Age',      '20%','text','',['right'],'f2'],
+              ['@Email',    '40%','text','',['center'],'f3']
+            ],
+      suff: [],note: '',
+      data: $data,
+     // head: true,      // Enables header formatting for the first row
+     // css: 'myTable',  // Optional CSS class for styling
+     // labl: '@User Info Table'  // Localized label for accessibility
+    );
+        htm_nl(1);
+    htm_Card_end(labl:'', icon:'', hint:'Hint', name:'', form:'head7', subm:false, attr:'', akey:'s',  kind:'save', simu:false, foot:'');
 
     htm_GoTopButt();
     CardOff(frst:3,last:6);

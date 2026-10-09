@@ -1,4 +1,4 @@
-<?   $DocFileLib='Project.notes.txt';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?   $DocFileLib='Project.notes.txt';    $DocVer='1.4.2';    $DocRev='2025-08-02';      $DocIni='evs';  $ModulNo=0; ## File informative only
 
 Notes regarding php2html.lib.php:
 
@@ -258,6 +258,14 @@ New: niv0, niv1,... Style override on various niveaus
 Error fixes
 Minor changes
 (New: PDF-viewer)
+
+###########
+v1.4.2:
+Extended: function htm_GoTopButt() (3 buttons)
+Upgrade: TinyMCE 7 to TinyMCE 8
+New: htm_Pmnu_()
+New: htm_Pmnu_Item_()
+New: htm_Pmnu_end()
 
 */
 

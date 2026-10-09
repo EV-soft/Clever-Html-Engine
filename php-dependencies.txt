@@ -1,0 +1,44 @@
+<?
+Overview of php-files dependencies:
+
+Your project-file
+must include: 'php2html.lib.php'
+ can include: 'menu.inc.php'
+              'translate.inc.php'
+                and others...
+From php2html.lib.php can be included:
+near   51: if (is_readable($custFile= '../project.init.php')) include($custFile);       ## "Early init" (Declaring project variables)
+near 1019: if (is_readable($custFile= '../customRules.inc.php')) include($custFile);    ## Rules about htm_Table()
+near 5553: if (is_readable($custFile= '../customLib.inc.php')) require_once($custFile); ## "Lait init" wiht height priority (Project functions)
+
+......------======------......
+
+PHP-FILES ver. 1.3.0:
+Project folder:
+accountPlan.page.php    
+card.page.php           
+CustomerOrder.page.php  
+Demo.page.php           
+description.page.php    
+files.page.php          
+functions.page.php      
+input.page.php          
+navigate.page.php       
+other.page.php          
+pages.page.php          
+PHP2HTML-intro.page.php 
+support.page.php        
+table.page.php          
+tinyEditor.page.php     
+translate.page.php      
+
+System folder:
+customLib.inc.php       
+customRules.inc.php     
+filedata.inc.php        
+funcscann.php           
+LangCreate.php          
+menu.inc.php            
+php2html.lib.php        
+project.init.php        
+translate.inc.php       

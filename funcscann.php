@@ -1,4 +1,4 @@
-﻿<?php   $DocFile= '.\funcscann.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= '.\funcscann.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';     $DocIni='evs';  $ModulNr=0; ## File informative only
 
     $d = dir("../../");  //    var_dump($d);
     // $paths = glob('../../*/*.{htm,php}',GLOB_BRACE); 
@@ -117,7 +117,7 @@
                   $prettyFras= substr($fras,0,$b);
                   $html.= $str;
                   $str= '<br>"'.$prettyFras.'"'.
-                    str_repeat("&nbsp;",170-strlen(utf8_decode(substr($fras,0,$b)))).',"","","","","",""';  
+                    str_repeat("&nbsp;",170-mb_strlen((substr($fras,0,$b)))).',"","","","","",""';  
                   $html.= $str; 
                   $f= substr($fras,0,$b);
                 # $f= strip_tags($f);

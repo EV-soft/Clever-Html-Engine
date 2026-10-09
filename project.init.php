@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.4.1';    $DocRev='2025-07-28';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= 'project.init.php';    $DocVers='1.5.0';    $DocRev='2026-10-09';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** 
 #  This file is included from start of php2html.lib.php 
 
@@ -62,6 +62,7 @@
         ],'top:500px;']
         ]; 
          
+    $gbl_ViewBar= true;     # Floating, movable view bar with zoom, full screen and theme (htm_Menu_TopDown view:)
     $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.$DocVers.': 60+ core functions.</small>';
 
 ## Quickstart:

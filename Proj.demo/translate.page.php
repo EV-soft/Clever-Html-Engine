@@ -41,7 +41,26 @@ htm_Page_( titl:'translate.page.php', hint:'@Maintenance of project translation'
         All translated languages is defined in file: _trans.sys.json <br>
         If there are no translation, the english text will output with prefix @ removed
         <br><br>
+        You can use AI (Gemini) to update the translate group in <br>
+        file <b>_trans.sys.json</b> based on content in <b>_trans.tmp.json</b>
         </div>';
+    htm_TextDiv('<small><small>
+Try ask Gemini:<br>
+Can you translate into Danish/French/German/Spanish and create a JSON list as a translation table.<br>
+Use : as field separator and , as record separator. Remember to omit the trailing comma.<br>
+All occurrences of " in the texts must be escaped with \ resulting in "\<br>
+If duplicates exist, they must be removed.<br>
+(If line breaks exist in the texts, they must be changed to a single space.)<br>
+Any existing translated texts should not be updated.<br>
+<br>
+Template:<br>
+"translation": {<br>
+"": "",<br>
+}<br>
+Here is the list:<br>
+[Copy/Paste the list to here]
+</small></small>
+');
     htm_Card_end();
     htm_nl(2);
 
@@ -55,7 +74,7 @@ htm_Page_( titl:'translate.page.php', hint:'@Maintenance of project translation'
 
     htm_Card_( capt:'@Select a language:',  icon:'fas fa-wrench', hint: '', form: 'lang', acti: '', clas:'cardW560', wdth: '', styl: 'background-color: white;', attr: '');
     echo '<div style="text-align: center; margin: 20px;">';  
-    echo lang('The actual language is').'<b> '.$App_Conf['language'].' / '/* .$_SESSION['currLang']['native'] */.' </b><br><br>';
+    echo lang('The actual language is').'<b> '.$App_Conf['language'].' / '. isset($_SESSION['currLang']['native']). '</b><br><br>';
     htm_Input( labl:'@Filter', plho:'Enter...', icon:'', hint:'@Hide/show some (empty) languages in the language selector',
                vrnt:'rado', name:'alllang', valu:$alllang, form:'', wdth:'110px', algn:'left', attr:'onclick="this.form.submit();"', rtrn:false, unit:'', disa:true, rows:'2', step:'',
                list: [
@@ -65,6 +84,7 @@ htm_Page_( titl:'translate.page.php', hint:'@Maintenance of project translation'
     htm_Input( labl:'@Select another language', plho:'@Sel...', icon:'', hint:'@Select amongst installed languages',
                vrnt:'opti', name:'langu', valu:'dsads', form:'', wdth:'200px', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list: $SelList);
     echo '</div>';
+    htm_TextDiv('@The system is prepared for 184 languages',algn:'center ');
     htm_Card_end( labl:'@Activate selected', icon:'',  hint:'@Change language to the selected',  name:'',  form:'lang', subm:true,  attr:'',  akey:'',  kind:'save', simu:false);
     htm_nl(2);
 
@@ -73,6 +93,7 @@ htm_Page_( titl:'translate.page.php', hint:'@Maintenance of project translation'
     echo '<div style="text-align: left; margin: 20px;">';            
     scannLngStrings($code= substr($App_Conf['language'],0,2));
     echo '</div>';
+
     htm_Card_end();
     htm_nl(2);
 htm_Page_end();
