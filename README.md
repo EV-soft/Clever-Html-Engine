@@ -168,7 +168,7 @@ To learn the system and its possibilities, it is recommended to study the *.page
 
 Get inspired and test the system.
 
-Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.4.x/Proj.demo/CustomerOrder.page.php)
+Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.5.x/Proj.demo/CustomerOrder.page.php)
 
 Use the top menu to view documentation and examples.
 
