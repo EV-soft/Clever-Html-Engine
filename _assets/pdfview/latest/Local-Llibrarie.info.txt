@@ -1,0 +1,2 @@
+In this folder and subfolders, you place all library files that 
+are necessary to use the library offline, without a connection to the web.

@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/support.page.php';    $DocVer='1.4.1';    $DocRev='2024-07-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/support.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -21,7 +21,8 @@ htm_Page_(titl:'support.page.php', hint:$©,  info:'File: '.$DocFile.' - ver:'.$
     htm_Card_(capt:'Libraryes and files',icon:'fas fa-file', hint: '',form: 'head',acti: '',clas:'cardW640',wdth: '',styl: 'background-color: white;',attr: '');
     set_Style('type="text/css"', 'li:hover{ color:gray; font-weight: 400; }' );
 
-    echo '<div style="text-align: left;">';
+    echo '<style>[data-p2h-vars] .p2hPasted span[style*="background-color"] { color: #1a1a1a !important; }</style>';  # Dark mode: dark text on the light highlights
+    echo '<div class="p2hPasted" style="text-align: left;">';
     echo '<p><strong>PHP2HTML</strong> makes use of some external libraries which can be located either locally in a folder on the host server or public on a CDN server: Cloudflare on the Internet.</p>
 <p>If location on a CDN server is chosen, it has the disadvantage that the program loses functionality when there is no connection to the Internet.<br>If local location is selected, it is up to you to copy needed files and provide updates manually.</p>
 <p>When you program a page, you must choose which library and location to use.</p>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card help</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f6f7f8; --card: #ffffff; --text: #222; --accent: #1A6E1A; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1e2227; --card: #2a2f36; --text: #e6e6e6; --accent: #7cc47c; } }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, sans-serif; }
+  main { max-width: 640px; margin: 24px auto; padding: 16px 20px; background: var(--card); border-radius: 8px;
+         box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  h1 { font-size: 20px; color: var(--accent); margin-top: 0; }
+  code { background: rgba(127,127,127,.15); padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Help for this card</h1>
+  <p>This page opens from the <b>?</b> icon in the card header. It is the demo of the parameter
+     <code>help:</code> in <code>htm_Card_()</code>.</p>
+  <p>Give each card its own help page, for example:</p>
+  <p><code>htm_Card_(capt:'@Customer', help:'help/customer.htm');</code></p>
+  <p>The page opens in a new tab. Without <code>help:</code> the card has no <b>?</b> icon.</p>
+</main>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<?php $DocFile='../translate.inc.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php $DocFile='../translate.inc.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -138,6 +138,7 @@ function scannLngStrings($code= 'dk') {
     $temp = fopen('php://temp', 'w+');
     $prev= '';
     $strMiss= '';
+    $tempRows= [];  $jf= JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;   # The .tmp.json rows - JSON-encoded, joined at the end
     fwrite($temp,'"translation": {'.chr(13).chr(10));
     // $arrLang['en']= [];  // Build new translate table for english
     
@@ -151,6 +152,7 @@ function scannLngStrings($code= 'dk') {
         $str= trim($str,'@');
         $str= rtrim($str,'\\');
         $str= html_entity_decode(substr($str,strlen($flag)));   // echo ' ',$str;
+        $rawStr= str_replace("\\'", "'", $str);               # The key as lang() sees it (\' in the PHP source is ')
         $str= str_replace ('"', '\"', $str );
         $arrLang['en'][$str] = $str; 
         $strLang= @$arrLang[$indx]['translation'][$str];    // Supress error messages
@@ -159,12 +161,12 @@ function scannLngStrings($code= 'dk') {
         if ($i>=$n-2) $next= ''; 
         fwrite($googleFile, '"'.$str .'"'.$next.chr(13).chr(10));
         echo $lf.str_pad(' ',4,' ').'"'.$str.'": '.space(55-strlen($str)).'"'.$missing.$strLang.'"';
-        if ($prev != $str)     // Prevent dublets
-            fwrite($temp, str_pad(' ',6,' ').'"'.$str.'":'.'"'.$missing.$strLang.'"');
-        if (($i<=$n) and ($prev != $str)) { echo ','; fwrite($temp,','.chr(13).chr(10)); } //  Not after the last!
+        if ($prev != $str)     // Prevent dublets - key and value JSON-encoded (quotes, backslashes, line breaks)
+            $tempRows[$rawStr]= str_pad(' ',6,' ').json_encode($rawStr, $jf).':'.json_encode($strLang ? $strLang : $code.' ???: '.$rawStr, $jf);
+        if (($i<=$n) and ($prev != $str)) echo ',';
         $prev= $str;
     }}
-    fwrite($temp, chr(13).chr(10).'}');
+    fwrite($temp, implode(','.chr(13).chr(10), $tempRows).chr(13).chr(10).'}');   # No comma after the last row
     rewind($temp);        $tempData=   stream_get_contents($temp);        fclose($temp);
     rewind($googleFile);  $googleData= stream_get_contents($googleFile);  fclose($googleFile);
     if ($writeFiles) {

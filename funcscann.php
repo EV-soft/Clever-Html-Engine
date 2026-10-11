@@ -1,20 +1,24 @@
-<?php   $DocFile= '.\funcscann.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= '.\funcscann.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 
-    $d = dir("../../");  //    var_dump($d);
+    # (Was: $d = dir("../../") - not used)
     // $paths = glob('../../*/*.{htm,php}',GLOB_BRACE); 
     $paths = glob('./*/*.{htm,php}',GLOB_BRACE);
     function sortByKey($a, $b) {
-      return $a['key'] > $b['key'];
+      return strcmp($a['key'], $b['key']);              # A number, not a bool (PHP 8)
     }
     $searchWord= 'function ';
 
+    $basekeyList= [];
     if (is_readable('Functions.list')) {
         $basekeyList= file_get_contents('Functions.list');
         $basekeyList= explode('/', $basekeyList);        // foreach ($basekeyList as $key) echo '<br>'.$key;
     }
 
-    $total= 0;    $buff= array();   $fraser= array(); $d = dir("/");  $html= ''; $arrFunctions= [];      $keyList=[];
-    while ((is_object($d)) and (false !== ($entry = $d->read())) )
+    $total= 0;    $buff= array();   $fraser= array(); $d = null;  $html= ''; $arrFunctions= [];      $keyList=[];
+    # Scan the library next to this file - and only when it is newer than the overview (not on every page view)
+    $libDir= dirname(__FILE__);
+    $needScan= !is_readable('Functions.html') || (filemtime($libDir.'/php2html.lib.php') > filemtime('Functions.html'));
+    foreach (($needScan ? [$libDir] : []) as $entry)
     {
     //if (false !== ($entry = $d->read())) {
     $dir= $entry.'/';
@@ -81,7 +85,7 @@
                 if (strpos(' '.$prevLine,'# ') > 0) 
                      $hint= ' title= "'.str_replace('# ','Concerning: ',$prevLine).'" '; 
                 else $hint= '';
-                if ($s=strpos($line,"{")) $funcN= ' '.substr($line,$p,$s-$p); 
+                if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   # Same 3 lines per function as without "{" (the overview count relies on it)
                 else                      $funcN= ' '.substr($line,$p);
                 $x= substr($funcN,strpos($funcN,'htm_'));
                 $x= substr($x,0,strpos($x,'('));
@@ -141,8 +145,8 @@
           $count= substr('000'.$count,-3); 
           if ($count>0) $buff[] = '<br>Ialt: '.$count.' '.$nn.' forekomst(er) af: "<font color=red>'.$searchWord.'</font>" i <i>'.$dir.'</i><b>'.$sourceFile.'</b>';
       } } 
-      file_put_contents('Functions.html',$html);
-      file_put_contents('Functions.list',implode('/', $keyList));
+      file_put_contents('Functions.html',$html, LOCK_EX);
+      file_put_contents('Functions.list',implode('/', $keyList), LOCK_EX);
       /* 
       $keyList= file_get_contents('Functions.list');
       $keyList= explode('/', $keyList);

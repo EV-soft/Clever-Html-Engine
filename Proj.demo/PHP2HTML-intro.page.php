@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-29';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php   $DocFile= './Proj.demo/PHP2HTML-intro.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters are shown. In a real project you just need to give parameters different from default values !
 
@@ -49,7 +49,7 @@ htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hin
             <p style="margin: 12px;" >PHP2HTML make use of other open source libraryes: Font-awesome, Tablesorter, Jquery, tinyMCE...</p>
             '. */'
             <br>
-            ', algn:'justify', marg:'12px;padding:12px', styl:' font-weight: 500; color: #000000; border-radius: 25px; width:700px; margin: auto; background-color: white;
+            ', algn:'justify', marg:'12px;padding:12px', styl:' font-weight: 500; color: #000000; border-radius: 25px; width:700px; max-width: calc(100% - 24px); margin: auto; background-color: white;
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);');
     echo '<br>';
 

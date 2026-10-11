@@ -1,0 +1,34 @@
+{
+  "Demo.page.php": [
+    "<h3>Demosiden</h3>",
+    "<p>Siden viser næsten alle bibliotekets <b>htm_</b>-funktioner. Hvert kort er én gruppe funktioner.</p>",
+    "<p><b>Kort:</b> klik på et korts overskrift for at folde det. Ikonerne til højre ændrer højde og bredde eller folder alle kort. Træk i hjørnet nederst til højre for at ændre et korts størrelse.</p>",
+    "<p><b>Visningsbjælken</b> (øverst til højre): zoom, fuld skærm, spaltevisning, sprog, dine noter, denne hjælp og tema.</p>",
+    "<p>Formularerne på siden er demoer - intet gemmes på serveren.</p>"
+  ],
+  "CustomerOrder.page.php": [
+    "<h3>Kundeordre (eksempel)</h3>",
+    "<p>Et eksempel på en rigtig forretningsside: kundedata, ordrelinjer og indstillinger, bygget alene med <b>htm_</b>-funktioner.</p>",
+    "<p><b>CVR-opslag:</b> skriv et CVR-nummer eller et firmanavn og klik <i>Search</i> - data kommer fra CVR-registret.</p>",
+    "<p><b>Ordrelinjer:</b> hver linjes total beregnes ud fra antal, pris, rabat og moms. <i>Add row</i> tilføjer en tom linje.</p>",
+    "<p>Det er en demo: <i>Save</i>-knapperne gemmer ikke noget.</p>"
+  ],
+  "other.page.php": [
+    "<h3>Andre funktioner</h3>",
+    "<p>Beskeder, dialoger, knapper og små hjælpefunktioner.</p>",
+    "<p><b>htm_Alert, htm_Banner, htm_Badge</b> viser beskeder og mærkater. <b>htm_ConfirmPostLink</b> spørger før en handling, der ændrer data. <b>htm_TableTools</b> giver en tabel søgning og sortering.</p>"
+  ],
+  "card.page.php": [
+    "<h3>Kort</h3>",
+    "<p>Et kort laves med <b>htm_Card_()</b> og lukkes med <b>htm_Card_end()</b>. Alt derimellem er indholdet.</p>",
+    "<p>Med <code>form:</code> er kortet også en formular, og <code>htm_Card_end(subm:true)</code> tilføjer gem-knappen.</p>"
+  ],
+  "documentation.page.php": [
+    "<h3>Dokumentation</h3>",
+    "<p>Nyt i versionen, links til oversigten over alle funktioner og til kildekoden på GitHub.</p>"
+  ],
+  "tinyEditor.page.php": [
+    "<h3>HTML-editor</h3>",
+    "<p>TinyMCE redigerer formateret tekst. Dine ændringer gemmes kun i denne browsersession - <i>Download</i> gemmer teksten som en fil på din computer.</p>"
+  ]
+}

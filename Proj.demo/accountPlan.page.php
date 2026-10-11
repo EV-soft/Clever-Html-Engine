@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.4.1';    $DocRev='24-07-01';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -25,7 +25,7 @@ htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver
     // $accoPlan= newFieldOrder($accoPlan,['pln_id__','pln_nmbr','pln_name','pln_type','pln_from','pln_vat_','pln_sald','pln_curr','pln_cour','pln_shrt','pln_stat']);
     // arrPretty($accoPlan,'$accoPlan');
     
-    htm_Card_($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',$form= $fm='plan',$acti= '',$clas= 'panelW110',$wdth= '',$styl= 'background-color: white;',$attr= '');
+    htm_Card_($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',$form= $fm='plan',$acti= '',$clas= 'cardW110',$wdth= '',$styl= 'background-color: white;',$attr= '');
     htm_Table(capt:[['@Danish Business Authority\'s standard.', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', '']],
         pref:[],    #  Kontoplan baseret på Erhvervsstyrelsens standard.
         body:[
@@ -49,8 +49,14 @@ htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver
         list:['KONTOPLAN',['','','','','','','','','','']]   // ,ExportTo: $dPath.'Export.csv.txt'
         );
         htm_nl();
-        htm_LinkButt( labl:'@Print preview', hint:'@Vis tabellen i fuld bredde og højde og uden navigations knapper', 
-                            attr:'', link:'accountPlan-print.page.php');     // https://ev-soft.work/p2h/v1.2.0/Proj.demo/accountPlan-print.page.php
+        # Print preview: the browser's print view - the table in full height, without menus and buttons (see @media print below)
+        htm_ActionButt( labl:'@Print preview', icon:'fas fa-print', hint:'@Show the table in full width and height, without navigation buttons',
+                        type:'button', name:'printPlan', acti:'window.print()', rtrn:false);
+        echo '<style>@media print {
+            nav, .topnav, .p2hViewBar, button, a.button, abbr.hint > data-hint, [id^=btnGo] { display: none !important; }
+            .wrapper { height: auto !important; overflow: visible !important; }
+            [id^=HideBody] { max-height: none !important; overflow: visible !important; }
+        }</style>';
         
     htm_Card_end('@Save','','@Save to database','save',$fm,true); 
     htm_nl();                                     # Erhvervsstyrelsen har udgivet en standard kontoplan med tilhørende vejledning

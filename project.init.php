@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.5.0';    $DocRev='2026-10-09';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= 'project.init.php';    $DocVers='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** 
 #  This file is included from start of php2html.lib.php 
 
@@ -23,9 +23,9 @@
     // $GLOBALS["gbl_ProgRoot"]= './';
     $gbl_labelAlgn= 'R';                # L/C/R - Align label for htm_Input() and htm_Inbox()
     
-    if (!file_get_contents('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js') > '')
-         $LibIx= 1; // Local            # Central adaptive settings Library 1:local/2:CDN
-    else $LibIx= 2; // CDN
+    # Library source 1:local / 2:CDN - from the library's cached CDN check ($autoCDN, max. once per 5 minutes).
+    # (Was: jquery.min.js downloaded from cdnjs on every page request - up to 60 s wait when the CDN does not answer)
+    $LibIx= (($autoCDN ?? '1') == '2') ? 2 : 1;
     
     // echo $LibIx;
 
@@ -37,12 +37,12 @@
             ['Next','fas fa-info black',    '@Description', '', '@What is PHP2HTML ?','description.page.php',[],''],
             ['Next','fas fa-info black',    '@Examples',    '', '@See and try examples of nearly all modules in the system...','Demo.page.php',[],''],
             ['Next','fas fa-info black',    '@Tiny editor', '', '@Try the advanced online HTML editor','tinyEditor.page.php ',[],''],
-            ['Next','fa-regular fa-credit-card black', '@ Advanced example', '','@Example of an Accounting program','CustomerOrder.page.php',[],''],
-            ['Next','fa-regular fa-credit-card black', '@ Danish account plan', '','@Example of an account plan','accountPlan.page.php',[],''],
-            ['Last','fa-solid fa-book black', '@ Documentation', '','@Documentation of the system','documentation.page.php',[],'']
+            ['Next','fa-regular fa-credit-card black', '@Advanced example', '','@Example of an Accounting program','CustomerOrder.page.php',[],''],
+            ['Next','fa-regular fa-credit-card black', '@Danish account plan', '','@Example of an account plan','accountPlan.page.php',[],''],
+            ['Last','fa-solid fa-book black', '@Documentation', '','@Documentation of the system','documentation.page.php',[],'']
            
         ]],
-        ['Next','fas fa-cubes colrorange',  '@MODULES',          '@Systm modules',                      '@','input.page.php', [
+        ['Next','fas fa-cubes colrorange',  '@MODULES',          '@System modules',                      '@','input.page.php', [
             ['Next','fas fa-cubes black',   '@htm_Input',        '@htm_Input() used for input and output of values of various variables','@','input.page.php', [],'top:350px;'],
             ['Next','fas fa-cubes black',   '@htm_Table',        '@Example on module htm_Table()',      '@','table.page.php', [] ,'top:350px;'],
             ['Next','fas fa-cubes black',   '@htm_Card',         '@Example and notes about htm_Card()', '@','card.page.php', [] ,'top:350px;'],
@@ -63,7 +63,14 @@
         ]; 
          
     $gbl_ViewBar= true;     # Floating, movable view bar with zoom, full screen and theme (htm_Menu_TopDown view:)
-    $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.$DocVers.': 60+ core functions.</small>';
+    $gbl_CardMove= $gbl_CardMove ?? 'icon';   # Move cards: 'icon' (handle in the header) / 'header' (drag the header) / 'toggle' (view bar button) / false
+    # Project hooks (no edits in php2html.lib.php needed):
+    // $gbl_CustomCss= ':root { --AccnColr: #8a2be2; }';      # Own CSS after the system CSS - or the address of a file: $gbl_ProgRoot.'my.css'
+    // $gbl_CustomLib= __DIR__.'/../my.lib.php';              # Own functions (else customLib.inc.php next to the library)
+    // $gbl_CustomRules= __DIR__.'/../my.rules.php';          # Own table row rules (else customRules.inc.php)
+    // define('DecimalSep', '.');  define('ThousandsSep', ','); # Number format;  define('DEBUG', true);
+    // $headEndScript= '...';  $bodyEndScript= '...';  $gbl_novice= true;
+    $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.$DocVers.': 78 core functions.</small>';
 
 ## Quickstart:
     $menudata_quick= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='', 8:$widt)

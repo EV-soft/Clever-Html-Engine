@@ -1,4 +1,4 @@
-<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters can be shown. In a real project you just need to give parameters different from default values !
 
@@ -34,7 +34,7 @@ $tblData=     # = array(),
 
 
 htm_Page_( titl:'@DEMO  and examples', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer,inis:'',algn:'center', imag: $bodybg='../_accessories/_background.png', pbrd:true);
-    echo '<div style="text-align: center;"><br><b>Clever-Html-Engine</b> / php2html-Demo:';  htm_nl(2);
+    echo '<div style="text-align: center;"><br><b>Clever-Html-Engine</b> / php2html-Demo:</div>';  htm_nl(2);
 
 ### Program mainmenu:
   if (($vismenu=true) and (($loggetind ?? '') == true) or true)
@@ -63,7 +63,7 @@ htm_Page_( titl:'@DEMO  and examples', hint:$©, info:'File: '.$DocFile.' - ver:
     if (isset($_POST['name']))  { $namex = $_POST['name']; } // Special case !
 
     $date= date("Y-m-d");
-    htm_Card_( capt:'The variants of Input / Output:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW960', wdth:'640px', styl:'background-color: white;', attr:'',  show:true,  head:$headbg, help:'CustHelp.htm');
+    htm_Card_( capt:'The variants of Input / Output:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW960', wdth:'640px', styl:'background-color: white;', attr:'',  show:true,  head:$headbg, help:'CustHelp.htm', elem:'section');
     htm_nl();
     htm_Fieldset(capt:'TEXT variants',icon:'',hint:'',wdth:'95%',marg:'',attr:'',rtrn:false);
         htm_Input(labl:'@htm_Input(Text)', plho:'?:',  icon:'', hint:'@Demo of htm_Input Field type single-line text',                      vrnt:'text', name:'text', valu:$text='text', form:'', wdth:'160px');
@@ -72,9 +72,9 @@ htm_Page_( titl:'@DEMO  and examples', hint:$©, info:'File: '.$DocFile.' - ver:
         htm_nl();   
         htm_Input(labl:'@htm_Input(area)', plho:'Multiline </>:', icon:'', hint:'@Demo of htm_Input Field type area: Multi-line text',      vrnt:'area', name:'area', valu:'',          form:'', wdth:'140px',    algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'6', step:'', list:[], llgn:'R', bord:'', ftop:'');
         $text= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & © 2019-2025 EV-soft'; 
-        $html= '<a href="" border="0" style="cursor:help;" rel="nofollow" title="'.$text.'">
-                <img style="width: 70%;" src=
-               "https://qrcode.tec-it.com/API/QRCode?data='.urlencode($text).'&codepage=UTF8&size=small"></a>';
+        $html= '<span style="cursor:help;" title="'.$text.'">      '.   /* (was <a href="">: a click reloaded the page) */'
+                <img style="width: 70%;" alt="'.lang('@QR code').': '.$text.'" src=
+               "https://qrcode.tec-it.com/API/QRCode?data='.urlencode($text).'&codepage=UTF8&size=small"></span>';
 // debricated:  "https://chart.googleapis.com/chart?cht=qr&chl='.urlencode($text).'&chs=90x90&choe=UTF-8&chld=L|0"></a>';
 /* 
 <img src="https://qrcode.tec-it.com/API/QRCode?data=https%3a%2f%2fqrcode.tec-it.com" />
@@ -94,8 +94,8 @@ method          Method used for returning the created QR code image (PNG): BASE6
                   vrnt:'',name:'Body_div1',valu:$html,form:'',wdth:'120px;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
         $text= 'Copyright EV-soft [Code128]';
-        $html= '<a href="" border="0" style="cursor:help" rel="nofollow" title="'.$text.'"><img width="100%"  src= 
-                "https://barcodeapi.org/api/Code128/'.$text.'"></a>';
+        $html= '<span style="cursor:help" title="'.$text.'"><img width="100%" alt="'.lang('@Barcode').': '.$text.'" src=
+                "https://barcodeapi.org/api/Code128/'.rawurlencode($text).'"></span>';
         htm_Inbox(labl:'@htm_Inbox-demo',  plho:'', icon:'',hint:'@You can put anything in htm_Inbox(). <br>Here it is a Code128 barcode.',
                   vrnt:'',name:'Body_div2',valu:$html, form:'',wdth:'340px;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
@@ -291,7 +291,7 @@ STRING
         htm_nl(2);
         htm_Field(labl:'Label with hint', body:'HTML-Content <br>in container htm_Field() <br>---
         ', icon:'', hint:'Tip for htm_Field()<br>
-        htm_Field($labl=\'Label with hint\',$hint=\'HINT for htm_Field()\',$icon=\'\',$name=\'fld\',$html=\'HTML-Content <br>in container htm_Field() <br>---\',$width=\'\',$margin=\'\',$ftop=\'\',$attr=\'\',$rtrn=false);',
+        htm_Field(labl:\'Label with hint\', hint:\'Tip for htm_Field()\', name:\'fld\', body:\'HTML-Content...\');',
          name:'fld', wdth:'', styl:'', attr:'', llgn:'C', rtrn:false, ftop:'');
 
     htm_Card_( capt:'@PHP Source-code: htm_Field();', icon:'fas fa-code', hint:'', form:'', acti:'', clas:'cardW560', wdth:'640px', styl:'background-color: lightgray;', attr:'', help:'CustHelp.htm');
@@ -301,9 +301,9 @@ $strCode=
 htm_Field(labl:'Label with hint',
           hint:'Tip for htm_Field()',
           icon:'',name:'fld',
-          html:'HTML-Content <br>in container htm_Field() <br>---',
-          wdth:'',
-          marg:'',ftop:'',attr:'',
+          body:'HTML-Content <br>in container htm_Field() <br>---',
+          wdth:'',styl:'',
+          ftop:'',attr:'',
           rtrn:false);
                
 STRING
@@ -462,9 +462,9 @@ STRING
     <td style="vertical-align: bottom;"><i>'.lang('@Title:').'</i></td>';
     foreach ($task as $t) echo '<td><span style="padding:3px;" title="'.lang($t[1]).'">'.lang($t[0]).'</span></td>';
     echo '</tr>';
-    foreach ($users as $usr) { $i= 0;
+    foreach ($users as $u => $usr) { $i= 0;
         echo '<tr style="height: 22px;"><td style="height: 22px;"><a href="">'.$usr[0].'</a></td><td>'.$usr[1].'</td>';
-            foreach ($usr[2] as $a)   echo '<td style="height: 22px; width: 22px; text-align: center;">'.htm_MultistateButt(name:'ROW'.$i.'COL'.$i++, valu: $a).'</td>';
+            foreach ($usr[2] as $a)   echo '<td style="height: 22px; width: 22px; text-align: center;">'.htm_MultistateButt(name:'ROW'.$u.'COL'.$i++, valu: $a).'</td>';
         echo '</tr>';
     }
     echo '<tr><td>&nbsp;</td></tr>';
@@ -493,7 +493,7 @@ STRING
     echo '</table>';
     
     echo '</span>';
-    htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'creat', rtrn:false, 
+    htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'crea',  rtrn:false, 
                    tplc:'LblTip_text', tsty:'left: auto; top: 0; position: relative;',acti:'htm_Toast("Create new user<br>Cant create yet !","orange","black")');
     htm_Fieldset_end();
     htm_MiniNote('This is an example of using the multi-state button.');
@@ -617,7 +617,7 @@ STRING
             <small>See the source in php2html.lib.php to manage the function parameters.</small>
         ';
     htm_Tabs_(head:'<small>Here you see the htm_Tabs_() - Toggleable tabs system:</small>', styl:'text-align:left;', rtrn:false);
-    htm_Tab(labl:'@HTML Page',body:$strPage,  name:'HTMLPage', styl:'text-align:left;',    bclr:'white',      vhgh:'200px');
+    htm_Tab(labl:'@HTML Page',body:$strPage,  name:'HTMLPage', styl:'text-align:left;',    bclr:'white',      vhgh:'200px', dflt:true);
     htm_Tab(labl:'@Cards',    body:$strCards, name:'cards',    styl:'text-align:left;',    bclr:'lightyellow',vhgh:'200px');
     htm_Tab(labl:'@Tables',   body:$strTabel, name:'Tables',   styl:'text-align:left;',    bclr:'lightcyan',  vhgh:'200px');
     htm_Tab(labl:'@Input',    body:'',        name:'input',    styl:'text-align:left;',    bclr:'lightgray', );

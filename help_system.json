@@ -1,0 +1,34 @@
+{
+  "Demo.page.php": [
+    "<h3>The demo page</h3>",
+    "<p>This page shows nearly all <b>htm_</b> functions of the library. Each card is one group of functions.</p>",
+    "<p><b>Cards:</b> click a card header to fold it. The icons at the right change the height and width, or fold all cards. Drag the grip in the lower right corner to resize a card.</p>",
+    "<p><b>View bar</b> (upper right): zoom, full screen, column view, language, your notes, this help and the theme.</p>",
+    "<p>The forms on this page are demos - nothing is saved on the server.</p>"
+  ],
+  "CustomerOrder.page.php": [
+    "<h3>Customer order (example)</h3>",
+    "<p>An example of a real business page: customer data, order lines and settings, built only with <b>htm_</b> functions.</p>",
+    "<p><b>CVR lookup:</b> type a CVR number or a company name and click <i>Search</i> - the data comes from the Danish company register.</p>",
+    "<p><b>Order lines:</b> the total of each line is calculated from quantity, price, discount and VAT. <i>Add row</i> adds an empty line.</p>",
+    "<p>This is a demo: the <i>Save</i> buttons do not store anything.</p>"
+  ],
+  "other.page.php": [
+    "<h3>Other functions</h3>",
+    "<p>Messages, dialogs, buttons and small helpers.</p>",
+    "<p><b>htm_Alert, htm_Banner, htm_Badge</b> show messages and labels. <b>htm_ConfirmPostLink</b> asks before an action that changes data. <b>htm_TableTools</b> adds search and sorting to a table.</p>"
+  ],
+  "card.page.php": [
+    "<h3>Cards</h3>",
+    "<p>A card is made with <b>htm_Card_()</b> and closed with <b>htm_Card_end()</b>. Everything in between is the content.</p>",
+    "<p>With <code>form:</code> the card is also a form, and <code>htm_Card_end(subm:true)</code> adds the save button.</p>"
+  ],
+  "documentation.page.php": [
+    "<h3>Documentation</h3>",
+    "<p>What is new in the version, links to the overview of all functions and to the source on GitHub.</p>"
+  ],
+  "tinyEditor.page.php": [
+    "<h3>HTML editor</h3>",
+    "<p>TinyMCE edits formatted text. Your changes are kept in this browser session only - <i>Download</i> saves the text as a file on your computer.</p>"
+  ]
+}

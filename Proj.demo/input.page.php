@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/input.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
@@ -142,7 +142,7 @@ htm_Page_(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVe
     <tr><td>x</td><td>y</td><td>z</td></tr>
     </table>
     ';
-    htm_Inbox(labl:'htm_Inbox-test RO',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of htm_Inbox() containing a table.<be>Readonly',
+    htm_Inbox(labl:'htm_Inbox-test RO',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of htm_Inbox() containing a table.<br>Readonly',
                   vrnt: '',name:'Body_div',valu:$html,form:'',wdth:'33%;',algn:'center',
                   attr:'color: green;',rtrn:false,unit:'',disa:false,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
 

@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
@@ -32,7 +32,6 @@ htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:
                 license_key: 'gpl',
                 language: 'en',
                 skin: 'oxide-dark',
-                content_css: 'dark',
                 promotion: false,
                 plugins: [
                   'accordion', 'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
@@ -99,7 +98,7 @@ Word Count
     htm_Card_end(labl:'GEM', icon:'', hint:'', name:'', form:'head6', subm:false,  attr:'', akey:'s', kind:'save', simu:false);
    
     htm_Card_(capt:'@Data-file for tiny Editor: '.$EditFile, icon: 'fas fa-database', form:'fmUpload', acti:'', clas: 'cardW100');
-        htm_textdiv('<b>Info:</b> The editor loads/saves data from file: '.$EditFile.' '. str_sp('8').
+        htm_textdiv('<b>Info:</b> '.lang('@The editor starts with the file').' '.$EditFile.'. '.lang('@Your changes are saved in this browser session only (not on the server).').' '. str_sp('8').
             htm_Field(labl:'Upload local file to edit', body:
                 htm_Input(labl:'', 
                           plho:'@Enter your filename here...', icon:'', 
@@ -113,12 +112,15 @@ Word Count
                 icon:'',hint:'@Upload file to '.$EditFile.'<br>Not working yet !',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:true,ftop:'').
              
              htm_Field(labl:'@Download file', body:
-                 htm_Inbox(labl:'@Download file', 
-                           plho:'@Enter your filename here...', icon:'', 
-                           hint:'@Download '.$EditFile.' to a local file<br>Not working yet !', vrnt:'text', name:'dfile', 
-                           valu:'<a href= "'.$EditFile.'" download>'.$EditFile.'</a>', form:'fmUpload', wdth:'', algn:'left',
-                           attr:'', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'', ftop:''), 
-                      icon:'', hint:'@Download file '.$EditFile, name:'fld', wdth:'', styl:'', attr:'', llgn:'C', rtrn:true, ftop:'')
+                 htm_ActionButt(labl:'@Download', icon:'fas fa-download', hint:'@Save the text in the editor as a file on your computer',
+                                type:'button', name:'btnDownload', acti:'p2hDownloadDoc()', rtrn:true).
+                 '<script>function p2hDownloadDoc() {   /* The current editor text - not the shared start file */
+                      var ed= window.tinymce && tinymce.get("TinyTextarea"), ta= document.getElementById("TinyTextarea");
+                      var html= ed ? ed.getContent() : (ta ? ta.value : "");
+                      var a= document.createElement("a");  a.href= URL.createObjectURL(new Blob([html], {type: "text/html"}));
+                      a.download= "EditContent.htm";  document.body.appendChild(a);  a.click();  a.remove();
+                  }</script>',  
+                      icon:'', hint:'@Save the text in the editor as a file on your computer', name:'fld', wdth:'', styl:'', attr:'', llgn:'C', rtrn:true, ftop:'')
             );  // 1:Download file, 2:Save as newName,
             htm_textdiv(body:'@Alternative you can copy/paste from/to content in Source Code window.', styl:'white-space: nowrap;', rtrn:true,
                         attr:'margin: auto; display:inline-block; position: relative;');

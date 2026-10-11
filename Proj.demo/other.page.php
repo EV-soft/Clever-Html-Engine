@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/other.page.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/other.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -88,6 +88,26 @@ htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$Do
             htm_Row_();  htm_SubmitButt(labl:'@Send (htm_SubmitButt)', hint:'@Submits the form - htm_Form_() adds the CSRF token', font:'14px'); htm_Row_end();
         htm_Form_end();
         htm_nl();
+    htm_Card_end();
+
+    ###### Messages, labels, safe actions and table tools (from NH-logistik)
+    htm_Card_(capt:'@Alert, banner, badge, confirm and table tools:', icon:'fa-solid fa-bell', hint:'', clas:'cardW800', wdth:'640', elem:'section');
+        if (isset($_POST['demoDelete']))
+            htm_Alert(body: lang('@Demo: record').' '.sys_enc((string)$_POST['demoDelete']).' '.lang('@would now be deleted (POST with CSRF token).'), kind:'success');
+        htm_Banner(body:'@htm_Banner(): a notice across the page - e.g. <b>Demo data</b> or <b>Read only</b>.', kind:'info');
+        foreach (['success','error','warning','info'] as $k) htm_Alert(body:'htm_Alert(kind:\''.$k.'\')', kind:$k, wdth:'520px');
+        echo '<p>htm_Badge(): ';
+        foreach (['primary'=>'@New','secondary'=>'@Draft','success'=>'@Paid','danger'=>'@Overdue','warning'=>'3','info'=>'@Info'] as $k=>$t)
+            echo htm_Badge(labl:$t, kind:$k, hint:'kind:\''.$k.'\'', rtrn:true).' ';
+        echo '</p><p>';
+        htm_ConfirmPostLink(labl:'@Delete record 42', icon:'fa-solid fa-trash', hint:'@htm_ConfirmPostLink(): asks first, then POSTs', data:['demoDelete'=>'42'], mess:'@Delete record 42?');
+        echo '</p>';
+        htm_Caption(labl:'@htm_TableTools(): search and sort without jQuery'); htm_nl();
+        htm_TableTools();
+        echo '<table style="margin:auto; border-collapse:collapse;"><thead><tr><th>'.lang('@Customer').'</th><th>'.lang('@Date').'</th><th>'.lang('@Amount').'</th></tr></thead><tbody>';
+        foreach ([['Andersen ApS','03.10.2026','1 234,50'],['Bager Hansen','28.09.2026','89,00'],['Café Ørsted','15.10.2026','12 000,00'],['Dansk Træ A/S','01.08.2026','450,75']] as $r)
+            echo '<tr><td style="padding:3px 12px;">'.$r[0].'</td><td style="padding:3px 12px;">'.$r[1].'</td><td style="padding:3px 12px; text-align:right;">'.$r[2].'</td></tr>';
+        echo '</tbody></table>';
     htm_Card_end();
 
     ###### Text and layout helpers - one row per function: name | result

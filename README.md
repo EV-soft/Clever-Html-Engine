@@ -10,6 +10,28 @@ A modern, semantic PHP library for generating HTML interfaces with compact code,
 
 - Integration with Font Awesome, jQuery UI, TinyMCE, and more
 
+# 🆕 What's new in 1.6.0
+
+**For the user of a page**
+- **View bar:** a floating, movable bar with zoom, full screen, column view, language (with flags), personal notes, page help and theme.
+- **Column view:** the cards flow in columns that fit the window.
+- **Cards:** drag the corner grip to resize a card, and move cards to another place among their sibling cards. Size and order are remembered per page in the browser.
+- **Page help:** a "?" button opens the help text of the page in a movable window (`help_system.json`, one file per language).
+- **Session warning:** while you work, the session is kept alive. After a long pause you are asked before it ends, and if it has ended you are told to reload before you save.
+- **Print:** every page prints only the content (no menus, bars or buttons), and folded cards are printed open.
+- **Accessibility:** skip links, a page heading, card captions as headings, keyboard use of all card icons, hints on keyboard focus, and unique element ids.
+- **Install as an app:** `manifest.json` and icons.
+
+**For the programmer**
+- New functions: `htm_Alert()`, `htm_Banner()`, `htm_Badge()`, `htm_ConfirmPostLink()`, `htm_TableTools()`, `htm_LangSelect()`, `htm_PageHelp()`, `htm_NotePad()` and `htm_QuickBar()`. There are 78 core functions in total.
+- `htm_Card_()`: `elem:` sets a semantic element (section/article/aside...), `fold:'closed'` makes the card start folded, and `move:false` keeps it in place.
+- **Customize without editing the library.** Set `$gbl_InitFile` in the page before `require` to use a project file outside the library folder. That file can set:
+  - `$gbl_CustomCss`, `$gbl_CustomLib` and `$gbl_CustomRules`;
+  - the number format constants `DecimalSep`, `ThousandsSep` and `DEBUG`;
+  - `$gbl_CardMove` (`'icon'`, `'header'`, `'toggle'` or `false`), plus `$gbl_CardResize`, `$gbl_NotePad` and `$gbl_SessionWarn`.
+- Output after `htm_Page_end()` now stays inside `<body>`.
+- Many fixes (XSS, CSRF, dark theme, number formats, duplicate ids). See the page *Documentation → What is new in version 1.6.0* in the demo.
+
 # 📦 Installation
 bash 
 
@@ -70,7 +92,7 @@ You are a php developer who wants to let php2html take over the trivial work of 
 # php2html.lib = Clever-Html-Engine
 Your tool to quickly program html code in your PHP web project.
 
-php2html.lib.php also called "HTML clever engine" consists of a PHP library, with 50+ functions that generate HTML code for standard html elements (INPUT / CHECKBOX / RADIO-GROUP / TABLE), as well as other useful functions.
+php2html.lib.php also called "HTML clever engine" consists of a PHP library, with 78 core functions that generate HTML code for standard html elements (INPUT / CHECKBOX / RADIO-GROUP / TABLE), as well as other useful functions.
 You get a complete system to form the frontend part of your program.
 Built into the system is the easy use of several open-source modules (icons, advanced tables, HTML editor, jquery), and a complete system for changing user languages.	
 

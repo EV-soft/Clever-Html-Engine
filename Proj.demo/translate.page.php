@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj.demo/translate.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj.demo/translate.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -9,6 +9,10 @@ $needTablesorter= '2';
 $needPolyfill=    '0';
 $needFontawesome= '2';
 $needTinymce=     '0';
+
+## The chosen language must reach php2html.lib.php before the page is built (the library reads $_POST['language'])
+if (isset($_POST['langu']) and is_string($_POST['langu']) and preg_match('/^[a-z]{2}(-[A-Za-z]{2})?$/', $_POST['langu']))
+    $_POST['language']= $_POST['langu'];
 
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'translate.inc.php');
@@ -67,14 +71,12 @@ Here is the list:<br>
     global $arrLang, $alllang, $App_Conf;
     foreach ($arrLang as $lng) {
         $SelList[]= [$lng["code"],$lng["code"].' : '.$lng["name"],$lng["native"].' - Author: '.$lng["author"].' - '.$lng["note"]];}
-    if (isset($_POST['langu'])) {
-        $App_Conf['language'] = $_POST['langu']; 
-        $_SESSION['proglang'] = $_POST['langu'];
-    }
+    $App_Conf['language']= $lang;                     # The active page language (validated and remembered by the library)
+    $_SESSION['proglang']= $lang;
 
     htm_Card_( capt:'@Select a language:',  icon:'fas fa-wrench', hint: '', form: 'lang', acti: '', clas:'cardW560', wdth: '', styl: 'background-color: white;', attr: '');
     echo '<div style="text-align: center; margin: 20px;">';  
-    echo lang('The actual language is').'<b> '.$App_Conf['language'].' / '. isset($_SESSION['currLang']['native']). '</b><br><br>';
+    echo lang('@The actual language is').'<b> '.sys_enc($lang).' / '.sys_enc($allLang[$natindx]['native'] ?? '').'</b><br><br>';
     htm_Input( labl:'@Filter', plho:'Enter...', icon:'', hint:'@Hide/show some (empty) languages in the language selector',
                vrnt:'rado', name:'alllang', valu:$alllang, form:'', wdth:'110px', algn:'left', attr:'onclick="this.form.submit();"', rtrn:false, unit:'', disa:true, rows:'2', step:'',
                list: [
@@ -82,7 +84,7 @@ Here is the list:<br>
                  ['Som','Some','@Hide all empty languages'],
               ]);   
     htm_Input( labl:'@Select another language', plho:'@Sel...', icon:'', hint:'@Select amongst installed languages',
-               vrnt:'opti', name:'langu', valu:'dsads', form:'', wdth:'200px', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list: $SelList);
+               vrnt:'opti', name:'langu', valu:$lang, form:'', wdth:'200px', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list: $SelList);
     echo '</div>';
     htm_TextDiv('@The system is prepared for 184 languages',algn:'center ');
     htm_Card_end( labl:'@Activate selected', icon:'',  hint:'@Change language to the selected',  name:'',  form:'lang', subm:true,  attr:'',  akey:'',  kind:'save', simu:false);

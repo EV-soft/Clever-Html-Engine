@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/card.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -10,6 +10,8 @@ $needPolyfill=    '0';
 $needFontawesome= '2';
 $needTinymce=     '0';
 
+$gbl_CardMove= in_array($_GET['move'] ?? '', ['icon','header','toggle','off'], true) ? $_GET['move'] : 'icon';   # Demo: try the activation modes
+if ($gbl_CardMove=='off') $gbl_CardMove= false;
 require_once ($sys.'php2html.lib.php');
 // require_once ($sys.'menu.inc.php');
 // require_once ($sys.'translate.inc.php');
@@ -166,7 +168,9 @@ htm_Card_(capt: '@PHP Source-code:',        # string: The card caption
           show: true,                       # bool:   Show card-buttons top-right
           head: '',                         # string: Style for Header background
           vhgh: '600px',                    # string: MaxHeight (ViewHeight) for span (HideBody) with scrollable content
-          help: ''                          # string: Link to custom Card-help
+          help: '',                         # string: Link to custom Card-help (the ? icon)
+          fold: '',                         # string: 'closed': the card starts folded
+          elem: 'section'                   # string: HTML element: span (default), section, article, aside, main, header, footer, div
 );
 
 // Placed here the cardcontent...
@@ -190,6 +194,8 @@ htm_Card_end();
         <i>Icon</i> <i class="fas fa-arrows-alt-v"></i>: to Toggle the actual card between normal- and max-height<br>
         <br>
         Hover the mouse, and mouse cursor will change and a hint will be shown.<br>
+        <br>
+        Keyboard: <kbd>Tab</kbd> to the header or an icon, and <kbd>Enter</kbd> or <kbd>Space</kbd> to use it. The hint is also shown on keyboard focus.<br>
         <br>
         If you right-click card-header a popup menu regarding all cards will be displayed<br>
         ');

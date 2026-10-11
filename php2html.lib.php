@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -31,6 +31,8 @@
 
 ##### WARNING: If you edit this file, you have to do the same edit, after an update !
 ##### Put your modifications in custom files like: project.init.php,  customLib.inc.php (search : include, require_once - in this file)
+##### They can live outside the library folder: $gbl_InitFile (set in the page before require), and in that file $gbl_CustomLib,
+##### $gbl_CustomRules and $gbl_CustomCss - see the documentation page "Customize without editing the library".
 
 { ## Group ******************** System init: **************************
 
@@ -42,11 +44,11 @@ if (session_status() === PHP_SESSION_NONE) {               # The host project ma
                                    'secure'=> (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS']!=='off'))]);
     session_start();
 }
+if (($_GET['p2h_keepalive'] ?? '') === '1') {   # From the session warning (htm_Page_end): the request itself keeps the session alive
+    header('Cache-Control: no-store');  http_response_code(204);  exit;
+}
 
-# CONSTANTS:
-define('DEBUG',false);              # Set to true to activate system debugging
-define('ThousandsSep',' ');         # Used in number output
-define('DecimalSep',',');           # Used in number output
+# CONSTANTS: see after the project init file (it can define them first)
 /* 
 $isOnline = fsockopen("cdnjs.cloudflare.com", 80, $errno, $errstr, 30);
 if ($isOnline) { $autoCDN= '2'; fclose($isOnline); }
@@ -126,7 +128,16 @@ $gbl_ProgBase= ''; // echo $gbl_ProgBase;
     $gbl_BtNewBgrd= 'Orange';      $gbl_BtNewText= $gbl_TextDark;    # CreateNew:   ORANGE
     $gbl_dimmed=    ' opacity:0.9;';
 }
-if (is_readable($custFile= '../project.init.php')) include($custFile);  # Change global Defaults
+# The project settings: $gbl_InitFile (set in the page before require_once of this library) - else project.init.php next to this library.
+# Keep the project file outside the library folder, and an update of the library does not overwrite it.
+$custFile= $gbl_InitFile ?? (__DIR__.'/project.init.php');
+if (is_readable($custFile)) include($custFile);         # Change global defaults
+elseif (isset($gbl_InitFile)) trigger_error('php2html: $gbl_InitFile not found: '.$gbl_InitFile, E_USER_WARNING);
+
+# CONSTANTS: (defaults - define them in the page before require, or in the project init file)
+defined('DEBUG')        or define('DEBUG',false);       # Set to true to activate system debugging
+defined('ThousandsSep') or define('ThousandsSep',' ');  # Used in number output
+defined('DecimalSep')   or define('DecimalSep',',');    # Used in number output
 /* else echo '<br> '.__LINE__.' '.$custFile.' not found <br>'; */
 
 $javaScripts= '';                                 # Empty buffer
@@ -156,10 +167,10 @@ if (!isset($folder1)) {
 if (!isset($_SESSION['proglang'])) $_SESSION['proglang']= '';
 
 $App_Conf['language'] = $_SESSION['proglang'];
-$englishOnly= false;                # Deactivate the language translate system
-$gbl_novice= false;                 # Activate extended help
-$headEndScript= '';                 # Scripts to run at end of page-HEAD
-$bodyEndScript= '';                 # Scripts to run at end of page-HEAD
+$englishOnly= $englishOnly ?? false;   # Deactivate the language translate system (true: set it in the page before require, or in project.init.php)
+$gbl_novice= $gbl_novice ?? false;             # Activate extended help                (can be set in the project init file)
+$headEndScript= $headEndScript ?? '';           # Scripts to run at end of page-HEAD    (can be set in the project init file)
+$bodyEndScript= $bodyEndScript ?? '';           # Scripts to run at end of page-BODY    (can be set in the project init file)
 
 ## System required:
 // require_once ($gbl_ProgRoot.'translate.inc.php');
@@ -195,7 +206,7 @@ if (false) { # Save/Get configuration to/from file:
 
 function arrPrint($arr,$name='',$rtrn=false)  ## Output actual value of any variabeltype
 {   if ($name>'') $name.=': ';
-    $result= "<br><textarea>".$name. print_r($arr). "</textarea><hr>\n"; // </pre>
+    $result= "<br><textarea>".sys_enc($name. print_r($arr, true)). "</textarea><hr>\n"; // Escaped: values may come from the request
     if (!$rtrn) echo $result;
     else return $result;
 }
@@ -204,7 +215,7 @@ function arrPretty($arrVar,$titl='',$attr='rows="20" cols="135"',$wdth='100%',$r
 {   $result= "<meta charset='UTF-8'>
     <div style='background: lightcyan; width:".$wdth.";'>".$titl."</div>
               <textarea ".$attr." wrap = 'off' style='padding: 10px; width: ".$wdth."; display: block;'>".
-                    print_r($arrVar,true).
+                    sys_enc(print_r($arrVar,true)).                    # Escaped: values may come from the request
               "</textarea><hr>\n"; // </pre>
     if (!$rtrn) echo $result;  else return $result;
 }
@@ -265,7 +276,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         $valu= htmlspecialchars((string)$valu, ENT_QUOTES, 'UTF-8');  // Kun html-varianten må indeholde markup
     }
     if (($llgn == '') and ($gbl_labelAlgn >'')) $llgn= $gbl_labelAlgn;
-    ($form=='' ? $result= '' : $result= '<form name= "'.$form.'" style="display:inline;">');
+    ($form=='' ? $result= '' : $result= '<form name="'.sys_enc($form).'" method="post" style="display:inline;">'.csrf_field(true));
     if ($form>'') $subm= '<input type="submit" value="OK" style="padding:0 0 0 2px; border-radius: 3px; width:22px; position: relative; color:blue;" title="Submit" />';
     if ($wdth>'') $wdth= ' width: '.$wdth.'; '; else $wdth='';
     if ($ftop>'') $ftop= ' top: '.$ftop.'; '; else $ftop='';
@@ -279,12 +290,14 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
     if (/* ($vrnt=='date') and */ ($valu=='')) $dataStyle= 'font-weight: 200; color:var(--grenColr1);'; else $dataStyle='font-weight: 600; ';
 
 # htm_Input: FIELD:
+    static $inpNo= 0;  $inpNo++;                                # Unique id per field (was: id="inpBox" on every field)
     if ($vrnt!='hidd')
-        $result.= '<div class="inpField" id="inpBox" style="margin: auto; padding: 0 2px 6px; '.$wdth.' '.$ftop.' display: inline-block; vertical-align: top;"> ';
+        $result.= '<div class="inpField" id="inpBox'.$inpNo.'" style="margin: auto; padding: 0 2px 6px; '.$wdth.' '.$ftop.' display: inline-block; vertical-align: top;"> ';
 
 # htm_Input: INPUT:
-    ($name=='') ? $inpIdNm= ' id="missing" name="missing" ' 
-                : $inpIdNm= ' id="id_'.$name.'" name="'.$name.'" ';
+    $iid= sys_uid($vrnt=='area' ? ($name ?: 'missing') : ($name=='' ? 'missing' : 'id_'.$name));   # Unique id (the same name can occur several times, e.g. in a loop)
+    ($name=='') ? $inpIdNm= ' id="'.$iid.'" name="missing" '
+                : $inpIdNm= ' id="'.$iid.'" name="'.$name.'" ';
     $inpStyle= ' class="boxStyle" style="text-align: '.$algn.'; font-size: 14px; '. $dataStyle. $bord; //boxStyle - border: 1px solid var(--grayColor);
     $eventInvalid= ' oninvalid="this.setCustomValidity(\''.lang('@Wrong or missing data in ').$labl.' ! \')" oninput="setCustomValidity(\'\')" ';
     $pattern= '';
@@ -299,13 +312,13 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh. $attr.' />';  break;
         case 'dec0' : # Used for quantity - outputs unit as prefix or suffix
         case 'dec1' : # Used for Amount -  // SPACE as thousands separator
-        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. ' value="'.$pref. number_format((float)$valu,(int)substr($vrnt,3,1),DecimalSep,ThousandsSep).$suff. '" '.
+        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. ' value="'.$pref. number_format(sys_toFloat($valu),(int)substr($vrnt,3,1),DecimalSep,ThousandsSep).$suff. '" '.
                         $inpStyle. '"'. $eventInvalid. $aktiv. $plh. $attr. $numPattern. ' />';  break;
         case 'num0' : 
         case 'num1' :   // thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
         case 'num2' :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
         case 'num3' : $result.= '<input type="text" '. $inpIdNm. ' lang="en" step="'.$step.
-                            '" value="'.$pref.number_format((float)$valu,(int)substr($vrnt,3,1),DecimalSep,ThousandsSep).$suff.'" '. // FIXIT: Wrong output
+                            '" value="'.$pref.number_format(sys_toFloat($valu),(int)substr($vrnt,3,1),DecimalSep,ThousandsSep).$suff.'" '. // FIXIT: Wrong output
                             //'" value="'.$valu.'" '. 
                             $eventInvalid. $aktiv. $plh. $attr. 
                         $inpStyle. '" '.$numPattern. ' />';  break; // No unit but with browser type check ! 
@@ -317,7 +330,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         /* case 'qrcd' : $result.= '<input type= "text" '. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr.  // 2D QR code
                         $inpStyle. ' font-family:barcode; font-size:19px; font-weight:normal; '. '" />';  break; */
         case 'mail' : $result.= '<input type= "email"'. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr. 
-                        $inpStyle. '" '.$pattern='pattern="^[a-zA-Z0-9.!#$%&]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"'. ' />';  break;       // (?i)\b[A-Z0-9._%+-]              +@(?:[A-Z0-9-]+   \.)+[A-Z]{2,6}\b
+                        $inpStyle. '" '.$pattern='pattern="^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$"'. ' />';  break;       // (?i)\b[A-Z0-9._%+-]              +@(?:[A-Z0-9-]+   \.)+[A-Z]{2,6}\b
         case 'link' : $result.= '<input type= "url" '.  $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr. 
                         //'pattern="^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?"'.
                         $inpStyle. '" pattern="https?://.+" />';  break;
@@ -370,32 +383,34 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                             '<span class="fieldContent boxStyle" style="'.$bord.' text-align: left; '.($rows!='0' ? 'height: 36px; ':'').'padding-right: 20px;">'.
                             '<div style="white-space: nowrap;">'.
                                 '<input type= "password" '. $inpIdNm. /* $inpStyle. */' style="font-weight: 600; height: 8px; width: 75%; margin-top: -1px; 
-                                    box-shadow: none;" value="'. $valu.'" '.$eventInvalid. $aktiv. $plh. $attr.' onkeyup="pw_strength(id_'.$name.')" 
+                                    box-shadow: none;" value="'. $valu.'" '.$eventInvalid. $aktiv. $plh. $attr.' onkeyup="pw_strength(this)" 
                                  />'.
                                  # labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'gray' bclr:'white', akey:'', rtrn:false)
                                 htm_IconButt($btnlabl='', $btnicon='far fa-eye fa-fw colrgreen',$btnhint= lang('@Show/Hide password'),
                                              $btntype='button', $btnname='tgl_'.$name, $btnlink='',
-                                             $btnevnt='onmousedown=\'togglePassword(id_'.$name.','.'tgl_'.$name.')\'', $wdth='', $btnfont='14px;', 
+                                             $btnevnt='onmousedown=\'togglePassword(document.getElementById("'.$iid.'"),this)\'', $wdth='', $btnfont='14px;', 
                                              $btnfclr='green', $btnbclr='white; padding-right:3px; padding-bottom:1px; margin-top:1px; width:28px;',
                                              $btnakey='', $btnrtrn=true ).
                             '</div>';
                             $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
                             if ($rows!='0')
-                                $result.= '<meter id= "pwPoint_'.'id_'.$name.'" style="position:relative; height:12px; width:100%; top: -10px;" '. 
+                                $result.= '<meter id= "pwPoint_'.$iid.'" style="position:relative; height:12px; width:100%; top: -10px;" '. 
                                           'min="0" low="6" optimum="7" high="9" max="10" '.
                                           'title="'.lang('@Password strength: 0..10 (This fails !)').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
                                      '</meter>'; 
                       $result.= '</span>';  break;
 
         case 'area' : $result.= ## TEXTAREA:
-                        '<span class="fieldContent boxStyle" '. $inpIdNm. ' style="'.$bord.' padding: 10px 4px 0;"> <textarea rows="'.$rows.'" id="'.$name.'" name="'.$name.
+                        '<span class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 0;"> <textarea rows="'.$rows.'" id="'.$iid.'" name="'.$name.
                         '" style="width:99%; font-size: 1em; border: 1px solid Gainsboro; border-radius: 4px; '.$dataStyle.' '.'" '.
-                        $eventInvalid. $aktiv. $plh.$attr.' >'.$valu.'</textarea>'; $just= 'top: -4px; position: relative;'; break;
+                        $eventInvalid. $aktiv. $plh.$attr.' >'.$valu.'</textarea></span>'; $just= 'top: -4px; position: relative;'; break;
 
         case 'html' : $result.= ## HTML-TEXT:
-                        '<span class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px;"> <small><div contenteditable="true" rows="'.$rows.'" id="id_'.$name.'" name="'.$name.
-                        '" style="background-color: white; min-height: '.($rows>'1' ? '34px;' : '5px;').' border: 1px solid Gainsboro; padding: 2px; " '. //  Like area, but with html-content
-                        $eventInvalid. $aktiv. $plh.' data-placeholder="'.lang($plho).'" '. $attr.' >'. $valu.'</div></small>';
+                        '<div class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px; font-size: smaller;"><div contenteditable="true" role="textbox" aria-multiline="true" id="'.$iid.'"'.
+                        ' oninput="this.nextElementSibling.value= this.innerHTML;"'.     # The hidden field carries the HTML to the server
+                        ' style="background-color: white; min-height: '.($rows>'1' ? '34px;' : '5px;').' border: 1px solid Gainsboro; padding: 2px; " '. //  Like area, but with html-content
+                        $aktiv.' data-placeholder="'.lang($plho).'" '. $attr.' >'. $valu.'</div>'.
+                        '<input type="hidden" name="'.$name.'" value="'.sys_enc((string)$valu).'" /></div>';
                         // if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';  
                         $just= 'top: -4px; position: relative;'; break;
 
@@ -428,15 +443,15 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                             '<span class="fieldContent boxStyle" style="'.$bord.'"><small>';
                             foreach ($list as $rec) { // $list= [[0:'value',1:'Label',2:'@ToolTip',3:state:'checked/selected'], ['Label','@ToolTip'],...]
                                 if ($valu==$rec[0]) $chk= ' checked '; else $chk= ' ';
-                                    $result.= '<input type= "radio" id="id_'.$name.'_'.$rec[0].'" name="'.$name.'" value="'.$rec[0].'" '.
+                                    $result.= '<input type= "radio" id="'.$iid.'_'.$rec[0].'" name="'.$name.'" value="'.$rec[0].'" '.
                                         $chk.($rec[3] ?? '').$aktiv. ' '.$attr.' style="width: 20px; box-shadow: none;">'.
-                                     '<label for="id_'.$name.'_'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; ').'</label>';
+                                     '<label for="'.$iid.'_'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; ').'</label>';
                                 if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
                             }   $result.= '</small>'.($subm ?? '').'</span>';  break;
 
         case 'opti' : $result.= ## OPTION:
                             '<span class="fieldContent boxStyle"  style="'.$bord.' background-color; white; text-align: center; padding: 10px 4px 4px;"><small>';
-                            $result.= '<select class="styled-select" id="id_'.$name.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
+                            $result.= '<select class="styled-select" id="'.$iid.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
                             $result.= '<option label="'.lang($plho).'" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
                                 $result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2] ?? '').'" value="'.$rec[0].'" '.($rec[3] ?? '').' '.($rec[4] ?? ''); //  Firefox does not support Label !
@@ -447,7 +462,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
     //  case 'show' : $result.= '<input type= "text"   id="id_'.$name.'" name="'.$name.'" value="'.$valu.'" disabled />';  break;
     
         case 'hidd' : $result.= ## INVISIBLY:
-                            '<input type= "hidden" id="id_'.$name.'" name="'.$name.'" value="'.$valu.'" />';  break;
+                            '<input type= "hidden" id="'.$iid.'" name="'.$name.'" value="'.$valu.'" />';  break;
 
         default     : $result.= ## UNSPECIFYED:
                             ' htm_Input(): Illegal vrnt ! ';
@@ -455,9 +470,10 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
     }
 
 # htm_Input: LABEL & HINT:
-    $lblFor= 'id_'.$name;                                        # Group label: point to the first option (there is no element id_<name>)
-    if (($vrnt=='rado') and isset($list[0][0])) $lblFor= 'id_'.$name.'_'.$list[0][0];
+    $lblFor= $iid;                                        # Group label: point to the first option (there is no element id_<name>)
+    if (($vrnt=='rado') and isset($list[0][0])) $lblFor= $iid.'_'.$list[0][0];
     if (($vrnt=='chck') and isset($list[0][0])) $lblFor= $list[0][0];
+    if ($vrnt=='area') $lblFor= $iid;                            # The <textarea> has id = name (tinyMCE selectors use it) - the first one
     switch (strtoupper($llgn)) {
     case 'L': $lblalign = 'margin-right: auto;';  break;   // Align label Left
     case 'C': $lblalign = 'margin:       auto;';  break;   // Align label Center
@@ -473,11 +489,11 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                    '<data-hint style="top: 45px; left: 2px;">'. $hint.
                         ($unit>'' ? (' <br>'.lang('@Unit: ').ltrim($unit,'<')) : '').
                         ($pattern>"" ? ('<br><div style="color:green">'. $pattern. '</div>') : '').
-                   '</data-hint>
-               </abbr>' : '');
+                   '</data-hint>' : '').
+               '</abbr>';                                       # Always closed (was: only when there was a hint)
          if ($vrnt!='hidd')
             $result.= '</div>'; # :FIELD inpField
-    if ($form>'') $result.= '</form>';
+    if ($form>'') $result.= (in_array($vrnt, ['chck','rado','opti']) ? '' : $subm).'</form>';   # (chck/rado/opti have the OK button inside the field)
 
     if (!$rtrn) echo $result; else return $result;
 } # :htm_Input()
@@ -526,7 +542,7 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse',
         }
       
     $result= 
-    '<div class="boxStyle" id="id_Inbox_div_'.$name.'" style="  '.                /* The outher div with border: */
+    '<div class="boxStyle" id="'.($bid= sys_uid('id_Inbox_div_'.$name)).'" style="  '.                /* The outher div with border: */
            'box-shadow: 3px 4px 2px var(--shadColor);
             border-radius: 5px;
             border: '.$bord.'
@@ -540,7 +556,7 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse',
             text-align: '.$algn.';
             ">
         <abbr class= "hint" >'.                                                                             /* The Tooltip-container shown on mouse over */
-           '<label for="id_Inbox_div_'.$name.'" style="font-size: 12px; height: 0; display: block; '.$lblalign.'; ">'.   /* The Label above the field content */
+           '<label for="'.$bid.'" style="font-size: 12px; height: 0; display: block; '.$lblalign.'; ">'.   /* The Label above the field content */
                 '<div style="white-space: nowrap; position: relative; background-color: var(--lablBgrnd); '. 
                     'border: 1px solid  var(--FieldBord);
                     top: -19px;
@@ -557,7 +573,7 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse',
                 '</data-hint>
             </div>
         </abbr>
-        <div id="'.$name.'" class="p2hInbox" '.$disa.' data-ph="'.sys_enc(strip_tags(lang($plho))).'"'.   /* The inner div-field content */
+        <div id="'.sys_uid($name).'" class="p2hInbox" '.$disa.' data-ph="'.sys_enc(strip_tags(lang($plho))).'"'.   /* The inner div-field content */
             ' style="font-size: smaller; '.$attr.' ">'.
                     $valu.
         '</div>
@@ -584,8 +600,8 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
     $result= '<span id="id_'.$name.'" style= "padding: 2px 5px; position: relative;'.$bclr.'; ">';
     if ($hint>'') $result.= ' <abbr class= "hint">';
     switch ($vrnt) { // Variants:
-        case 'outp' : $result.= '<label for="id_'.$name.'">'.$icon.lang($labl).'</label>'. # Output element with label and hint
-                                '<output name="'.$name.'outp" for="'.$valu.'" form="'.$form.'">
+        case 'outp' : $result.= '<label for="id_'.$name.'_outp">'.$icon.lang($labl).'</label>'. # Output element with label and hint
+                                '<output id="id_'.$name.'_outp" name="'.$name.'outp" for="'.$valu.'" form="'.$form.'">
                                 </output>';  break;
 /*      case 'outp' : echo '
                         <form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
@@ -596,8 +612,8 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
                          break;'
 */
         case 'pgrs' : if ($valu<0) $value=''; else $value=' value="'.$valu.'"';
-                      $result.= '<label for="id_'.$name.'">'.$icon.lang($labl).'</label>'. # Output Progress indicator
-                                '<progress id="'.$name.'pqrs" '.$value.' max="'.$vmax.'" >
+                      $result.= '<label for="id_'.$name.'_pgrs">'.$icon.lang($labl).'</label>'. # Output Progress indicator
+                                '<progress id="id_'.$name.'_pgrs" '.$value.' max="'.$vmax.'" >
                                 </progress>';  break;
         default     : $result.= ' htm_Output(): Illegal vrnt ! ';
     }
@@ -711,7 +727,7 @@ $result= '<span style="'.$styl.'">';
     switch ($vrnt= strtolower($vrnt)) {
         case 'ul' : $result.='<ul '.$mark.'>';                    break; # Unordered list
         case 'ol' : $result.='<ol '.$mark.' start="'.$strt.'">';  break; # Ordered list
-        case 'li' : $result.='<li '.$mark.'>';                    break; # List item
+        case 'li' : $result.='<ul '.$mark.'>'; $vrnt='ul';        break; # List of items with the chosen marker
         case 'dl' : $result.='<dl '.$mark.'>';                    break; # Description list
         default   : $result.='<'.$vrnt.' '.$mark.'>';                    # Custom variant
     }
@@ -730,8 +746,7 @@ $rtrn=false     # bool:   Function Return or echo result
     switch ($flag= $GLOBALS['ListVrnt']) {    
         case 'dl' : $result= '<dt>'.lang($labl).'</dt>'.
                              '<dd>'.lang($body).'</dd>';    break; # Description list
-        case 'ol' : $result= '<li>'.lang($body).'</li>';    break; # 
-        default   : $result= '<'.$flag.$GLOBALS['ListMark'].'>'.lang($body).'</'.$flag.'>'; 
+        default   : $result= '<li>'.lang($body).'</li>';         # Item in ul / ol / custom lists (the marker style is set on the list)
     }
     if ($rtrn==false) echo $result; else return $result;
 }
@@ -777,7 +792,10 @@ function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'',  vlue:'', rtrn:f
     $vlue='',       # string: Value to replace 
     $rtrn=false     # bool:   Function Return or echo result
     ){
-    if ($repl==true) $code= sprintf($fmat.$vlue.$code);  // sprintf($format, $num, $location);
+    if ($repl==true) {                                  // The format string with the value inserted, followed by the code
+        try { $code= sprintf($fmat, $vlue).$code; }
+        catch (\ArgumentCountError $e) { $code= $fmat.$vlue.$code; }   // More placeholders than values: show unformatted
+    }
     $result= '<span style="text-align: left; white-space: nowrap; overflow-x: auto; line-height: 1;">
               <pre style= "background-color: #121212; text-align: left;  padding:6px; overflow-x: auto; ">'.
               (($synt==true) ? highlight_words(highlight_str($code)) : $code ).
@@ -821,7 +839,8 @@ function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'')
     if ($algn=='center') $algn= ' margin: auto; ';
     else if ($algn>'') $algn= ' text-align:'.$algn.'; ';
     echo '<div style="'.$wdth. $algn.'; border:1px solid gray; ">'.
-        '<div style="background-color: '.$colr.'; color: '.invertColor($colr,true).';">'.$capt. '</div>'.
+        '<div style="background-color: '.$colr.';'.                # Caption text: black or white, the best contrast to a hex color
+            (preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/i', $colr) ? ' color: '.getOptimalBackground($colr).';' : '').'">'.lang($capt). '</div>'.
         '<div style="padding: 8px; ">'.$body.'</div>'.
     '</div>';
 }
@@ -859,7 +878,7 @@ function htm_Figure(# capt:'',type:'',imag:'',styl:'',labl:'',hint:'',rtrn:false
 ) 
 {   $result= '<'.$type.'>'.lang($capt).'</'.$type.'>
         <figure>
-          <img src="'.$imag.'" alt="'.$info.'" style="'.$styl.'">
+          <img src="'.sys_enc($imag).'" alt="'.sys_enc(strip_tags(lang($info))).'" style="'.$styl.'">
           <figcaption>'.lang($labl).'</figcaption>
         </figure>';
     if ($hint>'') $result= 
@@ -998,6 +1017,7 @@ function sys_csvCell($v) {
     return '"'.str_replace('"', '""', $v).'"';
 }
 
+# A table with records: sort, filter, edit, add rows and export to CSV [Necessary basic element]
 function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'',rtrn:false)
     $capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:td-style',       '5:Tip',    '6:placeholder', '7:Content';], ...
            ],
@@ -1071,17 +1091,21 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
             '"\nNothing is happening yet...\nRelates to: "+ CalledFrom +" Row: "+ RowIx );'.
             ' }');
         function RowKlick($modi,$valu,$RowIx,$ColIx,$fldNames,$from,$ixalign) {
-            if (!$modi) {return $RowIx;} else return
-            '<span style=" padding:3px 0;" onclick="rowLookup(\''.$from.'\',\''.$valu.'\',\''.$RowIx.'\',\''.$ColIx.'\')" >'.
+            if (!$modi) {return $RowIx;}
+            # Only the file name - never the server path (was: the full __FILE__ path in the page HTML)
+            $src= preg_replace_callback('~(?:[A-Za-z]:)?[\\\\/]\S+~', function($m) { return basename(str_replace('\\', '/', $m[0])); }, (string)$from);
+            $js= function($v) { return sys_enc(json_encode((string)$v, JSON_UNESCAPED_UNICODE)); };   # Safe JS string in an attribute
+            return
+            '<span style=" padding:3px 0;" onclick="rowLookup('.$js($src).','.$js($valu).','.$js($RowIx).','.$js($ColIx).')" >'.
             '<input name="'.$fldNames[$ColIx].'[]"
                 style="width:99%; text-align: center; '.$ixalign.' text-decoration: underline; color: blue; cursor:zoom-in; background-color: transparent; font-weight:600;"
-                readonly
-                value="'.$valu.'" />'.
+                readonly onkeydown="if (event.key===\'Enter\') { event.preventDefault(); this.click(); }"
+                value="'.sys_enc((string)$valu).'" />'.
             '</span>';
         };
     }
 
-    spool( '<span class="tableStyle" name="tblSpan" id="tblSpan" style="'.($wdth>'' ? 'width:'.$wdth.'; ' : '').' padding: 8px; '.$styl.' ">');
+    spool( '<span class="tableStyle" id="tblSpan'.$gbl_TblIx.'" style="'.($wdth>'' ? 'width:'.$wdth.'; ' : '').' padding: 8px; '.$styl.' ">');
 ### Caption line:
     if ($data!=null)
     if ($capt[0][0] ?? ''>'') {    dvl_pretty();    // htm_nl(1);
@@ -1190,6 +1214,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                 $sort= $sortInit;
                 switch ($bdy[2]) { // '2:ContType'
                     case 'date': $sort.= ' sorter-isoDate '; break;
+                    case 'ddwn': $sort= preg_replace('/sorter-\S+/', '', $sort).' sorter-select-text '; break;   # By the chosen option (the first sorter- class wins)
                     //case 'html': 
                     case 'hidd': $sort= ' sorter-false '; break;
                         // sorter-no-parser   sorter-text  sorter-digit  sorter-currency  sorter-url  sorter-isoDate  sorter-percent
@@ -1229,7 +1254,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
       resizable: true,
       resizable_widths = $resizable_widths
     }"); */
-    set_Style('','$("#table'.$gbl_TblIx.'").tablesorter({ widgetOptions { filter_cellFilter: ["'.implode('","',$filter_cellFilter). '"]}}');   // Hide input filter fields fore hidden columns
+    # (Was: JavaScript written into a <style> block - it never ran. $filter_cellFilter is not applied: see FIXIT above)
 
 ### Column-FILTER:   (created of tablesorter, but there are a problem with hidd-fields!) filter-onlyAvail
     spool( '    </thead>');
@@ -1276,7 +1301,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                 $extra= 'style= "cursor: alias;" title= "'.lang('@RightClick for table-row MENU').'"';
             else $extra= 'style="display: revert;"';
             if (count($body)>0)
-            spool( '<tr class="row" id="tabl_row'.$RowIx.'" '.$extra.'>');  //  Tablesorter with Zebra-striped background
+            spool( '<tr class="row" id="tabl'.$gbl_TblIx.'_row'.$RowIx.'" '.$extra.'>');   # Unique also with several tables on a page  //  Tablesorter with Zebra-striped background
             ## Fields before data-fields:
             foreach ($pref as $prf) {
                 if (strpos($prf[6],'name="')>'') {
@@ -1313,12 +1338,12 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
             ## Special Output formats:
                 if (!($GLOBALS["Øshow"] ?? '')>0)
                     switch ($bdy[3]) { # OutFormat
-                        case '0d': if ($valu==null) $valu= 0;       else $valu= number_format((float)$valu, 0,',',' '); break;
-                        case '1d': if ($valu==null) $valu='';       else $valu= number_format((float)$valu, 1,',',' '); break;
+                        case '0d': if ($valu==null) $valu= 0;       else $valu= number_format(sys_toFloat($valu), 0,',',' '); break;
+                        case '1d': if ($valu==null) $valu='';       else $valu= number_format(sys_toFloat($valu), 1,',',' '); break;
                         case '2d': if ($valu==' ')  $valu= $valu;   else
-                                        if ($valu==null) $valu='';  else $valu= number_format((float)$valu, 2,',',' '); break;  //  88 888 888,88
+                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,',',' '); break;  //  88 888 888,88
                         case '2%': if ($valu==' ')  $valu= $valu;   else
-                                        if ($valu==null) $valu='';  else $valu= number_format((float)$valu, 2).' %';    break;
+                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,',',' ').' %';    break;
                         case '>0': if (!(float)$valu>0) $valu= ' ';                      break; // 0 an less is shown as BLANK
                         case '= ':  $valu= ' ';                                          break; // Values is shown as BLANK
                         case 'B':   $valu= '<b>#'.sprintf("%'.05d", $valu).'</b>';       break; // Values is shown as BOLD - ContType must be 'html' Format: #00000
@@ -1332,7 +1357,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                 if (($flag=='::') or ($flag==':.')) $valu= substr($valu,2).' '; // fieldFlag is not shown. SPACE so placeholder is not shown.
 
   ## Special conditional "row" formats:
-            if (is_readable($custFile= '../customRules.inc.php'))   # Here you can add your special table row-rules 
+            if (is_readable($custFile= $GLOBALS['gbl_CustomRules'] ?? (__DIR__.'/customRules.inc.php')))   # Your special table row-rules ($gbl_CustomRules, else next to this library)
                  include($custFile);
             /* else echo '<br> '.__LINE__.' '.$custFile.' not found <br>'; */
 
@@ -1384,9 +1409,14 @@ $ixalign= $ixalign ?? '';
                                       $rowField.= '>'.$lbl=$rec[2].'</option> ';
                                     }
                                   $rowField.= '</select></div> ';   break;
-                    case 'chck' : $rowField.= '"'.$sortData.'>'.'<input type= "checkbox" name="chck" value="" '.$valu.' ';          break;    //  Checkbox-selector:
-                    case 'bold' : $rowField.= '"'.$sortData.'>'.'<input type= "checkbox" name="bold" value="" '.isbold($valu).' ';  break;
-                    case 'ital' : $rowField.= '"'.$sortData.'>'.'<input type= "checkbox" name="ital" value="" '.isital($valu).' ';  break;
+                    case 'chck' : # Checkbox per row: the hidden field carries the value, so every row is posted (an unchecked box is not)
+                                  $on= sys_switchIsOn($valu);
+                                  $rowField.= '"'.$sortData.'><input type="hidden" name="'.$fldNames[$ColIx].'[]" value="'.($on ? 'checked' : '').'" />'.
+                                       '<input type="checkbox" style="box-shadow:none;" '.($on ? 'checked ' : '').
+                                       'onchange="this.previousElementSibling.value= this.checked ? \'checked\' : \'\';" />';  break;
+                    case 'bold' : # Shows whether the text is bold / italic (read only)
+                    case 'ital' : $on= ($bdy[2]=='bold') ? isBold((string)$valu) : isItal((string)$valu);
+                                  $rowField.= '"'.$sortData.'><input type="checkbox" style="box-shadow:none;" disabled '.($on ? 'checked ' : '').'/>';  break;
                 
                 ### SPECIAL:
                     case 'calc' : { // [1, '45-876', 2:$antal=3, 'stk', 'Redekasser', 5:$momssats=25, 6:$pris=235.50, 7:$rabat=8,  $sum=($antal*$pris)*(100-$rabat)/100*(100+$momssats)/100, 'DKK'],
@@ -1412,7 +1442,7 @@ $ixalign= $ixalign ?? '';
                                        $txAlign.$inpBg.' width:98%; '.$clr.' " readonly /> ';
                                   break;
                     case 'intg' : $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
-                                       'value="'.number_format((float)$valu, 0). //  0 dec. = Integer
+                                       'value="'.number_format(sys_toFloat($valu), 0,',',' '). //  0 dec. = Integer
                                        '" placeholder="'.lang($bdy[7]).'"'.$txAlign.$inpBg.
                                        ' width:98%; padding-left:2px; padding-right:2px;" /> ';
                                   break;
@@ -1428,7 +1458,7 @@ $ixalign= $ixalign ?? '';
                                     $rowField.= '</select></div> ';
                                   } else # Show editable datafield:
                                     $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
-                                         'value="'.htmlentities(stripslashes(lang($valu))).'" placeholder="'.lang($bdy[7] ?? '').'"'.
+                                         'value="'.sys_enc((string)$valu).'" placeholder="'.lang($bdy[7] ?? '').'"'.
                                          $txAlign.$inpBg.' width:98%; padding-left:2px; padding-right:2px;" /> ';
                                   break;
                     case 'opti' :{ $rowField.= '"'.$sortData.'><span '. 
@@ -1451,7 +1481,7 @@ $ixalign= $ixalign ?? '';
                                   break;
                     case 'hidd' : //  Hidden data is included as hidden columns to have a complete record (simplifies updating):
                                   $rowField.= 'width:0; padding:0; border:none; display:none;"'.$sortData.'>  <input type= "hidden" name="'.$fldNames[$ColIx].'[]" '.  //   visibility:hidden;
-                                       'value="'.htmlentities(stripslashes(lang($valu))).'" '.$txAlign.$inpBg.' width:0;" /> ';
+                                       'value="'.sys_enc((string)$valu).'" '.$txAlign.$inpBg.' width:0;" /> ';
                                   break;
                                  // text:
                     case 'text' :
@@ -1484,7 +1514,7 @@ $ixalign= $ixalign ?? '';
                 ## Fields after data-fields:
                 foreach ($suff as $Suf) { dvl_pretty();
                     if ($modi) {
-                        $output= $Suf[6];
+                        $output= preg_replace('/\bopen-modal_(\d+)\b/', 'open-modal_$1_'.$gbl_TblIx.'_'.$RowIx, (string)$Suf[6]);   # One dialog per row (unique id)
                         if ($Suf[2]=='button') { ## RowSuffix - Special Buttons:
                             $btnStyle= '" class="tooltip" style="height:20px; border:0; box-shadow:none; background-color:transparent;" ';
                             $btnSuff= $gbl_TblIx.'_'.$RowIx. $btnStyle;
@@ -1544,8 +1574,8 @@ $ixalign= $ixalign ?? '';
         $.tablesorter.addParser({
             id: 'select',
             is: function () { return false; },
-            format: function (s, table".$gbl_TblIx.", cell) {
-                return ($(cell).find('select').val() || []).join(',') || s; },
+            format: function (s, table".$gbl_TblIx.", cell) {        /* val() is a string for a single select, an array for multiple */
+                var v= $(cell).find('select').val();  return (Array.isArray(v) ? v.join(',') : v) || s; },
         });
         $.tablesorter.addParser({
             id: 'data',
@@ -1631,7 +1661,7 @@ function htm_Fieldset(# capt:'',icon:'',hint:'',wdth:'',marg:'',styl:'',attr:'',
     if ($wdth>'') $wdth= 'width: '.$wdth.'; ';
     if ($marg>'') $marg= 'margin: '.$marg.'; ';
     $result=  '
-        <fieldset style="page-break-after: avoid; display: inline-block; box-shadow: 0 3px 3px #AAAAAA; 
+        <fieldset style="page-break-after: avoid; display: inline-block; box-shadow: 0 3px 3px #AAAAAA; min-width: 0; max-width: 100%; box-sizing: border-box; 
                          '.$wdth.$marg.'; border-radius: 6px; '.$styl.'"> 
         <legend style="box-shadow: 0 0 5px #AAAAAA; '.$attr.'">'.str_WithHint($capt,$hint,$icon).' </legend>';
     if (!$rtrn) echo $result; 
@@ -1693,7 +1723,7 @@ function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',
         case 'R': $lblalign = 'margin-left:   auto;';  break;   // Align label Right
         default : $lblalign = 'margin-left:   auto;';
     }
-    $result= '<div class="inpField" id="id_'.$name.'" style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
+    $result= '<div class="inpField" id="'.sys_uid('id_'.$name).'" style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
              '; display: inline-block; box-shadow:none; '.$attr.'"> '; // float: left;
     $result.= '<div class="boxStyle" style="padding:5px; margin-top:6px; '.$styl.' ">'.$body.'</div>';
     $result.= ' <abbr class= "hint">'.
@@ -1761,7 +1791,7 @@ Layout of htm_Card:
 */
 
 # An advanced span with lots of functionality [Necessary basic element]
-function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', help:'', fclr:'', frst:'', last:'',simp:false);
+function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', move:true, help:'', fclr:'', frst:'', last:'',simp:false, fold:'', elem:'span');
     $capt = '',                         # string: The card caption
     $icon = '',                         # string: Class: icon to the left of caption
     $hint = 'tgl',                      # string: The default hint on hover caption (tgl: toggle open/close card-body)
@@ -1782,16 +1812,25 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     $frst = '',                         # string: Html content in Caption left
     $last = '',                         # string: Html content in Caption right
     $simp = false,                      # bool:   HeaderMode: Simple==true: centered caption in header (hide nav-icons)
-    $fold = ''                          # string: 'closed': the card starts folded (click the caption to open it)
+    $fold = '',                         # string: 'closed': the card starts folded (click the caption to open it)
+    $elem = 'span',                     # string: The HTML element of the card: span (default) / section / article / aside / main / header / footer / div
+                                        #         A semantic element (section...) gets the caption as its accessible name (aria-labelledby)
+    $move = true                        # bool:   The card can be moved among its sibling cards (how: $gbl_CardMove) - false: it stays in place
 )
 {   global $gbl_iconColor, $gbl_TitleColr, $gbl_CardForm, $gbl_CardStack, $gbl_ProgRoot, $_assets, $gbl_CardIx, $gbl_CardsBgrd, $gbl_GridOn; # v.1.2.3: $gbl_PanlForm => $gbl_CardForm
     $gbl_CardIx++;
     
     $icon= '<ic class="'.$icon.'" style="font-size: 20px; color: '.$gbl_iconColor.'; '.$fclr.'margin: 0 5px;"></ic>';
-    $capt= lang($capt); 
-    
+    # Moving the card (p2hCardMove): $gbl_CardMove= 'icon' (default: a handle in the header) / 'header' (drag the header itself)
+    # / 'toggle' (the view bar button "Arrange cards" turns moving on and off) / false (never). The order is remembered per page in the browser.
+    $mvMode= $GLOBALS['gbl_CardMove'] ?? 'icon';  if ($mvMode===true) $mvMode= 'icon';
+    $mvMode= ($move && in_array($mvMode, ['icon','header','toggle'], true)) ? $mvMode : '';
+    $mvKey= $mvMode ? sys_uid('k'.substr(md5(strip_tags((string)$capt)), 0, 8)) : '';    # By the caption (not the language): the same key when cards are added
+    $capt= lang($capt);
+
    // if ($frst == '') { $frst= $icon.' &nbsp;'.$capt; }
     # Per-card JS API (kept for backward compatibility): thin wrappers around the shared p2hCard*() functions (see p2h_themeBoot)
+    if (preg_match('/^\d+(\.\d+)?$/', trim((string)$wdth))) $wdth= trim($wdth).'px';     # A plain number (wdth:'640') means pixels
     $ix= $gbl_CardIx;  $jsW= json_encode((string)$wdth);  $jsH= json_encode((string)$vhgh);  $jsC= json_encode((string)$clas);
     echo '<script>'.
          'function CardHeight'.$ix.'()   { p2hCardHeight('.$ix.','.$jsH.'); }'.
@@ -1815,13 +1854,13 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     if (($show==true) and ($mode>'0') /* and ($hint>'') */) // ???
         $Card_contrl.=  '<abbr class= "hint">'.
             '<ic class="fa-solid fa-up-down" style="'.$buttstyl .' padding:0 4px 0 0; margin-left: 0; cursor:row-resize;" '.
-            ' onclick= CardHeight'.$gbl_CardIx.'(); ></ic> 
+            ' role="button" tabindex="0" onclick= CardHeight'.$gbl_CardIx.'(); ></ic> 
             <data-hint>'.lang('@<b>TOGGLE-height:</b> Click icon to toggle viewHeight for <i>this</i> card').' </data-hint></abbr>';
     // WIDE butt: this
     if (($show==true) and ($mode>'1'))  // ($mode== '4')
         $Card_contrl.=  '<abbr class= "hint">
             <ic class="fa-solid fa-right-left" style="'.$buttstyl .' padding:0 0 0 4px; cursor:col-resize;" '.
-            ' onclick= CardWide'.$gbl_CardIx.'(); ></ic>
+            ' role="button" tabindex="0" onclick= CardWide'.$gbl_CardIx.'(); ></ic>
             <data-hint>'. lang('@<b>WIDE:</b> Click to maximize/normalize <i>this</i> card width').'</data-hint></abbr>';
     // HEIGHT butt: this
     if ($show==true) if (false) // if (class="wrapper") // ($mode== '4')
@@ -1834,20 +1873,27 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     if (($show==true) and ($mode>'1'))  // ($mode== '3')
         $Card_contrl.=  '<abbr class= "hint">
             <ic class="fas fa-angle-double-up" style="'.$buttstyl .' cursor:zoom-out;" '.
-            ' onclick= CardMinimizeAll(); ></ic>
-            <data-hint>'. lang('@<b>COLLAPSE:</b> Click to close <i>all</i> cards').';" </data-hint></abbr>';
+            ' role="button" tabindex="0" onclick= CardMinimizeAll(); ></ic>
+            <data-hint>'. lang('@<b>COLLAPSE:</b> Click to close <i>all</i> cards').' </data-hint></abbr>';
     // EXPAND butt: all
     if (($show==true) and ($mode>'1'))  // ($mode== '3')
         $Card_contrl.=  '<abbr class= "hint">
             <ic class="fas fa-angle-double-down" style="'.$buttstyl .' cursor:zoom-in;" '.
-            ' onclick= CardMaximizeAll(); ></ic>
-            <data-hint>'. lang('@<b>EXPAND:</b> Click to open <i>all</i> cards').';" </data-hint></abbr>';
+            ' role="button" tabindex="0" onclick= CardMaximizeAll(); ></ic>
+            <data-hint>'. lang('@<b>EXPAND:</b> Click to open <i>all</i> cards').' </data-hint></abbr>';
             
+    // MOVE handle (icon mode):
+    $Card_move= ($mvMode=='icon') ?
+         '<abbr class="hint p2hMoveHint"><ic class="fa-solid fa-grip-vertical p2hMoveIc" role="button" tabindex="0" aria-label="'.sys_enc(strip_tags(lang('@Move the card'))).'"'.
+            ' style="font-size: 12px; padding: 2px 3px; '.$fclr.'"></ic>'.
+            '<data-hint>'.lang('@<b>MOVE:</b> Drag to place <i>this</i> card elsewhere among the cards. Alt + arrow up/down: one place. The order is remembered in this browser.').'</data-hint></abbr>' : '';
+    $mvHint= ($mvMode=='header') ? ($hint>'' ? '<br>' : '').lang('@Drag the header to move the card (Alt + arrow up/down: one place).') :
+             (($mvMode=='toggle') ? ($hint>'' ? '<br>' : '').lang('@When "Arrange cards" is on in the view bar: drag the header to move the card.') : '');
     // CardHelp:
     if ($help>'') $Card_help=
          '<abbr class= "hint">'.
             '<ic class="fa-solid fa-question" style="'.$buttstyl .' float:none; cursor:help; padding: 0 6px;" '.
-            ' onclick="window.open(\''.$help.'\', \'_blank\')" >'.
+            ' role="button" tabindex="0" onclick="window.open(\''.$help.'\', \'_blank\')" >'.
             '</ic>
             <data-hint>'.lang('@<b>HELP:</b>'.lang('@Click icon to goto custom help for <i>this</i> card: ').$help.'').' </data-hint>
          </abbr>'; else $Card_help= '';
@@ -1872,26 +1918,30 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
 
 ## CARD-START:
     $closed= ($fold=='closed');
-    echo '<span class="'.$clas.'" id="card'.$gbl_CardIx.'"  style="position: relative; vertical-align: top; margin: 1px; margin-bottom: 8px; '.$attr.($closed && $wdth>'' ? ' width:'.$wdth.';' : '').'"> '.
+    $elem= in_array($elem, ['span','section','article','aside','main','header','footer','div'], true) ? $elem : 'span';
+    $GLOBALS['gbl_CardElem'][]= $elem;                  # htm_Card_end() closes the same element (cards can be nested)
+    $label= ($elem!='span' && $capt>'') ? ' aria-labelledby="ctitl'.$gbl_CardIx.'"' : '';
+    echo '<'.$elem.' class="'.$clas.'" id="card'.$gbl_CardIx.'"'.$label.($mvMode ? ' data-p2h-move="'.$mvMode.'" data-p2h-key="'.$mvKey.'"' : '').'  style="position: relative; vertical-align: top; margin: 1px; margin-bottom: 8px; '.$attr.($closed && $wdth>'' ? ' width:'.$wdth.';' : '').'"> '.
         $formCrea.
         // CardTop:
-        '<span id="chead'.$gbl_CardIx.'" style="display:inline-block; width: calc(100% - 0px); text-align: left; padding: 4px 0;'.$head.'">';
+        '<span id="chead'.$gbl_CardIx.'" style="display:inline-block; width: calc(100% - 0px); text-align: left; padding: 4px 0;'.$head.($Card_move ? ' padding-left: 16px; box-sizing: border-box;' : '').'">'.
+        $Card_move;                                                      # The move handle: in the left edge of the header
         if ($hint=='tgl')   $hint= '@<b>TOGGLE:</b> Click icon or card header-text to open / close <i>this</i> card';
 
        // CardTitl:
-      $titlSty = '<span class="cardsTitl" onclick="CardSwitch'.$gbl_CardIx.'();" style="'.$Ph.' color:'.$gbl_TitleColr.'; cursor:row-resize;';
+      $titlSty = '<span class="cardsTitl" id="ctitl'.$gbl_CardIx.'" role="button" tabindex="0" onclick="CardSwitch'.$gbl_CardIx.'();" style="'.$Ph.' color:'.$gbl_TitleColr.'; cursor:row-resize;';
 
 
 // if ($simp == false) { # Complete header output inclusive navi-icons
 if (!$simp) { # Complete header output inclusive navi-icons
     echo '<span>' . 
             '<span style="float:left; width:10%; text-align:left;">' . $frst . '</span>' . # Left-txt
-            '<abbr class="hint">' . 
+            '<abbr class="hint" role="heading" aria-level="2">' .     # The caption is a heading (the fold button inside it)
                 ($frst > '' 
                     ? $titlSty . ' text-align:center; width:68%; display: inline-block;">' . $prnHtml . '</span>'
                     : $titlSty . ' text-align:left;">' . $prnHtml . '</span>'
                 ) . 
-                ($hint>'' ? '<data-hint>' . lang($hint) . ' </data-hint>' : '') .
+                (($hint>'' || $mvHint>'') ? '<data-hint>' . ($hint>'' ? lang($hint) : '') . $mvHint . ' </data-hint>' : '') .
             '</abbr>' .
             '<span style="float:right; text-align:right;">' . $last . '</span>' . # Right-txt
          '</span>';
@@ -1902,9 +1952,9 @@ if (!$simp) { # Complete header output inclusive navi-icons
 }
 else { # Clean and simple header output:
     echo '<span style="padding: 0 10px; text-align:center; display:block;">' .
-            '<abbr class="hint">' . 
-                $titlSty . '">' . $prnHtml . '</span>' . 
-                ($hint>'' ? '<data-hint>' . lang($hint) . ' </data-hint>' : '') . 
+            '<abbr class="hint" role="heading" aria-level="2">' .
+                $titlSty . '">' . $prnHtml . '</span>' .
+                (($hint>'' || $mvHint>'') ? '<data-hint>' . ($hint>'' ? lang($hint) : '') . $mvHint . ' </data-hint>' : '') .  
             '</abbr>' .
          '</span>';
 }
@@ -1917,10 +1967,11 @@ else { # Clean and simple header output:
     Pmnu_Item(labl:'@Small height',    icon:'fas fa-compress  colrgreen',         hint:'@Small height to all cards',   vrnt:'custom',    name:'m3', clck:'CardHeightAll(`sma`,330)', attr:'',rtrn:'');
     Pmnu_Item(labl:'@Default height',  icon:'fas fa-check     colrgreen',         hint:'@Default height to all cards', vrnt:'custom',    name:'m4', clck:'CardHeightAll(`def`,330)', attr:'',rtrn:'');
     Pmnu_Item(labl:'@Large height',    icon:'fas fa-expand    colrgreen',         hint:'@Large height to all cards',   vrnt:'custom',    name:'m5', clck:'CardHeightAll(`gre`,330)', attr:'',rtrn:'');
-    Pmnu_Item(labl:'@Maximize height', icon:'fas fa-plus      colrgreen',         hint:'@Maximize all cards height',   vrnt:'plain',     name:'m4', clck:'CardHeightAll(`max`,330)', attr:'',rtrn:'');
+    Pmnu_Item(labl:'@Maximize height', icon:'fas fa-plus      colrgreen',         hint:'@Maximize all cards height',   vrnt:'plain',     name:'m8', clck:'CardHeightAll(`max`,330)', attr:'',rtrn:'');
     Pmnu_Item(vrnt:'separator');                                                                                                                                              
-    Pmnu_Item(labl:'@COLLAPSE body',   icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardHeightAll(`max`,330);', rtrn:'',shrt:'');
-    Pmnu_Item(labl:'@EXPAND body',     icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardHeightAll(`max`,330);', rtrn:'',shrt:'');
+    Pmnu_Item(labl:'@COLLAPSE body',   icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardMinimizeAll();', rtrn:'',shrt:'');
+    Pmnu_Item(labl:'@EXPAND body',     icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardMaximizeAll();', rtrn:'',shrt:'');
+    if ($mvMode) Pmnu_Item(labl:'@Original card order', icon:'fas fa-arrow-down-1-9 colrgreen', hint:'@Put the moved cards of this page back in their original order', vrnt:'plain', name:'m9', clck:'p2hCardMove.reset();', rtrn:'',shrt:'');
     // Pmnu_Item(vrnt:'separator');
     Pmnu_end(/* labl:'@Not working yet',hint:'@Working on it',attr:'padding-top: 2px; text-color:red; text-align:center;' */);
    // Pmnu_end(labl:'<small>No function yet ! </small>',hint:'',attr:'padding-top: 8px; text-color:red;');
@@ -1959,13 +2010,19 @@ function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, 
             if ($subm==true) {
                 if ($foot>'') echo '<br>';
                 echo '<span class="center" style="height:35px; display: inline-block; position: relative;">';
-                htm_AcceptButt($labl, $icon, $hint, $form, $wdth='', $attr, $akey, $kind='button',$rtrn=false, tplc:'LblTip_N', tsty:'left: auto; top: -65px;');
+                htm_AcceptButt(labl:$labl, icon:$icon, hint:$hint, form:$form, attr:$attr, akey:$akey, kind:$kind, rtrn:false, tplc:'LblTip_N', tsty:'left: auto; top: -65px;');
                 echo '</span>';
             }
         }
     echo '</span>'; $prnHtml.= '</span>'; // HideBody to here !
     if ($ownForm) echo "\n".'</form>'.'<!-- /'.$name.' -->'."\n\n"; //  CardForm-end
-    echo '</span>'; $prnHtml.= '</span>'; // Card-end
+    $elem= (is_array($GLOBALS['gbl_CardElem'] ?? null) && $GLOBALS['gbl_CardElem']) ? array_pop($GLOBALS['gbl_CardElem']) : 'span';
+    if ($GLOBALS['gbl_CardResize'] ?? true)              # Drag grip: card width and body height (remembered per card, see p2hCardSize)
+        echo '<abbr class="hint p2hGripHint"><span class="p2hCardGrip" role="button" tabindex="0" aria-label="'.sys_enc(strip_tags(lang('@Resize the card'))).'"'.
+             ' data-colhint="'.sys_enc(strip_tags(lang('@Column view: the column decides the width of the card - only the height can be dragged (down to less than the content). Turn the column view off to change the width.'))).'"></span>'.      # (data-colhint: the toast in column view)
+             '<data-hint><span class="p2hGripTxt">'.lang('@Drag to resize the card (or use the arrow keys). Double-click or Home: original size').'</span>'.
+             '<span class="p2hGripCol">'.lang('@Column view: the column decides the width of the card - only the height can be dragged (down to less than the content). Turn the column view off to change the width.').'</span></data-hint></abbr>';
+    echo '</'.$elem.'>'; $prnHtml.= '</'.$elem.'>'; // Card-end (the element chosen in htm_Card_)
     return $prnHtml;
 } # htm_Card_end
 
@@ -2000,24 +2057,8 @@ function CardInit($cardCount) {     // JS functions to handle Cards:
         };'; // function
 
     echo '
-        function CardMinimizeAll() {';
-        for ($Ix=1; $Ix<=$cardCount; $Ix++) { 
-            echo '
-                var h = document.getElementById("HideBody'.$Ix.'");
-                var p = document.getElementById("card'.$Ix.'");
-                h.style.display = "none"; ';
-                /* $CardState[$ix]= [$ix,'none']; */
-            }
-    echo ' }
-        function CardMaximizeAll() {';
-        for ($Ix=1; $Ix<=$cardCount; $Ix++) { 
-            echo '
-                var h = document.getElementById("HideBody'.$Ix.'");
-                var p = document.getElementById("card'.$Ix.'");
-                h.style.display = "block"; ';
-                /* $CardState[$ix]= [$ix,'block']; */
-            }
-    echo ' }
+        function CardMinimizeAll() { p2hCardsAll(false); }      /* As CardMinimizeN(): the closed width of each card */
+        function CardMaximizeAll() { p2hCardsAll(true); }       /* As CardMaximizeN(): the open width, the saved size, the tables */
             function CustHelp() {';
         // for ($Ix=1; $Ix<=$cardCount; $Ix++) { echo ' No help for this card yet '; }
         echo ' $("table").trigger("applyWidgets"); }
@@ -2070,7 +2111,7 @@ function htm_DataGroup(# capt:'', $icon='', $hint='', head:'', data:[['Label0','
         '</span>'; # Field
 } # htm_DataGroup
 
-
+# An input field with a list of values to pick from (HTML datalist)
 function htm_DataList(# capt: '@Choose here from the list:', icon: 'fas fa-database', hint: '@Use datalist to pick a value from list', plho: '?',name: '', form: '', acti: '', data: ['Itm1','Itm2','Itm3','Itm4'], wdth: '220px', fclr: 'color: green;', attr: '', bord: '1px solid black; border-radius: 5px;', rtrn: false )
     $capt = '@Choose here from the list:',              # string: The group caption
     $icon = 'fas fa-database',                          # string: Icon left to label
@@ -2297,18 +2338,18 @@ function htm_RowCol_(# wdth:240)        # ColumnTop // Must be followed/ended of
 {  dvl_pretty('htm_RowColTop');      // RowColTop RowCol240, RowCol320 (Look at CSS ! )
     echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">'.
          '<data-ColnHead'.RowColTest('yellow').'> <span id="colnwrap" '.RowColTest('green').'> '.
-         '<data-RowCol id="RowCol'.$wdth.'" '.RowColTest('blue').' >';
+         '<data-RowCol class="RowCol'.$wdth.'" '.RowColTest('blue').' >';
 }
 
 # Create the next column
 function htm_RowCol_next(# wdth:320)    # NextColumn
     $wdth=320) 
-{   echo '</data-RowCol> <data-RowCol id="RowCol'.$wdth.'" '.RowColTest('red').'>'; 
+{   echo '</data-RowCol> <data-RowCol class="RowCol'.$wdth.'" '.RowColTest('red').'>'; 
 }
 
 # Create the last column
 function htm_RowCol_end() #             # ColumnBottom
-{   echo '</data-RowCol> </span></data-ColnHead><span class="clearWrap" >'.
+{   echo '</data-RowCol> </span></data-ColnHead><span class="clearWrap"></span>'.     # (the span was never closed)
          '</div>';
 }
 ## Importent: $RowColWdth - Only use defined width ! (See CSS: @media screen)
@@ -2358,10 +2399,11 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', 
 
 ## Shortcuts:
     $keytip='';
-    if ($gbl_ShortKeys) {
-        if (!$akey) $keytip=''; else $keytip= '<br><em>'.lang('@Keyboard shortcut: ').$akey.'</em>';
-        if ($akey>'') { $akey=' ´<i>'.$akey.'</i>´'; $akey= 'accesskey="'.$akey.'" '; } else $akey='';
-    }
+    if (($akey>'') and ($gbl_ShortKeys ?? true)) {               # On by default - set $gbl_ShortKeys= false to turn shortcuts off
+        $akey= mb_substr($akey, 0, 1);                           # accesskey is one character (Alt+key / Alt+Shift+key)
+        $keytip= '<br><em>'.lang('@Keyboard shortcut: ').'Alt+'.sys_enc(mb_strtoupper($akey)).'</em>';
+        $akey= 'accesskey="'.sys_enc($akey).'" ';
+    } else $akey= '';
     if (strpos($attr,'disabled')>0) $info=' Disabled ! '; else $info='';
 ## Appearance & name:
     switch ($kind) {
@@ -2377,14 +2419,14 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', 
     case 'spc1'   : {$colors= ' background:'.'Chocolate'.'; color:'.$gbl_TextLight.';'.$gbl_dimmed;}  $midn= 'spc1';  break; #
     case 'spc2'   : {$colors= ' background:'.'White'.    '; color:'.$gbl_TextDark .';'.$gbl_dimmed;}  $midn= 'spc2';  break; #
 
-    default       : {$colors= ' background:'.$gbl_BtNavBgrd.'; color:'.$gbl_BtNavText.';'.$gbl_dimmed;} $midn= lang($labl);    # navigate-Butt: GREEN
+    default       : {$colors= ' background:'.$gbl_BtNavBgrd.'; color:'.$gbl_BtNavText.';'.$gbl_dimmed;} $midn= preg_replace('/[^A-Za-z0-9]/', '', $kind).'_';    # navigate-Butt: GREEN
   }
 ## Action:
     if ($acti=='') {$type='submit';} else {$type='button';}
 ## Function:
     $result=  '<span class="center" style="height:25px; display: inline-block;">';
     $result.= '<abbr class="hint">';
-    $result.= '    <button class="acceptbutt buttstyl" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="btn_'.$midn.$name.$idix.'" '.$attr.
+    $result.= '    <button class="acceptbutt buttstyl" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
               '        style="min-height: 24px; padding-right: 6px; margin-bottom: 6px; '.$wdth. $colors.'" '.
                               ($acti > '' ? ('onclick=\''.$acti.'\' ') : 'onclick=\'location.reload();\' ') .
                               $akey.' '.$aktiv.'> '. 
@@ -2508,7 +2550,7 @@ function htm_GoTopButt(# labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to 
     if (!function_exists('renderScrollButton')) {
         function renderScrollButton($id, $onclick, $label, $icon, $hint, $extraStyle = '', $bottom = '6px') {
           global $gbl_BtNavBgrd, $gbl_BtNavText;
-          echo '<button onclick="'.$onclick.'" id="'.$id.'" title="'.lang($hint).'" style="
+          echo '<button type="button" onclick="'.$onclick.'" id="'.$id.'" title="'.sys_enc(strip_tags(lang($hint))).'" style="
             display: none;                          /* Hidden by default */
             position: fixed;                        /* Fixed/sticky position */
             bottom: '.$bottom.';                    /* Place the button at the bottom of the page */
@@ -2531,7 +2573,7 @@ function htm_GoTopButt(# labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to 
         }
     }
 
-    renderScrollButton("btnGoTop", "scrollToTop()", "@Top", "fa-solid fa-arrow-up", "@Go to page top", $styl, $bott = "6px");
+    renderScrollButton("btnGoTop", "scrollToTop()", $labl, $icon, $hint, $styl, $bott = "6px");
 if (true)     // Use mid-button: (if page-height is very large)
     renderScrollButton("btnGoMid", "scrollToMid()", "@Mid", "fa-solid fa-sort", "@Go to page middle", $styl, $bott ="40px");
     renderScrollButton("btnGoBot", "scrollToBot()", "@Bot", "fa-solid fa-arrow-down", "@Go to page bottom", $styl, $bott ="74px");
@@ -2626,6 +2668,175 @@ function p2hThemeLabel(b) {
     var ic= b.querySelector(".p2hThemeIc"); if (ic) ic.className= "p2hThemeIc fa-solid "+({light:"fa-sun",dark:"fa-moon",auto:"fa-circle-half-stroke",custom:"fa-palette"}[m]);
     var tx= b.querySelector(".p2hThemeTx"); if (tx) tx.textContent= P2H_T[m];
 }
+/* Card size: drag the grip in the lower right corner - the width of the card and the height of its body (scrolls if needed).
+   Remembered per page and card in this browser. Double-click / Home: back to the original size. Arrow keys: 10px (Shift: 50px). */
+var p2hCardSize= (function() {
+    function key(card)   { return "p2h-card:" + location.pathname + "#" + card.id; }
+    function body(card)  { return document.getElementById("HideBody" + card.id.replace("card", "")); }
+    function apply(card, s) {
+        var b= body(card);
+        if (!(b && b.style.display === "none"))                    /* A folded card keeps its closed width */
+            card.style.width= (s && s.w && innerWidth > 760) ? s.w + "px" : "";
+        if (b) b.style.maxHeight= (s && s.h) ? s.h + "px" : (b.dataset.p2hMaxh || b.style.maxHeight);
+    }
+    function save(card, s) { try { if (s) localStorage.setItem(key(card), JSON.stringify(s)); else localStorage.removeItem(key(card)); } catch(e) {} }
+    function size(card)  { var b= body(card); return {w: Math.round(card.offsetWidth), h: b ? Math.round(b.offsetHeight) : 0}; }
+    function reset(card) { save(card, null); apply(card, null); }
+    function stored(card) { try { return JSON.parse(localStorage.getItem(key(card)) || "null"); } catch(e) { return null; } }
+    function resize(card, w, h) {
+        var old= stored(card), cols= !!card.closest(".p2hColview");                /* Column view: the column sets the width */
+        var s= {w: cols ? ((old && old.w) || 0) : Math.max(200, Math.round(w)), h: Math.max(40, Math.round(h))};
+        apply(card, s);  return s;
+    }
+    function cardOf(g) { return g.closest(".p2hGripHint").parentElement; }
+    var hinted= 0;
+    function colHint(g) {                                       /* Column view: say why the width does not follow the mouse */
+        if (!cardOf(g).closest(".p2hColview") || Date.now() - hinted < 6000) return;
+        hinted= Date.now();  if (typeof htm_Toast === "function") htm_Toast(g.dataset.colhint, "#2c3e50", "#fff", 6000);
+    }
+    document.addEventListener("pointerdown", function(e) {
+        var g= e.target.closest && e.target.closest(".p2hCardGrip");  if (!g || e.button > 0) return;
+        colHint(g);
+        var card= cardOf(g), s0= size(card), x0= e.clientX, y0= e.clientY, last= null;
+        e.preventDefault();  try { g.setPointerCapture(e.pointerId); } catch(err) {}
+        var z= parseFloat(getComputedStyle(document.body).zoom) || 1;              /* Page zoom: mouse pixels are zoomed pixels */
+        function move(ev) { last= resize(card, s0.w + (ev.clientX - x0) / z, s0.h + (ev.clientY - y0) / z); }
+        function up()     { g.removeEventListener("pointermove", move);  g.removeEventListener("pointerup", up);  g.removeEventListener("pointercancel", up);
+                            if (last) save(card, last); }
+        g.addEventListener("pointermove", move);  g.addEventListener("pointerup", up);  g.addEventListener("pointercancel", up);
+    });
+    document.addEventListener("dblclick", function(e) { var g= e.target.closest && e.target.closest(".p2hCardGrip"); if (g) reset(cardOf(g)); });
+    document.addEventListener("keydown", function(e) {
+        var g= e.target.closest && e.target.closest(".p2hCardGrip");  if (!g) return;
+        var card= cardOf(g), n= e.shiftKey ? 50 : 10, d= {ArrowLeft:[-n,0], ArrowRight:[n,0], ArrowUp:[0,-n], ArrowDown:[0,n]}[e.key];
+        if (e.key==="Home") { e.preventDefault(); reset(card); return; }
+        if (!d) return;
+        if (d[0]) colHint(g);
+        e.preventDefault();  var s= size(card);  save(card, resize(card, s.w + d[0], s.h + d[1]));
+    });
+    document.addEventListener("DOMContentLoaded", function() {      /* The saved sizes of this page */
+        document.querySelectorAll(".p2hCardGrip").forEach(function(g) {
+            var card= cardOf(g), b= body(card), s= null;
+            if (b) b.dataset.p2hMaxh= b.style.maxHeight;            /* The original max-height (for reset) */
+            try { s= JSON.parse(localStorage.getItem(key(card)) || "null"); } catch(e) {}
+            if (s) apply(card, s);
+        });
+    });
+    function restore(card) { var s= null; try { s= JSON.parse(localStorage.getItem(key(card)) || "null"); } catch(e) {} if (s) apply(card, s); }
+    return {reset: reset, restore: restore};
+})();
+/* Card order: drag a card to another place among its sibling cards - htm_Card_(move:) and $gbl_CardMove (icon / header / toggle).
+   Remembered per page in this browser. Alt + arrow up/down: one place. The card menu (right-click the header): "Original card order". */
+var p2hCardMove= (function() {
+    var SK= "p2h-order:" + location.pathname, noClick= false;
+    function cards(p)   { return [].filter.call(p.children, function(c) { return c.hasAttribute("data-p2h-move"); }); }
+    function arranging() { return document.documentElement.classList.contains("p2hArrange"); }
+    function active(c)  { var m= c.getAttribute("data-p2h-move");  return !!m && (m !== "toggle" || arranging()); }
+    function load()     { try { return JSON.parse(localStorage.getItem(SK) || "{}") || {}; } catch(e) { return {}; } }
+    function group(p)   { var l= cards(p).sort(function(a, b) { return a.dataset.p2hIx - b.dataset.p2hIx; });   /* The first card of the original order */
+                          return l.length ? l[0].getAttribute("data-p2h-key") : ""; }
+    function save(p)    { var o= load();  o[group(p)]= cards(p).map(function(c) { return c.getAttribute("data-p2h-key"); });
+                          try { localStorage.setItem(SK, JSON.stringify(o)); } catch(e) {} }
+    function place(p, list) {                                   /* The cards of p in this order - other content keeps its place */
+        var marks= cards(p).map(function(c) { var m= document.createComment("p2h");  p.insertBefore(m, c);  return m; });
+        list.forEach(function(c, i) { p.insertBefore(c, marks[i]); });
+        marks.forEach(function(m) { m.remove(); });
+    }
+    function groups(fn) { var seen= [];
+        document.querySelectorAll("[data-p2h-move]").forEach(function(c) { var p= c.parentElement;  if (seen.indexOf(p) < 0) { seen.push(p);  fn(p); } }); }
+    function refresh()  { var c= document.querySelector("[data-p2h-cols]");  if (c && typeof p2hColBreaks === "function") p2hColBreaks(c); }
+    function restore() {
+        document.querySelectorAll("[data-p2h-move]").forEach(function(c, i) { c.dataset.p2hIx= i; });   /* The original order (for reset) */
+        var o= load();
+        groups(function(p) {
+            var want= o[group(p)];  if (!want) return;
+            var now= cards(p), by= {};  now.forEach(function(c) { by[c.getAttribute("data-p2h-key")]= c; });
+            var list= want.map(function(k) { return by[k]; }).filter(Boolean);
+            now.forEach(function(c) { if (list.indexOf(c) < 0) list.splice(now.indexOf(c), 0, c); });   /* A new card: near its own place */
+            place(p, list);
+        });
+        refresh();
+    }
+    function reset() {
+        try { localStorage.removeItem(SK); } catch(e) {}
+        groups(function(p) { place(p, cards(p).sort(function(a, b) { return a.dataset.p2hIx - b.dataset.p2hIx; })); });
+        refresh();
+    }
+    function arrange(on, toggle) {                              /* "toggle" mode: the view bar button turns moving on / off */
+        if (toggle) on= !arranging();
+        document.documentElement.classList.toggle("p2hArrange", !!on);
+        document.querySelectorAll("[data-vb=arrange]").forEach(function(b) { b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    }
+    function cardOf(t) {                                        /* The card whose handle (icon or header) t is in */
+        if (!t || !t.closest) return null;
+        var ic= t.closest(".p2hMoveIc");  if (ic) return ic.closest("[data-p2h-move]");
+        var h= t.closest("[id^=chead]");  if (!h) return null;
+        var c= document.getElementById("card" + h.id.slice(5));
+        if (!c || !c.hasAttribute("data-p2h-move") || c.getAttribute("data-p2h-move") === "icon") return null;
+        return t.closest("ic[role=button], button, a, input, select, textarea") ? null : c;   /* The header buttons keep working */
+    }
+    document.addEventListener("pointerdown", function(e) {
+        if (e.button > 0) return;
+        var card= cardOf(e.target);  if (!card || !active(card)) return;
+        var x0= e.clientX, y0= e.clientY, started= false;
+        if (e.target.closest(".p2hMoveIc")) e.preventDefault();
+        function move(ev) {
+            if (!started) {
+                if (Math.abs(ev.clientX - x0) + Math.abs(ev.clientY - y0) < 6) return;   /* A click on the header still folds the card */
+                started= true;  card.classList.add("p2hMoving");  document.documentElement.classList.add("p2hDragging");
+                try { getSelection().removeAllRanges(); } catch(err) {}
+            }
+            var el= document.elementFromPoint(ev.clientX, ev.clientY), t= (el && el.closest) ? el.closest("[data-p2h-move]") : null;
+            while (t && t.parentElement !== card.parentElement) t= t.parentElement ? t.parentElement.closest("[data-p2h-move]") : null;
+            if (!t || t === card) return;
+            var r= t.getBoundingClientRect(), cr= card.getBoundingClientRect();
+            var row= (r.top < cr.bottom) && (cr.top < r.bottom);   /* Side by side: left / right half - else upper / lower half */
+            var after= row ? (ev.clientX > r.left + r.width / 2) : (ev.clientY > r.top + r.height / 2);
+            card.parentElement.insertBefore(card, after ? t.nextSibling : t);
+        }
+        function up() {
+            removeEventListener("pointermove", move, true);  removeEventListener("pointerup", up, true);  removeEventListener("pointercancel", up, true);
+            if (!started) return;
+            card.classList.remove("p2hMoving");  document.documentElement.classList.remove("p2hDragging");
+            noClick= true;  setTimeout(function() { noClick= false; }, 0);      /* No fold click after a drag */
+            save(card.parentElement);  refresh();
+        }
+        addEventListener("pointermove", move, true);  addEventListener("pointerup", up, true);  addEventListener("pointercancel", up, true);
+    });
+    document.addEventListener("click", function(e) { if (noClick) { noClick= false;  e.preventDefault();  e.stopPropagation(); } }, true);
+    document.addEventListener("keydown", function(e) {
+        var d= e.altKey ? {ArrowUp: -1, ArrowDown: 1}[e.key] : 0;  if (!d) return;
+        var t= e.target, card= (t.closest && t.closest(".p2hMoveIc")) ? t.closest("[data-p2h-move]") : cardOf(t);
+        if (!card || !active(card)) return;
+        e.preventDefault();
+        var l= cards(card.parentElement), j= l.indexOf(card) + d;  if (j < 0 || j >= l.length) return;
+        card.parentElement.insertBefore(card, d < 0 ? l[j] : l[j].nextSibling);
+        t.focus();  save(card.parentElement);  refresh();
+    });
+    document.addEventListener("DOMContentLoaded", restore);
+    return {reset: reset, restore: restore, arrange: arrange};
+})();
+/* Print: a card or fieldset taller than a page is an inline-block, which the browser cannot split over pages - it would jump to the
+   next page and leave an empty one. Only those big ones become blocks while printing; small cards keep their side-by-side layout. */
+addEventListener("beforeprint", function() {
+    document.querySelectorAll("[id^=card], fieldset").forEach(function(e) { if (e.offsetHeight > 900) e.classList.add("p2hPrintBlock"); });
+});
+addEventListener("afterprint", function() { document.querySelectorAll(".p2hPrintBlock").forEach(function(e) { e.classList.remove("p2hPrintBlock"); }); });
+/* Skip links: to the first card (past the menus) or to the view bar (it is the last element in the document) */
+document.addEventListener("click", function(e) {
+    var a= e.target.closest && e.target.closest(".p2hSkip");  if (!a) return;
+    e.preventDefault();
+    var t= (a.dataset.skip === "tools") ? document.querySelector(".p2hViewBar button")
+                                        : (document.querySelector("#p2hMain [id^=card]") || document.getElementById("p2hMain"));
+    if (!t) return;
+    if (t.tabIndex < 0 && !/^(BUTTON|A|INPUT)$/.test(t.tagName)) t.setAttribute("tabindex", "-1");
+    t.focus();  t.scrollIntoView({block: "start"});
+});
+/* Keyboard: Enter / Space on an element with role="button" (card header icons, state buttons...) acts like a click */
+document.addEventListener("keydown", function(e) {
+    var t= e.target;
+    if ((e.key==="Enter" || e.key===" ") && t.matches && t.matches("[role=button]:not(button):not(a):not(input):not(.p2hCardGrip)")) { e.preventDefault(); t.click(); }
+});
 /* Tablesorter "zebra" only colors rows that are visible when it runs - tables in a closed card or tab got no stripes.
    Re-run it when a table becomes visible (and after its size changes, e.g. a card is opened). */
 addEventListener("load", function() {
@@ -2674,15 +2885,14 @@ function p2hCardEls(ix)        { return [document.getElementById("HideBody"+ix),
 function p2hRefreshTables()    { if (window.jQuery) jQuery("table").trigger("applyWidgets"); }   // Re-layout tablesorter tables that were hidden
 function p2hCardHeight(ix, vh) { var h= p2hCardEls(ix)[0]; if (!h) return; h.style.maxHeight= (parseInt(h.style.maxHeight) < 4000) ? "4000px" : vh; }
 function p2hCardToggle(ix, w)  { var e= p2hCardEls(ix); if (!e[0]) return;
-    if (e[0].style.display === "none") { e[0].style.display= "block"; e[1].style.width= ""; p2hRefreshTables(); }
+    if (e[0].style.display === "none") { e[0].style.display= "block"; e[1].style.width= ""; if (window.p2hCardSize) p2hCardSize.restore(e[1]); p2hRefreshTables(); }
     else                               { e[0].style.display= "none";  e[1].style.width= w; } }
 function p2hCardMin(ix, w)     { var e= p2hCardEls(ix); if (!e[0]) return; e[0].style.display= "none";  e[1].style.width= w; }
-function p2hCardMax(ix)        { var e= p2hCardEls(ix); if (!e[0]) return; e[0].style.display= "block"; e[1].style.width= ""; p2hRefreshTables(); }
+function p2hCardMax(ix)        { var e= p2hCardEls(ix); if (!e[0]) return; e[0].style.display= "block"; e[1].style.width= ""; if (window.p2hCardSize) p2hCardSize.restore(e[1]); p2hRefreshTables(); }
 function p2hCardWide(ix, c)    { var p= p2hCardEls(ix)[1]; if (!p) return;
     if (p.classList.contains("cardWmax")) { p.classList.remove("cardWmax"); p.classList.add(c); } else { p.classList.remove(c); p.classList.add("cardWmax"); } }
 function p2hCardsAll(open)     { document.querySelectorAll("[id^=HideBody]").forEach(function(h){
-        var p= document.getElementById("card"+h.id.slice(8)); h.style.display= open ? "block" : "none"; if (p && open) p.style.width= ""; });
-    if (open) p2hRefreshTables(); }
+        var f= window[(open ? "CardMaximize" : "CardMinimize") + h.id.slice(8)];  if (typeof f === "function") f(); }); }
 </script>';
 }
 
@@ -2699,6 +2909,225 @@ function htm_ThemeButt(# labl:'', hint:'@...', rtrn:false)
 }
 
 
+# A small flag (inline SVG - flag emojis are not shown on Windows). Unknown codes: the code as text.
+function p2h_flag($code) {
+    static $F= [
+        'da' => ['0 0 20 14', '<rect width="20" height="14" fill="#c8102e"/><rect x="6" width="2" height="14" fill="#fff"/><rect y="6" width="20" height="2" fill="#fff"/>'],
+        'sv' => ['0 0 20 14', '<rect width="20" height="14" fill="#006aa7"/><rect x="6" width="2.4" height="14" fill="#fecc00"/><rect y="5.8" width="20" height="2.4" fill="#fecc00"/>'],
+        'no' => ['0 0 22 16', '<rect width="22" height="16" fill="#ba0c2f"/><rect x="6" width="4" height="16" fill="#fff"/><rect y="6" width="22" height="4" fill="#fff"/><rect x="7" width="2" height="16" fill="#00205b"/><rect y="7" width="22" height="2" fill="#00205b"/>'],
+        'de' => ['0 0 20 14', '<rect width="20" height="14" fill="#ffce00"/><rect width="20" height="9.33" fill="#dd0000"/><rect width="20" height="4.67" fill="#000"/>'],
+        'fr' => ['0 0 20 14', '<rect width="20" height="14" fill="#ef4135"/><rect width="13.33" height="14" fill="#fff"/><rect width="6.67" height="14" fill="#0055a4"/>'],
+        'en' => ['0 0 60 30', '<rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" stroke="#c8102e" stroke-width="2"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#c8102e" stroke-width="6"/>'],
+    ];
+    $c= strtolower(substr((string)$code, 0, 2));
+    if ($c=='nb' or $c=='nn') $c= 'no';
+    if (!isset($F[$c])) return '<span class="p2hFlagTx">'.sys_enc(strtoupper($c)).'</span>';
+    return '<svg class="p2hFlag" width="20" height="14" viewBox="'.$F[$c][0].'" preserveAspectRatio="none" aria-hidden="true">'.$F[$c][1].'</svg>';
+}
+
+# Language selector with flags (used in the view bar): the languages that have translations, plus English
+function htm_LangSelect(# rtrn:false)
+    $rtrn= false            # bool:   Return or echo result
+) {
+    global $allLang, $lang, $englishOnly;
+    if ($englishOnly or !is_array($allLang)) return '';
+    $list= ['en'=>'English'];
+    foreach ($allLang as $l)
+        if (is_array($l) and !empty($l['translation']) and preg_match('/^[a-z]{2}$/', $l['code'] ?? ''))
+            $list[$l['code']]= mb_convert_case(trim(explode(',', (string)($l['native'] ?? $l['code']))[0]), MB_CASE_TITLE, 'UTF-8');
+    if (count($list) < 2) return '';
+    $cur= isset($list[$lang]) ? $lang : 'en';
+    $t= function($k) { return sys_enc(strip_tags(lang($k))); };
+    $result= '<span class="p2hLang" data-csrf="'.sys_enc($_SESSION['csrf_token'] ?? '').'">'.
+             '<button type="button" class="p2hLangButt" aria-haspopup="true" aria-expanded="false" title="'.$t('@Language').': '.sys_enc($list[$cur]).'">'.
+                p2h_flag($cur).' <span class="p2hLangCode">'.strtoupper($cur).'</span></button>'.
+             '<span class="p2hLangList" role="menu" aria-label="'.$t('@Choose language').'" hidden>';
+    foreach ($list as $code=>$name)
+        $result.= '<button type="button" role="menuitemradio" aria-checked="'.($code==$cur ? 'true' : 'false').'" data-lang="'.$code.'" lang="'.$code.'">'.
+                  p2h_flag($code).' '.sys_enc($name).'</button>';
+    $result.= '</span></span>';
+    static $jsDone= false;
+    if (!$jsDone) { $jsDone= true;  $result.= '<script>
+(function(){    /* Open / close the list; a choice posts the language (with the CSRF token) and the page is shown again */
+  function close(box) { var l= box.querySelector(".p2hLangList"); l.hidden= true; box.querySelector(".p2hLangButt").setAttribute("aria-expanded", "false"); }
+  document.addEventListener("click", function(e) {
+    var box= e.target.closest && e.target.closest(".p2hLang");
+    document.querySelectorAll(".p2hLang").forEach(function(b) { if (b!==box) close(b); });
+    if (!box) return;
+    var item= e.target.closest("[data-lang]");
+    if (item) {
+      if (item.getAttribute("aria-checked")==="true") { close(box); return; }
+      var f= document.createElement("form");  f.method= "post";  f.action= location.href;  f.style.display= "none";
+      [["language", item.dataset.lang], ["csrf_token", box.dataset.csrf], ["p2h_langOnly", "1"]].forEach(function(v) {
+        var i= document.createElement("input");  i.type= "hidden";  i.name= v[0];  i.value= v[1];  f.appendChild(i); });
+      document.body.appendChild(f);  f.submit();  return;
+    }
+    if (e.target.closest(".p2hLangButt")) {
+      var l= box.querySelector(".p2hLangList"), open= l.hidden;
+      l.hidden= !open;  box.querySelector(".p2hLangButt").setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) {
+        l.classList.toggle("up", box.getBoundingClientRect().bottom + l.offsetHeight + 8 > innerHeight);   /* No room below: open upwards */
+        (l.querySelector("[aria-checked=true]") || l.querySelector("button")).focus();
+      }
+    }
+  });
+  document.addEventListener("keydown", function(e) {
+    var box= e.target.closest && e.target.closest(".p2hLang");  if (!box) return;
+    if (e.key==="Escape") { close(box); box.querySelector(".p2hLangButt").focus(); }
+    if (e.key==="ArrowDown" || e.key==="ArrowUp") {
+      var items= [].slice.call(box.querySelectorAll("[data-lang]")), i= items.indexOf(document.activeElement);
+      if (i < 0) return;  e.preventDefault();
+      items[(i + (e.key==="ArrowDown" ? 1 : items.length-1)) % items.length].focus();
+    }
+  });
+})();
+</script>'; }
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# A personal notepad: plain text, saved automatically in this browser (the same notes on all pages of the site) - from TinyCash
+function htm_NotePad(# rtrn:false)
+    $rtrn= false            # bool:   Return or echo result
+) {
+    # Plain text (a <textarea>) - the notes can never become code on the page. No server, no login: only this browser keeps them.
+    if (!($GLOBALS['gbl_NotePad'] ?? true)) return '';
+    $t= function($k) { return sys_enc(strip_tags(lang($k))); };
+    $result= '<button type="button" class="p2hNoteButt" aria-haspopup="dialog" aria-controls="p2hNoteWin" title="'.$t('@My notes').'"><ic class="fa-solid fa-note-sticky"></ic></button>'.
+             '<div id="p2hNoteWin" class="p2hHelpWin p2hNoteWin" role="dialog" aria-labelledby="p2hNoteTtl" hidden>'.
+                '<div class="p2hNoteHead" title="'.$t('@Drag to move').'"><ic class="fa-solid fa-note-sticky" aria-hidden="true"></ic> '.
+                    '<span id="p2hNoteTtl">'.$t('@My notes').'</span>'.
+                    '<button type="button" class="p2hNoteClose" aria-label="'.$t('@Close').'">&times;</button></div>'.
+                '<textarea class="p2hNoteText" placeholder="'.$t('@Write your notes here...').'" aria-label="'.$t('@My notes').'"></textarea>'.
+                '<div class="p2hHelpFoot p2hNoteFoot">'.
+                    '<span class="p2hNoteState" aria-live="polite"></span>'.
+                    '<button type="button" data-note="download" title="'.$t('@Save the notes as a text file').'"><ic class="fa-solid fa-download"></ic> '.$t('@Download').'</button>'.
+                    '<button type="button" data-note="clear" title="'.$t('@Delete all notes').'"><ic class="fa-solid fa-trash"></ic> '.$t('@Clear').'</button>'.
+                '</div>'.
+             '</div>'.
+             '<script>
+(function(){    /* Notepad: auto-save (localStorage), "saved" state, download, clear; movable like the help window */
+  var KEY= "p2h-notepad", T= '.json_encode(['saved'=>strip_tags(lang('@Saved in this browser')), 'nostore'=>strip_tags(lang('@The notes cannot be saved in this browser')),
+                                          'ask'=>strip_tags(lang('@Delete all notes?')), 'chars'=>strip_tags(lang('@characters'))]).';
+  var win= document.getElementById("p2hNoteWin"), ta= win.querySelector(".p2hNoteText"), st= win.querySelector(".p2hNoteState"), timer= null, opener= null;
+  function get()  { try { return localStorage.getItem(KEY) || ""; } catch(e) { return ""; } }
+  function put(v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); return true; } catch(e) { return false; } }
+  function mark() { document.querySelectorAll(".p2hNoteButt").forEach(function(b) { b.classList.toggle("hasNotes", get() !== ""); }); }
+  function save() { st.textContent= put(ta.value) ? T.saved + " - " + ta.value.length + " " + T.chars : T.nostore;  mark(); }
+  ta.value= get();  mark();
+  ta.addEventListener("input", function() { clearTimeout(timer);  timer= setTimeout(save, 400); });
+  function show(b) { if (win.parentNode !== document.documentElement) document.documentElement.appendChild(win);
+                     opener= b;  ta.value= get();  st.textContent= "";  win.hidden= false;  ta.focus(); }
+  function hide()  { if (win.hidden) return;  clearTimeout(timer);  save();  win.hidden= true;  if (opener) opener.focus(); }
+  document.addEventListener("click", function(e) {
+    var b= e.target.closest && e.target.closest(".p2hNoteButt");
+    if (b) { win.hidden ? show(b) : hide();  return; }
+    if (e.target.closest && e.target.closest(".p2hNoteClose")) { hide();  return; }
+    var a= e.target.closest && e.target.closest("[data-note]");  if (!a || !win.contains(a)) return;
+    if (a.dataset.note === "download") {
+      var l= document.createElement("a");  l.href= URL.createObjectURL(new Blob([ta.value], {type: "text/plain;charset=utf-8"}));
+      l.download= "notes.txt";  document.body.appendChild(l);  l.click();  l.remove();
+    }
+    if (a.dataset.note === "clear") sysConfirm(T.ask, function() { ta.value= "";  save();  ta.focus(); });
+  });
+  document.addEventListener("keydown", function(e) { if (e.key==="Escape" && !win.hidden && win.contains(document.activeElement)) hide(); });
+  addEventListener("storage", function(e) { if (e.key===KEY) { if (document.activeElement !== ta) ta.value= get();  mark(); } });   /* Another tab changed the notes */
+  win.querySelector(".p2hNoteHead").addEventListener("pointerdown", function(e) {
+    if (e.target.closest(".p2hNoteClose") || e.button > 0) return;
+    var h= e.currentTarget, r= win.getBoundingClientRect(), dx= e.clientX - r.left, dy= e.clientY - r.top;
+    e.preventDefault();  try { h.setPointerCapture(e.pointerId); } catch(err) {}
+    function move(ev) { win.style.left= Math.max(0, Math.min(ev.clientX - dx, innerWidth - win.offsetWidth)) + "px";
+                        win.style.top=  Math.max(0, Math.min(ev.clientY - dy, innerHeight - win.offsetHeight)) + "px";  win.style.right= "auto"; }
+    function up() { h.removeEventListener("pointermove", move);  h.removeEventListener("pointerup", up);  h.removeEventListener("pointercancel", up); }
+    h.addEventListener("pointermove", move);  h.addEventListener("pointerup", up);  h.addEventListener("pointercancel", up);
+  });
+})();
+</script>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# A fixed bar at the bottom of the window with shortcuts, e.g. "New invoice" (from TinyCash, the buttons given by the program)
+function htm_QuickBar(# list:[], rtrn:false)
+    $list= [],              # array:  The buttons: [[0:link, 1:labl, 2:icon, 3:hint, 4:colr (a small dot), 5:acti (JavaScript instead of the link)], ...]
+    $rtrn= false            # bool:   Return or echo result
+) {
+    # The page gets room at the bottom, and the library's own fixed elements near the bottom are lifted above the bar
+    # (in TinyCash a bottom bar hid the page end and other fixed buttons - see the CSS .p2hHasQuickBar).
+    if (!$list) return '';
+    $result= '<nav class="p2hQuickBar" aria-label="'.sys_enc(strip_tags(lang('@Quick actions'))).'">';
+    foreach ($list as $b) {
+        $b= array_pad((array)$b, 6, '');
+        $lbl= lang($b[1]);
+        $result.= '<a class="p2hQbItem" href="'.sys_enc($b[0]>'' ? $b[0] : '#').'"'.
+                  ($b[5]>'' ? ' onclick="'.sys_enc($b[5]).'; return false;"' : '').
+                  ($b[3]>'' ? ' title="'.sys_enc(strip_tags(lang($b[3]))).'"' : '').' aria-label="'.sys_enc(strip_tags($lbl)).'">'.
+                  ($b[4]>'' ? '<span class="p2hQbDot" style="background:'.sys_enc($b[4]).';"></span>' : '').
+                  ($b[2]>'' ? '<ic class="'.sys_enc($b[2]).'" aria-hidden="true"></ic>' : '').
+                  '<span class="p2hQbTxt">'.$lbl.'</span></a>';
+    }
+    $result.= '</nav><script>document.documentElement.classList.add("p2hHasQuickBar");</script>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# Help for the page: a "?" button (in the view bar) and a movable window with the help text of this page (from TinyCash)
+function htm_PageHelp(# rtrn:false)
+    $rtrn= false            # bool:   Return or echo result
+) {
+    # The texts: help_system.json (English) and help_system_<lang>.json, next to this library (or $gbl_HelpFile):
+    #   { "Demo.page.php": ["<h3>Title</h3>", "<p>Text...</p>"], ... }   - one entry per page, HTML lines.
+    #   A page without an entry gets a grey, disabled button. A missing translation shows the English text.
+    global $lang;
+    $page= basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '');
+    $file= $GLOBALS['gbl_HelpFile'] ?? (__DIR__.'/help_system.json');
+    $read= function($f) use ($page) { if (!is_readable($f)) return null;  $d= json_decode((string)file_get_contents($f), true);
+                                      return (is_array($d) && isset($d[$page]) && is_array($d[$page])) ? $d[$page] : null; };
+    $code= preg_match('/^[a-z]{2}$/', (string)$lang) ? $lang : 'en';
+    $lines= ($code!='en' ? $read(preg_replace('/\.json$/', '_'.$code.'.json', $file)) : null) ?? $read($file);
+    $t= function($k) { return sys_enc(strip_tags(lang($k))); };
+    if (!$lines) {
+        $result= '<button type="button" class="p2hHelpButt" disabled title="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
+        if (!$rtrn) echo $result; else return $result;
+        return;
+    }
+    $result= '<button type="button" class="p2hHelpButt" aria-haspopup="dialog" aria-controls="p2hHelpWin" title="'.$t('@Help for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>'.
+             '<div id="p2hHelpWin" class="p2hHelpWin" role="dialog" aria-labelledby="p2hHelpTtl" hidden>'.
+                '<div class="p2hHelpHead" title="'.$t('@Drag to move').'"><ic class="fa-solid fa-circle-question" aria-hidden="true"></ic> '.
+                    '<span id="p2hHelpTtl">'.$t('@Help').'</span>'.
+                    '<button type="button" class="p2hHelpClose" aria-label="'.$t('@Close').'">&times;</button></div>'.
+                '<div class="p2hHelpBody" tabindex="0">'.implode("\n", $lines).'</div>'.
+                '<div class="p2hHelpFoot"><ic class="fa-solid fa-language" aria-hidden="true"></ic> '.$t('@Language').': '.strtoupper($code).'</div>'.
+             '</div>';
+    static $jsDone= false;
+    if (!$jsDone) { $jsDone= true;  $result.= '<script>
+(function(){    /* Open / close / move the help window (no external library) */
+  var win= null, opener= null;
+  function show(b) {
+    win= document.getElementById("p2hHelpWin");  if (!win) return;
+    if (win.parentNode !== document.documentElement) document.documentElement.appendChild(win);   /* Outside <body>: not scaled by the page zoom */
+    opener= b;  win.hidden= false;  win.querySelector(".p2hHelpBody").focus();
+  }
+  function hide() { if (!win || win.hidden) return;  win.hidden= true;  if (opener) opener.focus(); }
+  document.addEventListener("click", function(e) {
+    var b= e.target.closest && e.target.closest(".p2hHelpButt");
+    if (b && !b.disabled) { (win && !win.hidden) ? hide() : show(b);  return; }
+    if (e.target.closest && e.target.closest(".p2hHelpClose")) hide();
+  });
+  document.addEventListener("keydown", function(e) { if (e.key==="Escape" && win && !win.hidden && win.contains(document.activeElement)) hide(); });
+  document.addEventListener("pointerdown", function(e) {
+    var h= e.target.closest && e.target.closest(".p2hHelpHead");  if (!h || e.target.closest(".p2hHelpClose") || e.button > 0) return;
+    var w= h.parentNode, r= w.getBoundingClientRect(), dx= e.clientX - r.left, dy= e.clientY - r.top;
+    e.preventDefault();  try { h.setPointerCapture(e.pointerId); } catch(err) {}
+    function move(ev) {
+      w.style.left= Math.max(0, Math.min(ev.clientX - dx, innerWidth  - w.offsetWidth))  + "px";
+      w.style.top=  Math.max(0, Math.min(ev.clientY - dy, innerHeight - w.offsetHeight)) + "px";  w.style.right= "auto";
+    }
+    function up() { h.removeEventListener("pointermove", move);  h.removeEventListener("pointerup", up);  h.removeEventListener("pointercancel", up); }
+    h.addEventListener("pointermove", move);  h.addEventListener("pointerup", up);  h.addEventListener("pointercancel", up);
+  });
+})();
+</script>'; }
+    if (!$rtrn) echo $result; else return $result;
+}
+
 # A small floating, movable toolbar: zoom out/in (click the % to reset), full screen and theme.
 # Zoom and position are remembered in this browser. Drag the grip - double-click it (or Home) to put it back.
 function htm_ViewBar(# rtrn:false)
@@ -2713,6 +3142,12 @@ function htm_ViewBar(# rtrn:false)
              '<button type="button" data-vb="in"   title="'.$t('@Zoom in').'"><ic class="fa-solid fa-plus"></ic></button>'.
              '<span class="p2hVbSep"></span>'.
              '<button type="button" data-vb="full" title="'.$t('@Full screen on/off').'"><ic class="fa-solid fa-expand"></ic></button>'.
+             '<button type="button" data-vb="cols" aria-pressed="false" title="'.$t('@Column view on/off').'"><ic class="fa-solid fa-table-columns"></ic></button>'.
+             ((($GLOBALS['gbl_CardMove'] ?? 'icon') === 'toggle') ?                       # $gbl_CardMove= 'toggle': moving the cards is turned on here
+                '<button type="button" data-vb="arrange" aria-pressed="false" title="'.$t('@Arrange cards on/off (drag the card headers)').'"><ic class="fa-solid fa-up-down-left-right"></ic></button>' : '').
+             htm_LangSelect(rtrn:true).                                  # Language with flags ('' when only English)
+             htm_NotePad(rtrn:true).                                     # My notes (saved in this browser)
+             htm_PageHelp(rtrn:true).                                    # "?" - help for this page (grey when there is none)
              htm_ThemeButt(rtrn:true).
              '</div>';
     if ($no==1) $result.= '<script>
@@ -2738,6 +3173,8 @@ function p2hViewBar(bar) {
         var a= b.getAttribute("data-vb");
         if (a==="in") setZoom(zoom + 0.1, true); else if (a==="out") setZoom(zoom - 0.1, true); else if (a==="reset") setZoom(1, true);
         else if (a==="full") { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(function(){}); else document.exitFullscreen(); }
+        else if (a==="cols") p2hColView(null, true);
+        else if (a==="arrange") p2hCardMove.arrange(null, true);
     });
     function place(x, y) {                                  /* Keep the bar inside the window */
         x= Math.round(Math.max(0, Math.min(x, innerWidth  - bar.offsetWidth)));
@@ -2769,6 +3206,36 @@ function p2hViewBar(bar) {
         save(place(r.left + st[0]*n, r.top + st[1]*n));
     });
     addEventListener("resize", function() { if (pos) place(pos.x, pos.y); });
+    p2hColView(null, false);                                /* Show the saved column choice on the button */
+}
+/* Column view: on/off (toggle) - the button shows the state. Unusually tall cards may break between columns (see p2hColBreaks). */
+function p2hColView(on, toggle) {
+    var c= document.querySelector("[data-p2h-cols]");  if (!c) return;
+    if (toggle) { on= !c.classList.contains("p2hColview");  try { localStorage.setItem("p2h-colview", on ? "1" : "0"); } catch(e) {} }
+    else if (on===null) on= c.classList.contains("p2hColview");
+    c.classList.toggle("p2hColview", on);
+    document.querySelectorAll("[data-vb=cols]").forEach(function(b) { b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    p2hColBreaks(c);
+}
+/* As in NH-logistik: a card is kept in one piece (break-inside: avoid) - but a card much higher than the window may break,
+   else it takes a whole column alone. Hysteresis (1.5x in, 1.3x out) and a short debounce stop it from flipping back and forth.
+   A card with a table never breaks: the browser does not repeat the table header in the next column. */
+var p2hColState= new WeakMap(), p2hColTimer= null, p2hColObs= null;
+function p2hColBreaks(c) {
+    function now() {
+        var on= c.classList.contains("p2hColview"), inLim= innerHeight * 1.5, outLim= innerHeight * 1.3;
+        [].forEach.call(c.children, function(card) {
+            if (!/^card\d+$/.test(card.id)) return;
+            var was= p2hColState.get(card) === true;
+            var isAuto= on && !card.querySelector("table") && (was ? card.offsetHeight > outLim : card.offsetHeight > inLim);
+            if (isAuto !== was) { p2hColState.set(card, isAuto);  card.style.breakInside= isAuto ? "auto" : ""; }
+        });
+    }
+    clearTimeout(p2hColTimer);  p2hColTimer= setTimeout(now, 150);
+    if (!p2hColObs && window.ResizeObserver) {
+        p2hColObs= new ResizeObserver(function() { clearTimeout(p2hColTimer); p2hColTimer= setTimeout(now, 150); });
+        [].forEach.call(c.children, function(card) { if (/^card\d+$/.test(card.id)) p2hColObs.observe(card); });
+    }
 }
 </script>';
     $result.= '<script>p2hViewBar(document.getElementById("'.$id.'"));</script>';
@@ -2875,7 +3342,7 @@ function htm_SwitchButton(# labl, name:'switchbox_id', valu:'', wdth:'', bclr:''
         .switch .sw-yes, .switch .sw-no { position: absolute; top: 50%; z-index: 1; transform: translateY(-50%);
             font-size: .7em; pointer-events: none; transition: .15s; white-space: nowrap; }
         .switch .sw-yes { left: .7em;  color: white; font-weight: bold; opacity: 0; }
-        .switch .sw-no  { right: .7em; color: darkgrey; opacity: 1; }
+        .switch .sw-no  { right: .7em; color: #5f5f5f; opacity: 1; }   /* (darkgrey on white was 2.4:1) */
         .switch input:checked ~ .slider { background-color: var(--themeColr); }
         .switch input:checked ~ .slider:before { background-color: white; transform: translateX(calc(var(--sw-width) - 1em)); }
         .switch input:checked ~ .sw-yes { opacity: 1; }
@@ -2920,13 +3387,15 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
              '<i class="far fa-check-square colrorange"  style="'.$styl.'" ></i>',
              '<i class="far fa-plus-square colrgreen"    style="'.$styl.'" ></i>'
            ];
-    $result= '<p style="display: inline;" id="'.$name.'" style="width: 28px; height: 28x;"';
-    if ($acti==true) 
-        $result.= 'onclick="changeBoxValues(this)" ';
-    $result.= '>'.$Bicon[$valu].'</p>';
-    $result.= '<input type="hidden" name="'.$name.'" value="'. $valu.  '">';
+    $valu= max(0, min(3, (int)$valu));                  # State 0..3 ('' = 0)
+    $result= '<p style="display: inline; width: 28px; height: 28px;"'.($acti==true ? ' id="'.$name.'"' : '');      # (A legend has no id)
     if ($acti==true)
-        run_Script("
+        $result.= ' role="button" tabindex="0" aria-label="'.sys_enc($name).': '.$valu.'" onclick="changeBoxValues(this)" ';
+    $result.= '>'.$Bicon[$valu].'</p>';
+    if ($acti==true) $result.= '<input type="hidden" name="'.$name.'" value="'. $valu.  '">';                  # Only a real button sends its state
+    static $jsDone= false;                              # The functions are the same for all buttons - write them once
+    if (($acti==true) and !$jsDone) { $jsDone= true;
+        $result.= "<script>
             function changeBoxValues(mButt) {
             var hidden = document.querySelector('[name=\"' + mButt.id + '\"]');
                 if      (hidden.value == 0)   { hidden.value = 1; }
@@ -2934,6 +3403,7 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
                 else if (hidden.value == 2)   { hidden.value = 3; }
                 else                          { hidden.value = 0; }
                 setCheckBoxes(mButt, hidden.value);
+                mButt.setAttribute('aria-label', mButt.id + ': ' + hidden.value);      // The new state for screen readers
             }
             function setCheckBoxes(mButt, value) {
                 if      (value == 0) { mButt.classList.add(                 'colrgray');   mButt.innerHTML = '<p>".$Bicon[0]."</p>'; }
@@ -2941,7 +3411,8 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
                 else if (value == 2) { mButt.classList.replace('colrred'   ,'colrorange'); mButt.innerHTML = '<p>".$Bicon[2]."</p>'; }
                 else                 { mButt.classList.replace('colrorange','colrgreen');  mButt.innerHTML = '<p>".$Bicon[3]."</p>'; }
             }
-        ");
+        </script>";
+    }
     return $result;
 }
  
@@ -3012,10 +3483,12 @@ $result= '
     border-radius: calc('.$hght.' / 2);
     cursor: grab;
     background: white;
+    color: #111;                                    /* Dark text on the white slider - also in the dark theme */
     border-color: white;
     box-shadow: 0 0 5px gray;
   }
 
+  .grab-slider > abbr.hint { color: #111 !important; }
   .grab-slider-wrapper.human {
     background-color: '.$bclr.';
     border-color: '.$bclr.';
@@ -3038,60 +3511,44 @@ if ($form>'') $result.= ' <form name="'.$form.'" id="'.$form.'">';
                     </abbr>'.
                 '</div>
             </div>
-            <input value="isbot">
+            <input type="hidden" name="p2h_human" value="isbot">
         </div>';
 if ($form>'') $result.= ' </form>';
 
-$result.= '    
+static $hmJs= false;                                # The script handles all sliders on the page - write it once
+if (!$hmJs) { $hmJs= true;
+$result.= '
 <script>
-    var bot = true;
-      var captchas = document.getElementsByClassName("grab-slider-wrapper");
-      var wrapper, slider;
-      for (var i = 0; i < captchas.length; i++) {
-        var wrapper = captchas[i];
-        var slider = wrapper.children[0];
-        var maxleft = wrapper.offsetWidth - slider.offsetWidth - 2;
-        slider.addEventListener("mousedown", function() {
-          this.addEventListener("mousemove", onmousemove);
-          document.addEventListener("mouseup", function() {
-            slider.removeEventListener("mousemove", onmousemove);
-          });
-        });
+(function(){    /* Drag with mouse, finger or pen (pointer events). Each slider works on its own. */
+  function init(wrapper) {
+    var slider= wrapper.children[0], input= wrapper.parentNode.querySelector("input[name=p2h_human]");
+    if (!slider || !input || wrapper.dataset.p2hInit) return;  wrapper.dataset.p2hInit= "1";
+    slider.style.touchAction= "none";
+    slider.addEventListener("pointerdown", function(e) {
+      var startX= e.clientX - slider.offsetLeft, maxleft= wrapper.clientWidth - slider.offsetWidth;
+      try { slider.setPointerCapture(e.pointerId); } catch(err) {}
+      function move(ev) {
+        var left= Math.max(0, Math.min(maxleft, ev.clientX - startX)), ok= (left >= maxleft - 1);
+        slider.style.left= left + "px";
+        wrapper.classList.toggle("human", ok);
+        input.value= ok ? "notbot" : "isbot";
       }
-
-      function offset(el) {
-        var rect = el.getBoundingClientRect(),
-          scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-          scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        return {
-          top: rect.top + scrollTop,
-          left: rect.left + scrollLeft
-        }
-      }
-
-      function onmousemove() {
-        var w_offset = offset(wrapper);
-        var left = event.pageX - w_offset.left - this.offsetWidth / 2;
-        if (left <= 0) left = 0;
-        else if (left >= maxleft) left = maxleft;
-        this.style.left = left + "px";
-        if (left == maxleft) {
-          wrapper.classList.add("human");
-          document.querySelector(\'.grab-slider-field input\').value = "notbot";
-          bot = false;
-        } else {
-          wrapper.classList.remove("human");
-          document.querySelector(\'.grab-slider-field input\').value = "isbot";
-          bot = true;
-        }
-      }
-      document.getElementById(\''. ($form ? $form : 'missing') .'\').addEventListener(\'submit\', function(event) {
-        if (document.querySelector(\'.grab-slider-field input\').value != "notbot") {
-          event.preventDefault();
-          sysAlert('.json_encode(lang('@Please complete the captcha')).');
-        }
-      });
+      function up() { slider.removeEventListener("pointermove", move); slider.removeEventListener("pointerup", up); slider.removeEventListener("pointercancel", up); }
+      slider.addEventListener("pointermove", move);  slider.addEventListener("pointerup", up);  slider.addEventListener("pointercancel", up);
+    });
+  }
+  function go() { document.querySelectorAll(".grab-slider-wrapper").forEach(init); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+  /* Stop every form that contains an unsolved slider - also the form around it (e.g. the login form) */
+  document.addEventListener("submit", function(e) {
+    var inps= e.target.querySelectorAll ? e.target.querySelectorAll("input[name=p2h_human]") : [];
+    for (var i= 0; i < inps.length; i++) if (inps[i].value !== "notbot") {
+      e.preventDefault();  sysAlert('.json_encode(lang('@Please complete the captcha')).');  return;
+    }
+  }, true);
+})();
 </script>';
+}
     if (!$rtrn) echo $result; else return $result;
 } # htm_Humantest
 
@@ -3103,6 +3560,7 @@ function htm_Tabs_(# head:'', styl:'', rtrn:false)
 )
 {   $GLOBALS['TabLabl']='<div class="tab">';
     $GLOBALS['TabBody']='';
+    $GLOBALS['TabDflt']='';
     $result= '
         <span style="'.$styl.'">'. 
             $head.
@@ -3123,10 +3581,10 @@ function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow
     ) 
 {   $b= 'small'; 
     $GLOBALS['TabLabl'].= '
-        <button class="tablinks" type="button" title="'.lang('@Show this Tab-content').'" 
+        <button class="tablinks" type="button" id="tab_'.$name.'" title="'.lang('@Show this Tab-content').'" 
         onclick="openTab(event, \''.$name.'\')" 
         style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; "><'.$b.'>'.lang($labl).'</'.$b.'></button>';
-        if ($dflt==true) "window.openTab(event, \''.$name.'\')" ;
+        if ($dflt==true) $GLOBALS['TabDflt']= $name;          # Opened when the page has loaded (see htm_Tabs_end)
        
     $GLOBALS['TabBody'].= '
         <div id="'.$name.'" class="tabcontent" style="display: none; background-color:'.$bclr.'; '.
@@ -3142,10 +3600,13 @@ function htm_Tabs_end(# foot:'', styl:'', rtrn:false)
     ) 
 {   $result=
         $GLOBALS['TabLabl'].'<span style="float:right;" title="'.lang('@Hide the Tab-content').
-                            '" onclick="closeTabs()"><i class="far fa-window-close"></i>&nbsp;<span> </div>'.
+                            '" role="button" tabindex="0" aria-label="'.lang('@Hide the Tab-content').'" onclick="closeTabs()"><i class="far fa-window-close"></i>&nbsp;</span> </div>'.
         $GLOBALS['TabBody'];
         if ($foot>'') $result.= '<span style="'.$styl.'">'.lang($foot).'</span>';
-        $result.= '<hr style="border-top: 2px solid #aaa; margin-top: 0;">'; 
+        $result.= '<hr style="border-top: 2px solid #aaa; margin-top: 0;">';
+        if (($GLOBALS['TabDflt'] ?? '')>'')                 # The default tab: open it like a click (openTab() is defined at the page end)
+            $result.= '<script>document.addEventListener("DOMContentLoaded", function(){ var b= document.getElementById('.
+                      json_encode('tab_'.$GLOBALS['TabDflt']).'); if (b) b.click(); });</script>';
     if (!$rtrn) echo $result; else return $result; // str_replace('"','\'',$result); 
 }
 
@@ -3236,6 +3697,12 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
             'clos' => ['fas fa-close',                '@Close',    '@Close the window',    '#']
         ];    // Also used if calling parameter == ''
     if ($butt==['$type','$icon','$labl','$hint','$link']) $butt=['clos']; // Just the close button
+    foreach ($butt as $ix => $bt) {                     // A button may be given as 'clos' or ['clos', ...] - and the type with a @ prefix
+        if (!is_array($bt)) $bt= [$bt];
+        $bt[0]= ltrim((string)($bt[0] ?? ''), '@');
+        $butt[$ix]= $bt;
+    }
+    static $mNo= 0;  $mNo++;  $mId= 'open-modal_'.$mNo;   // Unique id per dialog - the link must point to the same id
     
     $arrButtons= [];    // Create assoative array:
     foreach ($butt as $bt) $arrButtons[]= [$bt[0] => [$bt[1] ?? '',$bt[2] ?? '',$bt[3] ?? '',$bt[4] ?? '']];
@@ -3251,17 +3718,17 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
                     return true; } }
                 return false; 
         }}
-    $result = '<div> <a href="#open-modal_'. (string)(($GLOBALS['Mcount'] ?? 0)+1). '">'.$html.'</a> </div>
-        <div id="open-modal_'. ($GLOBALS['Mcount'] ?? 0).'" class="modal-window" >
+    $result = '<div> <a href="#'.$mId.'">'.$html.'</a> </div>
+        <div id="'.$mId.'" class="modal-window" >
             <div style="border: 4px solid '.$css_Box[$type][0].';">';
                 if (in_array_r('clos',$butt))
                     $result.= '<a href="#" title="Close" class="modal-close"><i class="fas fa-times"></i>&nbsp;Close</a>';
                 $result.=  '
-                <h3  id="header" style="background-color: '.$css_Box[$type][1].'; font-weight:600;">'.lang($capt).'</h3>
-                <div id="message">'.
+                <h3  class="mdlHeader" style="background-color: '.$css_Box[$type][1].'; font-weight:600;">'.lang($capt).'</h3>
+                <div class="mdlMessage">'.
                     lang($mess). /* ' A CSS-only modal, based on the :target pseudo-class. Hope you find it helpful.<br>  */ '
                 </div>
-                <div id="footer">';
+                <div class="mdlFooter">';
                 foreach ($arrButtons as $bton) // Show none or more button types:
                 foreach ($bton as $bt) {
                     $key= strtolower(key($bton));
@@ -3272,7 +3739,7 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
                                             '"  title="'.lang(notEmpty($key,$bt[2],2)).
                                             '"  style="background-color: '.$css_Box[$key][1]. ';" class="btnlabl">'.
                                             '<i class="'.notEmpty($key,$bt[0],0).'"></i>&nbsp;'.lang(notEmpty($key,$bt[1],1)).'</a>'; break;
-                    default: $key='none'; $result.=  '<a href="" title="Confirm'.
+                    default: $key='none'; $result.=  '<a href="#" title="Confirm'.
                                             '" style="background-color: '.$css_Box[$key][1].';" class="btnlabl">'.
                                             $css_Box[$key][3].'&nbsp;'.$css_Box[$key][2].'</a>';
                 } $result.=  '&nbsp;'; }
@@ -3282,6 +3749,144 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
         </div>';
     if (!$rtrn) echo $result; else return $result;
 } // htm_ModalDialog
+
+# A message box in the page: success / error / warning / info - theme colors, also in the dark theme (from NH-logistik)
+function htm_Alert(# body:'', kind:'success', wdth:'700px', rtrn:false)
+    $body= '',              # string: The message (HTML allowed, translated with lang())
+    $kind= 'success',       # string: success / error / warning / info
+    $wdth= '700px',         # string: Max width
+    $rtrn= false            # bool:   Return or echo result
+) {
+    if ($body=='') return '';
+    $kind= in_array($kind, ['success','error','warning','info'], true) ? $kind : 'success';
+    $icon= ['success'=>'fa-circle-check', 'error'=>'fa-circle-exclamation', 'warning'=>'fa-triangle-exclamation', 'info'=>'fa-circle-info'][$kind];
+    $result= '<div class="p2hAlert p2hAlert-'.$kind.'" role="'.(in_array($kind, ['error','warning']) ? 'alert' : 'status').'" style="max-width:'.sys_enc($wdth).';">'.
+             '<ic class="fa-solid '.$icon.'" aria-hidden="true"></ic> '.lang($body).'</div>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# A banner across the page: a short notice with a colored edge, e.g. "Demo data" or "Read only" (from NH-logistik)
+function htm_Banner(# body:'', kind:'warning', rtrn:false)
+    $body= '',              # string: The text (HTML allowed, translated with lang())
+    $kind= 'warning',       # string: info / warning / danger / success
+    $rtrn= false            # bool:   Return or echo result
+) {
+    if ($body=='') return '';
+    $kind= in_array($kind, ['info','warning','danger','success'], true) ? $kind : 'warning';
+    $result= '<div class="p2hBanner p2hBanner-'.$kind.'" role="note">'.lang($body).'</div>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# A small label: a status, a count or "New" - e.g. in tables and menus (from NH-logistik)
+function htm_Badge(# labl:'', kind:'secondary', hint:'', rtrn:false)
+    $labl= '',              # string: The text (translated with lang())
+    $kind= 'secondary',     # string: primary / secondary / success / danger / warning / info
+    $hint= '',              # string: Tooltip
+    $rtrn= false            # bool:   Return or echo result (rtrn:true to use it inside other output)
+) {
+    $kind= in_array($kind, ['primary','secondary','success','danger','warning','info'], true) ? $kind : 'secondary';
+    $result= '<span class="p2hBadge p2hBadge-'.$kind.'"'.($hint>'' ? ' title="'.sys_enc(strip_tags(lang($hint))).'"' : '').'>'.lang($labl).'</span>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# A button for an action that changes data (e.g. Delete): asks "Are you sure?" and then POSTs with the CSRF token (from NH-logistik)
+function htm_ConfirmPostLink(# labl:'', icon:'', hint:'', acti:'', data:[], mess:'@Are you sure?', kind:'danger', rtrn:false)
+    $labl= '',              # string: Button text
+    $icon= '',              # string: Icon class, e.g. 'fa-solid fa-trash'
+    $hint= '',              # string: Tooltip
+    $acti= '',              # string: Where to POST ('' = this page)
+    $data= [],              # array:  The fields to send: ['name' => 'value', ...]
+    $mess= '@Are you sure?',# string: The question
+    $kind= 'danger',        # string: primary / secondary / success / danger / warning / info (button color)
+    $rtrn= false            # bool:   Return or echo result
+) {
+    # The form is built when confirmed (in JS) - so the button also works inside a card that is a form (forms cannot be nested)
+    $kind= in_array($kind, ['primary','secondary','success','danger','warning','info'], true) ? $kind : 'danger';
+    $result= '<button type="button" class="p2hConfirmPost p2hBadge-'.$kind.'"'.($hint>'' ? ' title="'.sys_enc(strip_tags(lang($hint))).'"' : '').
+             ' data-acti="'.sys_enc($acti).'" data-fields="'.sys_enc(json_encode((object)$data)).'" data-mess="'.sys_enc(strip_tags(lang($mess))).'"'.
+             ' data-csrf="'.sys_enc($_SESSION['csrf_token'] ?? '').'">'.
+             ($icon>'' ? '<ic class="'.sys_enc($icon).'" aria-hidden="true"></ic> ' : '').lang($labl).'</button>';
+    static $jsDone= false;
+    if (!$jsDone) { $jsDone= true;  $result.= '<script>
+document.addEventListener("click", function(e) {
+    var b= e.target.closest && e.target.closest(".p2hConfirmPost");  if (!b) return;
+    sysConfirm(b.dataset.mess, function() {
+        var f= document.createElement("form");  f.method= "post";  f.action= b.dataset.acti || location.href;  f.style.display= "none";
+        var v= JSON.parse(b.dataset.fields || "{}");  v.csrf_token= b.dataset.csrf;
+        Object.keys(v).forEach(function(k) { var i= document.createElement("input"); i.type= "hidden"; i.name= k; i.value= v[k]; f.appendChild(i); });
+        document.body.appendChild(f);  f.submit();
+    });
+});
+</script>'; }
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# Search and sort for a table - without jQuery: a search field with "x of y rows", and sorting by clicking a column header (from NH-logistik)
+function htm_TableTools(# tabl:'', srch:true, sort:true, plho:'@Search...', rtrn:false)
+    $tabl= '',              # string: id of the table ('' = the next table on the page, e.g. the htm_Table() that follows)
+    $srch= true,            # bool:   Show the search field
+    $sort= true,            # bool:   Sort by clicking a header (only when Tablesorter is not active on the table - it sorts itself)
+    $plho= '@Search...',    # string: Placeholder in the search field
+    $rtrn= false            # bool:   Return or echo result
+) {
+    $result= '<div class="p2hTableTools" data-tabl="'.sys_enc($tabl).'" data-sort="'.($sort ? '1' : '0').'"'.
+             ' data-tmpl="'.sys_enc(lang('@%1 of %2 rows shown')).'" data-dsep="'.sys_enc(DecimalSep).'" data-tsep="'.sys_enc(ThousandsSep).'">'.
+             ($srch ? '<label class="p2hTtSearch"><ic class="fa-solid fa-magnifying-glass" aria-hidden="true"></ic>'.
+                      '<input type="search" placeholder="'.sys_enc(strip_tags(lang($plho))).'" aria-label="'.sys_enc(strip_tags(lang('@Search in the table'))).'" /></label>'.
+                      ' <span class="p2hTtCount" aria-live="polite"></span>' : '').'</div>';
+    static $jsDone= false;
+    if (!$jsDone) { $jsDone= true;  $result.= '<script>
+(function(){
+  function cellVal(td) {     /* The shown value: the field in the cell (table cells may hold input fields) or the text */
+    if (!td) return "";
+    var i= td.querySelector("input:not([type=hidden]),select,textarea");
+    return (i ? (i.type==="checkbox" ? (i.checked ? "1" : "0") : i.value) : td.textContent).trim();
+  }
+  function sortKey(t, ds, ts) {   /* Numbers in the number format of the program (DecimalSep / ThousandsSep), dd.mm.yyyy dates - else the text */
+    var s= t.replace(/[\s\u00a0\u202f%]/g, "");
+    if (ts && ts.trim()) s= s.split(ts).join("");                                   /* Thousands separator */
+    if (ds && ds !== ".") { if (s.indexOf(ds) > -1) s= s.split(".").join("").replace(ds, "."); }   /* 1.234,50 */  else s= s.replace(/,/g, "");
+    if (/^-?\d+(\.\d+)?$/.test(s) && !/^\d{1,2}\.\d{1,2}\.\d{4}/.test(t.trim())) return parseFloat(s);
+    var d= t.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);  if (d) return new Date(+d[3], d[2]-1, +d[1]).getTime();
+    return t.toLowerCase();
+  }
+  function cmp(a, b) { if (typeof a !== typeof b) return typeof a === "number" ? -1 : 1;  return a < b ? -1 : (a > b ? 1 : 0); }
+  function nextTable(el) { var ts= document.querySelectorAll("table"); for (var i= 0; i < ts.length; i++) if (el.compareDocumentPosition(ts[i]) & 4) return ts[i]; return null; }
+  function setup(tools) {
+    var t= tools.dataset.tabl ? document.getElementById(tools.dataset.tabl) : nextTable(tools);
+    if (!t || !t.tBodies[0]) return;
+    var body= t.tBodies[0], inp= tools.querySelector("input"), cnt= tools.querySelector(".p2hTtCount");
+    function count(shown) { if (cnt) { var n= 0; cnt.textContent= tools.dataset.tmpl.replace(/%[12]/g, function(m) { return m==="%1" ? shown : body.rows.length; }); } }
+    if (inp) inp.addEventListener("input", function() {
+      var q= inp.value.toLowerCase(), shown= 0;
+      [].forEach.call(body.rows, function(r) {
+        var hit= !q || [].some.call(r.cells, function(c) { return cellVal(c).toLowerCase().indexOf(q) > -1; });
+        r.style.display= hit ? "" : "none";  if (hit) shown++;
+      });
+      count(shown);
+      if (window.jQuery && t.config) jQuery(t).trigger("applyWidgets");      /* Tablesorter: zebra again */
+    });
+    count(body.rows.length);
+    if (tools.dataset.sort !== "1" || t.config || !t.tHead) return;          /* Tablesorter sorts itself */
+    var head= t.tHead.rows[t.tHead.rows.length - 1];
+    [].forEach.call(head.cells, function(th, ci) {
+      th.setAttribute("role", "button");  th.tabIndex= 0;  th.classList.add("p2hTtSort");
+      th.addEventListener("click", function() {
+        var asc= th.getAttribute("aria-sort") !== "ascending";
+        [].forEach.call(head.cells, function(h) { h.removeAttribute("aria-sort"); });
+        th.setAttribute("aria-sort", asc ? "ascending" : "descending");
+        var rows= [].slice.call(body.rows).map(function(r) { return [sortKey(cellVal(r.cells[ci]), tools.dataset.dsep, tools.dataset.tsep), r]; });
+        rows.sort(function(a, b) { return asc ? cmp(a[0], b[0]) : cmp(b[0], a[0]); });
+        rows.forEach(function(x) { body.appendChild(x[1]); });
+      });
+    });
+  }
+  function go() { document.querySelectorAll(".p2hTableTools").forEach(setup); }
+  if (document.readyState === "complete") go(); else addEventListener("load", go);   /* After Tablesorter has started (it sets t.config) */
+})();
+</script>'; }
+    if (!$rtrn) echo $result; else return $result;
+}
 
 # Create a Dialog with alternative buttons to select between [Necessary basic element]
 function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl:'@Open dialog', rtrn:false) # Modal dialog:
@@ -3650,7 +4255,8 @@ $view=null                  # bool:   Show the floating view bar (htm_ViewBar: z
                         ' style="'.$styl.($dis ? ' opacity:0.8; pointer-events:none;' : '').'">'.
                         $icon. lang($item[2]). ($subm != [] ? ' <i class="fa fa-caret-down"></i>' : '').
                     '</a>';
-                    if ($item[3]>'') echo $hintEl(lang($item[3].' '.$item[4]), 'left: 160px; top: 35px; overflow:visible;'.$niv2);
+                    if ($item[3]>'') echo $hintEl(trim(lang($item[3]).' '.(trim((string)($item[4] ?? ''), '@ ')>'' ? lang($item[4]) : '')),   # Each part translated
+                                                  'left: 160px; top: 35px; overflow:visible;'.$niv2);
                 echo '
                 </abbr>
                 <div class="dropdown-content">';
@@ -3721,6 +4327,7 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:''
     $wdth='180px'               # string: Widths of menu columns
 )
 { //                    0          1        2         3         4         5         6         7         8         9
+    if (!function_exists('MenuLine')) {                     # Declared once - htm_Menu_Leftout() may be called again
     function MenuLine(# $pref='', $vrnt='', $icon='', $labl='', $hint='', $desc='', $link='', $subm=[], $styl='', $wdth) 
         $pref='',     # string - Prefix (indent) for submenu
         $vrnt='',     # string - Variant not in use (Frst/Next/Last)
@@ -3734,7 +4341,7 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:''
         $wdth=''      # string - Widths of menu columns
      )
      { echo                                                                         
-        '<br><span>'.                                                               
+        '<br><span class="mnuLine">'.                                              
             '<span class= "iconlabl" '.                                             
              'style="width:'.$wdth.'; display:inline-block;;">'.$pref;              
             if ($icon>'') echo                                                      
@@ -3757,8 +4364,11 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:''
        echo '
        </span>';
     } // MenuLine
+    }
     
-    echo '<div onmouseover="desc_div(`wide`, `'.$capt.'`, `'.$wdth.'`)" onmouseout="desc_div(`narrow`, `'.$capt.'`, `'.$wdth.'`)"
+    $jsCapt= sys_enc(json_encode(lang($capt)));  $jsWdth= sys_enc(json_encode($wdth));   # Safe in the JS call
+    echo '<div class="p2hLeftMenu" onmouseover="desc_div(\'wide\', '.$jsCapt.', '.$jsWdth.')" onmouseout="desc_div(\'narrow\', '.$jsCapt.', '.$jsWdth.')"
+           onfocusin="desc_div(\'wide\', '.$jsCapt.', '.$jsWdth.')" onfocusout="if (!this.contains(event.relatedTarget)) desc_div(\'narrow\', '.$jsCapt.', '.$jsWdth.')"
            style="text-align:left; background:#fafafa; opacity: 0.9; background-color: var(--darkBcgrd); color: white;
            border: 2px solid lightgray; border-radius: 4px; padding:5px; width:max-content; z-index: 1000;
            position:fixed; top:28px; left:15px;'.$styl.'">';
@@ -3772,36 +4382,23 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:''
             foreach ($top[6] as $sub)   // SubMenu:
                 MenuLine($pref=' &nbsp; &nbsp; ', $sub[0], $sub[1], $sub[2], $sub[3], $sub[4], $sub[5], $sub[6], $sub[7], $wdth);
      };
-    if ($foot>'') echo '<br><span class="mnu_heads"; style="width:94%;"><hr>'.lang($foot),'<span>'; 
+    if ($foot>'') echo '<br><span class="mnu_heads" style="width:94%;"><hr>'.lang($foot).'</span>';
     echo '</div>';
 } // htm_Menu_Leftout
 
 // Hide parts of menu:
 $javaScripts.= '<script>
-function desc_div(state, capt, widt) {
-    const labels = document.getElementsByClassName("menulabl");
-    const bodyes = document.getElementsByClassName("desc_div");
-    const heads  = document.getElementsByClassName("mnu_heads");
-    const iclbl  = document.getElementsByClassName("iconlabl");
-    for (let i = 0; i < bodyes.length; i++) {
-      if (state == "narrow") { 
-          heads[0].innerHTML = "Menu:<br>";
-          heads[0].outerHTML = "<span class=\"mnu_heads\" ;=\"\" style=\"width:;\">Menu:<br></span>";
-          iclbl[i].style.width = "max-content";       
-          labels[i].style.display = "none";         
-          bodyes[i].style.display = "none";          
-      } else { 
-          heads[0].innerHTML = capt + "<br><hr>";
-          heads[0].outerHTML = "<span class=\"mnu_heads\";\" style=\"width:94%;\">" + capt + "<br><hr></span>";
-          iclbl[i].style.width = widt; 
-          labels[i].style.display = "inline-block"; 
-          bodyes[i].style.display = "inline-block";  
-      }
-    }
-    for (let i = 1; i < heads.length; i++) {
-        if (state == "narrow") heads[i].style.display = "none"; 
-        else                   heads[i].style.display = "inline"; 
-    }
+function desc_div(state, capt, widt) {   /* Narrow: icons only - wide: labels and descriptions. Line by line. */
+    var phone= matchMedia("(max-width: 760px)").matches;     /* Phone: the menu is in the page flow - show the texts (the icons are no links) */
+    var narrow= (state == "narrow") && !phone, heads= document.getElementsByClassName("mnu_heads");
+    document.querySelectorAll(".mnuLine").forEach(function(line) {
+        var ic= line.querySelector(".iconlabl"), lb= line.querySelector(".menulabl"), ds= line.querySelector(".desc_div");
+        if (ic) ic.style.width= narrow ? "max-content" : widt;
+        if (lb) lb.classList.toggle("p2hVisHidden", narrow);   /* Hidden from view, but the link can still get keyboard focus */
+        if (ds) ds.style.display= (narrow || phone) ? "none" : "inline-block";
+    });
+    if (heads[0]) heads[0].innerHTML= narrow ? "Menu:<br>" : capt + "<br><hr>";
+    for (var i= 1; i < heads.length; i++) heads[i].style.display= narrow ? "none" : "inline";
 }
 </script>';
 
@@ -4084,7 +4681,11 @@ function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'',
     <meta name="author" content="'.$gbl_copyright.'">
     <meta name="robots" content="Noindex, Nofollow">'.  // Reject robots
    '<meta name="googlebot" content="Noindex">'.         // Reject robots
-   '<title>'.htmlspecialchars(strip_tags(lang($titl)), ENT_QUOTES, 'UTF-8').'</title>'. "\n";  
+   '<title>'.htmlspecialchars(strip_tags(lang($titl)), ENT_QUOTES, 'UTF-8').'</title>'. "\n".
+   (is_readable(__DIR__.'/manifest.json') ? '<link rel="manifest" href="'.sys_enc($gbl_ProgRoot.'manifest.json').'">' : '').      # Install on the home screen (PWA)
+   (is_readable(__DIR__.'/favicon.svg')   ? '<link rel="icon" href="'.sys_enc($gbl_ProgRoot.'favicon.svg').'" type="image/svg+xml">'.
+                                            '<link rel="apple-touch-icon" href="'.sys_enc($gbl_ProgRoot.'_accessories/icon-192.png').'">' : '').
+   '<meta name="theme-color" content="#2c3e50">'."\n";  
     dvl_pretty('htm_Page_');
 
 
@@ -4100,13 +4701,9 @@ function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'',
         if ($path > '') {
             echo '<script src="'.$path.'dialog-polyfill.js"></script>';
             echo '<link rel="stylesheet" href="'.$path.'dialog-polyfill.css"/>';
-            run_Script("var dialog = document.querySelector('dialog');
-                        dialogPolyfill.registerDialog(dialog);    // Now dialog always acts like a native <dialog>.
-                        dialog.showModal(); ");
-            
-            run_Script("function phpDialog(capt='CAPTION', content='Content') 
-                { var result= <?= htm_Dialog(capt, content); ? > return result; }");
-        //        { alert(\"<?php echo htm_Dialog(capt, content); ? >\"); }");
+            run_Script("document.addEventListener('DOMContentLoaded', function() {    /* Every <dialog> on the page acts like a native one */
+                document.querySelectorAll('dialog').forEach(function(d) { dialogPolyfill.registerDialog(d); });
+            });");
             }
     } else 
     { $LIB_POLYFILL=  [0, '', '']; /* $pageMess.= ' dialog-polyfill is not loaded  ! <br>'; */ }
@@ -4206,7 +4803,7 @@ $javaScripts.= "
 <script>
     $(function () {
     /* $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({ gbl_TblIx       */
-    $('#table0, #table1, #table2, #table3, #table4, #table5, #table6, #table7, #table8').tablesorter({
+    $('table.tablesorter').filter(function () { return /^table\\d+$/.test(this.id); }).tablesorter({   /* All htm_Table() tables */
       theme: 'blue',
       dateFormat : \"Y-m-d\",
       widthFixed : true,
@@ -4240,10 +4837,10 @@ $javaScripts.= "
             '{empty}' : ".'function (e, n, f, i, $r, c) {'."
               return $.trim(e) === '';
             }
-          },
+          }
+        },
         storage_storageType: 's', // use first letter (s)ession
         resizable_addLastColumn : true,
-        },
         filter_selectSource: {
           0: function (table, column, onlyAvail) {  // get an array of all table cell contents for a table column
             var array = $.tablesorter.filter.getOptions(table, column, onlyAvail);
@@ -4483,7 +5080,7 @@ if (!(isset($LIB_FONTAWESOME[0]) && array_key_exists(0, $LIB_FONTAWESOME) && ($L
 
 
     function pw_strength(input) {
-        var text =      document.getElementById(input.id).value;
+        var text =      input.value;
         var point = 0;
         if ( text.length >= 6 )     {point += 1};
         if ( text.length >= 8 )     {point += 1};
@@ -4497,8 +5094,8 @@ if (!(isset($LIB_FONTAWESOME[0]) && array_key_exists(0, $LIB_FONTAWESOME) && ($L
     }
 '.
 "   function togglePassword(input,butt) {
-        var passInput = document.getElementById(input.id);
-        var togglePW  = document.getElementById(butt.id);
+        var passInput = input;
+        var togglePW  = butt;
         if (passInput.type  == 'password')
             { passInput.type = 'text';      togglePW.innerHTML = '<i class=\'far fa-eye-slash fa-fw colrred\'>'; } else
             { passInput.type = 'password';  togglePW.innerHTML = '<i class=\'far fa-eye fa-fw colrgreen\'>'; }
@@ -5249,11 +5846,11 @@ $htm_ModalDialog= '
 
 }
 
-#header {
+.mdlHeader {
     text-align: center;
-    background-color: whitesmoke; // default
+    background-color: whitesmoke; /* default */
 }
-#footer {
+.mdlFooter {
     text-align: right;
 }
 
@@ -5632,7 +6229,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
             }
 
             function onPrevPage() {         /** Displays previous page. */
-              if (pageNum <= 1) {
+              if (!pdfDoc || pageNum <= 1) {    // (not loaded yet)
                 return;
               }
               pageNum--;
@@ -5642,7 +6239,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
             if (b_prev) { b_prev.type= 'button';  b_prev.addEventListener('click', onPrevPage); }
 
             function onNextPage() {         /** Displays next page. */
-              if (pageNum >= pdfDoc.numPages) {
+              if (!pdfDoc || pageNum >= pdfDoc.numPages) {    // (not loaded yet)
                 return;
               }
               pageNum++;
@@ -5655,6 +6252,11 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
               pdfDoc = pdfDoc_;
               document.getElementById('page_count').textContent = pdfDoc.numPages;
               renderPage(pageNum);      // Initial/first page rendering
+            }, function(err) {          /** The PDF could not be loaded: say so instead of an empty canvas */
+              var m= document.createElement('p');
+              m.style.color= '#c62828';
+              m.textContent= ".json_encode(lang('@The PDF file could not be shown:'))." + ' ' + url + ' (' + ((err && err.message) || err) + ')';
+              canvas.insertAdjacentElement('beforebegin', m);
             });
             </script>";
     }} 
@@ -5662,25 +6264,23 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
 ### ----------------------
 
 
-    $gbl_PageLogo= ($gbl_ProgBase ?? './').'_accessories/21997911.png';
-
     echo $CSS_system;    // Activate the system style
     echo $GLOBALS['CSS_theme'] ?? '';   // Dark theme + dialog style
     set_Style('type="text/css"', '<!--  @font-face { font-family: barcode; src: url('.$gbl_ProgRoot.'_accessories/barcode.ttf); } --> ');
-    $bottLogo= ''; //'url('.$gbl_PageLogo.') right bottom/3% no-repeat,';
     
     set_Style('type="text/css"', 
               'body { background: left top no-repeat; background-size: 100% 100%; font-family: sans-serif; '.
                $attr.' '.(($imag>'') ? ' background-repeat: repeat; background-size: 225px; background-image: url('.$imag.')}' : '')
     );
     
+    $sideTxt= '';   # The vertical edge texts are written after <body> (a <div> in <head> ends the head early)
     if ($info>'')   // Page into (vertical text - right)
-        echo '<div style="position: fixed; z-index: 99; float: right; display: inline-block; width: max-content; line-height: 14px;line-height: 14px; right: 0;
+        $sideTxt.= '<div class="p2hSideTxt" style="position: fixed; z-index: 99; float: right; display: inline-block; width: max-content; line-height: 14px;line-height: 14px; right: 0;
             transform-origin: bottom left; transform: rotate(-90deg); translate: 100% 85vh; white-space: nowrap; 
             padding: 2px; background-color:#ddddddbd;"><span style="font-size: 0.8em;">'.lang($info).'</span></div>';
 
     if ($hint>'')   // Page tip  (vertical text - left)
-        echo '<div style="position: fixed; width: min-content; line-height: 14px; bottom: -10px; left: 0px; z-index: 99;
+        $sideTxt.= '<div class="p2hSideTxt" style="position: fixed; width: min-content; line-height: 14px; bottom: -10px; left: 0px; z-index: 99;
             transform-origin: top left; transform: rotate(-90deg); white-space: nowrap; padding: 2px; background-color:#ddddddbd;" '.
             'title="'.lang('@CTRL-Scroll UP/Down mousewheel to zoom window content.').'">'.
     // '<data-hint>CTRL-Scroll UP/Down mousewheel to zoom window content</data-hint>'.
@@ -5691,19 +6291,31 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
     
     echo $sys_Style;
 
+    $cc= trim((string)($GLOBALS['gbl_CustomCss'] ?? ''));     # Project CSS (project init file): CSS text, or the address of a .css file
+    if ($cc > '') echo (!str_contains($cc, '{') && preg_match('/\.css(\?.*)?$/i', $cc))
+                        ? '<link rel="stylesheet" href="'.sys_enc($cc).'">'."\n"
+                        : "<style>\n".$cc."\n</style>\n";
     if ($inis>'')            echo $inis;            // read CSS/js given in htm_Page_ parameter
     // if ($lateScripts > '') echo $lateScripts;    // run_Script($lateScripts);
     if ($headEndScript > '') run_Script($headEndScript);
     
 
     echo "\n</head>\n
-             <body>\n"; 
+             <body>\n";
+    echo $sideTxt;
 
+    echo '<a class="p2hSkip" href="#p2hMain" data-skip="main">'.lang('@Skip to the content').'</a>'.
+         '<a class="p2hSkip" href="#" data-skip="tools">'.lang('@Go to the view tools').'</a>'.
+         '<h1 class="p2hVisHidden">'.sys_enc(strip_tags(lang($titl))).'</h1>';          # The page title as heading (screen readers)
     if ($pageMess > '<b>ERROR:</b> ') echo $pageMess;
     
     if ((isset($imag)) and ($imag>'')) $image= 'background-image: url(\''.$imag.'\');'; else  $image= '';
-    echo '<div style="text-align: '.$algn.'; '.$image.' margin: auto; ">';
+    echo '<main id="p2hMain" style="text-align: '.$algn.'; '.$image.' margin: auto; ">';   # The page content as <main> (landmark for screen readers)
     if ($pbrd) echo '<div style="border: 2px solid #AAA; border-radius: 8px; overflow: hidden; margin: auto;" >'; // margin: 24px 4px 4px;
+    # Column view (button in htm_ViewBar): the cards flow in columns. Container = the innermost page element; the saved choice is
+    # applied right here, before the cards are drawn (no jump).
+    echo '<script>(function(){ var c= document.getElementById("p2hMain"); if ('.($pbrd ? 'true' : 'false').') c= c.lastElementChild;
+          c.setAttribute("data-p2h-cols", "1");  try { if (localStorage.getItem("p2h-colview")==="1") c.classList.add("p2hColview"); } catch(e) {} })();</script>';
 } // htm_Page_()
 
 # A paragraf with border, can be used as a page-footer, or separator on a page.
@@ -5719,7 +6331,7 @@ function htm_Page_end()
 { global $gbl_CardIx, $cardCount, $gbl_ProgRoot, $sys_Style, $javaScripts, $bodyEndScript, $pbrd, $gbl_Imag;
     $cardCount= $gbl_CardIx;
     if ($pbrd) echo '</div>';   // Started in htm_Page_()
-    echo '</div>';              // $align - Started in htm_Page_()
+    echo '</main>';             // $align - <main> started in htm_Page_()
     //Menu_Bottom();
     // echo '<div id="snackbar">Short message</div>';
     CardInit($cardCount ? $cardCount : 15);
@@ -5764,8 +6376,51 @@ function htm_Page_end()
 
 
     htm_nl(2);
-    echo "\n  </body>"; // Started in htm_Page_()
-    echo '</html><br>';
+    # Session warning: the session ends after session.gc_maxlifetime without a request. While the user works, a light request keeps
+    # it alive; after a pause a dialog asks 2 minutes before the end; after the end a notice says to reload (a POST would be refused).
+    $life= (int)ini_get('session.gc_maxlifetime');
+    if (($GLOBALS['gbl_SessionWarn'] ?? true) and ($life >= 300))
+        echo '<script>(function(){
+  if (!document.querySelector("input[name=csrf_token], [data-csrf]:not(.p2hLang)")) return;     /* Nothing to post on this page (the language button does not count) */
+  var L= '.($life*1000).', W= 120000, KEY= "p2h-session-last", tWarn= null, tEnd= null, asking= false, last= Date.now();
+  function share() { try { localStorage.setItem(KEY, String(last)); } catch(e) {} }                  /* Every tab knows the last request */
+  function newest() { var v= 0; try { v= +localStorage.getItem(KEY) || 0; } catch(e) {}  return Math.max(last, v); }
+  var T= '.json_encode(['title'=>strip_tags(lang('@Still working?')), 'warn'=>strip_tags(lang('@Your session ends in 2 minutes. Continue?')),
+                        'gone'=>strip_tags(lang('@Your session has ended. Copy any text you have written, then reload the page before you save.')),
+                        'reload'=>strip_tags(lang('@Reload'))]).';
+  function ping() { last= Date.now();  share();  fetch(location.pathname + "?p2h_keepalive=1", {credentials: "same-origin", cache: "no-store"}).catch(function(){});  plan(); }
+  function plan() { last= newest();  var left= last + L - Date.now();  clearTimeout(tWarn);  clearTimeout(tEnd);
+                    tWarn= setTimeout(warn, Math.max(0, left - W));  tEnd= setTimeout(ended, Math.max(0, left)); }
+  var gone= false, dlg= null;
+  function over() { return Date.now() - newest() >= L; }                             /* The session has ended (timers can sleep in a background tab) */
+  function warn() { if (newest() > last) { plan(); return; }                           /* Another tab kept the session alive */
+                    asking= true;  sysConfirm(T.warn, function() { asking= false;  dlg= null;  if (over()) ended(); else ping(); }, T.title,
+                                              function() { asking= false;  dlg= null; });
+                    var ds= document.querySelectorAll("dialog.p2hDlg");  dlg= ds[ds.length - 1] || null; }
+  function ended() {
+    if (gone) return;
+    if (newest() > last) { plan(); return; }
+    gone= true;  asking= false;
+    if (dlg) { try { dlg.close(); } catch(e) {}  dlg.remove();  dlg= null; }          /* "Continue?" is too late now */
+    var d= document.createElement("div");  d.className= "p2hAlert p2hAlert-warning p2hSessionEnd";  d.setAttribute("role", "alert");
+    d.textContent= T.gone + " ";
+    var b= document.createElement("button");  b.type= "button";  b.textContent= T.reload;  b.onclick= function() { location.reload(); };
+    d.appendChild(b);  document.body.appendChild(d);
+  }
+  ["keydown", "pointerdown", "input"].forEach(function(ev) {                       /* Activity: keep alive (at most every third of the time) */
+    addEventListener(ev, function() { if (gone || asking) return;  if (over()) { ended(); return; }
+                                      if (Date.now() - newest() > L / 3) ping(); }, {capture: true, passive: true});
+  });
+  addEventListener("storage", function(e) { if (e.key === KEY) plan(); });          /* Another tab made a request: count from there */
+  share();  plan();                                                                   /* This page load was a request too */
+})();</script>';
+    # Output after htm_Page_end() (e.g. CardOff(), run_Script() in the page) must stay inside <body>: it is collected and the
+    # document is closed when the script ends - before PHP flushes the output buffers. (Was: <script>s after </html>.)
+    $lvl= ob_get_level();  ob_start();
+    register_shutdown_function(function() use ($lvl) {
+        $late= '';  while (ob_get_level() > $lvl) $late= ob_get_clean().$late;
+        echo $late, "\n  </body>", '</html>';       // <body> started in htm_Page_()
+    });
 } # htm_Page_end
 
 } ## Group ******************** /htm_Page **************************
@@ -5861,8 +6516,17 @@ function markFirstChar($str='',$tag='u',$att='')
 function markAllChars($str='',$tag='u',$att='')  
 { $str= lang($str); $str= '<'.$tag.' '.$att.'>'.$str.'</'.$tag.'>'; return $str; }
 
-function toNum($test='') 
-{ $test= str_replace(',','.',$test); if (!is_numeric($test)) $test= 0; return $test; }
+function toNum($test='')
+{ return sys_toFloat($test); }
+
+# A number written as "1 234,50" / "1.234,50" / "1234.50" / "87 %" / "kr. 12,5" -> float  ((float)"1 234,50" gives 1)
+function sys_toFloat($v) {
+    if (is_int($v) or is_float($v)) return (float)$v;
+    $s= str_replace([' ', "\u{00A0}", "\u{202F}"], '', (string)$v);   # Thousands separators: space, nbsp, narrow nbsp
+    if (DecimalSep !== ',') $s= str_replace([ThousandsSep, ','], '', $s);       # Decimal point (DecimalSep "."): commas are thousands
+    elseif (strpos($s, ',') !== false) $s= str_replace(['.', ','], ['', '.'], $s);  # Comma is the decimal sign: dots are thousands
+    return preg_match('/-?\d+(\.\d+)?/', $s, $m) ? (float)$m[0] : 0.0;
+}
 
 function scannSource($prefix='$name=',$suffix="'",$files=[]) 
 {
@@ -5936,11 +6600,17 @@ function sys_get_translations($transTable=[])
 ## Prepare Lang-system;
 // $lang = $_SESSION['currLang']; 
 if (isset($_POST['language']) and is_string($_POST['language']) and preg_match('/^[a-z]{2}(-[A-Za-z]{2})?$/', $_POST['language'])) {
-    $lang = $_POST['language'];  $_SESSION['p2h_lang']= $lang;  # Accept only language codes - remembered for the next pages
+    $lang = $_POST['language'];                                 # Accept only language codes
+    $langOk= (function_exists('csrf_verify') && csrf_verify());     # Remembered only from a genuine form of this site (CSRF token)
+    if ($langOk) $_SESSION['p2h_lang']= $lang;                  #   - for the next pages
+    if ($langOk and isset($_POST['p2h_langOnly']) and !headers_sent()) {
+        header('Location: '.($_SERVER['REQUEST_URI'] ?? './'), true, 303);   # From htm_LangSelect(): show the same page again (GET)
+        exit;
+    }
 }
 elseif (isset($_SESSION['p2h_lang']) and is_string($_SESSION['p2h_lang'])) $lang = $_SESSION['p2h_lang'];
 if (!isset($lang)) $lang = 'en';                        // Default language english
-if (!$englishOnly) $allLang = sys_get_translations();   // arrPretty($allLang,'$allLang');
+$allLang= $englishOnly ? [] : sys_get_translations();   # (Also defined with $englishOnly - was: Undefined variable)
 if ($allLang) {
     $natindx = array_search($lang, array_column($allLang, 'code')); //  echo $natindx;
     $engindx = array_search('en',  array_column($allLang, 'code')); //  echo $engindx;
@@ -5964,6 +6634,15 @@ if (!function_exists('lang')) { ## Be aware tinyMCE has its own translate system
  * @param string $text
  * @return string
  */
+function sys_uid($id)       # A unique element id on the page: the first keeps its id, repeats get _2, _3... (fields in loops, table rows)
+{
+    static $used= [];
+    $id= ($id === '') ? 'missing' : $id;
+    if (!isset($used[$id])) { $used[$id]= 1;  return $id; }
+    do { $uid= $id.'_'.(++$used[$id]); } while (isset($used[$uid]));
+    $used[$uid]= 1;  return $uid;
+}
+
 function sys_enc($text)     # Make valid HTML string
 {
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
@@ -5993,7 +6672,7 @@ function DropDown($name, $valu, $list ,$attr='')
 {
     dvl_pretty();
     $Result=  '<div style="margin-right:0;"> ';
-    $Result.= '<select class="styled-select" id="'.$name.'" name="'.$name.
+    $Result.= '<select class="styled-select" id="'.sys_uid(preg_replace('/[^A-Za-z0-9_\-]/', '', $name)).'" name="'.$name.
               '" style="max-width:140px; background-color:transparent; '.$attr.
               '"> '."\n".'<option label="" value="" > - </option>';  //  selected disabled hidden
     foreach ($list as $rec) { dvl_pretty();
@@ -6358,32 +7037,32 @@ $CSS_system = '
  /* for 960px or greater */
 @media screen and (min-width: 960px) {
     #colnwrap   {width: 99%; padding: 0px;    /*  margin: 5px 5px; */}
-    #RowCol240  {width: 240px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol280  {width: 280px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol320  {width: 320px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol400  {width: 400px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol480  {width: 480px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol640  {width: 640px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol720  {width: 720px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol800  {width: 800px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol960  {width: 960px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowCol1100 {width:1100px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
-    #RowColsaut {width: auto;   padding: 5px 0px 5px 5px; margin: 5px 0px 5px 0px; float: left;}
+    .RowCol240  {width: 240px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol280  {width: 280px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol320  {width: 320px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol400  {width: 400px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol480  {width: 480px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol640  {width: 640px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol720  {width: 720px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol800  {width: 800px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol960  {width: 960px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowCol1100 {width:1100px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
+    .RowColsaut {width: auto;   padding: 5px 0px 5px 5px; margin: 5px 0px 5px 0px; float: left;}
     data-PanlHead, PanlFoot  {clear: both;   padding: 0 5px;}
 }
 
  /* for 960px or less */
 @media screen and (max-width: 960px) {
     #colnwrap   {width: 99%;  }
-    #RowCol320  {width: 41%;  padding: 5px 5px;   margin: 0px 0px 5px 5px;}
-    #RowColsaut {width: auto; padding: 5px 5px;   margin-left: 0px;   clear: both;    float: none;  }
+    .RowCol320  {width: 41%;  padding: 5px 5px;   margin: 0px 0px 5px 5px;}
+    .RowColsaut {width: auto; padding: 5px 5px;   margin-left: 0px;   clear: both;    float: none;  }
     data-PanlHead, PanlFoot {padding: 1px 5px;   clear: both;}
 }
 
  /* for 640px or less */
 @media screen and (max-width: 640px) {
-    #RowCol320  {width: auto;  float: none;  margin-left: 5px; }
-    #RowColsaut {width: auto;  float: none;  margin-left: 5px; }
+    .RowCol320  {width: auto;  float: none;  margin-left: 5px; }
+    .RowColsaut {width: auto;  float: none;  margin-left: 5px; }
 }
 
 /* for 480px or less */
@@ -6417,11 +7096,19 @@ $CSS_system = '
     padding: 2px 0;
     display: inline-block;
 }
+@media screen and (max-width: 760px) { .p2hSideTxt { display: none !important; } }   /* Vertical edge texts: no room on phones */
+@media screen and (max-width: 760px) { .p2hLeftMenu { position: static !important; margin: 8px auto !important; } }   /* Left menu: in the flow, not over the text */
+.p2hVisHidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* A card with an unknown class (e.g. an old name) is still a box - else the resize grip lands in the middle below it */
+:where([id^=card]) { display: inline-block; }
 .cardWmax { width:  99%;   }
 .cardWaut { width: auto;   }
 .cardW120 { width: 1200px; }
 .cardW110 { width: 1100px; }
 .cardW100 { width: 1020px; }
+/* Narrow screens: a fixed-width card is never wider than the window (no sideways page scrolling on phones) */
+.cardW120, .cardW110, .cardW100, .cardW960, .cardW800, .cardW720, .cardW640, .cardW560, .cardW480,
+.cardW400, .cardW320, .cardW280, .cardW240, .cardW160 { max-width: min(100%, calc(100vw - 32px)); box-sizing: border-box; }   /* (100vw includes the scrollbar) */
 .cardW960 { width: 960px;  }
 .cardW800 { width: 800px;  }
 .cardW720 { width: 720px;  }
@@ -6640,8 +7327,56 @@ data-hint {
 abbr.hint:hover {
     cursor: pointer;
 }
+[role=button][tabindex]:focus-visible { outline: 2px solid var(--AccnColr, DarkGreen); outline-offset: 2px; }   /* Keyboard focus */
+/* htm_Alert / htm_Banner / htm_Badge / htm_ConfirmPostLink / htm_TableTools (from NH-logistik) */
+.p2hAlert { margin: 10px auto; padding: 11px 15px; border: 1px solid; border-radius: 6px; text-align: left; column-span: all; }
+.p2hAlert-success { background: #d4edda; color: #155724; border-color: #a9d8b4; }
+.p2hAlert-error   { background: #f8d7da; color: #721c24; border-color: #efb1b8; }
+.p2hAlert-warning { background: #fff3cd; color: #664d03; border-color: #f2d98a; }
+.p2hAlert-info    { background: #d1ecf1; color: #0c5460; border-color: #9fd3dd; }
+[data-p2h-vars] .p2hAlert-success { background: #1d3a26; color: #b8f0c6; border-color: #2f6b41; }
+[data-p2h-vars] .p2hAlert-error   { background: #42201f; color: #ffc9c4; border-color: #7a3a36; }
+[data-p2h-vars] .p2hAlert-warning { background: #3d3412; color: #ffe8a3; border-color: #6e5d1f; }
+[data-p2h-vars] .p2hAlert-info    { background: #133a42; color: #b9eaf3; border-color: #286b78; }
+.p2hBanner { margin: 0 auto 14px; padding: 9px 14px; border-left: 5px solid; border-radius: 4px; text-align: left; column-span: all;
+    background: var(--CardsBgrd, #fff); color: var(--TextColr, #222); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.p2hBanner-info { border-color: #0b7285; }  .p2hBanner-warning { border-color: #e0a800; }
+.p2hBanner-danger { border-color: #c62828; }  .p2hBanner-success { border-color: #1a7f37; }
+.p2hBadge { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 11px; font-weight: 700; line-height: 1.5; vertical-align: middle; }
+.p2hBadge-primary { background: #0d6efd; color: #fff; }  .p2hBadge-secondary { background: #5c636a; color: #fff; }
+.p2hBadge-success { background: #1a7f37; color: #fff; }  .p2hBadge-danger    { background: #c62828; color: #fff; }
+.p2hBadge-warning { background: #ffc107; color: #222; }  .p2hBadge-info      { background: #0b7285; color: #fff; }
+.p2hConfirmPost { padding: 5px 14px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
+.p2hConfirmPost:hover { filter: brightness(1.12); }
+.p2hTableTools { display: flex; gap: 12px; align-items: center; justify-content: center; margin: 6px 0; flex-wrap: wrap; }
+.p2hTtSearch { position: relative; }
+.p2hTtSearch ic { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); opacity: 0.6; font-size: 12px; }
+.p2hTtSearch input { padding: 5px 8px 5px 26px; border: 1px solid var(--grayColor, #aaa); border-radius: 4px; width: 200px; }
+.p2hTtCount { font-size: 12px; opacity: 0.8; }
+.p2hTtSort { cursor: pointer; }
+.p2hTtSort[aria-sort=ascending]::after  { content: " \25B2"; font-size: 0.8em; }
+.p2hTtSort[aria-sort=descending]::after { content: " \25BC"; font-size: 0.8em; }
+/* Card size grip (lower right corner of every card) */
+.p2hCardGrip { position: absolute; right: 1px; bottom: 1px; width: 14px; height: 14px; cursor: nwse-resize; touch-action: none; opacity: 0.45; z-index: 3;
+    background-image: linear-gradient(135deg, transparent 0 5px, currentColor 5px 6px, transparent 6px 8px, currentColor 8px 9px, transparent 9px 11px, currentColor 11px 12px, transparent 12px 100%); }
+.p2hCardGrip:hover, .p2hCardGrip:focus-visible { opacity: 0.9; }
+@media (hover: none) { .p2hCardGrip { width: 22px; height: 22px; } }    /* Bigger on touch screens */
+abbr.hint.p2hGripHint { position: absolute; right: 0; bottom: 0; z-index: 3; text-decoration: none; }
+abbr.hint.p2hGripHint:hover data-hint, abbr.hint.p2hGripHint:focus-within data-hint { left: auto; top: auto; right: 4px; bottom: 18px; width: 240px; }
+.p2hGripCol, .p2hColview .p2hGripTxt { display: none; }
+.p2hColview .p2hGripCol { display: inline; }                    /* Column view: only the height can be dragged */
+/* Card order (p2hCardMove): the handle, the card being moved, "Arrange cards" mode */
+abbr.hint.p2hMoveHint { position: absolute; left: 1px; top: 6px; z-index: 2; text-decoration: none; }
+abbr.hint.p2hMoveHint:hover data-hint, abbr.hint.p2hMoveHint:focus-within data-hint { left: 18px; top: 0; }
+.p2hMoveIc { touch-action: none; cursor: grab !important; opacity: 0.55; }
+.p2hMoveIc:hover, .p2hMoveIc:focus-visible { opacity: 1; }
+[data-p2h-move=header] [id^=chead], .p2hArrange [data-p2h-move=toggle] [id^=chead] { cursor: grab; }
+.p2hArrange [data-p2h-move=toggle] { outline: 2px dashed var(--AccnColr, DarkGreen); outline-offset: 2px; }
+.p2hMoving { opacity: 0.6; outline: 2px dashed var(--AccnColr, DarkGreen) !important; outline-offset: 2px; }
+.p2hDragging, .p2hDragging * { user-select: none !important; cursor: grabbing !important; }
+[id^=card]:has(> [id^=HideBody][style*="display: none"], > form > [id^=HideBody][style*="display: none"]) > .p2hGripHint { display: none; }   /* Folded card: no grip */
 
-abbr.hint:hover data-hint {
+abbr.hint:hover data-hint, abbr.hint:focus-within data-hint, .inpField:focus-within > abbr.hint data-hint {
     /* opacity: 0;    transition: opacity 2s;    transition-delay: 1s; */
     display: block;
     position: absolute;     /* this will let you align the popup with flexibility */
@@ -6649,7 +7384,6 @@ abbr.hint:hover data-hint {
 /*  top: -30px;             /* change this depending on how far from the top you want it to align */
 /*  data-hint.style.left = ((el.clientX + data-hint.offsetWidth)  >= window.innerWidth) ?  ((el.clientX - data-hint.offsetWidth))+"px"  : (el.clientX)+"px";
 /*  data-hint.style.top =  ((el.clientY + data-hint.offsetHeight) >= window.innerHeight) ?  (el.clientY - data-hint.offsetHeight)+"px"  : (el.clientY)+"px"; */
-*/
     width: 200px;           /* give this your own width */
     min-width: 160px;
 
@@ -6849,7 +7583,7 @@ $CSS_theme = '
     --fltTxColr: #f0c8a0;  --btnTxNorm: #eeeeee;  --brunColor: #c08080;  --xx33Color: #22394a;
     --AccnColr: #8fd18f;
 }
-:root { --AccnColr: DarkGreen; }   /* Accent: card titles/icons, OK buttons (used by the dark and custom themes) */
+:where(:root) { --AccnColr: DarkGreen; }   /* Accent: card titles/icons, OK buttons. :where() = no specificity, so the dark block wins */
 [data-p2h-vars] body { background: var(--PageBcgrd) !important; background-image: none !important; color: var(--TextColr); }
 [data-p2h-vars] a { color: var(--LinkColr); }
 [data-p2h-vars] a.button, [data-p2h-vars] a.button:visited {   /* htm_LinkButt: white text on a darker green (not the link color) */
@@ -6859,7 +7593,9 @@ $CSS_theme = '
 [data-p2h-vars] input, [data-p2h-vars] textarea, [data-p2h-vars] select,
 [data-p2h-vars] .boxStyle, [data-p2h-vars] .inpField input {
     background-color: var(--InptBgrd) !important; color: var(--TextColr) !important; border-color: var(--grayColor); }
-[data-p2h-vars] .cardsTitl, [data-p2h-vars] [style*="DarkGreen" i] { color: var(--AccnColr) !important; }
+[data-p2h-vars] .cardsTitl, [data-p2h-vars] [style*="DarkGreen" i],
+[data-p2h-vars] [style*="color: green" i], [data-p2h-vars] [style*="color:green" i] { color: var(--AccnColr) !important; }
+[data-p2h-vars] .pagination { background: var(--CardsBgrd) !important; color: var(--TextColr); }   /* PDF viewer: "Page: 1 / 2" */
 [data-p2h-vars] [style*="background-color: white" i], [data-p2h-vars] [style*="background-color:white" i],
 [data-p2h-vars] [style*="background: white" i],       [data-p2h-vars] [style*="background:white" i],
 [data-p2h-vars] [style*="background-color: #fff" i],  [data-p2h-vars] [style*="background-color:#fff" i],
@@ -6871,7 +7607,11 @@ $CSS_theme = '
     background-color: var(--CardsBgrd) !important; color: var(--TextColr); }
 [data-p2h-vars] [style*="color: black" i], [data-p2h-vars] [style*="color:black" i],
 [data-p2h-vars] [style*="color:#550000" i], [data-p2h-vars] [style*="color: #550000" i],
-[data-p2h-vars] [style*="color:#500000" i], [data-p2h-vars] [style*="color: #500000" i] { color: var(--TextColr) !important; }
+[data-p2h-vars] [style*="color:#500000" i], [data-p2h-vars] [style*="color: #500000" i],
+[data-p2h-vars] [style*="color: #000000" i], [data-p2h-vars] [style*="color:#000000" i],
+[data-p2h-vars] [style*="color: #000;" i],   [data-p2h-vars] [style*="color:#000;" i] { color: var(--TextColr) !important; }
+/* 3. The vertical page texts at the left / right edge (htm_Page_ hint / info) */
+[data-p2h-vars] [style*="background-color:#ddddddbd" i] { background-color: #2a2f36cc !important; color: var(--TextColr) !important; }
 [data-p2h-vars] .tablesorter-blue, [data-p2h-vars] .tablesorter-blue td { background-color: var(--tblRowLgt) !important; color: var(--TextColr) !important; border-color: #3a3f46 !important; }
 [data-p2h-vars] .tablesorter-blue tbody > tr.even > td { background-color: var(--CardsBgrd) !important; }
 [data-p2h-vars] .tablesorter-blue tbody > tr.odd > td  {   /* Zebra stripe: a clear shade of the card color (dark and custom themes) */
@@ -6907,6 +7647,85 @@ $CSS_theme = '
 .p2hViewBar button:hover { background: rgba(255,255,255,0.15); }
 .p2hViewBar button:focus-visible, .p2hVbGrip:focus-visible { outline: 2px solid #4fc3f7; outline-offset: -2px; }
 .p2hViewBar .p2hThemeTx { display: none; }
+/* Column view (htm_ViewBar button): the cards flow in columns; the browser picks the number of columns from the width */
+.p2hColview { column-width: 480px; column-gap: 16px; padding: 0 8px; }
+.p2hColview > * { column-span: all; }                           /* Menu, headings, text: across all columns */
+.p2hColview > span:not([id^=card]) { display: block; }          /* column-span works on blocks only (the menus are in a <span>) */
+.p2hColview > [id^=card] { column-span: none; display: block; width: auto !important; max-width: 100%;
+    margin: 0 0 14px !important; break-inside: avoid; -webkit-column-break-inside: avoid; }
+.p2hViewBar [aria-pressed=true] { background: rgba(79,195,247,0.30); }
+/* Skip links: hidden until they get keyboard focus */
+.p2hSkip { position: absolute; left: -9999px; top: 4px; z-index: 3000; padding: 8px 14px; background: #2c3e50; color: #fff !important; border-radius: 6px; font-weight: 600; }
+.p2hSkip:focus { left: 8px; outline: 2px solid #4fc3f7; }
+.p2hSkip + .p2hSkip:focus { left: 200px; }
+/* htm_NotePad(): uses the help window style; a dot on the button when there are notes */
+.p2hNoteWin { top: 120px; right: 60px; }
+.p2hNoteText { flex: 1; min-height: 220px; margin: 10px; padding: 8px; resize: vertical; font: 14px/1.5 sans-serif;
+    border: 1px solid var(--grayColor, #aaa); border-radius: 4px; background: var(--InptBgrd, #fff); color: var(--TextColr, #222); }
+.p2hNoteFoot { display: flex; align-items: center; gap: 6px; opacity: 1; }
+.p2hNoteState { margin-right: auto; opacity: 0.7; }
+.p2hNoteFoot button { background: none; border: 1px solid rgba(127,127,127,0.4); border-radius: 4px; padding: 3px 9px; cursor: pointer; color: inherit; font-size: 12px; }
+.p2hNoteFoot button:hover { background: rgba(127,127,127,0.15); }
+.p2hNoteButt { position: relative; }
+.p2hNoteButt.hasNotes::after { content: ""; position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 50%; background: #f0a050; }
+/* Print (all pages): only the content - no menus, bars or buttons; folded cards are printed open; no background image */
+@media print {
+    nav, .topnav, .p2hViewBar, .p2hQuickBar, .p2hSideTxt, .p2hHelpWin, .p2hCardGrip, .p2hGripHint, .p2hMoveHint, .p2hTableTools, .p2hSessionEnd,
+    [id^=btnGo], .ctxP_Js, button, .acceptbutt, a.button { display: none !important; }
+    body { background: #fff !important; background-image: none !important; color: #000 !important; padding: 0 !important; }
+    [id^=HideBody] { display: block !important; max-height: none !important; overflow: visible !important; }
+    [id^=card] { box-shadow: none !important; }                    /* (no break-inside:avoid - a big card would leave an empty page) */
+    .wrapper { height: auto !important; overflow: visible !important; }   /* Table windows: all rows */
+    ic[onclick], abbr.hint > data-hint { display: none !important; }        /* Card control icons, hints */
+    [id^=chead] { break-after: avoid; }                             /* A card header stays with the start of its content */
+    .p2hPrintBlock, fieldset, [id^=card]:has([id^=card], table) { display: block !important; }   /* An inline-block cannot be split over pages -
+                                       big ones become blocks: groups, cards with cards or tables inside (they grow when printed open), and (beforeprint) tall cards */
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }   /* External links: show the address */
+}
+.p2hSessionEnd { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 2000; width: min(640px, calc(100vw - 24px)); }
+.p2hSessionEnd button { margin-left: 8px; }
+/* htm_QuickBar(): fixed at the bottom - the page gets room, and fixed elements near the bottom are lifted above the bar */
+.p2hQuickBar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; display: flex; justify-content: center; gap: 6px;
+    padding: 5px 8px; overflow-x: auto; background: rgba(40,44,52,0.96); border-top: 2px solid var(--AccnColr, DarkGreen);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.25); box-sizing: border-box; }
+.p2hQbItem { display: flex; align-items: center; gap: 7px; padding: 5px 13px; border-radius: 5px; white-space: nowrap;
+    color: #fff !important; text-decoration: none; font: 600 13px/1.3 sans-serif; }
+.p2hQbItem:hover, .p2hQbItem:focus-visible { background: rgba(255,255,255,0.15); outline: none; }
+.p2hQbItem:focus-visible { box-shadow: inset 0 0 0 2px #4fc3f7; }
+.p2hQbDot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.p2hHasQuickBar body { padding-bottom: 56px; }
+.p2hHasQuickBar #btnGoTop { bottom: 60px !important; }  .p2hHasQuickBar #btnGoMid { bottom: 94px !important; }
+.p2hHasQuickBar #btnGoBot { bottom: 128px !important; }
+.p2hHasQuickBar .p2hSideTxt { margin-bottom: 52px; }
+.p2hHasQuickBar #snackbar.show { bottom: 70px !important; }
+@media screen and (max-width: 600px) { .p2hQbTxt { display: none; } .p2hQbItem { padding: 7px 12px; font-size: 16px; } }   /* Phones: icons only */
+@media print { .p2hQuickBar { display: none !important; } .p2hHasQuickBar body { padding-bottom: 0; } }
+/* htm_PageHelp(): the help window (lives outside <body>, like the view bar) */
+.p2hHelpButt:disabled { opacity: 0.35; cursor: not-allowed; }
+.p2hHelpWin { position: fixed; top: 84px; right: 24px; z-index: 1003; width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 100px);
+    display: flex; flex-direction: column; background: var(--CardsBgrd, #fff); color: var(--TextColr, #222); border: 1px solid #9aa5b1;
+    border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font: 14px/1.55 sans-serif; text-align: left; }
+.p2hHelpWin[hidden] { display: none; }
+.p2hHelpHead, .p2hNoteHead { display: flex; align-items: center; gap: 6px; padding: 9px 12px; background: #2c3e50; color: #fff; border-radius: 7px 7px 0 0;
+    cursor: move; user-select: none; touch-action: none; font-weight: 600; }
+.p2hHelpHead > ic, .p2hNoteHead > ic { color: #f0a050; }
+.p2hHelpClose, .p2hNoteClose { margin-left: auto; background: none; border: none; color: #cfd6dd; font-size: 22px; line-height: 1; cursor: pointer; padding: 0 4px; }
+.p2hHelpClose:hover, .p2hHelpClose:focus-visible, .p2hNoteClose:hover, .p2hNoteClose:focus-visible { color: #fff; }
+.p2hHelpBody { padding: 4px 16px 10px; overflow-y: auto; }
+.p2hHelpBody:focus { outline: none; }                          /* Gets focus when opened (keyboard scroll) - the window itself shows where you are */
+.p2hHelpBody h3 { font-size: 16px; margin: 10px 0 6px; }
+.p2hHelpFoot { padding: 6px 12px; border-top: 1px solid rgba(127,127,127,0.25); font-size: 11px; opacity: 0.7; text-align: right; }
+/* htm_LangSelect(): flag button and the list of languages */
+.p2hLang { position: relative; display: inline-flex; }
+.p2hFlag { vertical-align: -2px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255,255,255,0.35); }
+.p2hFlagTx { display: inline-block; min-width: 20px; font-size: 10px; text-align: center; border: 1px solid currentColor; border-radius: 2px; }
+.p2hLangCode { font-size: 11px; }
+.p2hLangList { position: absolute; top: calc(100% + 6px); right: 0; z-index: 1002; display: flex; flex-direction: column; min-width: 150px;
+    padding: 4px; background: rgba(40,44,52,0.97); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.45); }
+.p2hLangList[hidden] { display: none; }
+.p2hLangList.up { top: auto; bottom: calc(100% + 6px); }
+.p2hLangList button { display: flex; align-items: center; gap: 8px; text-align: left; white-space: nowrap; }
+.p2hLangList button[aria-checked=true] { background: rgba(255,255,255,0.18); font-weight: 600; }
 .p2hVbGrip { cursor: grab; color: #aaa; padding: 4px 5px; touch-action: none; border-radius: 5px; }
 .p2hVbGrip:hover { color: #fff; }
 .p2hVbGrip.dragging { cursor: grabbing; color: #4fc3f7; }
@@ -6946,7 +7765,7 @@ dialog.p2hDlg::backdrop { background: rgba(0,0,0,.35); }
 } ## Group ******************** /CSS STYLE **************************
 
  
-if (is_readable($custFile= '../customLib.inc.php'))     # In /customLib.inc.php you can add modified or needed code
+if (is_readable($custFile= $gbl_CustomLib ?? (__DIR__.'/customLib.inc.php')))     # Your own functions/code ($gbl_CustomLib, else customLib.inc.php next to this library)
     require_once($custFile);
 /* else echo '<br> '.__LINE__.' '.$custFile.' not found <br>'; */
 

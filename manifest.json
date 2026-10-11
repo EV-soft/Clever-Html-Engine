@@ -1,0 +1,27 @@
+{
+  "name": "Clever Html Engine - demo",
+  "short_name": "PHP2HTML",
+  "description": "Demo and documentation of the PHP library Clever Html Engine (php2html)",
+  "start_url": "./Proj.demo/PHP2HTML-intro.page.php",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e6e8ea",
+  "theme_color": "#2c3e50",
+  "icons": [
+    {
+      "src": "_accessories/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "_accessories/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';   $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= './Proj.demo/CustomerOrder.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';   $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters to htm_-functions are shown. In a real project you just need to give parameters different from default values !
  
@@ -40,19 +40,11 @@ $test= false;
 $debug= false;
 $report= '';
 
-$temp_mode = refresh('mode');   // Hent værdien (som kan være "checked " eller tom)
-// Konverter til ren boolean: Hvis den indeholder "checked", sæt den til true. Ellers false.
-if (trim((string)$temp_mode) === 'checked' || $temp_mode === true || $temp_mode === '1' || $temp_mode === 'on')
-    { $mode = true;} else { $mode = false; }
-$_SESSION['mode'] = $mode;  // Hvis du bruger sessions til at huske det:
-
-$removeMenu= refresh('removeMenu');
-$_SESSION['removeMenu'] = $removeMenu; 
-
-
-
-// if (!isset($removeMenu)) $removeMenu= false;
-$removeMenu= isset($_POST['remm']);
+# Settings card: only when THAT card is posted (its hidden helper fields), then remembered in the session for the next pages
+if (isset($_POST['mode_present'])) $_SESSION['co_mode']= (trim((string)($_POST['mode'] ?? '')) === 'checked');    # Card header: simple
+if (isset($_POST['menu_present'])) $_SESSION['co_removeMenu']= isset($_POST['remm']);                             # Hide the demo menu
+$mode=       (bool)($_SESSION['co_mode'] ?? false);
+$removeMenu= (bool)($_SESSION['co_removeMenu'] ?? false);
 
 if ($test) arrPrint($_POST,'$_POST');
 
@@ -182,6 +174,9 @@ $status= '<small>'.lang('@Status: Editable').'</small>';
 
 ################### Put Datafiles: ###################
 # activated buttons:                     Create Array:                  Save data to json-file:
+$demoSave= false;   # DEMO: no database - the Save buttons do not store anything (shared files on the public demo)
+$demoSaveTry= (bool)preg_grep('/^btn_sav_/', array_keys($_POST));
+if ($demoSave) {
 if (isset($_POST['btn_sav_orders'  ])) { post2arr($arrOrders, 'ord_');  $savedBytes+= FileWrite_arr($dPath.$filepath='arrOrders.dat.json', $arrOrders );}
 if (isset($_POST['btn_sav_content' ])) { post2arr($arrContent,'cnt_');  $savedBytes+= FileWrite_arr($dPath.$filepath='arrContent.dat.json',$arrContent);}
     
@@ -192,6 +187,7 @@ if (isset($_POST['btn_sav_conditi' ])) { form2arr($arrConditi);         $savedBy
 if (isset($_POST['btn_sav_mailinv' ])) { form2arr($arrMailing);         $savedBytes+= FileWrite_arr($dPath.$filepath='arrMailing.dat.json',$arrMailing);}
 // if (isset($_POST['btn_sav_contact' ])) { form2arr($arrContact);         $savedBytes+= FileWrite_arr($dPath.$filepath='arrContact.dat.json',$arrContact);}
 if (isset($_POST['btn_sav_custFld' ])) { form2arr($arrCustfld);         $savedBytes+= FileWrite_arr($dPath.$filepath='arrCustfld.dat.json',$arrCustfld);}
+} # $demoSave
 if (isset($_POST['btn_sav_cvrform' ])) {}    // Use CVR-data
 if (isset($_POST['btn_sav_language'])) { $lang = $_POST['language']; }
 if (isset($_POST['btn_cre_contact' ])) {  }  // Create new
@@ -298,7 +294,7 @@ else # Data from JSON-files ( MYSQL-DB exported to JSON-file )
         }
 }
  
-if (true) {
+if ($demoSave) {
 ################### Save data in cards to DataBase if pusbed save button: ###################
     btnSaveArr($pref,'cust',$arrCustomr);
     btnSaveArr($pref,'bill',$arrBilling);
@@ -380,7 +376,7 @@ if (!$removeMenu) {
     
 // if ($test) echo '<pre>'.$log.'</pre>'. '<br>Saved: '.$savedBytes.' bytes to data-files.<br>';
     
-    htm_Fieldset(capt:'@DEBTOR: Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'auto; max-width:1150px; background-color:whitesmoke',marg:'',
+    htm_Fieldset(capt:'@DEBTOR: Customer Offer/Order',icon:'fa-solid fa-file-invoice-dollar font20',hint:'',wdth:'auto; max-width:min(1150px, 100%); background-color:whitesmoke',marg:'',
                    attr:'Color: green; font-weight: bold; background-color: white; border-radius: 4px; padding: 0 10px; text-align: center; ',rtrn:false);
 
     //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
@@ -546,30 +542,33 @@ if (!$removeMenu) {
             htm_Fieldset( capt:'@Lookup in the CVR register:', icon:'', hint:'', wdth:'', marg:'', attr:'', rtrn:false);
             
             htm_TextDiv($body,algn:'left',marg:'8px',styl:'',attr:'');
-            set_FormVars(['cvrLand','cvrKode','cvrSoeg'/*, 'cvrNumm','cvrNavn','cvrTelf','cvrAddr','cvrPost','cvrBy','cvrDiv' */]);  // Opdater alle variabler på form 'cvrform' :
+            # The posted fields are named cvr_Land / cvr_Kode / cvr_Soeg - remembered in the session as cvrLand / cvrKode / cvrSoeg
+            foreach (['cvrLand'=>'cvr_Land', 'cvrKode'=>'cvr_Kode', 'cvrSoeg'=>'cvr_Soeg'] as $sKey=>$fKey)
+                if (isset($_POST[$fKey]) and is_string($_POST[$fKey])) $_SESSION[$sKey]= trim($_POST[$fKey]);
             get_FormVars(['cvrLand','cvrKode','cvrSoeg']);
         #      dev_show(); //  echo 'SESSIONS contents of variables: ';  vis_data($_SESSION);
-                $cvrLand= $_SESSION['cvrLand'] ?? '';   if (!$cvrLand) $cvrLand= 'dk';
-                $cvrKode= $_SESSION['cvrKode'] ?? '';   if (!$cvrKode) $cvrKode= 'search';
+                $cvrLand= $_SESSION['cvrLand'] ?? '';   if (!in_array($cvrLand, array_column(CVR_Land(), 0)))  $cvrLand= 'dk';
+                $cvrKode= $_SESSION['cvrKode'] ?? '';   if (!in_array($cvrKode, array_column(CVR_Liste(), 0))) $cvrKode= 'search';
                 $cvrSoeg= $_SESSION['cvrSoeg'] ?? '';
                 if (($cvrLand) and ($cvrKode) and ($cvrSoeg)) //  Klar til søgning
-                { $url= 'https://cvrapi.dk/api?'.$cvrKode.'='.$cvrSoeg.'&country='.$cvrLand;   //  https://cvrapi.dk/api?search=$cvrSoeg&country=dk  Generel søgning    //  https://cvrapi.dk/api?phone=$cvrSoeg&country=dk   specifikt telefonnr
-                    $content = file_get_contents($url, false, stream_context_create(['http' => ['user_agent' => 'any']]));
-                    // FIXIT: Prevent: "Failed to open streem" ved:  "404 Not Found"
-                    $svar= json_decode($content, true);
-                    if ($svar['vat']) { $cvrDiv= '';
+                { $url= 'https://cvrapi.dk/api?'.http_build_query([$cvrKode=>$cvrSoeg, 'country'=>$cvrLand]);   # Encoded (spaces, &...)   //  https://cvrapi.dk/api?search=$cvrSoeg&country=dk  Generel søgning    //  https://cvrapi.dk/api?phone=$cvrSoeg&country=dk   specifikt telefonnr
+                    $content = @file_get_contents($url, false, stream_context_create(['http' => ['user_agent' => 'Clever-Html-Engine demo', 'timeout' => 8]]));
+                    $svar= ($content === false) ? null : json_decode($content, true);
+                    if (!is_array($svar) or empty($svar['vat']))      # Not found / no answer: say so
+                        $cvrDiv= lang('@Nothing found in the CVR register for:').' '.$cvrSoeg;
+                    if (is_array($svar) and !empty($svar['vat'])) { $cvrDiv= '';
                         $cvrNumm= $svar['vat'];
                         $cvrNavn= $svar['name'];
                         $cvrAddr= $svar['address'];
                         $cvrPost= $svar['zipcode'];
                         $cvrBy  = $svar['city'];
                         $cvrTelf= $svar['phone'];
-                        if ($svar['email'])                                  {$cvrDiv.= lang('@Mail').': '. $svar['email'].'&#xa;';}
-                        if ($svar['fax'])                                    {$cvrDiv.= lang('@Fax ').': '. $svar['fax'].'&#xa;';}
-                        if ($svar['cityname'])                               {$cvrDiv.= lang('@Place').': '.$svar['cityname'].'&#xa;';}
-                        if ($svar['companydesc'])                            {$cvrDiv.= lang('@Type').': '. $svar['companydesc'].'&#xa;';}
-                        $ix= 0; while ($svar['owners'][$ix]['name'])         {$cvrDiv.= lang('@Ovner').': '.$svar['owners'][$ix]['name'].'&#xa;'; $ix++;}
-                        $ix= 0; while ($svar['productionunits'][$ix]['pno']) {$cvrDiv.= lang('@P-nr').': '. $svar['productionunits'][$ix]['pno'].'&#xa;'; $ix++;}
+                        if ($svar['email'] ?? '')                            {$cvrDiv.= lang('@Mail').': '. $svar['email']."\n";}
+                        if ($svar['fax'] ?? '')                              {$cvrDiv.= lang('@Fax ').': '. $svar['fax']."\n";}
+                        if ($svar['cityname'] ?? '')                         {$cvrDiv.= lang('@Place').': '.$svar['cityname']."\n";}
+                        if ($svar['companydesc'] ?? '')                      {$cvrDiv.= lang('@Type').': '. $svar['companydesc']."\n";}
+                        $ix= 0; while ($svar['owners'][$ix]['name'] ?? '')   {$cvrDiv.= lang('@Ovner').': '.$svar['owners'][$ix]['name']."\n"; $ix++;}
+                        $ix= 0; while ($svar['productionunits'][$ix]['pno'] ?? '') {$cvrDiv.= lang('@P-nr').': '. $svar['productionunits'][$ix]['pno']."\n"; $ix++;}
                     }
                 }
             htm_Input(labl:'@Order number',     plho:'Hidden field',    icon:'',
@@ -581,14 +580,14 @@ if (!$removeMenu) {
             htm_Input(labl:'@Land registry',    plho:'',    icon:'',
                       hint:'@In what country do you want to apply?',                       
                       vrnt:'opti', name:$n='cvr_Land',  
-                      valu: $cvrLand='dk',    form:'',wdth:'50%', algn:'left',
+                      valu: $cvrLand,         form:'',wdth:'50%', algn:'left',
                       attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: CVR_Land(), llgn:'R',bord:'border: 1px solid green;');
             htm_Input(labl:'@Search for',       plho:'',    icon:'',
             
                       hint:'@What do you know?',                                           
                       vrnt:'opti', name:$n='cvr_Kode',  
-                      valu: $cvrKode='search',form:'',wdth:'50%', algn:'left',
+                      valu: $cvrKode,         form:'',wdth:'50%', algn:'left',
                       attr:'',rtrn:false,unit:'',disa:false,rows:'3',step:'',
                       list: CVR_Liste(),llgn:'R',bord:'border: 1px solid green;');
             htm_Input(labl:'@CVR/P-uni./Phon/Name',     plho:'@Business only !',icon:'',
@@ -600,7 +599,7 @@ if (!$removeMenu) {
             htm_MiniNote('<span class="colrgreen">'.lang('@Green ').' </span>'.lang('@frames are the basis for entry in CVR.'));
             htm_hr('lightgray');
             htm_AcceptButt( labl:'@Search',  icon:'', hint:'@Start search in the CVR register', 
-                            form:'cvrform', wdth:'', attr:'', akey:'s', kind:'crea', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
+                            form:'cvr_', wdth:'', attr:'', akey:'s', kind:'crea', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
             htm_Fieldset_end();
             
             // htm_hr('green');
@@ -629,7 +628,8 @@ if (!$removeMenu) {
                       hint:'@Retrieved from the CVR register',
                       vrnt:'text', name:$n='cvr_town', 
                       valu: $cvrBy   ?? '',form:'',wdth:'66%');
-            htm_AcceptButt('@Use',lang('@Use the data shown in your registration of ').($hvem ?? '').'. <br>'. lang('@Warning: Possibly previous data is overwritten! (Fields without content, do not affect external data). <br> Not working yet'), $btnKind='save', $frmName='cvrform', $width='', $akey='b', $rtrn=false);
+            htm_AcceptButt(labl:'@Use', hint:lang('@Use the data shown in your registration of ').($hvem ?? '').'. <br>'. lang('@Warning: Possibly previous data is overwritten! (Fields without content, do not affect external data). <br> Not working yet'),
+                           form:'cvr_', akey:'b', kind:'save', rtrn:false);
             htm_Input(labl:'@Other things',plho:'@Various...',icon:'',
                       hint:'@Retrieved from the CVR register, various supplementary data',
                       vrnt:'area', name:'cvrDiv',
@@ -851,11 +851,11 @@ if (!$removeMenu) {
             $delCity= $arrDeliver['delicity'] ?? '';
             if ($arrCustomr['custkate']=='prof') $register='/firma'; else $register='/personer';
             htm_LinkButt( labl:'@Address on map', hint:'@Show address on map', attr:'', 
-                          link:'https://krak.dk/'. $arrDeliver['deliname'] ?? ''.'+'.$arrDeliver['deliaddr'].'+'.$arrDeliver['deli_zip'].'+'.$arrDeliver['delicity'].$register, 
+                          link:'https://www.krak.dk/'.rawurlencode(trim($delAddr.' '.$del_Zip.' '.$delCity)).$register,   # Address search (encoded)
                           targ:'_blank', rtrn:false);
                          # labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'', rtrn:true, tplc:'LblTip_text', tsty:'', acti:'', idix:'');
-            htm_AcceptButt(labl:'@Delivery note', icon:'', hint:'@Show delivery note for delivery', form:'deliver', wdth:'', attr:'', akey:'l', kind:'sear', rtrn:false,  tplc:'LblTip_text', tsty:'',
-                            acti:"htm_Toast(\"<b>DEMO:</b><br>$delName <br>$delAddr <br>$delPlac <br>$del_Zip - $delCity\",\"lightyellow\",\"black\")", idix:'');
+            htm_AcceptButt(labl:'@Delivery note', icon:'', hint:'@Show delivery note for delivery', form:'deliver', wdth:'', attr:'', akey:'l', kind:'goon', rtrn:false,  tplc:'LblTip_text', tsty:'',
+                            acti:'htm_Toast('.sys_enc(json_encode('<b>DEMO:</b><br>'.sys_enc($delName).' <br>'.sys_enc($delAddr).' <br>'.sys_enc($delPlac).' <br>'.sys_enc($del_Zip).' - '.sys_enc($delCity))).',"lightyellow","black")', idix:'');
             htm_MiniNote('<span class="colrblue">'.lang('@Blue ').'</span>'.lang('@frames and customer type, Used for map lookup.'));
         htm_Card_end( labl:'@Save',icon:'',hint:'',name:'',form:$fm, subm:true,attr:'',akey:'',kind:'save',simu:false);
 
@@ -960,7 +960,7 @@ if (!$removeMenu) {
                         /*    '<button type="button" id="ButtRowDelete" onclick="removeRow()"><i class="fas fa-trash-alt" style="font-size:14px; color:red;" title="'. lang('@You can not reverse this delete row !').'"></i></button>' */
                 htm_ModalDialog(type:'erro',capt:'@DEMO page!',
                           mess:'@The site is still under development.<br>The function to delete row is not finished yet.', 
-                          butt:[ ['clos'],['erro','','Got it'] ],  html:
+                          butt:[ ['clos'],['erro','','@Got it'] ],  html:
                           '<ic class="fas fa-trash-alt" style="font-size:14px; color:red;" title="'.
                           lang('@Delete the row! <br> WARNING - you can not regret.').'"></ic>')
                               // onclick="remove(\'row_5\')" deleteRow(\'table1\') / removeRow() - not working: FIXIT
@@ -970,7 +970,7 @@ if (!$removeMenu) {
                         /*    '<button class="plusbtn" type="button" style="padding: 2px 4px;" ><ic class="far fa-clone" style="font-size:14px; color:blue;" ></ic></button>' */
                 htm_ModalDialog(type:'hint',capt:'@DEMO page!', 
                           mess:'@The site is still under development.<br>The function to clone row is not finished yet.', 
-                          butt:[ ['@clos'],['@hint','','@Got it'] ],  html:
+                          butt:[ ['clos'],['hint','','@Got it'] ],  html:
                           '<ic class="far fa-clone" style="font-size:14px; color:blue;" title="'.
                           lang('@Make a copy of this row<br> It will be added as the last row in the table').'"></ic>')
                 ],
@@ -981,7 +981,7 @@ if (!$removeMenu) {
                               lang('@Reverse this entry, e.g. undo reminder fee').'"></ic></button>' */
                 htm_ModalDialog(type:'warn',capt:'@DEMO page!', 
                           mess:'@The site is still under development.<br>The function to undo posting is not finished yet.', 
-                          butt:[ ['@clos'],[@'warn','','@Got it'] ],  html:
+                          butt:[ ['clos'],['warn','','@Got it'] ],  html:
                           '<ic class="fas fa-undo" style="font-size:14px; color:orange;" title="'.
                           lang('@Reverse this entry, e.g. undo reminder fee').'"></ic>')
                 ],
@@ -990,7 +990,7 @@ if (!$removeMenu) {
                               lang('@Not working yet').'"></ic></button>' */
                 htm_ModalDialog(type:'succ',capt:'@DEMO page!', 
                           mess:'@The site is still under development.<br>The function to move up/down is not finished yet.', 
-                          butt:[ ['@clos'],['@succ','','@Got it'] ],  html:
+                          butt:[ ['clos'],['succ','','@Got it'] ],  html:
                           '<ic class="fas fa-arrows-alt-v" style="font-size:14px; color:green;" title="'.
                           lang('@Can`t move an entry up or down yet.').'"></ic>')
                 ] // /* htm_Toast("Moving this post<br>Cant do it yet !","lightyellow","black") */
@@ -1063,11 +1063,11 @@ if (!$removeMenu) {
         htm_AcceptButt(labl:'@Create / update',     icon:'', hint:lang('@Save the order'),                                       form:'handling', wdth:'120px',attr:'' ,akey:'', kind:'save',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;');
         htm_nl(2);                          //      icon:'', hint:                                                               form:,wdth:,$attr,                :'' ,                             :                                   :
       //htm_AcceptButt(labl:'@Lookup',              icon:'', hint:lang('@Browse other existing orders'),                         form:'doLookup' wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Lookup<br>Cant search yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as Offer',       icon:'', hint:lang('@Create offer for registration'),                        form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as Order',       icon:'', hint:lang('@Save content as a new Order'),                          form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Save as a role model',icon:'', hint:lang('@Reuse content for re-creation'),                        form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-        htm_AcceptButt(labl:'@Create Invoice',      icon:'', hint:lang('@Create invoice for (the saved!) Order'),                form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
-      //htm_AcceptButt(labl:'@Make Delivery Note',  icon:'', hint:lang('@Make delivery note for the shipment of the order'),     form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'creat', rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Make delive note<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as Offer',       icon:'', hint:lang('@Create offer for registration'),                        form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'crea',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as Order',       icon:'', hint:lang('@Save content as a new Order'),                          form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'crea',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Save as a role model',icon:'', hint:lang('@Reuse content for re-creation'),                        form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'crea',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+        htm_AcceptButt(labl:'@Create Invoice',      icon:'', hint:lang('@Create invoice for (the saved!) Order'),                form:'doInvo',  wdth:'140px', attr:'' ,akey:'', kind:'crea',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Create invoice<br>Cant create yet !","orange","black")');
+      //htm_AcceptButt(labl:'@Make Delivery Note',  icon:'', hint:lang('@Make delivery note for the shipment of the order'),     form:'doNote',  wdth:'140px', attr:'' ,akey:'', kind:'crea',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Make delive note<br>Cant create yet !","orange","black")');
         htm_AcceptButt(labl:'@Give credit',         icon:'', hint:lang('@Reset by crediting the order - if it is invoiced'),     form:'doCredit',wdth:'140px', attr:'' ,akey:'', kind:'goon',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Give credit<br>Cant do it yet !","orange","black")');
         htm_AcceptButt(labl:'@Delete',              icon:'', hint:lang('@Delete the order - provided the invoice is not formed'),form:'doErase', wdth:'140px', attr:'' ,akey:'', kind:'eras',  rtrn:false, tplc:'LblTip_text', tsty:'left: auto; bottom: auto;',acti:'htm_Toast("Delete<br>Cant erase yet !","orange","black")');
         //  $rtrn=true, $tipplc='LblTip_text', $tipstyl='',$clickFunction='', $attr )
@@ -1124,7 +1124,9 @@ if (!$removeMenu) {
     htm_nl(1);
     htm_Card_( capt: '@Overview of all variables:', icon: 'fas fa-info', hint: '@Here you can see all variables on the page.', 
                form:$form='demo2', acti: '', clas: 'cardWaut', wdth: '320px', styl: 'background-color: lightyellow;', attr: '');
-        arrPretty(get_defined_vars(),lang('@Variables and values'));
+        arrPretty(array_diff_key(get_defined_vars(),          # The page variables - not the request, server, session or cookie data
+                  array_flip(['_GET','_POST','_COOKIE','_FILES','_SERVER','_SESSION','_ENV','_REQUEST','GLOBALS','http_response_header'])),
+                  lang('@Variables and values'));
     htm_Card_end( labl:'@Save', icon:'', hint:'', name:'', form:$form, subm:false, attr:'', akey:'', kind:'save',  simu:false);
 
     htm_nl(0);
@@ -1138,9 +1140,18 @@ if (!$removeMenu) {
     
     // if ($report>'') echo '<div style="text-align:left;">'.$report.'</div>';
     echo lang('@Layout is optimally displayed with a window width of 1000-1200px');
+    # Shortcuts at the bottom of the window (htm_QuickBar): [link, label, icon, hint, dot color, JavaScript]
+    htm_QuickBar(list: [
+        ['CustomerOrder.page.php', '@Orders',       'fa-solid fa-file-invoice',  '@Show the order page again',   '#2ecc71'],
+        ['accountPlan.page.php',   '@Account plan', 'fa-solid fa-book',          '@Go to the account plan',      '#4fa3f7'],
+        ['',                       '@Print',        'fa-solid fa-print',         '@Print this page',             '#aab2bd', 'window.print()'],
+        ['',                       '@Help',         'fa-solid fa-circle-question','@Help for this page',         '#f0a050', 'var b= document.querySelector(".p2hHelpButt"); if (b) b.click()'],
+    ]);
 htm_Page_end();
  
-    run_Script('htm_Toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","blacck",1500)');
+    run_Script('htm_Toast("<b>'. lang('@This page needs PHP 8+ !. <br>'). '</b>'.  '","lightgreen","black",1500)');
+    if ($demoSaveTry)
+        run_Script('htm_Toast('.json_encode('<b>DEMO:</b><br>'.lang('@The data is not saved on this demo page.')).',"lightyellow","black",4000)');
 
     $savedBytes= 0;
     if ($savedBytes== 0) {   // page just opened
