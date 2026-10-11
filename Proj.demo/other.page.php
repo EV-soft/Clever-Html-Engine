@@ -75,21 +75,6 @@ htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$Do
         htm_nl(2);
     htm_Card_end();
 
-    ###### Forms, output and buttons
-    htm_Card_(capt:'@Forms, output and buttons:', icon:'fa-solid fa-pen-to-square', hint:'', clas:'cardW800', wdth:'640');
-        if (($_POST['demoForm'] ?? '') == '1')
-            echo '<p>'.lang('@Received').': note= <b>'.sys_enc($_POST['note'] ?? '').'</b></p>';
-        htm_Form_(name:'demoForm', acti:'', mode:'POST');
-            echo '<input type="hidden" name="demoForm" value="1" />';
-            htm_TextArea(labl:'@htm_TextArea()', hint:'@A multi-line text field', name:'note', valu:'Line 1'."\n".'Line 2 <b>not bold</b>', rows:'3', widt:'300px', rtrn:false);
-            htm_nl(2);
-            htm_Row_();  htm_Output(labl:'@htm_Output(pgrs) ', vrnt:'pgrs', name:'p1', valu:'70', vmax:'100', hint:'@A progress bar');  htm_Row_end();
-            htm_sp(4);
-            htm_Row_();  htm_SubmitButt(labl:'@Send (htm_SubmitButt)', hint:'@Submits the form - htm_Form_() adds the CSRF token', font:'14px'); htm_Row_end();
-        htm_Form_end();
-        htm_nl();
-    htm_Card_end();
-
     ###### Messages, labels, safe actions and table tools (from NH-logistik)
     htm_Card_(capt:'@Alert, banner, badge, confirm and table tools:', icon:'fa-solid fa-bell', hint:'', clas:'cardW800', wdth:'640', elem:'section');
         if (isset($_POST['demoDelete']))
@@ -108,6 +93,21 @@ htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$Do
         foreach ([['Andersen ApS','03.10.2026','1 234,50'],['Bager Hansen','28.09.2026','89,00'],['Café Ørsted','15.10.2026','12 000,00'],['Dansk Træ A/S','01.08.2026','450,75']] as $r)
             echo '<tr><td style="padding:3px 12px;">'.$r[0].'</td><td style="padding:3px 12px;">'.$r[1].'</td><td style="padding:3px 12px; text-align:right;">'.$r[2].'</td></tr>';
         echo '</tbody></table>';
+    htm_Card_end();
+
+    ###### Forms, output and buttons
+    htm_Card_(capt:'@Forms, output and buttons:', icon:'fa-solid fa-pen-to-square', hint:'', clas:'cardW800', wdth:'640');
+        if (($_POST['demoForm'] ?? '') == '1')
+            echo '<p>'.lang('@Received').': note= <b>'.sys_enc($_POST['note'] ?? '').'</b></p>';
+        htm_Form_(name:'demoForm', acti:'', mode:'POST');
+            echo '<input type="hidden" name="demoForm" value="1" />';
+            htm_TextArea(labl:'@htm_TextArea()', hint:'@A multi-line text field', name:'note', valu:'Line 1'."\n".'Line 2 <b>not bold</b>', rows:'3', widt:'300px', rtrn:false);
+            htm_nl(2);
+            htm_Row_();  htm_Output(labl:'@htm_Output(pgrs) ', vrnt:'pgrs', name:'p1', valu:'70', vmax:'100', hint:'@A progress bar');  htm_Row_end();
+            htm_sp(4);
+            htm_Row_();  htm_SubmitButt(labl:'@Send (htm_SubmitButt)', hint:'@Submits the form - htm_Form_() adds the CSRF token', font:'14px'); htm_Row_end();
+        htm_Form_end();
+        htm_nl();
     htm_Card_end();
 
     ###### Text and layout helpers - one row per function: name | result
