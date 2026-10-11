@@ -1946,7 +1946,7 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     echo '<'.$elem.' class="'.$clas.'" id="card'.$gbl_CardIx.'"'.$label.($mvMode ? ' data-p2h-move="'.$mvMode.'" data-p2h-key="'.$mvKey.'"' : '').'  style="position: relative; vertical-align: top; margin: 1px; margin-bottom: 8px; '.$attr.($closed && $wdth>'' ? ' width:'.$wdth.';' : '').'"> '.
         $formCrea.
         // CardTop:
-        '<span id="chead'.$gbl_CardIx.'" style="display:inline-block; width: calc(100% - 0px); text-align: left; padding: 4px 0;'.$head.($Card_move ? ' padding-left: 16px; box-sizing: border-box;' : '').'">'.
+        '<span id="chead'.$gbl_CardIx.'"'.($poup==true ? ' data-p2h-menu="1"' : '').' style="display:inline-block; width: calc(100% - 0px); text-align: left; padding: 4px 0;'.$head.($Card_move ? ' padding-left: 16px; box-sizing: border-box;' : '').'">'.
         $Card_move;                                                      # The move handle: in the left edge of the header
         if ($hint=='tgl')   $hint= '@<b>TOGGLE:</b> Click icon or card header-text to open / close <i>this</i> card';
 
@@ -1982,21 +1982,28 @@ else { # Clean and simple header output:
 }
     echo '</span>';   // CardTop 
     
-    if ($poup==true) {    
-    Pmnu_(elem:'chead'.$gbl_CardIx.'',capt:'@Applies to all cards:', wdth:'240px',  icon:'fas fa-info', stck:'false', attr:' height: 14px;',cntx:true);
-    Pmnu_Item(labl:'@Close cards',     icon:'far fa-rectangle-xmark colrgreen',   hint:'@Close all cards',        vrnt:'plain',     name:'m1', clck:'CardHeightAll(`clo`,330);',attr:'',rtrn:'');
-    Pmnu_Item(labl:'@Minimize height', icon:'fas fa-minus     colrgreen',         hint:'@Minimize all cards height',   vrnt:'plain',     name:'m2', clck:'CardHeightAll(`min`,330)', attr:'',rtrn:'');
-    Pmnu_Item(labl:'@Small height',    icon:'fas fa-compress  colrgreen',         hint:'@Small height to all cards',   vrnt:'custom',    name:'m3', clck:'CardHeightAll(`sma`,330)', attr:'',rtrn:'');
-    Pmnu_Item(labl:'@Default height',  icon:'fas fa-check     colrgreen',         hint:'@Default height to all cards', vrnt:'custom',    name:'m4', clck:'CardHeightAll(`def`,330)', attr:'',rtrn:'');
-    Pmnu_Item(labl:'@Large height',    icon:'fas fa-expand    colrgreen',         hint:'@Large height to all cards',   vrnt:'custom',    name:'m5', clck:'CardHeightAll(`gre`,330)', attr:'',rtrn:'');
-    Pmnu_Item(labl:'@Maximize height', icon:'fas fa-plus      colrgreen',         hint:'@Maximize all cards height',   vrnt:'plain',     name:'m8', clck:'CardHeightAll(`max`,330)', attr:'',rtrn:'');
-    Pmnu_Item(vrnt:'separator');                                                                                                                                              
-    Pmnu_Item(labl:'@COLLAPSE body',   icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardMinimizeAll();', rtrn:'',shrt:'');
-    Pmnu_Item(labl:'@EXPAND body',     icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardMaximizeAll();', rtrn:'',shrt:'');
-    if ($mvMode) Pmnu_Item(labl:'@Original card order', icon:'fas fa-arrow-down-1-9 colrgreen', hint:'@Put the moved cards of this page back in their original order', vrnt:'plain', name:'m9', clck:'p2hCardMove.reset();', rtrn:'',shrt:'');
-    // Pmnu_Item(vrnt:'separator');
-    Pmnu_end(/* labl:'@Not working yet',hint:'@Working on it',attr:'padding-top: 2px; text-color:red; text-align:center;' */);
-   // Pmnu_end(labl:'<small>No function yet ! </small>',hint:'',attr:'padding-top: 8px; text-color:red;');
+    # The card menu (right-click a card header): ONE menu for all cards - was a copy of the whole menu script in every card (~2.5 KB each)
+    static $cardMenuDone= false;
+    if (($poup==true) and !$cardMenuDone) {
+        $cardMenuDone= true;
+        $mItems= Pmnu_Item(labl:'@Close cards',     icon:'far fa-rectangle-xmark colrgreen',   hint:'@Close all cards',        vrnt:'plain',     name:'m1', clck:'CardHeightAll(`clo`,330);',attr:'',rtrn:true)
+               .Pmnu_Item(labl:'@Minimize height', icon:'fas fa-minus     colrgreen',         hint:'@Minimize all cards height',   vrnt:'plain',     name:'m2', clck:'CardHeightAll(`min`,330)', attr:'',rtrn:true)
+               .Pmnu_Item(labl:'@Small height',    icon:'fas fa-compress  colrgreen',         hint:'@Small height to all cards',   vrnt:'custom',    name:'m3', clck:'CardHeightAll(`sma`,330)', attr:'',rtrn:true)
+               .Pmnu_Item(labl:'@Default height',  icon:'fas fa-check     colrgreen',         hint:'@Default height to all cards', vrnt:'custom',    name:'m4', clck:'CardHeightAll(`def`,330)', attr:'',rtrn:true)
+               .Pmnu_Item(labl:'@Large height',    icon:'fas fa-expand    colrgreen',         hint:'@Large height to all cards',   vrnt:'custom',    name:'m5', clck:'CardHeightAll(`gre`,330)', attr:'',rtrn:true)
+               .Pmnu_Item(labl:'@Maximize height', icon:'fas fa-plus      colrgreen',         hint:'@Maximize all cards height',   vrnt:'plain',     name:'m8', clck:'CardHeightAll(`max`,330)', attr:'',rtrn:true)
+               .Pmnu_Item(vrnt:'separator', rtrn:true)
+               .Pmnu_Item(labl:'@COLLAPSE body',   icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardMinimizeAll();', shrt:'', rtrn:true)
+               .Pmnu_Item(labl:'@EXPAND body',     icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardMaximizeAll();', shrt:'', rtrn:true);
+        $mvOn= in_array(($GLOBALS['gbl_CardMove'] ?? 'icon') === true ? 'icon' : ($GLOBALS['gbl_CardMove'] ?? 'icon'), ['icon','header','toggle'], true);
+        if ($mvOn) $mItems.= Pmnu_Item(labl:'@Original card order', icon:'fas fa-arrow-down-1-9 colrgreen', hint:'@Put the moved cards of this page back in their original order', vrnt:'plain', name:'m9', clck:'p2hCardMove.reset();', shrt:'', rtrn:true);
+        echo '<script>document.addEventListener("contextmenu", function(event) {     /* Card headers with data-p2h-menu (htm_Card_ poup:true) */
+    var h= event.target.closest && event.target.closest("[data-p2h-menu]");  if (!h) return;
+    event.preventDefault();
+    new ctxP_({ isSticky: false, width: "240px", top: "30%", left: "40%", items: [
+        {label: '.json_encode(lang('@Applies to all cards:')).', hint: "", cssicon: "fas fa-info", custAttr: " height: 14px;"},'.$mItems.'
+        {label: "", hint: ""} ] });
+});</script>';
     }
     echo '<span id="HideBody'.$gbl_CardIx.'" style="'.$gbl_CardsBgrd.'; transition: max-height 1s;
           max-height:'.($vhgh > '' ? $vhgh : "500px").'; overflow-y: auto; display: '.($closed ? 'none' : 'block').';  overflow-y:auto;'.$styl.'">';   // Hide from here ! 
