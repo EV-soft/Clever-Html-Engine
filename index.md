@@ -14,7 +14,7 @@ Font-awesome icons, to be shown with all labels.
 
 Extended table functions: sort, filter, zebra-stripe, fixed-header and more, with Mottie Tablesorter-system.
     
-Based on PHP7+/PHP8+, HTML5, CSS3.
+Based on PHP 8.1+, HTML5, CSS3.
 Source could be UTF-8, no tabs, indent: 4 chars
 
 The layout is compact with labels above fields, so it is suitable to narrow screens or windows.

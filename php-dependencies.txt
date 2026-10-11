@@ -1,44 +1,28 @@
-<?
-Overview of php-files dependencies:
+Overview of the PHP files and how they depend on each other  (version 1.6.0)
 
-Your project-file
-must include: 'php2html.lib.php'
- can include: 'menu.inc.php'
-              'translate.inc.php'
-                and others...
-From php2html.lib.php can be included:
-near   51: if (is_readable($custFile= '../project.init.php')) include($custFile);       ## "Early init" (Declaring project variables)
-near 1019: if (is_readable($custFile= '../customRules.inc.php')) include($custFile);    ## Rules about htm_Table()
-near 5553: if (is_readable($custFile= '../customLib.inc.php')) require_once($custFile); ## "Lait init" wiht height priority (Project functions)
+Your page file (*.page.php)
+  must include: php2html.lib.php                 (require_once, after $GLOBALS['gbl_ProgRoot'] and the $need... settings)
+   can include: menu.inc.php       - older top menu routines (Menu_Topdropdown, MenuStart...)
+                translate.inc.php  - tools for the translation files
+                filedata.inc.php   - file / database helpers
 
-......------======------......
+php2html.lib.php includes by itself (if the file exists):
+  1. The project settings - "early init", right after the library defaults:
+       $gbl_InitFile                       (set it in the page BEFORE require_once - a project file outside the library folder)
+       else  project.init.php              (next to php2html.lib.php)
+     Here: all $gbl_... settings, $gbl_CustomCss, $gbl_CustomLib, $gbl_CustomRules, define('DecimalSep', ...) / ThousandsSep / DEBUG,
+           $headEndScript, $bodyEndScript, $gbl_novice, $gbl_CardMove, $gbl_CardResize, $gbl_NotePad, $gbl_SessionWarn ...
+  2. Table row rules - inside htm_Table():
+       $gbl_CustomRules  else  customRules.inc.php   (next to php2html.lib.php)
+  3. Project functions - "late init", at the end of the library:
+       $gbl_CustomLib    else  customLib.inc.php     (next to php2html.lib.php)
 
-PHP-FILES ver. 1.3.0:
-Project folder:
-accountPlan.page.php    
-card.page.php           
-CustomerOrder.page.php  
-Demo.page.php           
-description.page.php    
-files.page.php          
-functions.page.php      
-input.page.php          
-navigate.page.php       
-other.page.php          
-pages.page.php          
-PHP2HTML-intro.page.php 
-support.page.php        
-table.page.php          
-tinyEditor.page.php     
-translate.page.php      
+Data files read by the library (next to php2html.lib.php):
+  _trans.sys.json                    - the translations (lang('@...'))
+  help_system.json / help_system_<language>.json   - the page help (htm_PageHelp, $gbl_HelpFile)
+  manifest.json, favicon.svg         - install as an app (linked by htm_Page_ when they exist)
 
-System folder:
-customLib.inc.php       
-customRules.inc.php     
-filedata.inc.php        
-funcscann.php           
-LangCreate.php          
-menu.inc.php            
-php2html.lib.php        
-project.init.php        
-translate.inc.php       
+External libraries (folder _assets/ - or from CDN): set in the page before require_once:
+  $needJquery, $needTablesorter, $needPolyfill, $needFontawesome, $needTinymce, $needPdfview   (0: off  1: local  2: CDN  3: auto)
+
+Keep your project files outside the library folder, and an update of the library never overwrites them.

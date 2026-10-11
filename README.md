@@ -33,52 +33,47 @@ A modern, semantic PHP library for generating HTML interfaces with compact code,
 - Many fixes (XSS, CSRF, dark theme, number formats, duplicate ids). See the page *Documentation → What is new in version 1.6.0* in the demo.
 
 # 📦 Installation
-bash 
-
-	git clone https://github.com/EV-soft/Clever-Html-engine.git
-Include the library in your PHP project:
-php
-
-	require_once 'php2html.lib.php';
+```bash
+git clone https://github.com/EV-soft/Clever-Html-Engine.git
+```
+Include the library in your PHP project (PHP 8.1+):
+```php
+require_once 'php2html.lib.php';
+```
 # 💡 Examples
-Input field with currency
-
-php
+Input field with currency:
+```php
+htm_Input(
+    vrnt: 'dec2',
+    name: 'price',
+    valu: 123.45,
+    labl: '@Price',
+    hint: '@Enter amount with 2 decimals',
+    unit: 'US$'
+);
 ```
-	htm_Input(
-  	  type: 'dec2',
-  	  name: 'price',
-  	  valu: 123.45,
-  	  labl: '@Price',
-  	  hint: '@Enter amount with 2 decimals',
-  	  unit: 'US$'
-	);
-```
-Simple table
-
-php
-```
-	$data = [
-	  ['Alice', 30, 'alice@example.com'],
-	  ['Bob', 42, 'bob@example.com'],
- 	  ['Charlie', 25, 'charlie@example.com']
-	];
-
-    	htm_Table(
-      	  capt: [],pref: [],
-      	  body: [
-              ['@Name.',    '40%','text','',['left'],'f1'],
-              ['@Age',      '20%','text','',['right'],'f2'],
-              ['@Email',    '40%','text','',['center'],'f3']
-            ],
-          suff: [],note: '',
-          data: $data,
-    	);
+Simple table:
+```php
+$data = [
+    ['Alice',   30, 'alice@example.com'],
+    ['Bob',     42, 'bob@example.com'],
+    ['Charlie', 25, 'charlie@example.com']
+];
+htm_Table(
+    capt: [], pref: [],
+    body: [     # [0:label, 1:width, 2:type, 3:format, 4:[align], 5:field key]
+        ['@Name',  '40%', 'text', '', ['left'],   'f1'],
+        ['@Age',   '20%', 'text', '', ['right'],  'f2'],
+        ['@Email', '40%', 'text', '', ['center'], 'f3']
+    ],
+    suff: [], note: '',
+    data: $data
+);
 ```
 # 🌐 Resources
-- Demo & Documentation on GitHub
-
-- Live Examples from EV-soft
+- Online demo and documentation: [ev-soft.work/p2h/v1.6.x](https://ev-soft.work/p2h/v1.6.x/Proj.demo/PHP2HTML-intro.page.php) (use the top menu)
+- Project page: [ev-soft.github.io/Clever-Html-Engine](https://ev-soft.github.io/Clever-Html-Engine/)
+- Source and releases: [github.com/EV-soft/Clever-Html-Engine](https://github.com/EV-soft/Clever-Html-Engine/releases)
 
 # 🤝 Community
 Got ideas or improvements? Contribute via GitHub Pull Requests or open an Issue. Collaboration is welcome!
@@ -96,34 +91,36 @@ php2html.lib.php also called "HTML clever engine" consists of a PHP library, wit
 You get a complete system to form the frontend part of your program.
 Built into the system is the easy use of several open-source modules (icons, advanced tables, HTML editor, jquery), and a complete system for changing user languages.	
 
-Standards: (PHP7) PHP8+, HTML5, CSS3, JavaScript.
+Standards: PHP 8.1+ (named arguments), HTML5, CSS3, JavaScript.
 
 Source should be in UTF-8, with no tabs, indent: 4 chars
 
 When using <i>PHP2HTML</i> your code will be more compact, and easier to read, and you can have both backend and frontend code in one file.
 
-<i>As an example this height level PHP-code:</i>
+<i>As an example this high level PHP code:</i>
 
-	PHP8+:
-    htm_Input(type:'dec2', name:'dec2', valu:$dec2, labl:'@htm_Input(Dec2)',
-              hint:'@Demo of htm_Input Field type dec2: number with 2 decimal', 
-              algn:'center', unit:'<$ ');
+```php
+htm_Input(vrnt:'dec2', name:'dec2', valu:$dec2, labl:'@htm_Input(Dec2)',
+          hint:'@Demo of htm_Input Field type dec2: number with 2 decimal',
+          algn:'center', unit:'<$ ');
+```
 
+<i>will generate this HTML code</i> (with `$dec2= 54321`, lines broken for reading):
 
-<i>will generate this HTML-code:</i>
-
-    <div class="inpField" id="inpBox" style="width: 200px; margin: auto; display: inline-block;">
-       <input type= "text"  id="dec2" name="dec2"  value="$ 54 321,00"  class="boxStyle"
-              style="text-align: center; font-size: 14px; font-weight: normal; width: 90%; " 
-              oninvalid="this.setCustomValidity('Wrong or missing data in htm_Input(Dec2) ! ')" 
-              oninput="setCustomValidity('')"  pattern="^\d*\.?((25)|(50)|(5)|(75)|(0)|(00))?$" />
-       <abbr class= "hint">
-           <label for="dec2" style="font-size: 12px; ">
-                <div style="white-space: nowrap; margin-left:   auto;">htm_Input(Dec2)</div>
-           </label>
-           <data-hint style="top: 45px; left: 2px;">Demo of htm_Input Field type dec2: number with 2 decimal</data-hint>
-       </abbr>
-    </div>
+```html
+<div class="inpField" id="inpBox1" style="margin: auto; padding: 0 2px 6px; width: 100%; display: inline-block; vertical-align: top;">
+  <input type="text" id="id_dec2" name="dec2" value="$ 54 321,00" class="boxStyle"
+         style="text-align: center; font-size: 14px; font-weight: 600;"
+         oninvalid="this.setCustomValidity('Wrong or missing data in htm_Input(Dec2) ! ')" oninput="setCustomValidity('')"
+         placeholder="Enter..." pattern="^[^0-9\-]{0,4}\s?-?\d[\d\s.,]*\s?[^0-9]{0,4}$" />
+  <abbr class="hint">
+    <label for="id_dec2" style="font-size: 12px; vertical-align:top;">
+      <div style="white-space: nowrap; margin-left: auto;">htm_Input(Dec2)</div>
+    </label>
+    <data-hint style="top: 45px; left: 2px;">Demo of htm_Input Field type dec2: number with 2 decimal <br>Unit: $ </data-hint>
+  </abbr>
+</div>
+```
 
 and looks like this:
 
@@ -132,28 +129,33 @@ and looks like this:
 
 <h3><b>Integrated benefits of the system:</b></h3>
 <ul>
-<li>Advanced translation system</li>
+<li>Advanced translation system - choose the language with flags in the view bar</li>
 <li>Block-oriented provides compact code</li>
 <li>Possibility of Font-awesome Icons anywhere</li>
 <li>Hints/Tooltip for all html elements</li>
 <li>Placeholder/validation for all input elements</li>
-<li>Compact layout with advanced collapsible cards</li>
-<li>Option for user defined system blocks</li>
-<li>Advanced tables based on Mottie Table Sorter system</li>
+<li>Compact layout with advanced collapsible cards - the user can resize and move them, and show them in columns</li>
+<li>Floating view bar: zoom, full screen, column view, language, personal notes, page help and theme</li>
+<li>Light, dark, automatic and own color themes</li>
+<li>Option for user defined system blocks - customize a project without editing the library ($gbl_InitFile, $gbl_CustomCss ...)</li>
+<li>Advanced tables based on Mottie Table Sorter system - or simple search and sort without jQuery (htm_TableTools)</li>
 <li>TinyMCE integrated HTML-editor library</li>
+<li>PDF viewer (pdf.js)</li>
 <li>Optional use of libraries locally or on the Web (CDN)</li>
-<li>Narrow cards suitable for automatic adaptation</li>
+<li>Narrow cards suitable for automatic adaptation, and print of the content only</li>
 <li>Easily enter dates with browsers date picker interface</li>
+<li>Security built in: escaped output, CSRF token in every form, session warning before the session ends</li>
 </ul>
 
 
-<br><strong>About the powerfull externel libraryes:</strong><br>
+<br><strong>About the powerful external libraries:</strong> (all optional - jQuery is only needed by Tablesorter and jQuery UI)<br>
 jquery&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "jquery" &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://jquery.com/" target="_blank" rel="noopener">Feature-rich JavaScript library</a><br>
 jquery-ui&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "jquery-UserInterface"&nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://jqueryui.com/" target="_blank" rel="noopener">User interface interactions</a><br>
 tablesorter&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"Advanced tables"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://mottie.github.io/tablesorter/docs/" target="_blank" rel="noopener">Plugin for turning a standard HTML table into a sortable table</a><br>
 font-awesome&nbsp; &nbsp; &nbsp;"Icons"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://fontawesome.com/" target="_blank" rel="noopener">Icon library and toolkit</a><br>
 tinymce&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "HTML rich text editor"&nbsp; &nbsp; <a title="More about the system..." href="https://www.tiny.cloud/" target="_blank" rel="noopener">Self hosted advanced WYSIWYG HTML editor</a><br>
-dialog-polyfill&nbsp; &nbsp; &nbsp; &nbsp;"popup dialog"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="noopener">Dialog element for a popup box</a><br><br>
+dialog-polyfill&nbsp; &nbsp; &nbsp; &nbsp;"popup dialog"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://github.com/GoogleChrome/dialog-polyfill" target="_blank" rel="noopener">Dialog element for a popup box</a><br>
+pdf.js&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"PDF viewer"&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a title="More about the system..." href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">Show PDF files in the page</a><br><br>
 
 
 
@@ -161,18 +163,39 @@ dialog-polyfill&nbsp; &nbsp; &nbsp; &nbsp;"popup dialog"&nbsp; &nbsp; &nbsp; &nb
 
 Save system-files on your web-server in system-folder '{public-URL}/hello'
 
-Create project-folder '/world' and create the file: '{public-URL}/hello/world/first.page.php' with this content:
-<pre><code>< ? 
-$GLOBALS["ØProgRoot"]= '../';
-require_once ('../php2html.lib.php');
-htm_Page_(titl:'DEMO', info:lang('@PHP2HTML: My first page'), imag:'../_accessories/_background.png, attr:');
-    htm_Caption(labl:'HELLO WORLD:', hint:'', algn:'center',styl:'color:#550000; font-weight:600; font-size: 18px;');
-    htm_nl(2);
-    htm_TextDiv(body:'This page is build with PHP2HTML', algn:'center', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray;', attr:'background-color: white;');
-htm_Page_end()
-?>
-</code></pre>
-(Correct: '< ?' to '<?' in the first line)
+Create project-folder '/world' and create the file: '{public-URL}/hello/world/first.page.php' with this content (it is also in the repository):
+
+```php
+<?php
+#   Getting started:
+#   How to output your first page...
+
+$sys= $GLOBALS["gbl_ProgRoot"]= '../';     // a system variable: path to the system folder
+
+## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
+$needJquery=      '0';
+$needTablesorter= '0';
+$needPolyfill=    '0';
+$needFontawesome= '2';
+$needTinymce=     '0';
+
+require_once ($sys.'php2html.lib.php');    // the system library
+
+### PAGE-START:
+htm_Page_(titl:'@DEMO', hint:'', info:lang('@PHP2HTML: My first page'), inis:'',
+          algn:'center', imag:'../_accessories/_background.png', pbrd:false);
+
+    htm_Caption(labl:'@HELLO WORLD:', icon:'fa-solid fa-earth-europe', hint:'@This is your first page', algn:'center',
+                styl:'color:#550000; font-weight:600; font-size: 18px;');
+
+    htm_Card_(capt:'@My first card', icon:'fa-solid fa-star', clas:'cardW480');
+        htm_Input(labl:'@Your name', plho:'@Enter...', hint:'@Type your name', vrnt:'text', name:'yourName', valu:'');
+        htm_Input(labl:'@Price', hint:'@Enter amount with 2 decimals', vrnt:'dec2', name:'price', valu:123.45, unit:'<$ ');
+    htm_Card_end();
+
+### :PAGE_END
+htm_Page_end();
+```
 
 Now you can see the page in your browser at URL: '{public-URL}/hello/world/first.page.php'
 
