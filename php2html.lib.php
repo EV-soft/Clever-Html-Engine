@@ -4670,6 +4670,10 @@ function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'',
            $gbl_progDesti, $gbl_copyright, $autoCDN, $LIB_JQUERY, $LIB_JQUERYUI, $LIB_TABLESORTER, $LIB_FONTAWESOME, $LIB_TINYMCE, $LIB_PDFVIEW, $LIB_POLYFILL, $pdf_file;
     $pageMess= '<b>ERROR:</b> ';
 
+    # Preconnect to the CDN when a library is taken from it: DNS + TLS start at once, not first when the first <script>/<link> is met
+    $cdnUse= false;
+    foreach ([$LIB_JQUERY, $LIB_JQUERYUI, $LIB_TABLESORTER, $LIB_FONTAWESOME, $LIB_TINYMCE, $LIB_PDFVIEW, $LIB_POLYFILL] as $lb)
+        if (is_array($lb) and ((($lb[0] ?? 0)==2) or ((($lb[0] ?? 0)==3) and (($autoCDN ?? '')=='2')))) $cdnUse= true;
 // <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     echo '<!DOCTYPE html>
     <html lang="'.sys_enc(preg_match('/^[a-z]{2}(-[A-Za-z]{2})?$/', $GLOBALS['lang'] ?? '') ? $GLOBALS['lang'] : 'en').'" dir="ltr">
@@ -4682,6 +4686,7 @@ function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'',
     <meta name="robots" content="Noindex, Nofollow">'.  // Reject robots
    '<meta name="googlebot" content="Noindex">'.         // Reject robots
    '<title>'.htmlspecialchars(strip_tags(lang($titl)), ENT_QUOTES, 'UTF-8').'</title>'. "\n".
+   ($cdnUse ? '<link rel="preconnect" href="https://cdnjs.cloudflare.com"><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>'."\n" : '').   # Scripts/CSS (no CORS) and fonts (CORS)
    (is_readable(__DIR__.'/manifest.json') ? '<link rel="manifest" href="'.sys_enc($gbl_ProgRoot.'manifest.json').'">' : '').      # Install on the home screen (PWA)
    (is_readable(__DIR__.'/favicon.svg')   ? '<link rel="icon" href="'.sys_enc($gbl_ProgRoot.'favicon.svg').'" type="image/svg+xml">'.
                                             '<link rel="apple-touch-icon" href="'.sys_enc($gbl_ProgRoot.'_accessories/icon-192.png').'">' : '').
