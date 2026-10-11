@@ -6612,9 +6612,10 @@ if (!function_exists('lang')) { ## Be aware tinyMCE has its own translate system
     )
     {   global  $natindx, $engindx, $allLang, $lang;
         $text= trim($text,"@");
-        if      (isset($allLang[$natindx]['translation'][$text]))    return /* sys_enc */($allLang[$natindx]['translation'][$text]); // .' ('.$lang.')');   // National
-        else if (isset($allLang[$engindx]['translation'][$text]))    return /* sys_enc */($allLang[$engindx]['translation'][$text]);                        // Translated English
-        else                                                        return trim($text,"@");  // Default English, if not in translate table           // Native (english)
+        $tr= $allLang[$natindx]['translation'][$text] ?? ($allLang[$engindx]['translation'][$text] ?? null);   # National, else translated English
+        if ($tr === null) return $text;                                  # Default English, if not in the translate table
+        if ((substr($text, -1) === ' ') and (substr($tr, -1) !== ' ')) $tr.= ' ';   # "@Warning: " keeps its space (the translations had lost it)
+        return $tr;
     }
 }
 
