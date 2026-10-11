@@ -1,6 +1,6 @@
 Related constant in php2html.lib.php: 'LIB_PDFVIEW'
 
-Source: https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/
+Source: https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/
 File: pdf.min.mjs
 File: pdf.worker.min.mjs
-(pdf.js 4.10.38 - Mozilla Foundation - Apache License 2.0)
+(pdf.js 6.4.299 - Mozilla Foundation - Apache License 2.0)

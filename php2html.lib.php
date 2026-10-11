@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.6.1';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.6.2';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -82,8 +82,8 @@ if ((isset($needTinymce)) and ($needTinymce>0)) {
     $LIB_TINYMCE=       [$needTinymce,     '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/8.9.3/'];              // tinymce.min.js
 }                                      
 if ((isset($needPdfview)) and ($needPdfview>0)) {
-    $LIB_PDFVIEW=       [$needPdfview,     '_assets/pdfview/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/'];             // pdf.js
-                                                                             // https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs
+    $LIB_PDFVIEW=       [$needPdfview,     '_assets/pdfview/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/'];             // pdf.js
+                                                                             // https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/pdf.min.mjs
                                                                                       //cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js
                                                                              // https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf_viewer.min.css
     ## https://www.allphptricks.com/create-a-custom-pdf-viewer-with-pdf-js-and-restrict-downloading-printing/
@@ -6183,7 +6183,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
             if ($LIB_PDFVIEW[0]==1) $path= $gbl_ProgRoot.$LIB_PDFVIEW[1];    # Local-folder
             else                    $path=               $LIB_PDFVIEW[2];    # CDN-server 
             echo "<script type=\"module\">
-            import * as pdfjsLib from '".$path."pdf.min.mjs';                                          // pdf.js 4.x is an ES module
+            import * as pdfjsLib from '".$path."pdf.min.mjs';                                          // pdf.js 4+ is an ES module
             pdfjsLib.GlobalWorkerOptions.workerSrc = '".$path."pdf.worker.min.mjs';                    // Worker: same version as the library
             document.addEventListener('contextmenu', event => event.preventDefault());                  // Disable Canvas Image Downloading    
             var url = ".json_encode($pdf_file ?? '')." || ((document.getElementById('the-canvas') || {dataset:{}}).dataset.pdf || ''); // From <canvas data-pdf=...>; your file location and file name with ext.    // If absolute URL from the remote server is provided, configure the CORS
@@ -6248,16 +6248,19 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
             var b_next= document.getElementById('next');                        // type=button: inside a card form a <button> would submit (reload the page)
             if (b_next) { b_next.type= 'button';  b_next.addEventListener('click', onNextPage); }
 
-            if (url && canvas) pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {  /** Asynchronously downloads PDF. */
-              pdfDoc = pdfDoc_;
-              document.getElementById('page_count').textContent = pdfDoc.numPages;
-              renderPage(pageNum);      // Initial/first page rendering
-            }, function(err) {          /** The PDF could not be loaded: say so instead of an empty canvas */
+            function pdfFail(err) {     /** The PDF could not be loaded: say so instead of an empty canvas */
               var m= document.createElement('p');
               m.style.color= '#c62828';
               m.textContent= ".json_encode(lang('@The PDF file could not be shown:'))." + ' ' + url + ' (' + ((err && err.message) || err) + ')';
               canvas.insertAdjacentElement('beforebegin', m);
-            });
+            }
+            if (url && canvas) try {
+              pdfjsLib.getDocument({url: url}).promise.then(function(pdfDoc_) {  /** Asynchronously downloads PDF ({url}: pdf.js 6 refuses a plain string) */
+                pdfDoc = pdfDoc_;
+                document.getElementById('page_count').textContent = pdfDoc.numPages;
+                renderPage(pageNum);    // Initial/first page rendering
+              }, pdfFail);
+            } catch (err) { pdfFail(err); }           // (An error thrown at once - not a rejected promise)
             </script>";
     }} 
     ## 
