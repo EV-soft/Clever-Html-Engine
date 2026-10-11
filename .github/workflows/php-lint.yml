@@ -2,6 +2,9 @@ name: PHP lint
 
 on: [push, pull_request]
 
+permissions:
+  contents: read      # Only reads the code (CodeQL: workflow without permissions)
+
 jobs:
   lint:
     runs-on: ubuntu-latest
