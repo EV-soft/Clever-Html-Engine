@@ -83,14 +83,14 @@
             if (($p<6) and               // PLACED at start of line!
             (strpos($line,'htm_')>0)) {  // is an html_ function
                 if (strpos(' '.$prevLine,'# ') > 0) 
-                     $hint= ' title= "'.str_replace('# ','Concerning: ',$prevLine).'" '; 
+                     $hint= ' title="'.htmlspecialchars(str_replace('# ','Concerning: ',$prevLine), ENT_QUOTES, 'UTF-8').'" '; 
                 else $hint= '';
                 if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   # Same 3 lines per function as without "{" (the overview count relies on it)
                 else                      $funcN= ' '.substr($line,$p);
                 $x= substr($funcN,strpos($funcN,'htm_'));
                 $x= substr($x,0,strpos($x,'('));
                 $keyList[] = $x;
-                $funcN= str_replace('(','</b></strong>(<i>',$funcN);                                                // Add format code
+                $funcN= preg_replace('/\(/', '</strong>(<i>', $funcN, 1);                                         // Add format code (the first "(" only)
                 $funcN= str_replace(')',');',$funcN);
                 $funcN= str_replace('# ','',$funcN); // Remove comment flag on function parameters
                 $funcN= highlight_words($funcN,'','color:'.'red; ');
@@ -100,7 +100,7 @@
                 $lno= str_pad($lno,5,' ',STR_PAD_LEFT);
                 $str= "<pre>
 ".'  '.$sourceFile.str_repeat(" ",max(16-strlen($dir.$sourceFile),0)).
-' <small><i>'.$lno.':</i></small> '.$funcN.'</i></pre>';
+' <small><i>'.$lno.':</i></small> '.$funcN.'</pre>';      # ($funcN closes its <i> itself)
                 $nn++;
               //_// echo $str; //.' '.substr($str,42);
               $arrFunctions[]= [

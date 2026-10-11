@@ -1175,32 +1175,26 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
     if ((count($capt)>1) or ($cpt[1]>"40%")) htm_nl(); //  false: At narrow card
     if ($gbl_novice==true) {
         htm_sp(5);
-        if ($sort)  {echo $sor= htm_IconButt($type='submit',$faicon='fas fa-sort',$id='',$labl='@Sort?',
-            $Hint= lang('@Click column headers to sort data. Hold SHIFT and click, to sort by multiple columns.'),
-            $link='#',$action='',$akey='','12px'); }
-        if ($filt)  {echo $fil= htm_IconButt($type='submit',$faicon='fas fa-search-plus',$id='',$labl='@Filter?',
-            $Hint= lang('@Hold your mouse just below the table`s header line and some input fields will appear. ').
-                   lang('@Enter a search term here to display only data that matches the term.'),
-            $link='#',$action='',$akey='','12px'); }
-        if ($filt)  {echo $fil= htm_IconButt($type='submit',$faicon='fas fa-search-minus',$id='',$labl='@Show everything!',    //<button type="button" class="reset">lang( ' @Vis alt')</button>
-            $Hint= lang('@Reset filter so that all data is displayed. With ESC you can reset the search term in the field you are in.'),
-            $link='#',$action='',$akey='','12px'); }
-        if ($modi) {echo $ret= htm_IconButt($type='submit',$faicon='fas fa-pen-square',$id='',$labl='@Edit?',
-            $Hint= lang('@In some of this table`s columns, you can correct data. They are marked with · in the column heading.').str_nl().
-                   lang('@If the table cannot be saved, the correction must be done on a retail card.'),
-            $link='#',$action='',$akey='','12px'); }
-        if ($crea) {echo $til= htm_IconButt($type='submit',$faicon='fas fa-plus',$id='',$labl='@Add?',
-            $Hint= lang('@Do you want to add data: <br>At the bottom of the table there are fields you can fill with new data. ').
-                   lang('@Click the "Create" button above the last field to save the new data.'),
-            $link='#',$action='',$akey='','12px'); }
-        if (true)  {echo $fil= htm_IconButt($type='submit',$faicon='fas fa-arrows-alt-h',$id='',$labl='@Keys ',
-            $Hint= lang('@Move cursor in tables:').'<br><data-yelllabl>'.lang('@TAB-key').'</data-yelllabl> '.
+        if ($sort)  {echo htm_IconButt(labl:'@Sort?', icon:'fas fa-sort', type:'button', font:'12px', rtrn:true,   # An info button (its hint) - was positional with the wrong order: type became the label...
+            hint: lang('@Click column headers to sort data. Hold SHIFT and click, to sort by multiple columns.')); }
+        if ($filt)  {echo htm_IconButt(labl:'@Filter?', icon:'fas fa-search-plus', type:'button', font:'12px', rtrn:true,   # An info button (its hint) - was positional with the wrong order: type became the label...
+            hint: lang('@Hold your mouse just below the table`s header line and some input fields will appear. ').
+                   lang('@Enter a search term here to display only data that matches the term.')); }
+        if ($filt)  {echo htm_IconButt(labl:'@Show everything!', icon:'fas fa-search-minus', type:'button', font:'12px', rtrn:true,   # An info button (its hint) - was positional with the wrong order: type became the label...
+            hint: lang('@Reset filter so that all data is displayed. With ESC you can reset the search term in the field you are in.')); }
+        if ($modi) {echo htm_IconButt(labl:'@Edit?', icon:'fas fa-pen-square', type:'button', font:'12px', rtrn:true,   # An info button (its hint) - was positional with the wrong order: type became the label...
+            hint: lang('@In some of this table`s columns, you can correct data. They are marked with · in the column heading.').str_nl().
+                   lang('@If the table cannot be saved, the correction must be done on a retail card.')); }
+        if ($crea) {echo htm_IconButt(labl:'@Add?', icon:'fas fa-plus', type:'button', font:'12px', rtrn:true,   # An info button (its hint) - was positional with the wrong order: type became the label...
+            hint: lang('@Do you want to add data: <br>At the bottom of the table there are fields you can fill with new data. ').
+                   lang('@Click the "Create" button above the last field to save the new data.')); }
+        if (true)  {echo htm_IconButt(labl:'@Keys ', icon:'fas fa-arrows-alt-h', type:'button', font:'12px', rtrn:true,   # An info button (its hint) - was positional with the wrong order: type became the label...
+            hint: lang('@Move cursor in tables:').'<br><data-yelllabl>'.lang('@TAB-key').'</data-yelllabl> '.
             lang('@jumps to the next field.').' <data-yelllabl>'.lang('@SHIFT TAB-key').'</data-yelllabl> '.lang('@skips to the previous field.').
             ' <data-yelllabl>'.lang('@SPACE-key').'</data-yelllabl> '.lang('@scrolls side down').
             ' <data-yelllabl>'.lang('@SHIFT SPACE-key').'</data-yelllabl> '.lang('@scrolls side up').'<br>'.
             lang('@The cursor must be in the table.')
-            /* .'  <br><data-yelllabl>'.lang( '@CTRL arrow-keys').'</data-yelllabl> '.lang( ' @virker ikke. ' */
-            ,$link='#',$action='',$akey='','12px'); }
+            /* .'  <br><data-yelllabl>'.lang( '@CTRL arrow-keys').'</data-yelllabl> '.lang( ' @virker ikke. ' */); }
     }
   } dvl_pretty();
 
@@ -2550,19 +2544,22 @@ function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:
     dvl_pretty('htm_IconButt');
     if ($wdth) $wdth= ' width: '.$wdth.';';
     if ($akey) $keytip= '<br>'.lang('@Keyboard shortcut: ').$akey; else $keytip='';
-    if ($link=='') $targ= 'formtarget="_self"'; 
-    else           $targ= 'action="'.$link.'" method="get" formtarget="_self"';
+    # A link needs a form (GET) - but forms cannot be nested: inside a card form the button itself carries the target (formaction)
+    $inForm= !empty($GLOBALS['gbl_CardForm']);
+    $formOpen= ($link > '' and !$inForm) ? '<form name="zzz" action="'.sys_enc($link).'" method="get" style=" display: inline-block; ">' : '';
+    $formEnd=  $formOpen ? '</form>' : '';
+    $btnTarget= ($link > '' and $inForm) ? ' formaction="'.sys_enc($link).'" formmethod="get"' : '';
     $btnix++;
     $result = '
     <span class="tooltip" style="display:inline; padding:0; width:200px;">
         <abbr class="hint">
-            <form name="zzz" '.($targ ?? '').' style=" display: inline-block; ">
-                <button class="buttstyl" type= "'.$type.'" id="'.$name.'" name="btn_ico_'.$btnix.
-                 '" style="color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" accesskey="'.$akey.'" '.$evnt.'>'.
+            '.$formOpen.'
+                <button class="buttstyl" type= "'.$type.'" id="'.$name.'" name="btn_ico_'.$btnix.'"'.$btnTarget.
+                 ' style="color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" accesskey="'.$akey.'" '.$evnt.'>'.
                 ' <data-ic class="'.$icon.'" style="font-size:'.$font.'; color:'.$fclr.';  '.$gbl_ButtnBgrd.'; "> </data-ic> '.
                 lang($labl). '&nbsp; 
                 </button>
-            </form>
+            '.$formEnd.'
                 <data-hint>'.lang($hint).$keytip.'</data-hint> 
         </abbr>'.
     '</span>';
@@ -4368,7 +4365,7 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:''
             '</abbr>
             </span>';
             if ($desc>'') echo '
-            <span class="desc_div"; style="/* left: 180px; */ color: yellow; position: revert; display: inline-block; 
+            <span class="desc_div" style="/* left: 180px; */ color: yellow; position: revert; display: inline-block; 
                 vertical-align: top; font-size:smaller; max-width:'.$wdth.'; ">'.
                 lang($desc).
             '</span>';
@@ -4384,8 +4381,8 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:''
            border: 2px solid lightgray; border-radius: 4px; padding:5px; width:max-content; z-index: 1000;
            position:fixed; top:28px; left:15px;'.$styl.'">';
 
-     if ($capt> '') echo '<span class="mnu_heads"; style="width:94%;">'.lang($capt).'<hr><br></span>';
-     if ($capt=='') echo '<div class="mnu_heads";>'. lang('@Menu:').'</div>';
+     if ($capt> '') echo '<span class="mnu_heads" style="width:94%;">'.lang($capt).'<hr><br></span>';
+     if ($capt=='') echo '<div class="mnu_heads">'. lang('@Menu:').'</div>';
      echo '<br>';
      foreach ($data as $top) {          // TopMenu:
         MenuLine($pref='', $top[0], $top[1], $top[2], $top[3], $top[4], $top[5], $top[6], ($top[7] ?? ''), $wdth);
@@ -6529,7 +6526,7 @@ function htm_sp(# rept:1)
     $rept=1)            {echo str_repeat('&nbsp;',$rept);}
 # String function: Make a span with given width
 function htm_space(# wdth)  
-    $wdth)              {echo '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp</span>';}
+    $wdth)              {echo '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
 
 // String-functions:
 function str_bold($source,$result='',$tail='&nbsp;&nbsp;') {return $result.'<b>'.$source.'</b>'.$tail;}
@@ -6539,7 +6536,7 @@ function str_br($rept=1)            {return str_repeat('<br />',$rept);}
 function str_nl($rept=1)            {return str_repeat('<br />',$rept);}
 function str_lf($rept=1)            {return str_repeat(' &#xa;',$rept);}  //  LineFeed in strings:  &#010;  &#xa;  \n \u000A  \x0A  &#13;  %10%13  %0D%0A    PHP_EOL
 function str_sp($rept=1)            {return str_repeat('&nbsp;',$rept);}
-function str_space($wdth)           {return '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp</span>';}
+function str_space($wdth)           {return '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
 
 function markFirstChar($str='',$tag='u',$att='') 
 { $str= lang($str); $str= '<'.$tag.' '.$att.'>'.substr($str,0,1).'</'.$tag.'>'.substr($str,1); return $str; }
