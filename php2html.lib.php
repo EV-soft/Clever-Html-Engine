@@ -966,6 +966,14 @@ echo "Optimal baggrund: $optimalBackground";
  */
  
 # Add strings to a buffer
+# The script/link tags of a library that is loaded where it is first used (htm_Page_ prepares them; $gbl_LazyLibs= false: in <head> as before)
+function p2h_libTags($key) {
+    static $done= [];
+    if (isset($done[$key])) return '';
+    $done[$key]= true;
+    return $GLOBALS[$key] ?? '';
+}
+
 function spool($data,$echo=false) { global $spool;
     if ($echo==true) echo $data;
     $spool.= $data;
@@ -1105,6 +1113,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
         };
     }
 
+    echo p2h_libTags('p2hTsTags');                       # Tablesorter: loaded with the first table (echo: the init script below is echoed at once too)
     spool( '<span class="tableStyle" id="tblSpan'.$gbl_TblIx.'" style="'.($wdth>'' ? 'width:'.$wdth.'; ' : '').' padding: 8px; '.$styl.' ">');
 ### Caption line:
     if ($data!=null)
@@ -3984,6 +3993,7 @@ switch (strtolower($vrnt)) {  # BG-olors and Hint-prefix:
 //  echo '    buttons: { '.$Butt1_title.': function(){ '.$Butt1_function.'; }, '.$Butt2_title.': function(){ '.$Butt2_function.'; } }';
 //  echo '});';
 
+  echo p2h_libTags('p2hUiTags');                      # jQuery UI: loaded where it is used
   echo '  <script>';    //   $( function() {  $( "#dialog-message" ).dialog ({ modal: true, buttons: {"OK": function(){ $(this).dialog("close"); } } }); }); 
 //  echo '  $( function() {  $( "#dialog-message" ).dialog ({';
     echo '  $( document ).ready( function() {  $( "#dialog-message" ).dialog ({';
@@ -4758,7 +4768,8 @@ if (LIB_POLYFILL[0]==1) {
            default : { $pageMess.= 'LIB_JQUERYUI: illegal index ! '.$LIB_JQUERYUI[0]; }
         }
         if ($path > '') {
-        echo '<script src="'.$path.'jquery-ui.min.js"></script>';               //  topic="Tablesorter-system" and Topmenu-system
+        $GLOBALS['p2hUiTags']= '<script src="'.$path.'jquery-ui.min.js"></script>';   # Used by msg_Dialog() - loaded there (or here: $gbl_LazyLibs= false)
+        if (!($GLOBALS['gbl_LazyLibs'] ?? true)) echo p2h_libTags('p2hUiTags');
         // echo '<link  href="'.$path.'jquery-ui.min.css" rel="stylesheet" />'; //  topic="jquery Dialog"> 
         // 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/'
         // echo '<link  href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.css" />';    // topic="jquery Dialog"> 
@@ -4774,11 +4785,13 @@ if (LIB_POLYFILL[0]==1) {
                 if ($LIB_TABLESORTER[0]==3) $LIB_TABLESORTER[0]= $autoCDN;               # Auto: Local/CDN
                 if ($LIB_TABLESORTER[0]==1) $path= $gbl_ProgRoot.$LIB_TABLESORTER[1];    # Local-folder
                 else                        $path=               $LIB_TABLESORTER[2];    # CDN-server 
-            echo '<script src="'.$path.'js/jquery.tablesorter.js"></script>';                      // topic="Tablesorter-system" - required
-            echo '<script src="'.$path.'js/widgets/widget-cssStickyHeaders.min.js"></script>';     // topic="Tablesorter-system - parsers"
-            echo '<script src="'.$path.'js/parsers/parser-input-select.min.js"></script>';         // topic="Tablesorter-extra"
-            echo '<script src="'.$path.'js/jquery.tablesorter.widgets.js"></script>';
-            echo '<link  href="'.$path.'css/theme.blue.css" rel="stylesheet" />';     
+            $GLOBALS['p2hTsTags']=                                                                 # Loaded by the first htm_Table() (or here: $gbl_LazyLibs= false)
+                 '<script src="'.$path.'js/jquery.tablesorter.js"></script>'.                      // topic="Tablesorter-system" - required
+                 '<script src="'.$path.'js/widgets/widget-cssStickyHeaders.min.js"></script>'.     // topic="Tablesorter-system - parsers"
+                 '<script src="'.$path.'js/parsers/parser-input-select.min.js"></script>'.         // topic="Tablesorter-extra"
+                 '<script src="'.$path.'js/jquery.tablesorter.widgets.js"></script>'.
+                 '<link  href="'.$path.'css/theme.blue.css" rel="stylesheet" />';
+            if (!($GLOBALS['gbl_LazyLibs'] ?? true)) echo p2h_libTags('p2hTsTags');
             // topic="Tablesorter-system" (choose a theme file)
         }
     } 
@@ -4808,7 +4821,7 @@ $javaScripts.= "
 <script>
     $(function () {
     /* $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({ gbl_TblIx       */
-    $('table.tablesorter').filter(function () { return /^table\\d+$/.test(this.id); }).tablesorter({   /* All htm_Table() tables */
+    if ($.fn.tablesorter) $('table.tablesorter').filter(function () { return /^table\\d+$/.test(this.id); }).tablesorter({   /* All htm_Table() tables (Tablesorter is loaded by the first one) */
       theme: 'blue',
       dateFormat : \"Y-m-d\",
       widthFixed : true,

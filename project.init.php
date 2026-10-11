@@ -70,6 +70,7 @@
     // $gbl_CustomRules= __DIR__.'/../my.rules.php';          # Own table row rules (else customRules.inc.php)
     // define('DecimalSep', '.');  define('ThousandsSep', ','); # Number format;  define('DEBUG', true);
     // $headEndScript= '...';  $bodyEndScript= '...';  $gbl_novice= true;
+    // $gbl_LazyLibs= false;                                 # Tablesorter / jQuery UI in <head> on every page (default: loaded by the first htm_Table() / msg_Dialog())
     $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.$DocVers.': 78 core functions.</small>';
 
 ## Quickstart:
