@@ -54,14 +54,27 @@ $isOnline = fsockopen("cdnjs.cloudflare.com", 80, $errno, $errstr, 30);
 if ($isOnline) { $autoCDN= '2'; fclose($isOnline); }
 else             $autoCDN= '1'; // $autoCDN can be used to auto switch between - 1:Local-source  2:WEB-source-CDN
  */
-// Cache CDN-availability i session i 5 minutter, så vi ikke laver et synkront netværkskald på hver request
-if (!isset($_SESSION['autoCDN']) || !isset($_SESSION['autoCDN_time']) || (time() - $_SESSION['autoCDN_time'] > 300)) {
-    $isOnline = @fsockopen("cdnjs.cloudflare.com", 80, $errno, $errstr, 1); // timeout sat ned fra 30 til 1 sekund
-    if ($isOnline) { $_SESSION['autoCDN']= '2'; fclose($isOnline); }
-    else             $_SESSION['autoCDN']= '1';
-    $_SESSION['autoCDN_time']= time();
+# Is the CDN reachable? Only asked when a library uses '3' (Auto: Local/CDN) - and the answer is shared by all visitors for 5 minutes
+# (was: a network call for every new session, also on pages without '3'; up to 1 second when the CDN is slow)
+$autoCDN= '2';                                                   # $autoCDN: 1:Local-source  2:WEB-source-CDN (used by the '3' libraries)
+$needAuto= false;
+foreach (['needJquery','needTablesorter','needPolyfill','needFontawesome','needTinymce','needPdfview'] as $nv)
+    if ((string)($$nv ?? '') === '3') $needAuto= true;
+if ($needAuto) {
+    $cdnFile= sys_get_temp_dir().'/p2h_autocdn.txt';
+    $cdnSaved= @file_get_contents($cdnFile);                     # "2|1760000000": answer|time
+    if (isset($_SESSION['autoCDN'], $_SESSION['autoCDN_time']) && (time() - $_SESSION['autoCDN_time'] <= 300))
+        $autoCDN= $_SESSION['autoCDN'];
+    elseif ($cdnSaved && preg_match('/^([12])\|(\d+)$/', $cdnSaved, $m) && (time() - (int)$m[2] <= 300))
+        $autoCDN= $m[1];
+    else {
+        $isOnline= @fsockopen('cdnjs.cloudflare.com', 443, $errno, $errstr, 1);     # 1 second at most
+        $autoCDN= $isOnline ? '2' : '1';
+        if ($isOnline) fclose($isOnline);
+        @file_put_contents($cdnFile, $autoCDN.'|'.time(), LOCK_EX);
+    }
+    $_SESSION['autoCDN']= $autoCDN;  $_SESSION['autoCDN_time']= time();
 }
-$autoCDN= $_SESSION['autoCDN']; // $autoCDN can be used to auto switch between - 1:Local-source  2:WEB-source-CDN
 
 //         LibName:           ix:                 LocalPath:                         CDN-path:         (Search: https://cdnjs.com/libraries)          // File:
 if ((isset($needJquery)) and ($needJquery>'0')) {
