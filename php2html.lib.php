@@ -4027,9 +4027,9 @@ function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['gobac
               '    </div>'.
               '    <section class="modlwrap">';
     if ($body>' ')  
-        $result.= '<div class="modal__content" style="width:25%; float: left; background:lightcyan; text-align:left; word-wrap: break-word; ">
+        $result.= '<div class="modal__content" style="width:35%; box-sizing: border-box; float: left; background:lightcyan; text-align:left; word-wrap: break-word; ">
                    '.(($Capt1 ?? '')>'' ? '<div style="font-weight:600;">'.$Capt1.':</div>' : '').'<samp><small>'.$body.'</small></samp>'.'<br><br></div>';
-    $result.= '      <div class="modal__content" style="width:60%; float: right; background:lightyellow; text-align:left; word-wrap: break-word; ">
+    $result.= '      <div class="modal__content" style="'.($body>' ' ? 'width:65%; box-sizing: border-box; float: right;' : 'float: none; box-sizing: border-box; width: 100%;').' background:lightyellow; text-align:left; word-wrap: break-word; ">
                      '.(($Capt2 ?? '')>'' ? '<div style="font-weight:600;">'.$Capt2.':</div>' : '').'<var>'.$mess.'</var>'.'<br><br></div>'.
               '    </section> '.
               '    <div class="modal__footer" style="background-color: '.$headColr.'; ">';
@@ -5959,12 +5959,12 @@ $htm_ModalDialog= '
 	content: "\2715";
 	position: absolute;
 	display: inline-block;
-	top: 5px;
-	right: 5px;
+	top: 9px;
+	right: 10px;
 	font-size: 15px;
 	font-weight: bold;
 	cursor: pointer;
-    padding: 3px 5px 0;
+    padding: 3px 6px 1px;
     border: 1px solid;
     border-radius: 5px;
     background: white;
@@ -5975,7 +5975,7 @@ $htm_ModalDialog= '
 }
 
 .modal__header {
-	padding: 2px 15px 1px;
+	padding: 2px 46px 1px;          /* Room for the close cross (both sides: the title stays centred) */
   border-radius: 0.4em 0.4em 0 0;
 	font-size: 15px;
 }
@@ -5995,6 +5995,7 @@ $htm_ModalDialog= '
 }
 
 .modlwrap {
+  display: flex;                  /* Tracking and message side by side, the same height */
   min-height: 100%;
   position:relative;
   background-color: white;
