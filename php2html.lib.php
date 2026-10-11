@@ -3960,76 +3960,29 @@ function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl
 
 function msg_Dialog($vrnt='error', $caption='@User Dialog', $mess='', $Buttons= [
                         // 0: strLabel  (Cancel/Accept/Close)  1: strHint 2: jsFunction() 3: imgIcon 4: Result
-                        ['@Confirm', '@Hint', '$(this).dialog("close")', 'Icon', true ],
-                        ['@Close',   '@Hint', '$(this).dialog("close")', 'Icon', false]
+                        ['@Confirm', '@Hint', '', 'Icon', true ],
+                        ['@Close',   '@Hint', '', 'Icon', false]
                     ])
-{ //  DOKUMENTATION: http://api.jqueryui.com/dialog/
-# Depends of:
-# echo '  <link rel="stylesheet" href= "../.../jquery-ui.css" topic="jquery Dialog">';
-# echo '    <script src="../.../jquery.js"></script>    <!--  topic=jquery Dialog -->'; 
-# echo '    <script src="../.../jquery-ui.js"></script> <!--  topic=jquery Dialog -->';
-
-# INIT: (Change as needed)
-  $result= false;
-  if ($mess=='') $mess='<p>This is a CSS based modal dialog, which can be used to display information. '.
-      'The window can be moved and stretched, as well as closed with the \'x\' icon. <br>'.
-      '<br>The buttons below can be programmed, with optional code.</p>';
-  
-# CODE: (don't change!)
-switch (strtolower($vrnt)) {  # BG-olors and Hint-prefix:
-    case "error"  : $headColr= '#FF8888'; $pref= ucfirst(lang('@Error: ')); break;   # color: red
-    case "info"   : $headColr= '#BDE5F8'; $pref= ucfirst(lang('@Info: '));  break;   # color: blue
-    case "warn"   : $headColr= '#FEEFB3'; $pref= ucfirst(lang('@Warn: '));  break;   # color: orange
-    case "tip"    : $headColr= '#88ff22'; $pref= ucfirst(lang('@Hint: '));  break;   # color: green
-    case "success": $headColr= '#DFF2BF'; $pref= ucfirst(lang('@Bingo: ')); break;   # color: light-green
-    default       : $headColr= $vrnt;     $pref= ''; # Custom color for non-standard types
-}
-# Spec.Style:
-  echo '<style type="text/css">'.
-       '  .ui-dialog .ui-dialog-titlebar    { background: '.$headColr.'}'.
-       '  .ui-dialog .ui-dialog-buttonpane  { background: '.$headColr.'}';
-# If more than 2 buttons: Increase the width from standard 300px to 360px:
-  echo '  .ui-dialog  { width: 320px; margin: auto; position: fixed; top: 20%;  left: 0px; right: 0px; -moz-box-shadow: 0px 0px 8px #000000; -webkit-box-shadow: 0px 0px 8px #000000; box-shadow: 0px 0px 8px #000000;}'.
-       '   ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close  {width: 20px; title: "'.lang('@Close').'";}'.
-       '  .ui-button  {padding: 2px 8px};}';
-/*  
-  <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-    <div class="ui-dialog-buttonset">
-      <button type="button" class="ui-button ui-corner-all ui-widget">Godkend</button>
-      <button type="button" class="ui-button ui-corner-all ui-widget">Fortryd</button>
-      <button type="button" class="ui-button ui-corner-all ui-widget">3. knap</button>
-  </div></div>
-*/ 
-  echo '</style>';
-# Func-script:
-//  echo ' $("#foo").dialog({   width: "'.$WinW.'",    height: "'.$WinH.'",';
-//  echo '    buttons: { '.$Butt1_title.': function(){ '.$Butt1_function.'; }, '.$Butt2_title.': function(){ '.$Butt2_function.'; } }';
-//  echo '});';
-
-  echo p2h_libTags('p2hUiTags');                      # jQuery UI: loaded where it is used
-  echo '  <script>';    //   $( function() {  $( "#dialog-message" ).dialog ({ modal: true, buttons: {"OK": function(){ $(this).dialog("close"); } } }); }); 
-//  echo '  $( function() {  $( "#dialog-message" ).dialog ({';
-    echo '  $( document ).ready( function() {  $( "#dialog-message" ).dialog ({';
-    echo '  position: "fixed", top: "320px",';  //position: "right top",';  // Her er problemer med placering af dialog-vinduet, når Window er meget højt!
-    echo '  modal: true,';
-    echo '  buttons: {';    // Space is not allowed in titel!
-    foreach ($Buttons as $butt) 
-        echo ' "'. str_replace(' ','_',lang($butt[0])).'": function() {'.$butt[2].';},';
-    //    "Delete all items": function() { $( this ).dialog( "close" ); },
-    //     Cancel           : function() { $( this ).dialog( "close" ); }
-     
- // if ($Butt1_title) echo  '"'.  str_replace(' ','...',lang($Butt1_title)).'": function(){ '.$Butt1_function.'; }';  # Primær knap!
- // if ($Butt2_title) echo ',"'.  str_replace(' ','_',  lang($Butt2_title)).'": function(){ '.$Butt2_function.'; }';  # Kun som 2. knap
- // if ($Butt3_title) echo ',"'.  str_replace(' ','_',  lang($Butt3_title)).'": function(){ '.$Butt3_function.'; }';  # Kun som 2. ell. 3. knap
-    echo '  }';
-  echo '      }); });';
-# echo '  $( ".selector" ).dialog({  position: { my: "left top", at: "center", of: window }});';
-# echo '  $("#dialog-modal").dialog({ height: 330, modal: true, position: {my: "center", at: "center", of: "window"} });';
-# echo '  $("#dialog").dialog({position: "top"});';
-# echo '  dialog("option","position","center").dialog("widget").css("top","125px"); '; 
-  echo '  </script>';
-  echo '<div id="dialog-message" title="'.$pref.lang($caption).'"> '.lang($mess).' </div>';  #  style=" position: fixed; top: 320px; "
-  return $result;
+{ # DEPRECATED - use sysAlert() / sysConfirm() (JavaScript), msg_System() / msg_Error() ... (server messages) or htm_Alert() (on the page).
+  # Was a jQuery UI dialog; now the theme-aware <dialog> of sysAlert()/sysConfirm() - no jQuery / jQuery UI needed.
+  # Button 1 runs at OK, button 2 at Cancel (a 3rd button is not shown). "$(this).dialog('close')" is not needed: the dialog closes itself.
+  # The message is shown as text (<br> and </p> become line breaks).
+    $pref= ['error'=>'@Error: ', 'info'=>'@Info: ', 'warn'=>'@Warn: ', 'tip'=>'@Hint: ', 'success'=>'@Bingo: '][strtolower((string)$vrnt)] ?? '';
+    $title= trim(strip_tags(($pref>'' ? ucfirst(lang($pref)) : '').lang($caption)));
+    $text= ($mess=='') ? lang('@This is a modal dialog, which can be used to display information.') : lang($mess);
+    $text= trim(html_entity_decode(strip_tags(preg_replace('#<br\s*/?>|</p>#i', "\n", $text)), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    $js= function($b) {                             # The JavaScript of a button - without the jQuery UI close call
+        $code= preg_replace('/\$\w*\(\s*this\s*\)\s*\.\s*dialog\(\s*["\']close["\']\s*\)\s*;?/', '', (string)($b[2] ?? ''));
+        return 'function(){ '.trim($code).' }';
+    };
+    $j= function($v) { return json_encode($v, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); };
+    $b1= $Buttons[0] ?? null;  $b2= $Buttons[1] ?? null;
+    $opt= '{title: '.$j($title).', msg: '.$j($text).
+          ', ok: '.($b1 ? $j(strip_tags(lang($b1[0]))) : 'P2H_T.ok').', onOk: '.($b1 ? $js($b1) : 'null').
+          ($b2 ? ', cancel: '.$j(strip_tags(lang($b2[0]))).', onCancel: '.$js($b2) : '').'}';
+    echo '<script>(function(){ function go(){ p2hDialog('.$opt.'); }'.
+         ' if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go(); })();</script>';
+    return false;
 } // msg_Dialog()
 
 
@@ -4781,7 +4734,8 @@ if (LIB_POLYFILL[0]==1) {
            default : { $pageMess.= 'LIB_JQUERYUI: illegal index ! '.$LIB_JQUERYUI[0]; }
         }
         if ($path > '') {
-        $GLOBALS['p2hUiTags']= '<script src="'.$path.'jquery-ui.min.js"></script>';   # Used by msg_Dialog() - loaded there (or here: $gbl_LazyLibs= false)
+        $GLOBALS['p2hUiTags']= '<script src="'.$path.'jquery-ui.min.js"></script>';   # The library itself does not use jQuery UI any more:
+                                                                                      # loaded only with $gbl_LazyLibs= false (projects that use it)
         if (!($GLOBALS['gbl_LazyLibs'] ?? true)) echo p2h_libTags('p2hUiTags');
         // echo '<link  href="'.$path.'jquery-ui.min.css" rel="stylesheet" />'; //  topic="jquery Dialog"> 
         // 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/'

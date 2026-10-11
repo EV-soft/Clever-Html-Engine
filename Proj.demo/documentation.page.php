@@ -48,6 +48,9 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
     </ul>
     <b>For the programmer:</b>
     <ul>
+    <li><b>msg_Dialog() is deprecated:</b> it now shows the theme-aware dialog of <code>sysAlert()</code> / <code>sysConfirm()</code> (button 1 = OK, button 2 = Cancel, the message as text) -
+        jQuery UI is not used by the library any more. Use <code>sysAlert()</code> / <code>sysConfirm()</code>, <code>msg_Error()</code> ... or <code>htm_Alert()</code> in new code.
+        Tablesorter is loaded by the first <code>htm_Table()</code> of a page; <code>$gbl_LazyLibs= false;</code> loads Tablesorter and jQuery UI in &lt;head&gt; as before.</li>
     <li><b>Customize without editing the library:</b> put the settings of a project in its own file, outside the library folder, and point to it
         in the page <i>before</i> the library is loaded: <code>$gbl_InitFile= __DIR__.&#39;/../myproject.init.php&#39;;</code>
         (else <i>project.init.php</i> next to the library is used). An update of the library then never overwrites the project.

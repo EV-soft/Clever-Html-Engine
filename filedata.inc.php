@@ -217,7 +217,7 @@ function SQLerror($errtxt) {
 }
 
 function msg_Tip($title='@Tip',        $messg='Besked') {
-  msg_Dialog('tip', lang('@Continue'),'$(this).dialog("close")','','','','',ucfirst(lang($title)),ucfirst(lang($messg)));  
+  msg_Hint($title, $messg);                       # (was msg_Dialog() with an old 9-parameter call: the message was lost)
   // msg_Besked($MsgType= 'tip', $title,  $reason=$title, $messg, $actions=['','','close']);
 }
 
@@ -244,8 +244,8 @@ if (!function_exists('dbi_connect')) ##  $onFile and $onLine regarding fault loc
             case 'postgres': if (function_exists('pg_connect')) {
                                   if ($sqpass) $dbLink = pg_connect ('host='.$sqhost.' dbname='.$sqdb.' user='.$squser.' password='.$sqpass);
                                   else         $dbLink = pg_connect ('host='.$sqhost.' dbname='.$sqdb.' user='.$squser);
-                             } else { msg_Dialog('error',lang('@Continue'),'$jQ112(this).dialog("close")','','','','',lang('@Program postgres-error:'),
-                                    lang('@PHP-function pg_connect() could not be found')."\n".lang('@Are both DB-postgres og PHP-pgsql installed?')."<br/>POS: ".$onFile.' :'.$onLine); 
+                             } else { msg_Error('@Program postgres-error:',
+                                    lang('@PHP-function pg_connect() could not be found')."<br>".lang('@Are both DB-postgres og PHP-pgsql installed?')."<br/>POS: ".$onFile.' :'.$onLine); 
                                     SQLerror('dbi_connect: '.'PHP-function pg_connect() could not be found');
                                     exit; 
                              } break;
@@ -269,7 +269,7 @@ if (!function_exists('dbi_connect')) ##  $onFile and $onLine regarding fault loc
     function dbi_askData($dbLink, $strQuery='', $onFile='', $onLine='', $onFunc='') {  ## get result
         global $pageTitl, $debug;        
         if ($dbLink==null) {$reason= '#File: '.substr($onFile,strpos($onFile,'Program')).' - #Line: '.$onLine.' - #Func: '.$onFunc;
-            msg_Dialog('error',lang('@Continue'),'$jQ112(this).dialog("close")','','','','',lang('@xxx DB:'),
+            msg_Error('@DB:',
             lang('@There is no connection to the DB server!')."<br>".lang('@Is connect.php created correctly?').
             '<br><br>'.$pageTitl.':'.'<br>'.$reason); 
             SQLerror('dbi_askData: '.$reason.' <br>SQL:'.$strQuery);
