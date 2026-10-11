@@ -32,6 +32,13 @@ A modern, semantic PHP library for generating HTML interfaces with compact code,
 - Output after `htm_Page_end()` now stays inside `<body>`.
 - Many fixes (XSS, CSRF, dark theme, number formats, duplicate ids). See the page *Documentation → What is new in version 1.6.0* in the demo.
 
+# 🆕 What's new in 1.6.1 - 1.6.3
+- **Faster pages:** the CSS/JS of `<head>` is written once to cached files (`_cache/`, ~110 KB less per page); Tablesorter is loaded by the first `htm_Table()` and jQuery UI is no longer needed; preconnect to the CDN; one shared card menu; shorter table cell styles.
+- **Libraries:** TinyMCE 8.9.3 (security fixes), Font Awesome 7.3.1, jQuery UI 1.14.2, Tablesorter 2.32.0, pdf.js 6.4.299.
+- **Translations:** all texts of the library in Danish, German, French and Swedish; ~190 Danish machine-translation errors corrected.
+- **Fixes:** HTML5-valid output (nested forms, unclosed `<style>`, void elements, escaping), `msg_System()` layout, `msg_Dialog()` on the theme-aware dialog (deprecated), session warning after expiry, number formats, folded card widths, page zoom and card resize.
+- New settings: `$gbl_AssetCache`, `$gbl_LazyLibs` (see `project.init.php`).
+
 # 📦 Installation
 ```bash
 git clone https://github.com/EV-soft/Clever-Html-Engine.git
