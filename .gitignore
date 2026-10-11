@@ -3,3 +3,6 @@ _trans.*.tmp.json
 
 # Written by the table demo (htm_Table expo:)
 Proj.demo/tableexport.csv
+
+# Cache of the CSS/JS blocks of the <head> (p2h_assetFiles - written at runtime)
+_cache/

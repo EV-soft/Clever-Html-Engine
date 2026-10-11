@@ -979,6 +979,33 @@ echo "Optimal baggrund: $optimalBackground";
  */
  
 # Add strings to a buffer
+# Big inline <style>/<script> blocks of the <head> become files in a cache folder, named by their content (hash): the browser keeps them
+# between pages and visits (was ~110 KB in every page). Same place in the page = same order and effect. A block with the CSRF token or the
+# session id stays inline. $gbl_AssetCache: folder (default _cache/ next to this library) - false: everything inline as before.
+function p2h_assetFiles($html) {
+    $dir= $GLOBALS['gbl_AssetCache'] ?? (__DIR__.'/_cache');
+    if (!is_string($dir) or $dir === '') return $html;
+    $url= $GLOBALS['gbl_AssetCacheUrl'] ?? (($GLOBALS['gbl_ProgRoot'] ?? '../').'_cache/');
+    if (!is_dir($dir) and !@mkdir($dir, 0755, true)) return $html;
+    if (!is_writable($dir)) return $html;
+    if (!is_file($dir.'/.htaccess'))                    # The names change with the content: the browser may keep them for a year
+        @file_put_contents($dir.'/.htaccess', "<IfModule mod_headers.c>\n  Header set Cache-Control \"public, max-age=31536000, immutable\"\n</IfModule>\n");
+    $secret= array_filter([(string)($_SESSION['csrf_token'] ?? ''), (string)session_id()]);
+    return preg_replace_callback('#<(style|script)( type="text/css")?>(.*?)</\1>#s', function($m) use ($dir, $url, $secret) {
+        $code= $m[3];
+        if (strlen($code) < 1000) return $m[0];                                    # Small blocks: not worth a request
+        foreach ($secret as $x) if (strpos($code, $x) !== false) return $m[0];      # Never in a shared file
+        $ext= ($m[1] === 'style') ? 'css' : 'js';
+        $name= 'p2h-'.substr(md5($code), 0, 16).'.'.$ext;
+        if (!is_file($dir.'/'.$name)) {
+            $tmp= $dir.'/'.$name.'.'.getmypid().'.tmp';
+            if (@file_put_contents($tmp, $code) === false or !@rename($tmp, $dir.'/'.$name)) { @unlink($tmp); return $m[0]; }
+        }
+        $href= htmlspecialchars($url.$name, ENT_QUOTES, 'UTF-8');
+        return ($ext === 'css') ? '<link rel="stylesheet" href="'.$href.'">' : '<script src="'.$href.'"></script>';
+    }, $html);
+}
+
 # The script/link tags of a library that is loaded where it is first used (htm_Page_ prepares them; $gbl_LazyLibs= false: in <head> as before)
 function p2h_libTags($key) {
     static $done= [];
@@ -4659,6 +4686,7 @@ function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'',
     foreach ([$LIB_JQUERY, $LIB_JQUERYUI, $LIB_TABLESORTER, $LIB_FONTAWESOME, $LIB_TINYMCE, $LIB_PDFVIEW, $LIB_POLYFILL] as $lb)
         if (is_array($lb) and ((($lb[0] ?? 0)==2) or ((($lb[0] ?? 0)==3) and (($autoCDN ?? '')=='2')))) $cdnUse= true;
 // <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    $headBuf= (($GLOBALS['gbl_AssetCache'] ?? true) !== false);  if ($headBuf) ob_start();   # The <head>: big CSS/JS blocks to cached files (p2h_assetFiles)
     echo '<!DOCTYPE html>
     <html lang="'.sys_enc(preg_match('/^[a-z]{2}(-[A-Za-z]{2})?$/', $GLOBALS['lang'] ?? '') ? $GLOBALS['lang'] : 'en').'" dir="ltr">
     <head>
@@ -4968,12 +4996,13 @@ tfoot input {
     left: 0;
 }
 
-$('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter-blue input.tablesorter-filter, .tablesorter-blue select.tablesorter-filter {
+.tablesorter-blue input.tablesorter-filter, .tablesorter-blue select.tablesorter-filter {      /* (was a jQuery call here: an invalid selector) */
   width: 99%;
   height: auto;
   margin: 0;
   padding: 1px;
 }
+</style>     <!-- (was not closed: the next blocks were read as CSS text until some later </style>) -->
 ";
 } # LIB_TABLESORTER
 
@@ -5139,7 +5168,10 @@ body{
 @media print {
   body {display:none;}
 }';
-run_Script($pdfview_css);
+set_Style('', '.pagination { background: #ffffff; width: 62%; float: left; } .pagination .wrap { float: right; width: 300px; } '.
+              '#the-canvas { border: 1px solid gray; direction: ltr; margin: 0 auto; display: block; }');
+    # (Only these rules of $pdfview_css: the whole block was sent inside a <script>, and the browser happened to use these via an unclosed
+    #  <style> - plus body{display:none} in print, which made the page print blank. body{background:black} was never used.)
 }
 
 /* 
@@ -6295,6 +6327,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
     if ($inis>'')            echo $inis;            // read CSS/js given in htm_Page_ parameter
     // if ($lateScripts > '') echo $lateScripts;    // run_Script($lateScripts);
     if ($headEndScript > '') run_Script($headEndScript);
+    if ($headBuf) echo p2h_assetFiles(ob_get_clean());
     
 
     echo "\n</head>\n
