@@ -289,6 +289,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         $valu= htmlspecialchars((string)$valu, ENT_QUOTES, 'UTF-8');  // Kun html-varianten må indeholde markup
     }
     if (($llgn == '') and ($gbl_labelAlgn >'')) $llgn= $gbl_labelAlgn;
+    if (!empty($GLOBALS['gbl_CardForm'])) $form= '';      # Inside a card form: the field belongs to that form (forms cannot be nested)
     ($form=='' ? $result= '' : $result= '<form name="'.sys_enc($form).'" method="post" style="display:inline;">'.csrf_field(true));
     if ($form>'') $subm= '<input type="submit" value="OK" style="padding:0 0 0 2px; border-radius: 3px; width:22px; position: relative; color:blue;" title="Submit" />';
     if ($wdth>'') $wdth= ' width: '.$wdth.'; '; else $wdth='';
@@ -366,9 +367,9 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
 
         case 'rang' : $result.= '<span class="fieldContent boxStyle range-wrap" style="height: 32px; ">'.
                                 '<input class="range" type= "range" '.$inpIdNm. '  value="'.$valu.'" '. $aktiv. $attr. /* 'onclick="setBubble('.$name.',\'bubbleDiv\') " ' . */
-                                'oninput="this.nextElementSibling.value = this.value" style= "text-align: '.$algn.'; font-size: 12px; margin: 0; padding-top: 5px; box-shadow: none;" /> 
+                                ' oninput="this.nextElementSibling.value = this.value" style= "text-align: '.$algn.'; font-size: 12px; margin: 0; padding-top: 5px; box-shadow: none;" /> 
                                 <output style="top: -18px; left: 45%; position: relative; font-size: 10px">'.$valu.'</output>'.
-                            '<div class="bubble" id="bubbleDiv" name="bubbleDiv" 
+                            '<div class="bubble" 
                                   style="font-size: 10px; position: relative; width: 100%; text-align: center; opacity: 80%; top: -37px; "> '. // ' min="0" max="50"'
                                    '<span style="width: 10%; float:left;">'.str_replace('"','',substr($attr,1,7)).'</span> '.
                                   // '<span style="width: 33.33%;"> './* $valu. */'</span> '.
@@ -1741,8 +1742,8 @@ function htm_Embed(# name:'', type:'application/pdf', wdth:'800px', heig:'2100px
     $bord= '0',                 # string: frameBorder
     $rtrn= false                # bool:   Act as procedure: Echo result, or as function: Return string
 ){  if ($name > '') {
-    $result= '<embed src="'.$name.
-        '" width="'.$wdth.'" height="'.$heig.'" scrolling="auto" type="'.$type.'" frameBorder="'.$bord.'" ></embed>';
+    $result= '<embed src="'.sys_enc($name).
+        '" width="'.sys_enc($wdth).'" height="'.sys_enc($heig).'" type="'.sys_enc($type).'">';     # (embed is a void element: no </embed>)
     if (!$rtrn) echo $result; else return $result;
     }
 };
@@ -3552,7 +3553,8 @@ $result= '
 '; 
 
 // https://codepen.io/aratour/pen/xxbwLMz :
-if ($form>'') $result.= ' <form name="'.$form.'" id="'.$form.'">';
+if (!empty($GLOBALS['gbl_CardForm'])) $form= '';     # Inside a card form: no form of its own (forms cannot be nested) - the card form is checked
+if ($form>'') $result.= ' <form name="'.sys_enc($form).'" id="'.sys_enc($form).'">';
     $result.= '    
         <div class="grab-slider-field">
             <div class="grab-slider-wrapper" title="'.lang($hint).'">

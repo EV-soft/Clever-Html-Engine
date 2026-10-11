@@ -1014,9 +1014,9 @@ if (!$removeMenu) {
                styl: 'background-color: lightgray;', attr: '',head:$headbg, vhgh:'600px', simp:$mode);
         $heading= [['@Pos.','center'],['@Item no.','center'],['@Quantity','right'],['@Unit','left'],['@Description','left'],['@VAT','center'],
                    ['@Price','right'],['@%','right'],['@Total','right'],['@Currency','center']];
-        $body= '<small><table style="margin: 0 auto; width:675px;"><thead>';    // Content Preview:<br>
+        $body= '<small><table style="margin: 0 auto; width:675px;"><thead><tr>';    // Content Preview:<br>
         foreach ($heading as $h) {$body.= '<th>'.lang($h[0]).'</th>'; };
-        $body.= '</thead>';
+        $body.= '</tr></thead>';
 /*      ['@Item no.',     '9%','text', '',  [''      ],'cnt_product',    '@Item number for the service','@Item...'],
         ['@Quantity',     '3%','text', '1d',['center'],'cnt_numb',       '@Quantity stated as number','@Numb...'],
         ['@Unit',         '6%','text', '',  ['left'  ],'cnt_unit',       '@Unit designation','@Unit...'],

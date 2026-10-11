@@ -82,7 +82,7 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
     htm_TextDiv('You can find informations about using the PHP2HTML-system here:<br><br>
     <b>Overviews:</b><br>
     htm_Functions - Look at this page: <br>
-    <li>FUNCTIONS > Overview > Card: <a href="functions.page.php"><i>The overview over the system functions.</i></a></li></li>
+    <li>FUNCTIONS > Overview > Card: <a href="functions.page.php"><i>The overview over the system functions.</i></a></li>
     <li>FUNCTIONS > Overview > Card: Parameter-names: <a href="functions.page.php"><i>Notes about function parameters</i></a></li> <br>
     Folder/Files - Look at this page: <br> 
     <li>FILES > Folders and files > Card: <i>Libraryes and files</i> </li>

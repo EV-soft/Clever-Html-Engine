@@ -74,7 +74,7 @@ htm_Page_( titl:'@DEMO  and examples', hint:$©, info:'File: '.$DocFile.' - ver:
         $text= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & © 2019-2025 EV-soft'; 
         $html= '<span style="cursor:help;" title="'.$text.'">      '.   /* (was <a href="">: a click reloaded the page) */'
                 <img style="width: 70%;" alt="'.lang('@QR code').': '.$text.'" src=
-               "https://qrcode.tec-it.com/API/QRCode?data='.urlencode($text).'&codepage=UTF8&size=small"></span>';
+               "https://qrcode.tec-it.com/API/QRCode?data='.urlencode($text).'&amp;codepage=UTF8&amp;size=small"></span>';
 // debricated:  "https://chart.googleapis.com/chart?cht=qr&chl='.urlencode($text).'&chs=90x90&choe=UTF-8&chld=L|0"></a>';
 /* 
 <img src="https://qrcode.tec-it.com/API/QRCode?data=https%3a%2f%2fqrcode.tec-it.com" />
@@ -480,8 +480,8 @@ STRING
     echo '<tr>
     <td><input type= "text" name="name1" value="" style="width: 50px; border: 1px solid var(--grayColor);" placeholder="name..." /></td>
     <td><input type= "text" name="titl1" value="" style="width: 100px; border: 1px solid var(--grayColor);" placeholder="titl..." /></td>
-    <td colspan="9" ><i><small>Password:</small><input type= "text" name="pass1" value="" style="width: 100px; border: 1px solid var(--grayColor);" placeholder="pass..." /></i></td>
-    <td colspan="9" ><i><small>Repeat:</small><input type= "text" name="pass2" value="" style="width: 100px; border: 1px solid var(--grayColor);" placeholder="pass..." /></i></td></tr>';
+    <td colspan="9" ><i><small>Password:</small><input type= "password" name="pass1" value="" style="width: 100px; border: 1px solid var(--grayColor);" placeholder="pass..." /></i></td>
+    <td colspan="9" ><i><small>Repeat:</small><input type= "password" name="pass2" value="" style="width: 100px; border: 1px solid var(--grayColor);" placeholder="pass..." /></i></td></tr>';
     echo '<tr><td>&nbsp;</td></tr>';
     echo '<tr style="border: 1px solid lightgray;">
     <td colspan="1"> &nbsp;<small><strong>'.lang('@Meaning:').'</strong></small></td>
@@ -491,8 +491,7 @@ STRING
     <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:0, acti:false, styl:'').' <small>: '. lang('@Undefined').'</small></td>
     <td colspan="'.(count($task)-8).'" style="text-align:right;"><small>'.lang('@CLICK symbol to change').'</small>&nbsp;</td></tr>';
     echo '</table>';
-    
-    echo '</span>';
+    # (A stray </span> here ended the card too early)
     htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'crea',  rtrn:false, 
                    tplc:'LblTip_text', tsty:'left: auto; top: 0; position: relative;',acti:'htm_Toast("Create new user<br>Cant create yet !","orange","black")');
     htm_Fieldset_end();
@@ -597,13 +596,13 @@ STRING
             Column wise it can: Filter - Sort - Width-Resize<br><br>
             Row wise it can: Create - Change - Delete - Spec. Buttons - set background color<br>
             Above and underneth the table, you can use special captions and notes.<br><br>
-            Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, $TblNote, &$TblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $TblStyle, $CalledFrom, $MultiList)</data-hint>Parameters</abbr>)
+            Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, $TblNote, &amp;$TblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $TblStyle, $CalledFrom, $MultiList)</data-hint>Parameters</abbr>)
         ';
     $strCards= 'cards is a container for html-objects.<br>
             It is build with two functions: htm_Card_() and htm_Card_end()<br><br>
             It consists of: icon + header - a body with content - and a footer that can be hidden.<br>
             The header-caption is automatic translated to the current selected language.<br>
-            When clicking the caption-text in the header, it will show/hide the body&footer-content.<br>
+            When clicking the caption-text in the header, it will show/hide the body&amp;footer-content.<br>
             In the headers right side there are icons to open/close single or all the cards in the window.<br><br>
             cards has predefined widths, and its position will swap, if the window-width is to small.<br>
             cards can be used as a "Local Menu" and to keep overview...<br>
@@ -651,9 +650,9 @@ STRING
         That means a simpler way to call functions.<br><br>
         Example PHP 7: (fixed order!)<br><code><div style="background-color:whitesmoke">
         htm_Input($labl=\'@htm_Input(Dec2)\', $plho=\'\', $hint=\'@Demo of htm_Input Field type dec2: number with 2 decimal\', ,<br>
-         $type=\'dec2\', $name=\'dec2\', $valu=$dec2, $wdth=\'\', $algn=\'center\', $unit=\'<$ \');</div></code><br><br>
+         $vrnt=\'dec2\', $name=\'dec2\', $valu=$dec2, $wdth=\'\', $algn=\'center\', $unit=\'&lt;$ \');</div></code><br><br>
         Example PHP 8: (free order!)<br><code><div style="background-color:whitesmoke">
-        htm_Input('.b('labl').':\'@htm_Input(Dec2)\', '.b('type').':\'dec2\','.b('name').':\'dec2\','.b('valu').':$dec2,'.b('unit').':\'<$ \','.
+        htm_Input('.b('labl').':\'@htm_Input(Dec2)\', '.b('vrnt').':\'dec2\','.b('name').':\'dec2\','.b('valu').':$dec2,'.b('unit').':\'&lt;$ \','.
         b('hint').':\'@Demo of htm_Input Field type dec2: number with 2 decimal\');</div></code><br>
         <br>
         Be aware of PHP 7.4 is a supported version until 2023/24 ! <br>
