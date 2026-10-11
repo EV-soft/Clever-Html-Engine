@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.6.1';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -66,20 +66,20 @@ $autoCDN= $_SESSION['autoCDN']; // $autoCDN can be used to auto switch between -
 //         LibName:           ix:                 LocalPath:                         CDN-path:         (Search: https://cdnjs.com/libraries)          // File:
 if ((isset($needJquery)) and ($needJquery>'0')) {
     $LIB_JQUERY=        [$needJquery,      '_assets/jquery/latest/',           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/'];               //    
-    $LIB_JQUERYUI=      [$needJquery,      '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.3/'];            // jquery-ui.min.js
+    $LIB_JQUERYUI=      [$needJquery,      '_assets/jquery-ui/latest/',        'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.2/'];            // jquery-ui.min.js
 }
 if ((isset($needTablesorter)) and ($needTablesorter>0)) {
-    $LIB_TABLESORTER=   [$needTablesorter, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/'];  // js/jquery.tablesorter.js and 4 others
+    $LIB_TABLESORTER=   [$needTablesorter, '_assets/tablesorter/latest/',      'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/'];  // js/jquery.tablesorter.js and 4 others
 }
 if ((isset($needPolyfill)) and ($needPolyfill>0)) {
     $LIB_POLYFILL=      [$needPolyfill,    '_assets/dialog-polyfill/latest/',  'https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/'];      // dialog-polyfill.js and dialog-polyfill.css
 }
 if ((isset($needFontawesome)) and ($needFontawesome>0)) {
-    $LIB_FONTAWESOME=   [$needFontawesome, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/'];         // css/all.min.css
+    $LIB_FONTAWESOME=   [$needFontawesome, '_assets/font-awesome/latest/',     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/'];         // css/all.min.css
                                                                              // https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css
 }
 if ((isset($needTinymce)) and ($needTinymce>0)) {
-    $LIB_TINYMCE=       [$needTinymce,     '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/8.0.2/'];              // tinymce.min.js
+    $LIB_TINYMCE=       [$needTinymce,     '_assets/tinymce/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/tinymce/8.9.3/'];              // tinymce.min.js
 }                                      
 if ((isset($needPdfview)) and ($needPdfview>0)) {
     $LIB_PDFVIEW=       [$needPdfview,     '_assets/pdfview/latest/',          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/'];             // pdf.js
