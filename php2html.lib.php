@@ -1340,7 +1340,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
             $ColIx= -1;
             $rowHtml= '';
             $rowBg= '';
-            $inpBg= ' background-color:transparent;';   //' background-color: white; opacity:0.60; '; //$inpBg= ' background-color:rbg(200,200,200,0.3);';  //' background-color: white; opacity:0.60; ';
+            $inpBg= '';      # Transparent background and width 98%: CSS "table.tablesorter td > input" (was in every cell)   //' background-color: white; opacity:0.60; '; //$inpBg= ' background-color:rbg(200,200,200,0.3);';  //' background-color: white; opacity:0.60; ';
             ## Fields with data:
             $GotoEdit= ' class="clsFocus" '; // Goto FirstField in created row
             foreach ($body as $bdy)
@@ -1399,10 +1399,10 @@ $ixalign= $ixalign ?? '';
 
             ## ColRules:                                      (FieldProporties)
                 if (is_string($bdy[4][0] ?? ''))  $txAlign= ' style="text-align:'.($bdy[4][0] ?? '').'; '; else $txAlign= '';
-                if (is_string($bdy[4][1] ?? ''))  $bgColor= ' background-color:'. ($bdy[4][1] ?? '').'; '; else $bgColor= '';
+                if (is_string($bdy[4][1] ?? '') and (($bdy[4][1] ?? '') > ''))  $bgColor= ' background-color:'. $bdy[4][1].'; '; else $bgColor= '';
                 if (is_string($bdy[4][2] ?? ''))  $fltStyl= ' '.   /* Custom */   ($bdy[4][2] ?? '').' ' ; else $fltStyl= '';   // i.e.: 'font-style:italic; '
-                if (is_string($bdy[4][3] ?? ''))  $tdColor= ' background-color:'. ($bdy[4][3] ?? '').'; '; else $tdColor= '';
-                if (is_string($bdy[4][4] ?? ''))  $txtSize= ' font-size:'.        ($bdy[4][4] ?? '').'; '; else $txtSize= '';
+                if (is_string($bdy[4][3] ?? '') and (($bdy[4][3] ?? '') > ''))  $tdColor= ' background-color:'. $bdy[4][3].'; '; else $tdColor= '';
+                if (is_string($bdy[4][4] ?? '') and (($bdy[4][4] ?? '') > ''))  $txtSize= ' font-size:'.        $bdy[4][4].'; '; else $txtSize= '';
                 //  disabled ?
 
             ## Special conditional "row"-formats:
@@ -1411,7 +1411,8 @@ $ixalign= $ixalign ?? '';
                 if (is_array($DataRow))
                 if ($ColIx<count($DataRow)) {  //  If colspan is there stopped here, when the row is over
                     // if ($emptyTD== true) $rowField.= '<td>'; else
-                    $rowField.= '<td style="text-align:'.$bdy[4][0].'; '.$ixalign.' width:'.$bdy[1].'; '.$bgColor.$tdColor.$txtSize.$rowBg.($colsp ?? ''); //  tablefield-property
+                    $rowField.= '<td style="'.(stripos($ixalign, 'text-align') !== false ? $ixalign : 'text-align:'.$bdy[4][0].'; '.$ixalign).   # (the row rule's text-align won anyway)
+                                ' width:'.$bdy[1].'; '.$bgColor.$tdColor.$txtSize.$rowBg.($colsp ?? ''); //  tablefield-property
 
                 ## Special InputTypes in tablefields:
                 if ($GLOBALS["Øshow"] ?? ''>0) $bdy[2]= 'text';
@@ -1446,7 +1447,7 @@ $ixalign= $ixalign ?? '';
                                   $sum= (toNum($DataRow[2+$x])*toNum($DataRow[6+$x]))*(100-toNum($DataRow[7+$x]))/100*(100+toNum($DataRow[5+$x]))/100;
                                   $rowField.= '"> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
                                        'value="'.number_format((float)$sum, 2,',',' '). '" placeholder="'.lang($bdy[7]).'"'.
-                                       $txAlign.$inpBg.' width:98%; " readonly /> '; };
+                                       $txAlign.$inpBg.' " readonly /> '; };
                                   $ordrTotal+= $sum;
                                   break;
 
@@ -1461,12 +1462,12 @@ $ixalign= $ixalign ?? '';
                                   else $clr= '';                                                                  // Hide the browsers placeholder by using a SPACE
                                   $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
                                        'value="'.sys_enc((string)$valu). '" placeholder="'.lang($bdy[7] ?? '').'"'.
-                                       $txAlign.$inpBg.' width:98%; '.$clr.' " readonly /> ';
+                                       $txAlign.$inpBg.' '.$clr.' " readonly /> ';
                                   break;
                     case 'intg' : $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
                                        'value="'.number_format(sys_toFloat($valu), 0,',',' '). //  0 dec. = Integer
                                        '" placeholder="'.lang($bdy[7]).'"'.$txAlign.$inpBg.
-                                       ' width:98%; padding-left:2px; padding-right:2px;" /> ';
+                                       ' padding-left:2px; padding-right:2px;" /> ';
                                   break;
                     case 'data' : //  Show and edit data:
                     case 'area' : if ($valu=='New field')  {  # Create new record
@@ -1481,7 +1482,7 @@ $ixalign= $ixalign ?? '';
                                   } else # Show editable datafield:
                                     $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
                                          'value="'.sys_enc((string)$valu).'" placeholder="'.lang($bdy[7] ?? '').'"'.
-                                         $txAlign.$inpBg.' width:98%; padding-left:2px; padding-right:2px;" /> ';
+                                         $txAlign.$inpBg.' padding-left:2px; padding-right:2px;" /> ';
                                   break;
                     case 'opti' :{ $rowField.= '"'.$sortData.'><span '. 
                                         htm_Input($labl=lang($bdy[7]),$plho= '?...',$icon='',$hint=lang($bdy[6]),$vrnt='opti',$name= $fldNames[$ColIx],$valu,$form='',$wdth='98%',
@@ -1509,11 +1510,11 @@ $ixalign= $ixalign ?? '';
                     case 'text' :
                     case 'sttu' :   // "unused" Status
                                 { $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" value="'.sys_enc((string)$valu).'" '. //'contentEditable="true" '.
-                                       ' placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.$fltStyl.' width:98%; '.$captStyle.'" /> ';  //  font-style:inherit;
+                                       ' placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.$fltStyl.' '.$captStyle.'" /> ';  //  font-style:inherit;
                                   break;
                                 }
                     default   : { $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" value="'.sys_enc((string)$valu).'" '.
-                                        'placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.$fltStyl.' width:98%;" /> ';
+                                        'placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.$fltStyl.'" /> ';
                                        // htm_toast('Invalid type: '.$Body[2].' in htm_Table() - error !','orange','black');
                                 }
                     }   // :switch InputTypes
@@ -7362,6 +7363,9 @@ abbr.hint.p2hGripHint { position: absolute; right: 0; bottom: 0; z-index: 3; tex
 abbr.hint.p2hGripHint:hover data-hint, abbr.hint.p2hGripHint:focus-within data-hint { left: auto; top: auto; right: 4px; bottom: 18px; width: 240px; }
 .p2hGripCol, .p2hColview .p2hGripTxt { display: none; }
 .p2hColview .p2hGripCol { display: inline; }                    /* Column view: only the height can be dragged */
+/* htm_Table(): inputs in the cells - transparent (the zebra stripe shows) and almost the cell width (were inline in every cell) */
+table.tablesorter > tbody > tr > td > input:not([type=hidden]):not([type=checkbox]):not([type=date]) { background-color: transparent; width: 98%; }
+table.tablesorter > tbody > tr > td > input[type=date] { background-color: transparent; }
 /* Card order (p2hCardMove): the handle, the card being moved, "Arrange cards" mode */
 abbr.hint.p2hMoveHint { position: absolute; left: 1px; top: 6px; z-index: 2; text-decoration: none; }
 abbr.hint.p2hMoveHint:hover data-hint, abbr.hint.p2hMoveHint:focus-within data-hint { left: 18px; top: 0; }
