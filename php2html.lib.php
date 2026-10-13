@@ -410,7 +410,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                             if ($rows!='0')
                                 $result.= '<meter id= "pwPoint_'.$iid.'" style="position:relative; height:12px; width:100%; top: -10px;" '. 
                                           'min="0" low="6" optimum="7" high="9" max="10" '.
-                                          'title="'.lang('@Password strength: 0..10 (This fails !)').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
+                                          'title="'.lang('@Password strength: 0..10').'">'. // $str.'"'. // ' <span id=\"mtPoint\"'.$name.'> 0</span>'. '/10"'.
                                      '</meter>'; 
                       $result.= '</span>';  break;
 

@@ -1,5 +1,5 @@
 <?php  $DocFile='../Proj.demo/Demo.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 ## NOTE: In this demo all function-parameters can be shown. In a real project you just need to give parameters different from default values !
 
 $sys= $GLOBALS["gbl_ProgRoot"]= './../';
@@ -71,7 +71,7 @@ htm_Page_( titl:'@DEMO  and examples', hint:$©, info:'File: '.$DocFile.' - ver:
         htm_Input(labl:'@htm_Input(html)', plho:'</>', icon:'', hint:'@Demo of htm_Input Field type html: Multi-line formatted html-text',  vrnt:'html', name:'html1', valu:'',          form:'', wdth:'140px;',   algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'3', step:'', list:[], llgn:'R', bord:'', ftop:''); 
         htm_nl();   
         htm_Input(labl:'@htm_Input(area)', plho:'Multiline </>:', icon:'', hint:'@Demo of htm_Input Field type area: Multi-line text',      vrnt:'area', name:'area', valu:'',          form:'', wdth:'140px',    algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'6', step:'', list:[], llgn:'R', bord:'', ftop:'');
-        $text= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & © 2019-2025 EV-soft'; 
+        $text= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & © 2019-2026 EV-soft'; 
         $html= '<span style="cursor:help;" title="'.$text.'">      '.   /* (was <a href="">: a click reloaded the page) */'
                 <img style="width: 70%;" alt="'.lang('@QR code').': '.$text.'" src=
                "https://qrcode.tec-it.com/API/QRCode?data='.urlencode($text).'&amp;codepage=UTF8&amp;size=small"></span>';
@@ -594,9 +594,9 @@ STRING
     $strTabel= 'The function htm_Table() is a advanced module to show and input user data.<br>
             It has fixed (sticky) column headers, and Scrolling content-window.<br>
             Column wise it can: Filter - Sort - Width-Resize<br><br>
-            Row wise it can: Create - Change - Delete - Spec. Buttons - set background color<br>
+            Row wise it can: Create - Change - Spec. Buttons - set background color (delete / copy / move rows: under development)<br>
             Above and underneth the table, you can use special captions and notes.<br><br>
-            Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table($TblCapt, $RowPref, $RowBody, $RowSuff, $TblNote, &amp;$TblData, $FilterOn, $SorterOn, $CreateRec, $ModifyRec, $ViewHeight, $TblStyle, $CalledFrom, $MultiList)</data-hint>Parameters</abbr>)
+            Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table(capt:[], pref:[], body:[...], suff:[], note:\'\', data:$rows, filt:true, sort:true, crea:true, modi:true, vhgh:\'400px\')</data-hint>Parameters</abbr>)
         ';
     $strCards= 'cards is a container for html-objects.<br>
             It is build with two functions: htm_Card_() and htm_Card_end()<br><br>
@@ -606,7 +606,7 @@ STRING
             In the headers right side there are icons to open/close single or all the cards in the window.<br><br>
             cards has predefined widths, and its position will swap, if the window-width is to small.<br>
             cards can be used as a "Local Menu" and to keep overview...<br>
-            Example: htm_Card_(<abbr class= "hint"><data-hint>htm_Card_($frmName=\'orders\', $capt=lang(\'@Find existing order:\'), $parms=\'\', $icon=\'fas fa-search\', $class=\'cardW720\', $where=__FILE__, $attr=\'\', $BookMark=\'blindAlley.page.php\',$panlBg=\'background-color: rgba(240, 240, 240, 0.80);\');</data-hint>Parameters</abbr>) and htm_Card_end(<abbr class= "hint"><data-hint>htm_Card_end($labl=\'@Save\', $subm=true, $title=\'\', $btnKind=\'save\', $akey=\'\', $simu=false, $frmName);</data-hint>Parameters</abbr>)
+            Example: htm_Card_(<abbr class= "hint"><data-hint>htm_Card_(capt:\'@Find existing order:\', icon:\'fas fa-search\', form:\'orders\', clas:\'cardW720\');</data-hint>Parameters</abbr>) and htm_Card_end(<abbr class= "hint"><data-hint>htm_Card_end(labl:\'@Save\', subm:true, foot:\'@Remember to save\');</data-hint>Parameters</abbr>)
 		';
     $strPage= 'To build a page there are 2 functions: <br><br>
             <b>htm_Page_()</b> - prepares the start of a page, by creating the HEAD content and starting the BODY section.<br>
@@ -648,19 +648,19 @@ STRING
         &nbsp; --> Arguments are order-independent and self-documented.<br><br>
         </small>
         That means a simpler way to call functions.<br><br>
-        Example PHP 7: (fixed order!)<br><code><div style="background-color:whitesmoke">
+        Positional arguments (fixed order - all arguments up to the last one you need):<br><code><div style="background-color:whitesmoke">
         htm_Input($labl=\'@htm_Input(Dec2)\', $plho=\'\', $hint=\'@Demo of htm_Input Field type dec2: number with 2 decimal\', ,<br>
          $vrnt=\'dec2\', $name=\'dec2\', $valu=$dec2, $wdth=\'\', $algn=\'center\', $unit=\'&lt;$ \');</div></code><br><br>
-        Example PHP 8: (free order!)<br><code><div style="background-color:whitesmoke">
+        Named arguments (free order - only the ones you need):<br><code><div style="background-color:whitesmoke">
         htm_Input('.b('labl').':\'@htm_Input(Dec2)\', '.b('vrnt').':\'dec2\','.b('name').':\'dec2\','.b('valu').':$dec2,'.b('unit').':\'&lt;$ \','.
         b('hint').':\'@Demo of htm_Input Field type dec2: number with 2 decimal\');</div></code><br>
         <br>
-        Be aware of PHP 7.4 is a supported version until 2023/24 ! <br>
-        Use PHP 8 syntax...
+        The library needs PHP 8.1 or newer. <br>
+        Use named arguments...
         ');
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'head4', subm:false, attr:'', akey:'s',  kind:'save', simu:false);
        
-    htm_Card_(capt:'@Demo of most recent functions (2024):',icon:'fas fa-info',hint:'@System functions developed in 2024',form:'head6',acti:'',
+    htm_Card_(capt:'@Demo of some newer functions:',icon:'fas fa-info',hint:'@System functions developed in 2024',form:'head6',acti:'',
               clas:'cardW800',wdth:'640',styl:'background-color: lightgray;',attr:'', show: true, head: $headbg, vhgh:'700px');
         htm_nl(2);
         htm_Field(labl:'@Demo of htm_Figure()', 
@@ -684,7 +684,7 @@ STRING
                         '<br>', 
                   icon:'',
                   hint:'@Demo of htm_Details()', name:'det', wdth:'300px;', styl:'background-color:lightcyan;', attr:'', llgn:'C', rtrn:false, ftop:'');
-        htm_TextDiv(body:'@Also new in 2024 is htm_GoTopButt()<br>You see it on this page button to the right.', 
+        htm_TextDiv(body:'@htm_GoTopButt(): the buttons at the right edge of this page take you to the top, the middle or the bottom.', 
                 algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white;', rtrn:false );
         
         htm_Fieldset(capt:'@Demo of htm_List_()',icon:'',hint:'@li list type<br>Marker: upper-roman',wdth:'',marg:'',styl:'background-color:white;',attr:'background-color:white;',rtrn:false);

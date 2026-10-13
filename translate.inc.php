@@ -1,5 +1,5 @@
 <?php $DocFile='../translate.inc.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 require_once ($sys.'php2html.lib.php');

@@ -1,5 +1,5 @@
 <?php   $DocFil= './functions.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
@@ -226,9 +226,9 @@ Named arguments<br>
   --> Specify only required parameters, skipping optional ones. (free order!)<br>
   --> Arguments are order-independent and self-documented.<br>
 <br>
-On PHP 7+ the order of parameters was fixed, and could not be omitted.<br>
+With positional arguments the order is fixed, and all arguments up to the last one you need must be given.<br>
 <br>
-Be aware of PHP 7.4 is a supported version until 2023/24 !<br>
+The library needs PHP 8.1 or newer.<br>
 ");
         htm_nl(1);
     htm_Card_end();

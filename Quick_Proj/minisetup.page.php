@@ -1,5 +1,5 @@
 <?php   $DocFile= './Quick_Proj/minisetup.page.php';    $DocVer='1.4.1';    $DocRev='2025-07-28';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 
@@ -19,7 +19,7 @@ require_once ($sys.'php2html.lib.php');
 $phpCode= 
 <<< 'STRING'
 <?php   $DocFile= './<yourFile>.page.php';    $DocVer='1.4.0';    $DocRev='2025-xx-xx';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= './';   // system in same folder
 $gbl_ProgRoot= './'; 

@@ -352,6 +352,9 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "Demo of some newer functions:":"Demo af nogle nyere funktioner:",
+      "htm_GoTopButt(): the buttons at the right edge of this page take you to the top, the middle or the bottom.":"htm_GoTopButt(): knapperne i højre kant af siden bringer dig til toppen, midten eller bunden.",
+      "What is new in version 1.6":"Nyt i version 1.6",
       "Are you human? ":"Er du et menneske? ",
       "Accent (titles and buttons)":"Accentfarve (titler og knapper)",
       "Auto":"Auto",

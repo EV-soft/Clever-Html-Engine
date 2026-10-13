@@ -1,5 +1,5 @@
 <?php   $DocFile= './Proj.demo/description.page.php';    $DocVer='1.4.1';    $DocRev='2024-07-01';      $DocIni='evs';  $ModNo=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2024 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
@@ -42,7 +42,7 @@ htm_Page_( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ve
 
         For data viewing and editing, an advanced table is offered with:<br>
         Column wise: Filtering - Sorting - Resizable width<br>
-        Row wise: Create - Change - Delete - Spec. Buttons<br>
+        Row wise: Create - Change - Spec. Buttons (delete / copy / move rows: under development)<br>
         Fixed (sticky) column headers<br>
         Scrolling content-window<br>
         Zebra-striped rows<br><br>
@@ -55,24 +55,26 @@ htm_Page_( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ve
 
     htm_TextDiv('
         <u>Requirement:</u><br>
-        PHP 7+/ 8+<br>
+        PHP 8.1+ (named arguments)<br>
         HTML5<br>
         CSS3<br> 
         Source code must be UTF-8, no tabs, indent 4 space<br><br>
         <u>Used libraries:</u><br>
-        jQuery - Javascript. <br>
+        All optional - loaded only when needed, from the subfolder /_assets or from a CDN:<br>
         Font-awesome - icons. <br>
-        Mottie Tablesorter-system - Extended table functions.<br><br>
+        Mottie Tablesorter - extended table functions (with jQuery). <br>
+        TinyMCE - HTML editor. <br>
+        pdf.js - PDF viewer.<br><br>
     ');
 
     htm_TextDiv('
         <u>Run mode:</u><br>
-        You can chose between 2 running modes: "On-line" or "Off-line"<br><br>
+        You can chose between 3 running modes for each library ($needJquery ... $needPdfview): "On-line" (2), "Off-line" (1) or "Auto" (3: local if the CDN cannot be reached)<br><br>
         <b>"On-line"</b> means with internet access - Libraries is loaded from CDN-servers.<br>
-        Used space is reduced with 29 Mb (/_assets is not needed),<br>
+        Used space is reduced with about 14 MB (/_assets is not needed),<br>
         but system can\'t run if connection to the internet breaks.<br><br>
         <b>"Off-line"</b> means without internet access - Libraries is in subfolder /_assets<br>
-        Used space is min. 0.4 Mb. Delays is minimized.<br><br>
+        Used space is about 14 MB more. Delays are minimized.<br><br>
     ');
     
     htm_Card_end();

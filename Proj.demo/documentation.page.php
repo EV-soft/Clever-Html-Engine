@@ -1,5 +1,5 @@
 <?php   $DocFile= './Proj.demo/documentation.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2025 EV-soft *** See the file: LICENSE';
+$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../'; 
@@ -18,7 +18,7 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
     
-    htm_Card_(capt:'@What is new in version 1.6.0', icon:'fas fa-star', hint:'', form:'', acti:'', clas:'cardW800', wdth:'', styl:'background-color: white;', attr:'', elem:'section');
+    htm_Card_(capt:'@What is new in version 1.6', icon:'fas fa-star', hint:'', form:'', acti:'', clas:'cardW800', wdth:'', styl:'background-color: white;', attr:'', elem:'section');
     htm_TextDiv('<div style="text-align: left; white-space: normal;">
     <b>For the user of a page:</b>
     <ul>
@@ -51,6 +51,9 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
     <li><b>msg_Dialog() is deprecated:</b> it now shows the theme-aware dialog of <code>sysAlert()</code> / <code>sysConfirm()</code> (button 1 = OK, button 2 = Cancel, the message as text) -
         jQuery UI is not used by the library any more. Use <code>sysAlert()</code> / <code>sysConfirm()</code>, <code>msg_Error()</code> ... or <code>htm_Alert()</code> in new code.
         Tablesorter is loaded by the first <code>htm_Table()</code> of a page; <code>$gbl_LazyLibs= false;</code> loads Tablesorter and jQuery UI in &lt;head&gt; as before.</li>
+    <li><b>1.6.1 - 1.6.3:</b> faster pages (the CSS/JS of &lt;head&gt; in cached files in <i>_cache/</i>, Tablesorter loaded by the first table,
+        no jQuery UI, one shared card menu), newer libraries (TinyMCE 8.9.3, pdf.js 6), all library texts in Danish, German, French and Swedish,
+        HTML5-valid output, a real card footer (<code>htm_Card_end(foot:, subm:)</code>). Settings: <code>$gbl_AssetCache</code>, <code>$gbl_LazyLibs</code>.</li>
     <li><b>Customize without editing the library:</b> put the settings of a project in its own file, outside the library folder, and point to it
         in the page <i>before</i> the library is loaded: <code>$gbl_InitFile= __DIR__.&#39;/../myproject.init.php&#39;;</code>
         (else <i>project.init.php</i> next to the library is used). An update of the library then never overwrites the project.
