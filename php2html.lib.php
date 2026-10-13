@@ -930,13 +930,14 @@ function htm_TextHint(# text:'', hint:'', styl:'', attr:'', rtrn:false) {
     $rtrn=false                         # bool:   Function Return or echo result
 ){ # onmouseover: show popup description window:
     $result= '
-    <div class="tiptext" style="width: max-content; '.$styl.'">'.$text.'
+    <div class="tiptext" tabindex="0" style="width: max-content; '.$styl.'">'.lang($text).'
         <span class="description abbr hint"
              style="display:none; position:relative; top:30px; left: -50px; border:1px solid gray; width:200px; background-color: var(--HintsBgrd); '.$attr.'"> 
              '.lang($hint).'
         </span>
     </div>
-    <style>.tiptext:hover > .description { display: block !important; }</style>';   # (no jQuery needed)
+    '.(($GLOBALS['p2hTipCss'] ?? false) ? '' : '<style>.tiptext:hover > .description, .tiptext:focus > .description, .tiptext:focus-within > .description { display: block !important; }</style>');   # Once per page; also on keyboard focus
+    $GLOBALS['p2hTipCss']= true;
     if (!$rtrn) echo $result; else return $result;
 }
 
@@ -2790,6 +2791,7 @@ function htm_GoTopButt(# labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to 
         }
     }
 
+    static $done= false;  if ($done) return;  $done= true;     # The buttons have fixed ids: once per page
     renderScrollButton("btnGoTop", "scrollToTop()", $labl, $icon, $hint, $styl, $bott = "6px");
 if (true)     // Use mid-button: (if page-height is very large)
     renderScrollButton("btnGoMid", "scrollToMid()", "@Mid", "fa-solid fa-sort", "@Go to page middle", $styl, $bott ="40px");
@@ -2797,11 +2799,11 @@ if (true)     // Use mid-button: (if page-height is very large)
 
 echo '<style> html { scroll-behavior: smooth; } </style>
     <script>
-        window.onscroll = function() {
+        addEventListener("scroll", function() {             /* (was window.onscroll= - it replaced other scroll handlers of the page) */
           toggleButton("btnGoTop");
           toggleButton("btnGoMid");
           toggleButton("btnGoBot");
-        };
+        }, {passive: true});
         function toggleButton(id) {
           const btn = document.getElementById(id);
           if (!btn) return;
@@ -3209,7 +3211,11 @@ function htm_NotePad(# rtrn:false)
     # Plain text (a <textarea>) - the notes can never become code on the page. No server, no login: only this browser keeps them.
     if (!($GLOBALS['gbl_NotePad'] ?? true)) return '';
     $t= function($k) { return sys_enc(strip_tags(lang($k))); };
-    $result= '<button type="button" class="p2hNoteButt" aria-haspopup="dialog" aria-controls="p2hNoteWin" title="'.$t('@My notes').'"><ic class="fa-solid fa-note-sticky"></ic></button>'.
+    $butt= '<button type="button" class="p2hNoteButt" aria-haspopup="dialog" aria-controls="p2hNoteWin" title="'.$t('@My notes').'"><ic class="fa-solid fa-note-sticky"></ic></button>';
+    static $winDone= false;                                     # One window and one script per page - more calls: only the button (was: a 2nd window with the same id)
+    if ($winDone) { if (!$rtrn) echo $butt;  return $rtrn ? $butt : '';}
+    $winDone= true;
+    $result= $butt.
              '<div id="p2hNoteWin" class="p2hHelpWin p2hNoteWin" role="dialog" aria-labelledby="p2hNoteTtl" hidden>'.
                 '<div class="p2hNoteHead" title="'.$t('@Drag to move').'"><ic class="fa-solid fa-note-sticky" aria-hidden="true"></ic> '.
                     '<span id="p2hNoteTtl">'.$t('@My notes').'</span>'.
@@ -4125,7 +4131,7 @@ function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl
 )  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
 {   static $dlgNo= 0;  $dlgNo++;  $dId= 'htmDialog'.$dlgNo;   # Unique ids - several dialogs on one page
     $result= '<dialog id="'.$dId.'" style="padding:5px; background-color:lightcyan; border-radius: 6px;">
-        <form  name="yyy" method="dialog">
+        <div class="p2hDlgBody">                                   <!-- (was a form method=dialog: inside a card form its buttons submitted the card form) -->
             <div style="background-color:'.$bclr.'; padding:4px;">'.lang($capt).'</div>
             <p>'.lang($body).'</p>'.   //  <p><label>Favorite animal: <select> <option></option> <option>Brine shrimp</option> <option>Red panda</option> <option>Spider monkey</option> </select> </label></p>
             '<menu style="padding-inline-start: 40px; padding-inline-end: 40px;">'; 
@@ -4133,10 +4139,11 @@ function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl
                 $iconClass= $butn[3];
                 // if ($iconClass === '') $icon=''; else 
                 $icon= '<ic class="'.$butn[3].'" style="font-size: 16px; color: '.$butn[4].';"></ic>&nbsp;';
-                $result.= '<button'.($butn[0]>'' ? ' id="'.$dId.'_'.$butn[0].'"' : '').' value="'.$butn[1].'" title="'.lang($butn[5] ?? '').'" style="padding: 3px 5px;">'.$icon.lang($butn[2]).'</button>&nbsp;';
+                $result.= '<button type="button"'.($butn[0]>'' ? ' id="'.$dId.'_'.sys_enc($butn[0]).'"' : '').' value="'.sys_enc($butn[1]).'" title="'.sys_enc(strip_tags(lang($butn[5] ?? ''))).'"'.
+                          ' onclick="this.closest(&quot;dialog&quot;).close(this.value)" style="padding: 3px 5px;">'.$icon.lang($butn[2]).'</button>&nbsp;';   # Closes the dialog with its value (dialog.returnValue)
                 }
     $result.= '</menu>
-        </form>
+        </div>
         </dialog>
         '.($labl>'' ? '<button type="button" onclick="document.getElementById(\''.$dId.'\').showModal()" style="padding: 3px 8px;">'.lang($labl).'</button>' : '').'
         <output id="'.$dId.'_out" aria-live="polite"></output>
@@ -4235,7 +4242,8 @@ function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['gobac
                      '.(($Capt2 ?? '')>'' ? '<div style="font-weight:600;">'.$Capt2.':</div>' : '').'<var>'.$mess.'</var>'.'<br><br></div>'.
               '    </section> '.
               '    <div class="modal__footer" style="background-color: '.$headColr.'; ">';
-    if (in_array('goback',$list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Close the window and return to the previous screen').'">'.lang('@Undo').' </label>';
+    if (in_array('goback',$list)) $result.= '<label class="modlButt" for="'.$mId.'" role="button" tabindex="0" onclick="history.back();" '.   # (it only closed the window)
+                                            'title="'.lang('@Close the window and return to the previous screen').'">'.lang('@Undo').' </label>';
     if (in_array('goon',  $list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Close the message-window and continue').'">'.lang('@Continue').' </label>';
     if (in_array('accept',$list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Confirm and continue').'">'.lang('@Accept').' </label>';
     if (in_array('close', $list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Close the window!').'">'.lang('@Close')    .' </label>';
