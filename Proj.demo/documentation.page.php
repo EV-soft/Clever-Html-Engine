@@ -54,6 +54,9 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
     <li><b>1.6.1 - 1.6.3:</b> faster pages (the CSS/JS of &lt;head&gt; in cached files in <i>_cache/</i>, Tablesorter loaded by the first table,
         no jQuery UI, one shared card menu), newer libraries (TinyMCE 8.9.3, pdf.js 6), all library texts in Danish, German, French and Swedish,
         HTML5-valid output, a real card footer (<code>htm_Card_end(foot:, subm:)</code>). Settings: <code>$gbl_AssetCache</code>, <code>$gbl_LazyLibs</code>.</li>
+    <li><b>Table rows:</b> a suffix column of type <code>rowact</code> gives row actions in the browser - <code>[&#39;@Del.&#39;, &#39;2%&#39;, &#39;rowact&#39;, &#39;&#39;, [&#39;center&#39;], &#39;@Hint&#39;, &#39;del&#39;]</code>
+        (values: <code>del copy up down move undo</code>). Delete asks first, a copy is inserted below the row as a new record, Undo takes back the last change.
+        The rows are posted with the form in their new order (see the content table on <i>Advanced example</i>).</li>
     <li><b>Customize without editing the library:</b> put the settings of a project in its own file, outside the library folder, and point to it
         in the page <i>before</i> the library is loaded: <code>$gbl_InitFile= __DIR__.&#39;/../myproject.init.php&#39;;</code>
         (else <i>project.init.php</i> next to the library is used). An update of the library then never overwrites the project.

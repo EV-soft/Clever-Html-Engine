@@ -1015,6 +1015,56 @@ function p2h_libTags($key) {
     return $GLOBALS[$key] ?? '';
 }
 
+# htm_Table() suffix column type 'rowact' (value: 'del copy move undo' ...): row actions in the browser - delete (asks first), copy (below the
+# row, as a new record: the hidden id field emptied), move up/down, undo the last row change. The rows are posted as field[] lists with the form,
+# so the server gets the new rows and order when the card is saved. Tablesorter is told about every change.
+function p2h_rowActs($acts) {
+    static $jsDone= false;
+    $def= ['del'  => ['fa-solid fa-trash-alt',   '#c62828', '@Delete the row'],
+           'copy' => ['fa-regular fa-clone',     '#1565c0', '@Copy the row (the copy is inserted below it)'],
+           'up'   => ['fa-solid fa-arrow-up',    '#2e7d32', '@Move the row up'],
+           'down' => ['fa-solid fa-arrow-down',  '#2e7d32', '@Move the row down'],
+           'undo' => ['fa-solid fa-undo',        '#ef6c00', '@Undo the last row change (delete, copy, move)']];
+    $list= preg_split('/[\s,]+/', str_replace('move', 'up down', strtolower($acts)), -1, PREG_SPLIT_NO_EMPTY);
+    $result= '';
+    foreach ($list as $a) {
+        if (!isset($def[$a])) continue;
+        [$ic, $cl, $tip]= $def[$a];
+        $result.= '<abbr class="hint"><button type="button" class="p2hRowAct" data-act="'.$a.'" aria-label="'.sys_enc(strip_tags(lang($tip))).'">'.
+                  '<ic class="'.$ic.'" style="color:'.$cl.';" aria-hidden="true"></ic></button><data-hint style="left:auto; right:0;">'.lang($tip).'</data-hint></abbr>';
+    }
+    if (!$jsDone) { $jsDone= true;  $result.= '<script>
+(function(){
+  var T= '.json_encode(['ask'=>strip_tags(lang('@Delete the row?')), 'none'=>strip_tags(lang('@Nothing to undo'))], JSON_HEX_TAG | JSON_HEX_APOS).';
+  function upd(t) { if (window.jQuery && t.config) jQuery(t).trigger("update"); }
+  function rows(tb) { return [].filter.call(tb.children, function(r) { return r.tagName === "TR" && r.classList.contains("row") && r.style.display !== "none"; }); }
+  function fresh(tr) {                                     /* A copy is a new record: no ids, the record id (first hidden field) empty */
+    tr.removeAttribute("id");  tr.querySelectorAll("[id]").forEach(function(e) { e.removeAttribute("id"); });
+    var h= tr.querySelector("input[type=hidden]");  if (h) h.value= "";
+  }
+  document.addEventListener("click", function(e) {
+    var b= e.target.closest && e.target.closest(".p2hRowAct");  if (!b) return;
+    e.preventDefault();
+    var tr= b.closest("tr"), tb= tr.parentNode, t= tr.closest("table"), st= t.p2hUndo || (t.p2hUndo= []), a= b.dataset.act;
+    if (a === "del") sysConfirm(T.ask, function() { st.push({k: "del", tr: tr, next: tr.nextSibling, tb: tb});  tb.removeChild(tr);  upd(t); });
+    else if (a === "copy") { var c= tr.cloneNode(true);  fresh(c);  tb.insertBefore(c, tr.nextSibling);  st.push({k: "add", tr: c});  upd(t); }
+    else if (a === "up" || a === "down") {
+      var l= rows(tb), i= l.indexOf(tr), o= l[a === "up" ? i - 1 : i + 1];  if (!o) return;
+      st.push({k: "move", tr: tr, next: tr.nextSibling, tb: tb});
+      tb.insertBefore(tr, a === "up" ? o : o.nextSibling);  upd(t);  b.focus();
+    }
+    else if (a === "undo") {
+      var u= st.pop();  if (!u) { sysAlert(T.none); return; }
+      if (u.k === "add") u.tr.remove();
+      else u.tb.insertBefore(u.tr, (u.next && u.next.parentNode === u.tb) ? u.next : null);
+      upd(t);
+    }
+  });
+})();
+</script>'; }
+    return $result;
+}
+
 function spool($data,$echo=false) { global $spool;
     if ($echo==true) echo $data;
     $spool.= $data;
@@ -1560,6 +1610,7 @@ $ixalign= $ixalign ?? '';
                 foreach ($suff as $Suf) { dvl_pretty();
                     if ($modi) {
                         $output= preg_replace('/\bopen-modal_(\d+)\b/', 'open-modal_$1_'.$gbl_TblIx.'_'.$RowIx, (string)$Suf[6]);   # One dialog per row (unique id)
+                        if ($Suf[2]=='rowact') $output= p2h_rowActs((string)$Suf[6]);    # Row actions in the browser: del copy up down move undo
                         if ($Suf[2]=='button') { ## RowSuffix - Special Buttons:
                             $btnStyle= '" class="tooltip" style="height:20px; border:0; box-shadow:none; background-color:transparent;" ';
                             $btnSuff= $gbl_TblIx.'_'.$RowIx. $btnStyle;
@@ -7400,6 +7451,9 @@ abbr.hint.p2hGripHint { position: absolute; right: 0; bottom: 0; z-index: 3; tex
 abbr.hint.p2hGripHint:hover data-hint, abbr.hint.p2hGripHint:focus-within data-hint { left: auto; top: auto; right: 4px; bottom: 18px; width: 240px; }
 .p2hGripCol, .p2hColview .p2hGripTxt { display: none; }
 .p2hColview .p2hGripCol { display: inline; }                    /* Column view: only the height can be dragged */
+/* htm_Table() row actions (suffix type rowact) */
+.p2hRowAct { background: none; border: 0; padding: 1px 3px; cursor: pointer; box-shadow: none; font-size: 13px; }
+.p2hRowAct:hover, .p2hRowAct:focus-visible { background: rgba(127,127,127,0.18); border-radius: 3px; }
 /* htm_Table(): inputs in the cells - transparent (the zebra stripe shows) and almost the cell width (were inline in every cell) */
 table.tablesorter > tbody > tr > td > input:not([type=hidden]):not([type=checkbox]):not([type=date]) { background-color: transparent; width: 98%; }
 table.tablesorter > tbody > tr > td > input[type=date] { background-color: transparent; }

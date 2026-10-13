@@ -594,7 +594,7 @@ STRING
     $strTabel= 'The function htm_Table() is a advanced module to show and input user data.<br>
             It has fixed (sticky) column headers, and Scrolling content-window.<br>
             Column wise it can: Filter - Sort - Width-Resize<br><br>
-            Row wise it can: Create - Change - Spec. Buttons - set background color (delete / copy / move rows: under development)<br>
+            Row wise it can: Create - Change - Delete - Copy - Move up/down - Undo - Spec. Buttons - set background color<br>
             Above and underneth the table, you can use special captions and notes.<br><br>
             Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table(capt:[], pref:[], body:[...], suff:[], note:\'\', data:$rows, filt:true, sort:true, crea:true, modi:true, vhgh:\'400px\')</data-hint>Parameters</abbr>)
         ';

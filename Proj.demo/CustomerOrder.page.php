@@ -955,46 +955,10 @@ if (!$removeMenu) {
             suff: [
                 # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:value! ']
                 ['@Account',        '5%',     'text',     '',  ['center; font-size:smaller'],    '@Posting account and VAT code.','5600'],
-                ['@Del.', '2%','text', '',  ['center'],
-                              lang('@Delete the row! <br> WARNING - you can not regret.'),
-                        /*    '<button type="button" id="ButtRowDelete" onclick="removeRow()"><i class="fas fa-trash-alt" style="font-size:14px; color:red;" title="'. lang('@You can not reverse this delete row !').'"></i></button>' */
-                htm_ModalDialog(type:'erro',capt:'@DEMO page!',
-                          mess:'@The site is still under development.<br>The function to delete row is not finished yet.', 
-                          butt:[ ['clos'],['erro','','@Got it'] ],  html:
-                          '<ic class="fas fa-trash-alt" style="font-size:14px; color:red;" title="'.
-                          lang('@Delete the row! <br> WARNING - you can not regret.').'"></ic>')
-                              // onclick="remove(\'row_5\')" deleteRow(\'table1\') / removeRow() - not working: FIXIT
-                ],
-                ['@Clon.', '2%','text', '',  ['center'],
-                              lang('@Make a copy of this row<br> It will be added as the last row in the table'),
-                        /*    '<button class="plusbtn" type="button" style="padding: 2px 4px;" ><ic class="far fa-clone" style="font-size:14px; color:blue;" ></ic></button>' */
-                htm_ModalDialog(type:'hint',capt:'@DEMO page!', 
-                          mess:'@The site is still under development.<br>The function to clone row is not finished yet.', 
-                          butt:[ ['clos'],['hint','','@Got it'] ],  html:
-                          '<ic class="far fa-clone" style="font-size:14px; color:blue;" title="'.
-                          lang('@Make a copy of this row<br> It will be added as the last row in the table').'"></ic>')
-                ],
-                ['@Und.', '2%','text', '',  ['center'],
-                              lang('@Undo posting! <br> Refund the amount by clicking on the icon.').' '.
-                              lang('@If the order is invoiced, the item can be returned until the order has been posted. Then it must be done by crediting the customer!'),
-                            /*   '<button style="padding: 2px 4px;" onclick=\'htm_Toast("Reverse this post<br>Cant do it yet !","lightyellow","black")\'><ic class="fas fa-undo" style="font-size:14px; color:orange;" title="'.
-                              lang('@Reverse this entry, e.g. undo reminder fee').'"></ic></button>' */
-                htm_ModalDialog(type:'warn',capt:'@DEMO page!', 
-                          mess:'@The site is still under development.<br>The function to undo posting is not finished yet.', 
-                          butt:[ ['clos'],['warn','','@Got it'] ],  html:
-                          '<ic class="fas fa-undo" style="font-size:14px; color:orange;" title="'.
-                          lang('@Reverse this entry, e.g. undo reminder fee').'"></ic>')
-                ],
-                ['@Mov.', '2%','text', '',  ['center'], '@Move an entry up or down.',
-                        /*    '<button type="button" onclick=\'phpDialog()\'><ic class="fas fa-arrows-alt-v" style="font-size:14px; color:green;" title="'.
-                              lang('@Not working yet').'"></ic></button>' */
-                htm_ModalDialog(type:'succ',capt:'@DEMO page!', 
-                          mess:'@The site is still under development.<br>The function to move up/down is not finished yet.', 
-                          butt:[ ['clos'],['succ','','@Got it'] ],  html:
-                          '<ic class="fas fa-arrows-alt-v" style="font-size:14px; color:green;" title="'.
-                          lang('@Can`t move an entry up or down yet.').'"></ic>')
-                ] // /* htm_Toast("Moving this post<br>Cant do it yet !","lightyellow","black") */
-                
+                ['@Del.', '2%','rowact', '',  ['center'], '@Delete the row (it asks first - Undo brings it back)', 'del'],
+                ['@Clon.','2%','rowact', '',  ['center'], '@Copy the row (the copy is inserted below it)', 'copy'],
+                ['@Und.', '2%','rowact', '',  ['center'], '@Undo the last row change (delete, copy, move)', 'undo'],
+                ['@Mov.', '4%','rowact', '',  ['center'], '@Move the row up or down', 'move']
             ],            # Felt 4: ($fieldModes), er sammensat af: [horJust, FeltBgColor, FeltStyle, SorterON, FilterON, SelectON, ]
             note :   '<small>This table contains an example of on the fly automatic calculation:<br>$total= ($DataRow[2]*$DataRow[6])*(100-$DataRow[7])/100*(100+$DataRow[5])/100;</small>',
             data :   $arrContent,

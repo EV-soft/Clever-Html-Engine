@@ -42,7 +42,7 @@ htm_Page_( titl:'description.page.php', hint:$©,  info:'File: '.$DocFile.' - ve
 
         For data viewing and editing, an advanced table is offered with:<br>
         Column wise: Filtering - Sorting - Resizable width<br>
-        Row wise: Create - Change - Spec. Buttons (delete / copy / move rows: under development)<br>
+        Row wise: Create - Change - Delete - Copy - Move up/down - Undo - Spec. Buttons<br>
         Fixed (sticky) column headers<br>
         Scrolling content-window<br>
         Zebra-striped rows<br><br>
