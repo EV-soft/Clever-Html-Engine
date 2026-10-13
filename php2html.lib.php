@@ -254,7 +254,7 @@ function set_Style($att='',$string='') {
 ## ver 1.2.0 # PHP7: $labl='',$plho= '@Enter...',$icon='',$hint='',$type= 'text',$name= '',$valu= '',$form= '',$wdth= '100%',$algn= 'left',$attr= '',$rtrn= false,$unit= '',$disa= false,$rows= '2',$step= '',$list= [],$llgn= 'R',$bord= '',$ftop= ''
 
 # An advanced object rel. in-output of data [Necessary basic element]
-function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', name:'', valu:'', form:'', wdth:'100%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list:[], llgn:'R',bord:'', ftop:'')
+function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', name:'', valu:'', form:'', wdth:'100%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list:[], llgn:'R', bord:'', ftop:'', lpos:'')
 
     # Generel order:
     $labl= '',              # string: Translated label above the input field
@@ -808,17 +808,19 @@ function highlight_str($code,$rtrn=true) {
 }
    
 # A span containing syntax formattet php-code
-function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'',  vlue:'', rtrn:false)
+function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', rtrn:false)
     $code='',       # string: php-code with syntax display
     $synt=true,     # bool:   Activate syntax output
     $repl=false,    # bool:   Do output formattet string
     $fmat='',       # string: Format string
-    $vlue='',       # string: Value to replace 
-    $rtrn=false     # bool:   Function Return or echo result
+    $valu='',       # string: Value to replace
+    $rtrn=false,    # bool:   Function Return or echo result
+    $vlue=null      # (Old name of valu - still works)
     ){
+    if ($vlue !== null) $valu= $vlue;
     if ($repl==true) {                                  // The format string with the value inserted, followed by the code
-        try { $code= sprintf($fmat, $vlue).$code; }
-        catch (\ArgumentCountError $e) { $code= $fmat.$vlue.$code; }   // More placeholders than values: show unformatted
+        try { $code= sprintf($fmat, $valu).$code; }
+        catch (\ArgumentCountError $e) { $code= $fmat.$valu.$code; }   // More placeholders than values: show unformatted
     }
     $result= '<span style="text-align: left; white-space: nowrap; overflow-x: auto; line-height: 1;">
               <pre style= "background-color: #121212; text-align: left;  padding:6px; overflow-x: auto; ">'.
@@ -828,14 +830,15 @@ function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'',  vlue:'', rtrn:f
 };
 
 # Vertical orientated text
-function htm_TextVer(# body, algn:'left', marg:'8px', attr:'', font:'', code:false) ## Vertical text
+function htm_TextVer(# body, algn:'left', marg:'8px', attr:'', font:'', code:false, rtrn:false) ## Vertical text
     $body,          # string: Html-text inside div
     $algn='left',   # string: text alignment
     $marg='8px',    # string: Default margin
     $attr='',       # string: Other style
     $font='',       # string: text font
-    $code=false     # bool:   convert: &lt;b&gt;bold&lt;/b&gt;
-) {
+    $code=false,     # bool:   convert: &lt;b&gt;bold&lt;/b&gt;
+    $rtrn=false      # bool:   Return the HTML instead of echoing it
+) { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
     if ($code) $body= htmlspecialchars($body); // convert: &lt;b&gt;bold&lt;/b&gt;
     if ($font>'') $font= ' font-family: '.$font.'; ';
     echo '<div style="margin: '.$marg.'; text-align: '.$algn.'; '.$font.' 
@@ -845,21 +848,25 @@ function htm_TextVer(# body, algn:'left', marg:'8px', attr:'', font:'', code:fal
 }
 
 # A very small text line
-function htm_MiniNote(# note:'') # Very small text-line
-    $note= ''
+function htm_MiniNote(# note:'', rtrn:false) # Very small text-line
+    $note= '',
+    $rtrn=false # bool:   Return the HTML instead of echoing it
 )
-{   echo '<br><small><small>'.lang($note).'</small></small>';
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '<br><small><small>'.lang($note).'</small></small>';
 }
 
 # A text with a caption on colored line
-function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'')
+function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'', rtrn:false)
     $capt='TIP',    # string: The output caption
     $body='',       # string: The output text
     $wdth='',       # string: The div width
     $algn='center', # string: The div alignment
-    $colr=''        # string: the background-color
+    $colr='',        # string: the background-color
+    $rtrn=false      # bool:   Return the HTML instead of echoing it
 )
-{   if ($wdth>'') $wdth= ' width:'.$wdth.'; ';
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       if ($wdth>'') $wdth= ' width:'.$wdth.'; ';
     if ($algn=='center') $algn= ' margin: auto; ';
     else if ($algn>'') $algn= ' text-align:'.$algn.'; ';
     echo '<div style="'.$wdth. $algn.'; border:1px solid gray; ">'.
@@ -890,7 +897,7 @@ function htm_TextHint(# text:'', hint:'', styl:'', attr:'', rtrn:false) {
 }
 
 # A image with caption, label and a hint
-function htm_Figure(# capt:'',type:'',imag:'',styl:'',labl:'',hint:'',rtrn:false) {
+function htm_Figure(# capt:'', type:'h1', imag:'', info:'', styl:'', labl:'', hint:'', rtrn:false) {
     $capt= '',      # string: The header text
     $type= 'h1',    # string: Header type (h1..h6)
     $imag='',       # string: Path to the image
@@ -914,7 +921,7 @@ function htm_Figure(# capt:'',type:'',imag:'',styl:'',labl:'',hint:'',rtrn:false
 }
 
 # A summery list with collapsible details
-function htm_Details(# capt:'',type:'',body:'',styl:'',labl:'',hint:'',mode:'',rtrn:false) { # Collapsibly text
+function htm_Details(# capt:'', type:'h1', labl:'', body:'', styl:'', hint:'', mode:'', rtrn:false) { # Collapsibly text
     $capt= '',      # string: The header text 
     $type= 'h1',    # string: Header type (h1..h6)
     $labl= '',      # string: The details summary
@@ -1079,6 +1086,14 @@ function p2h_rowActs($acts) {
     return $result;
 }
 
+# rtrn:true in a function that echoes: run it with rtrn:false and return what it echoed
+function p2h_capture($func, $args) {
+    $args['rtrn']= false;
+    ob_start();
+    try { $func(...$args); } finally { $html= ob_get_clean(); }
+    return $html;
+}
+
 function spool($data,$echo=false) { global $spool;
     if ($echo==true) echo $data;
     $spool.= $data;
@@ -1131,7 +1146,7 @@ function sys_csvCell($v) {
 }
 
 # A table with records: sort, filter, edit, add rows and export to CSV [Necessary basic element]
-function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'',rtrn:false)
+function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px', styl:'', from:__FILE__, list:['',''], expo:'', rtrn:false, wdth:'98%')
     $capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:td-style',       '5:Tip',    '6:placeholder', '7:Content';], ...
            ],
     $pref= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[td-style]', '5:ColTip', '6:Html'], ...
@@ -1797,29 +1812,33 @@ function htm_Fieldset_end(# rtrn:false)
 }
 
 # Output external content in a local frame
-function htm_iFrame(# srce:'', wdth:'300px', heig:'200px', titl:'', styl:'', rtrn:false)
+function htm_iFrame(# srce:'', wdth:'300px', vhgh:'200px', titl:'', styl:'', rtrn:false)
     $srce= '',      # string: Source with html content
     $wdth= '300px', # string: iframe width
-    $heig= '200px', # string: iframe height
+    $vhgh= '200px', # string: iframe height
     $titl= '',      # string: iframe title
     $styl= '',      # string: iframe style (eg. border)
-    $rtrn= false    # bool:   Act as procedure: Echo result, or as function: Return string
+    $rtrn= false,   # bool:   Act as procedure: Echo result, or as function: Return string
+    $heig= null     # (Old name of vhgh - still works)
 ){
-    $result= '<iframe src="'.sys_enc($srce).'" style="width:'.rtrim($wdth,'; ').'; height:'.rtrim($heig,'; ').'; '.$styl.'" title="'.sys_enc(lang($titl)).'"></iframe>';
+    if ($heig !== null) $vhgh= $heig;
+    $result= '<iframe src="'.sys_enc($srce).'" style="width:'.rtrim($wdth,'; ').'; height:'.rtrim($vhgh,'; ').'; '.$styl.'" title="'.sys_enc(lang($titl)).'"></iframe>';
     if (!$rtrn) echo $result; else return $result;
 }
 
 # View a container with a external resource
-function htm_Embed(# name:'', type:'application/pdf', wdth:'800px', heig:'2100px', bord:'0', rtrn:false) 
+function htm_Embed(# name:'', type:'application/pdf', wdth:'800px', vhgh:'2100px', bord:'0', rtrn:false)
     $name= '',                  # string: Filename and path
     $type= 'application/pdf',   # string: MIME-type: (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types)
     $wdth= '800px',             # string: content width
-    $heig= '2100px',            # string: content height
+    $vhgh= '2100px',            # string: content height
     $bord= '0',                 # string: frameBorder
-    $rtrn= false                # bool:   Act as procedure: Echo result, or as function: Return string
-){  if ($name > '') {
+    $rtrn= false,               # bool:   Act as procedure: Echo result, or as function: Return string
+    $heig= null                 # (Old name of vhgh - still works)
+){  if ($heig !== null) $vhgh= $heig;
+    if ($name > '') {
     $result= '<embed src="'.sys_enc($name).
-        '" width="'.sys_enc($wdth).'" height="'.sys_enc($heig).'" type="'.sys_enc($type).'">';     # (embed is a void element: no </embed>)
+        '" width="'.sys_enc($wdth).'" height="'.sys_enc($vhgh).'" type="'.sys_enc($type).'">';     # (embed is a void element: no </embed>)
     if (!$rtrn) echo $result; else return $result;
     }
 };
@@ -1863,13 +1882,17 @@ function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',
 }
 
 # Prepare a span with inline-block output
-function htm_Row_()
-{   echo '
+function htm_Row_(# rtrn:false)
+    $rtrn=false)
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '
     <span style="display: inline-block;">';
 }
 # Finalize the span
-function htm_Row_end()
-{   echo '</span>
+function htm_Row_end(# rtrn:false)
+    $rtrn=false)
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '</span>
     ';
 }
 
@@ -1912,7 +1935,7 @@ Layout of htm_Card:
 */
 
 # An advanced span with lots of functionality [Necessary basic element]
-function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', move:true, help:'', fclr:'', frst:'', last:'',simp:false, fold:'', elem:'span');
+function htm_Card_(# capt:'', icon:'', hint:'tgl', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', help:'', fclr:'', frst:'', last:'', simp:false, fold:'', elem:'span', move:true, rtrn:false);
     $capt = '',                         # string: The card caption
     $icon = '',                         # string: Class: icon to the left of caption
     $hint = 'tgl',                      # string: The default hint on hover caption (tgl: toggle open/close card-body)
@@ -1936,9 +1959,11 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     $fold = '',                         # string: 'closed': the card starts folded (click the caption to open it)
     $elem = 'span',                     # string: The HTML element of the card: span (default) / section / article / aside / main / header / footer / div
                                         #         A semantic element (section...) gets the caption as its accessible name (aria-labelledby)
-    $move = true                        # bool:   The card can be moved among its sibling cards (how: $gbl_CardMove) - false: it stays in place
+    $move = true,                        # bool:   The card can be moved among its sibling cards (how: $gbl_CardMove) - false: it stays in place
+    $rtrn=false                          # bool:   Return the HTML instead of echoing it
 )
-{   global $gbl_iconColor, $gbl_TitleColr, $gbl_CardForm, $gbl_CardStack, $gbl_ProgRoot, $_assets, $gbl_CardIx, $gbl_CardsBgrd, $gbl_GridOn; # v.1.2.3: $gbl_PanlForm => $gbl_CardForm
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       global $gbl_iconColor, $gbl_TitleColr, $gbl_CardForm, $gbl_CardStack, $gbl_ProgRoot, $_assets, $gbl_CardIx, $gbl_CardsBgrd, $gbl_GridOn; # v.1.2.3: $gbl_PanlForm => $gbl_CardForm
     $gbl_CardIx++;
     
     $icon= '<ic class="'.$icon.'" style="font-size: 20px; color: '.$gbl_iconColor.'; '.$fclr.'margin: 0 5px;"></ic>';
@@ -2112,7 +2137,7 @@ else { # Clean and simple header output:
 } // htm_Card_()
 
 # Finalize htm_Card_()
-function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false, foot:'')
+function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'', subm:false, attr:'', akey:'', kind:'save', simu:false, foot:'', rtrn:false)
     $labl='',       # string: Label on the submit button in the footer
     $icon='',       # string: Icon left to label
     $hint='',       # string: Hint on hover the submit button
@@ -2123,9 +2148,11 @@ function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, 
     $akey='',       # string: Shortcut to activate the button
     $kind='save',   # string: The button appearance 
     $simu=false,    # bool:   Button only simulate
-    $foot=''        # string: Footer text (HTML, translated) - the footer stays below the scrolling body and is hidden with it when the card is folded
+    $foot='',        # string: Footer text (HTML, translated) - the footer stays below the scrolling body and is hidden with it when the card is folded
+    $rtrn=false      # bool:   Return the HTML instead of echoing it
 )
-{   global $gbl_CardForm, $gbl_CardStack;    dvl_pretty('htm_Card_end ');
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       global $gbl_CardForm, $gbl_CardStack;    dvl_pretty('htm_Card_end ');
     $ownForm= is_array($gbl_CardStack) && $gbl_CardStack ? array_pop($gbl_CardStack) : false;  # Did THIS card open a form?
     $cardForm= (is_array($GLOBALS['gbl_CardFormName'] ?? null) && $GLOBALS['gbl_CardFormName']) ? array_pop($GLOBALS['gbl_CardFormName']) : '';
     if ($ownForm and ($cardForm > '')) $form= $cardForm;    # The footer button submits this card's form (a different form: name did nothing)
@@ -2200,7 +2227,7 @@ function CardInit($cardCount) {     // JS functions to handle Cards:
 
 
 # A span/group with a set of labels and data
-function htm_DataGroup(# capt:'', $icon='', $hint='', head:'', data:[['Label0','Data0']], foot:'', wdth:'', vhgh:'', fclr:'', attr:'', styl:'', bord:'3px solid green;')
+function htm_DataGroup(# capt:'', icon:'', hint:'', head:'', data:[['Label0','Data0','Lstyl','Dstyl']], foot:'', wdth:'', vhgh:'600px', fclr:'', attr:'', styl:'', bord:'3px solid black;', rtrn:false)
     $capt = '',                             # string: The group caption
     $icon='',                               # string: Icon left to label
     $hint='',                               # string: Hint on hover the submit button
@@ -2212,9 +2239,11 @@ function htm_DataGroup(# capt:'', $icon='', $hint='', head:'', data:[['Label0','
     $fclr = '',                             # Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
     $attr = '',                             # string: additional style for the ScrollWindow
     $styl = '',                             # string: Custom style for div containing data
-    $bord = '3px solid black;'              # string: The group border style
+    $bord = '3px solid black;',              # string: The group border style
+    $rtrn=false                              # bool:   Return the HTML instead of echoing it
 )
-{   global $gbl_iconColor;
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       global $gbl_iconColor;
     $capt= lang($capt); 
     $icon= '<ic class="'.$icon.'" style="font-size: 20px; color: '.$gbl_iconColor.'; '.$fclr.'margin: 0 5px;"></ic>';
     if ($bord>'') $bord= 'border: '.$bord. 'border-radius: 5px;'; else $bord= '';
@@ -2360,24 +2389,30 @@ function CardOn($from,$to__=0)  //  Maximize a single or a interval
 
 
 # Start a span with scrolling content in a fixed-height window
-function htm_Wrapp_(# vhgh:'400px') # WrapperCard - open
-    $vhgh='400px') # WrapperCard - vhgh: ViewHeight
-{   echo '<span class="wrapper" style="padding:0; margin: 0 0 6px; border:1px solid gray; height:'.$vhgh.'; display: block;">'; 
+function htm_Wrapp_(# vhgh:'400px', rtrn:false) # WrapperCard - open
+    $vhgh='400px', # WrapperCard - vhgh: ViewHeight
+    $rtrn=false)   # bool:   Return the HTML instead of echoing it
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '<span class="wrapper" style="padding:0; margin: 0 0 6px; border:1px solid gray; height:'.$vhgh.'; display: block;">'; 
 }
 # Finalize a wrapper window
-function htm_Wrapp_end()         # WrapperCard - close
-{   echo '</span>';
+function htm_Wrapp_end(# rtrn:false)
+    $rtrn=false)         # WrapperCard - close
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '</span>';
 }
 
 # Start creating a form
-function htm_Form_(# name:'', acti:'', mode:'POST', type:'multipart/form-data', attr:'')
+function htm_Form_(# name:'', acti:'', mode:'POST', type:'multipart/form-data', attr:'', rtrn:false)
     $name= '',                      # string: The name of the form
     $acti= '',                      # string: Form action
     $mode= 'POST',                  # string: Form method
     $type= 'multipart/form-data',   # string: enctype
-    $attr= ''                       # string: Other attributes
+    $attr= '',                       # string: Other attributes
+    $rtrn=false                      # bool:   Return the HTML instead of echoing it
     )
-{   echo '<form'.($name>'' ? ' name="'.sys_enc($name).'" id="'.sys_enc($name).'"' : '').' action="'.sys_enc($acti).'" method="'.sys_enc($mode).'" enctype="'.sys_enc($type).'" '.$attr.'>';  
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '<form'.($name>'' ? ' name="'.sys_enc($name).'" id="'.sys_enc($name).'"' : '').' action="'.sys_enc($acti).'" method="'.sys_enc($mode).'" enctype="'.sys_enc($type).'" '.$attr.'>';  
     if (strtoupper($mode)=='POST') csrf_field();
     /*
     Form attributes:
@@ -2394,8 +2429,10 @@ function htm_Form_(# name:'', acti:'', mode:'POST', type:'multipart/form-data', 
 }
     
 # Finalixe a form
-function htm_Form_end() 
-{   echo '</form>';
+function htm_Form_end(# rtrn:false)
+    $rtrn=false) 
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '</form>';
 }
 
 
@@ -2467,29 +2504,35 @@ function RowColTest( # colr:'gray')
 
 ## PROBLEM: This courses topMenu not to stay visibly at page top !
 # Start a first column in a div
-function htm_RowCol_(# wdth:240)        # ColumnTop // Must be followed/ended of htm_RowCol_end()
-    $wdth=240)
-{  dvl_pretty('htm_RowColTop');      // RowColTop RowCol240, RowCol320 (Look at CSS ! )
+function htm_RowCol_(# wdth:240, rtrn:false)        # ColumnTop // Must be followed/ended of htm_RowCol_end()
+    $wdth=240,
+    $rtrn=false) # bool:   Return the HTML instead of echoing it
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+      dvl_pretty('htm_RowColTop');      // RowColTop RowCol240, RowCol320 (Look at CSS ! )
     echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">'.
          '<data-ColnHead'.RowColTest('yellow').'> <span id="colnwrap" '.RowColTest('green').'> '.
          '<data-RowCol class="RowCol'.$wdth.'" '.RowColTest('blue').' >';
 }
 
 # Create the next column
-function htm_RowCol_next(# wdth:320)    # NextColumn
-    $wdth=320) 
-{   echo '</data-RowCol> <data-RowCol class="RowCol'.$wdth.'" '.RowColTest('red').'>'; 
+function htm_RowCol_next(# wdth:320, rtrn:false)    # NextColumn
+    $wdth=320,
+    $rtrn=false) # bool:   Return the HTML instead of echoing it
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '</data-RowCol> <data-RowCol class="RowCol'.$wdth.'" '.RowColTest('red').'>'; 
 }
 
 # Create the last column
-function htm_RowCol_end() #             # ColumnBottom
-{   echo '</data-RowCol> </span></data-ColnHead><span class="clearWrap"></span>'.     # (the span was never closed)
+function htm_RowCol_end(# rtrn:false)
+    $rtrn=false)                # ColumnBottom
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '</data-RowCol> </span></data-ColnHead><span class="clearWrap"></span>'.     # (the span was never closed)
          '</div>';
 }
 ## Importent: $RowColWdth - Only use defined width ! (See CSS: @media screen)
 
 # A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submit  [Necessary basic element]
-function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'home', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'')
+function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'home', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'', disa:false)
     $labl='',           # string: The caption on the button
     $icon='',           # string: The iconclass ('<i class="fas fa-plus"> </i> ';)
     $hint='',           # string: hint about the button function
@@ -2676,13 +2719,15 @@ function htm_SubmitButt(# labl:'',  hint:'', type:'submit', wdth:'', font:'32px'
 
         
 # Special buttons for going to top/middle/bottom of page
-function htm_GoTopButt(# labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to page top', styl:'') 
+function htm_GoTopButt(# labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to page top', styl:'', rtrn:false)
     $labl='@Top',                   # string: Button label
     $icon='fa-solid fa-arrow-up',   # string: Icon before label
     $hint='@Go to page top',        # string: User hint
-    $styl=''                        # string: Button custom style
+    $styl='',                        # string: Button custom style
+    $rtrn=false                      # bool:   Return the HTML instead of echoing it
 ) 
-{   global $gbl_BtNavBgrd, $gbl_BtNavText;
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       global $gbl_BtNavBgrd, $gbl_BtNavText;
 
     if (!function_exists('renderScrollButton')) {
         function renderScrollButton($id, $onclick, $label, $icon, $hint, $extraStyle = '', $bottom = '6px') {
@@ -3416,7 +3461,7 @@ function sys_switchIsOn($valu) {
 }
 
 # A button with switch layout
-function htm_SwitchButt(# labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', rtrn:false) 
+function htm_SwitchButt(# labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)
     $labl='',               # string: Button label
     $hint='',               # string: Hint about the button function
     $name='switchbox_id',   # string: Button name
@@ -3513,11 +3558,12 @@ function htm_SwitchButton(# labl, name:'switchbox_id', valu:'', wdth:'', bclr:''
 } # htm_SwitchButton()
 
 # A special button to switch between many states
-function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;') 
-    $name='ROWyCOLx',       # string: 
-    $valu='',               # string: 
-    $acti=true,             # bool:   
-    $styl='padding:1px;'    # string: 
+function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:true)
+    $name='ROWyCOLx',       # string: Name of the field
+    $valu='',               # string: State 0..3
+    $acti=true,             # bool:   Clickable
+    $styl='padding:1px;',   # string: Style
+    $rtrn=true              # bool:   Return the HTML (default) or echo it 
     )
 {   $Bicon= ['<i class="far fa-square colrgray"          style="'.$styl.'" ></i>',
              '<i class="far fa-minus-square colrred"     style="'.$styl.'" ></i>',
@@ -3550,26 +3596,29 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
             }
         </script>";
     }
+    if (!$rtrn) { echo $result;  return ''; }
     return $result;
 }
  
 # Button for test human or robot
 function htm_Humantest(# capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', 
-                       # form:'form-id', wdth:'200px', hght:'24px', yclr:'lightgray', nclr:'white', bclr: '#1bd441', xytx:'@YES', ntxt:'@NO',rtrn: false);
+                       # form:'form-id', wdth:'200px', vhgh:'24px', yclr:'lightgray', nclr:'white', bclr: '#1bd441', xytx:'@YES', ntxt:'@NO',rtrn: false);
 $capt= '@Are you human? ',                          # string: capt $quest= '@Are you human?',
 $icon= 'fa-solid fa-arrow-right-to-bracket',        # string: icon after caption
 $hint= '@Grab and slide to right to change state',  # string: hint $slide_hint= '@Grab and slide to right to change state'
 $form= 'form-id',                                   # string: form $form_id= 'form-id',
 $wdth= '200px',                                     # string: wdth $grab_width= '200px',
-$hght= '24px',                                      # string: hght $grab_height= '24px',
+$vhgh= '24px',                                      # string: height of the slider
 $yclr= 'lightgray',                                 # string: yclr $yclr= 'lightgray',
 $nclr= 'white',                                     # string: nclr $no_colr= 'white',
 $bclr= '#1bd441',                                   # string: background in human state
 $xytx= '@YES',                                      # string: xytx $yes_text= '@YES',
 $ntxt= '@NO',                                       # string: ntxt $no_text= '@NO',
-$rtrn= false                                        # bool: Act as procedure: Echo result, or as function: Return string
-) 
+$rtrn= false,                                       # bool: Act as procedure: Echo result, or as function: Return string
+$hght= null                                         # (Old name of vhgh - still works)
+)
 {
+if ($hght !== null) $vhgh= $hght;
 $result= '
 <style>
 @import url(\'https://fonts.googleapis.com/css?family=Open+Sans\');
@@ -3580,9 +3629,9 @@ $result= '
   .grab-slider-wrapper {
     position: relative;
     width: '.$wdth.';
-    height: '.$hght.';
+    height: '.$vhgh.';
     border: 1px solid gray;
-    border-radius: calc('.$hght.' / 2);
+    border-radius: calc('.$vhgh.' / 2);
     background-color: '.$yclr.';
     border-color: #a2a2a2;
     box-shadow: inset 0 0 3px gray;
@@ -3594,7 +3643,7 @@ $result= '
     content: "'.lang($xytx).'";
     position: absolute;
     left: 8px;
-    line-height: '.$hght.';
+    line-height: '.$vhgh.';
     font-size: 12px;
     z-index: 1;
     color: white;
@@ -3604,7 +3653,7 @@ $result= '
     content: "'.lang($ntxt).'";
     position: absolute;
     right: 10px;
-    line-height: '.$hght.';
+    line-height: '.$vhgh.';
     font-size: 12px;
     z-index: 1;
   }
@@ -3614,10 +3663,10 @@ $result= '
     left: 0;
     top: 0;
     z-index: 2;
-    height: calc('.$hght.' - 2px);
-    /* width: calc('.$hght.' - 2px); */
+    height: calc('.$vhgh.' - 2px);
+    /* width: calc('.$vhgh.' - 2px); */
     border: 1px solid #111;
-    border-radius: calc('.$hght.' / 2);
+    border-radius: calc('.$vhgh.' / 2);
     cursor: grab;
     background: white;
     color: #111;                                    /* Dark text on the white slider - also in the dark theme */
@@ -3707,7 +3756,7 @@ function htm_Tabs_(# head:'', styl:'', rtrn:false)
 }
 
 # Create a tab in the htm_Tabs_() object [Necessary basic element]
-function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', bclr:'white')
+function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', bclr:'white', vhgh:'', dflt:false)
     $labl='',       # string: Tab Label
     $body='',       # string: Content on tab
     $name='',       # string: id
@@ -3762,21 +3811,22 @@ function htm_LinkButt(# labl:'', hint:'', attr:'', link:'', targ:'_blank', rtrn:
 }
 
 # Create a HTML-textarea with multibly lines
-function htm_TextArea(# labl:'', hint:'', name:'area', form:'', valu:'', rows:'1', widt:'', plho:'?', attr:'', rtrn:true) 
-    $labl='', 
-    $hint='', 
-    $name='area', 
-    $form='', 
-    $valu='', 
-    $rows='1', 
-    $widt='', 
-    $plho='?', 
-    $attr='', 
-    $rtrn=true
-) 
-{
+function htm_TextArea(# labl:'', hint:'', name:'area', form:'', valu:'', rows:'1', wdth:'', plho:'?', attr:'', rtrn:true)
+    $labl='',       # string: Label after the field
+    $hint='',       # string: Hint on the label
+    $name='area',   # string: Name and id
+    $form='',       # string: The form the field belongs to (when it is outside it)
+    $valu='',       # string: The text
+    $rows='1',      # string: Number of rows
+    $wdth='',       # string: Width
+    $plho='?',      # string: Placeholder
+    $attr='',       # string: More style
+    $rtrn=true,     # bool:   Return the HTML (default) or echo it
+    $widt=null      # (Old name of wdth - still works)
+)
+{   if ($widt !== null) $wdth= $widt;
     $result= '<textarea rows="'.sys_enc($rows).'" id="'.sys_enc($name).'" name="'.sys_enc($name).'"'.($form>'' ? ' form="'.sys_enc($form).'"' : '').
-        ' placeholder="'.sys_enc(lang($plho)).'" style="width:'.$widt.'; font-size: 1em; border: 1px solid Gainsboro; border-radius: 4px; margin-top: 10px; '.$attr.'">'.
+        ' placeholder="'.sys_enc(lang($plho)).'" style="width:'.$wdth.'; font-size: 1em; border: 1px solid Gainsboro; border-radius: 4px; margin-top: 10px; '.$attr.'">'.
         sys_enc((string)$valu).'</textarea>';
     if ($hint > '')
         $result.= '<abbr class="hint">'. lang($labl).'<data-hint>'.lang($hint).'</data-hint></abbr>';
@@ -4258,17 +4308,20 @@ if (DEBUG) return false;
 // Add html_ functions for generel use:
 
 # Init popup context menu group
-function htm_Pmnu_($elem='id',$capt='', $wdth='210px', $icon='', $stck='false', $attr='background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', $cntx=true, $rtrn=false) {
+function htm_Pmnu_(# elem:'id', capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', cntx:true, rtrn:false)
+    $elem='id',$capt='', $wdth='210px', $icon='', $stck='false', $attr='background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', $cntx=true, $rtrn=false) {
              Pmnu_($elem,     $capt,    $wdth,         $icon,    $stck,         $attr, $cntx, $rtrn);
 }
 
 # Add a popup context menu item
-function htm_Pmnu_Item($labl='', $icon='', $hint='', $vrnt='plain', $name='', $clck='', $attr='', $shrt='', $enbl='true', $rtrn=false) {
+function htm_Pmnu_Item(# labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false)
+    $labl='', $icon='', $hint='', $vrnt='plain', $name='', $clck='', $attr='', $shrt='', $enbl='true', $rtrn=false) {
              Pmnu_Item($labl,    $icon,    $hint,    $vrnt,         $name,    $clck,    $attr,    $shrt,    $enbl,        $rtrn);
 }
 
 # Finish a popup context menu group
-function htm_Pmnu_end($labl='', $hint='', $attr='', $rtrn=false) {
+function htm_Pmnu_end(# labl:'', hint:'', attr:'', rtrn:false)
+    $labl='', $hint='', $attr='', $rtrn=false) {
              Pmnu_end($labl,    $hint,    $attr,    $rtrn);
 }
 
@@ -4297,7 +4350,7 @@ function htm_Pmnu_end($labl='', $hint='', $attr='', $rtrn=false) {
 { ## Group ******************** htm_Menu: ************************** 
 
 # A page-menu on top of the page
-function htm_Menu_TopDown(# capt:'Clever html engine', data:[], foot:'PHP2HTML', styl:'', wdth;'150px', note;'')
+function htm_Menu_TopDown(# capt:'Clever html engine', data:[], foot:'PHP2HTML', styl:'', wdth:'150px', note:'', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)
 $capt='Clever html engine', # string: Title at left
 $data=[],                   # array:  Data for the meny - Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='')
 $foot='PHP2HTML',           # string: Text right to menu
@@ -4308,9 +4361,11 @@ $niv0='',                   # string: Style attribute to node niveau 0 (div)
 $niv1='',                   # string: Style attribute to node niveau 1 (div class="dropdown")
 $niv2='',                   # string: Style attribute to node niveau 2 (data-hint)
 $them=true,                 # bool:   Show the theme button (htm_ThemeButt) as the last menu item
-$view=null                  # bool:   Show the floating view bar (htm_ViewBar: zoom, full screen, theme) instead of the theme button. null: use $gbl_ViewBar
+$view=null,                  # bool:   Show the floating view bar (htm_ViewBar: zoom, full screen, theme) instead of the theme button. null: use $gbl_ViewBar
+$rtrn=false                  # bool:   Return the HTML instead of echoing it
 )
-{   static $menuNo= 0;  $menuNo++;
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       static $menuNo= 0;  $menuNo++;
     $view= $view ?? ($GLOBALS['gbl_ViewBar'] ?? false);
     $navId= ($menuNo==1) ? 'htmTopnav' : 'htmTopnav'.$menuNo;      # Unique id when a page has more than one menu
     $here= strtolower(basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? ''));
@@ -4411,14 +4466,16 @@ $view=null                  # bool:   Show the floating view bar (htm_ViewBar: z
 } # htm_Menu_TopDown
 
 # A page-menu to the left of the page
-function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:'',wdth:'180px')
+function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:'', wdth:'180px', rtrn:false)
     $capt='Clever html engine', # string: Title at top
     $data=[],                   # array:  Data for the menu
     $foot='',                   # string: Note at bottom
     $styl='',                   # string: Aditional style to default style
-    $wdth='180px'               # string: Widths of menu columns
+    $wdth='180px',               # string: Widths of menu columns
+    $rtrn=false                  # bool:   Return the HTML instead of echoing it
 )
-{ //                    0          1        2         3         4         5         6         7         8         9
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+     //                    0          1        2         3         4         5         6         7         8         9
     if (!function_exists('MenuLine')) {                     # Declared once - htm_Menu_Leftout() may be called again
     function MenuLine(# $pref='', $vrnt='', $icon='', $labl='', $hint='', $desc='', $link='', $subm=[], $styl='', $wdth) 
         $pref='',     # string - Prefix (indent) for submenu
@@ -6440,11 +6497,13 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
 } // htm_Page_()
 
 # A paragraf with border, can be used as a page-footer, or separator on a page.
-function htm_Page_Sect(# body,styl:'border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;')
+function htm_Page_Sect(# body, styl:'border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;', rtrn:false)
     $body,  
-    $styl='border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;'
+    $styl='border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;',
+    $rtrn=false      # bool:   Return the HTML instead of echoing it
     )
-{   echo '<p style="'.$styl.'">'.lang($body).'</p>';
+{ if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+       echo '<p style="'.$styl.'">'.lang($body).'</p>';
 }
 
 # Finalize the htm_Page_()
@@ -6601,26 +6660,33 @@ function calcHash($usr_name,$usr_code)
 
 // String-output:
 # String function: make italic-text
-function htm_Ihead(# html) ):
-    $html)             {echo '<br/><i>'.$html.'</i> ';}
+function htm_Ihead(# html, rtrn:false)
+    $html, $rtrn=false)             { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo '<br/><i>'.$html.'</i> ';}
 # String function: make horisontal line/ruler
-function htm_hr(# colr:'#0',attr:'')   
-    $colr='#0',$attr='') {echo '<hr style="background-color:'.$colr.';'.$attr.'"/>';}
+function htm_hr(# colr:'#0', attr:'', rtrn:false)
+    $colr='#0',$attr='', $rtrn=false) { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo '<hr style="background-color:'.$colr.';'.$attr.'"/>';}
 # String function: Add one or more line-breaks
-function htm_br(# rept:1)   
-    $rept=1)            {echo str_repeat('<br />',$rept);}
+function htm_br(# rept:1, rtrn:false)
+    $rept=1, $rtrn=false)            { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo str_repeat('<br />',$rept);}
 # String function: Add one ore more new line(s)
-function htm_nl(# rept:1)
-    $rept=1)            {echo str_repeat('<br />',$rept);}
+function htm_nl(# rept:1, rtrn:false)
+    $rept=1, $rtrn=false)            { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo str_repeat('<br />',$rept);}
 # String function: Add one or more linefeed
-function htm_lf(# rept:1)  
-    $rept=1)            {echo str_repeat(' &#xa;',$rept);}  //  LineFeed
+function htm_lf(# rept:1, rtrn:false)
+    $rept=1, $rtrn=false)            { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo str_repeat(' &#xa;',$rept);}  //  LineFeed
 # String function: Add one ore more nobreaking spaces [Necessary basic element]
-function htm_sp(# rept:1) 
-    $rept=1)            {echo str_repeat('&nbsp;',$rept);}
+function htm_sp(# rept:1, rtrn:false)
+    $rept=1, $rtrn=false)            { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo str_repeat('&nbsp;',$rept);}
 # String function: Make a span with given width
-function htm_space(# wdth)  
-    $wdth)              {echo '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
+function htm_space(# wdth, rtrn:false)
+    $wdth, $rtrn=false)              { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    echo '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
 
 // String-functions:
 function str_bold($source,$result='',$tail='&nbsp;&nbsp;') {return $result.'<b>'.$source.'</b>'.$tail;}

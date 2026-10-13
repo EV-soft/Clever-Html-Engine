@@ -139,7 +139,7 @@ htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$Do
 
     ###### iFrame
     htm_Card_(capt:'@htm_iFrame():', icon:'fa-regular fa-window-maximize', hint:'', clas:'cardW800', wdth:'640');
-        htm_iFrame(srce:'advantages.htm', wdth:'100%', heig:'220px', titl:'@Advantages', styl:'border:1px solid #888; border-radius:4px;');
+        htm_iFrame(srce:'advantages.htm', wdth:'100%', vhgh:'220px', titl:'@Advantages', styl:'border:1px solid #888; border-radius:4px;');
     htm_Card_end();
 
 htm_Page_end();
