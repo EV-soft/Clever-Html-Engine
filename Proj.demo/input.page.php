@@ -133,7 +133,7 @@ htm_Page_(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVe
     htm_nl(2);
     
     htm_Inbox(labl:'htm_Inbox',plho:'@Enter...',icon:'fas fa-info',hint:'Tooltip text',vrnt: '',name:'Body_div',valu:'EMPTY box',form:'',wdth:'150px;',algn:'left',
-                  attr:'color: green;',rtrn:false,unit:'',disa:true,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
+                  attr:'color: green;',rtrn:false,unit:'',rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'', edit:true);
 
     $html= '
     <table style="border: 2px solid var(--grayColor);">
@@ -148,7 +148,7 @@ htm_Page_(titl:'input.page.php',hint:$©,info:'File: '.$DocFile.' - ver:'.$DocVe
 
     htm_Inbox(labl:'htm_Inbox-test RW',plho:'@Enter...',icon:'fas fa-info',hint:'This is a test of editable htm_Inbox() containing a table',
                   vrnt: '',name:'Body_div',valu:$html,form:'',wdth:'33%;',algn:'center',
-                  attr:'color: green;',rtrn:false,unit:'',disa:true,rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'');
+                  attr:'color: green;',rtrn:false,unit:'',rows:'2',step:'',list:[],llgn:'R',bord:'1px solid var(--grayColor);',ftop:'', edit:true);
     echo '<br>'.lang('@htm_Inbox() is not really an Input() element, but looks like htm_Input() with a content that you decide.');
     htm_Fieldset_end();
     htm_nl(2);

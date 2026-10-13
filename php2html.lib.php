@@ -524,7 +524,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
 
 
 # A ontainer with: Border, Label, Hint, (Placeholder)
-function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse', name:'noUse', valu:'', form:'noUse', wdth:'200px;', algn:'left',attr:'', rtrn:false, unit:'noUse', disa:false, rows:'noUse', step:'noUse', list:['noUse'], llgn:'R', bord:'1px solid var(--grayColor);', ftop:'')
+function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'noUse', name:'Body_div', valu:'', form:'noUse', wdth:'200px', algn:'left', attr:'', rtrn:false, unit:'noUse', disa:false, rows:'noUse', step:'noUse', list:['noUse'], llgn:'R', bord:'1px solid var(--grayColor);', ftop:'', edit:null)
     # Inbox: container with: Border, Label, Hint, (Placeholder)
     # Design and parameters same as htm_Input()
     $labl= '',                              # string: Translated label above the input field
@@ -543,18 +543,20 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse',
     $rtrn= false,                           # bool:  Act as procedure: Echo result, or as function: Return string
 
     $unit= 'noUse',                         # 
-    $disa= false,                           # bool: Disable the field as editeble. Default: field is not editeble
+    $disa= false,                           # bool:   (Old) true makes the box editable - the opposite of disa elsewhere: use edit
     $rows= 'noUse',                         # 
     $step= 'noUse',                         # 
 
     $list= ['noUse'],                       # 
     $llgn= 'R',                             # string: Label align Default: Right 
     $bord= '1px solid var(--grayColor);',   # string: BoxBorder color to mark required/optional field.   Default= 'border: 1px solid var(--grayColor);' 
-    $ftop= ''                               # string: Ajust field vertical position 
+    $ftop= '',                              # string: Ajust field vertical position
+    $edit= null                             # bool:   true: the content can be edited (use this - not disa)
     ) {
     global $gbl_iconColor, $gbl_labelAlgn;
     if ($llgn == '') $llgn= $gbl_labelAlgn;
-    if ($disa==true) $disa='contenteditable="true"'; else $disa='';
+    $canEdit= ($edit !== null) ? (bool)$edit : ($disa==true);     # (old: disa:true made it editable - the opposite of disa elsewhere)
+    $disa= $canEdit ? 'contenteditable="true"' : '';
     if ($icon>'') $icon= '<ic class="'.$icon.'" style="color: '.$gbl_iconColor.'; margin: 0 5px;"></ic>&nbsp;'; else $icon= '';
     $ftop= ($ftop>'') ? ' top: '.$ftop.'; ' : '';
     
@@ -566,7 +568,7 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse',
         }
       
     $result= 
-    '<div class="boxStyle" id="'.($bid= sys_uid('id_Inbox_div_'.$name)).'" style="  '.                /* The outher div with border: */
+    '<div class="boxStyle" id="'.($bid= sys_uid('id_Inbox_div_'.$name)).'" role="group"'.($labl>'' ? ' aria-labelledby="'.$bid.'_lbl"' : '').' style="  '.   /* The outher div with border: */
            'box-shadow: 3px 4px 2px var(--shadColor);
             border-radius: 5px;
             border: '.$bord.'
@@ -580,7 +582,7 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'noUse',
             text-align: '.$algn.';
             ">
         <abbr class= "hint" >'.                                                                             /* The Tooltip-container shown on mouse over */
-           '<label for="'.$bid.'" style="font-size: 12px; height: 0; display: block; '.$lblalign.'; ">'.   /* The Label above the field content */
+           '<label id="'.$bid.'_lbl" style="font-size: 12px; height: 0; display: block; '.$lblalign.'; ">'.   /* The Label above the field content (it names the box) */
                 '<div style="white-space: nowrap; position: relative; background-color: var(--lablBgrnd); '. 
                     'border: 1px solid  var(--FieldBord);
                     top: -19px;
@@ -621,11 +623,12 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
 ) { global $gbl_iconColor;
     if ($icon>'') $icon= '<ic class="'.$icon.'" style="color: '.$gbl_iconColor.'; margin: 0 5px;"></ic>&nbsp;'; else $icon= '';
     if ($bclr>'') $bclr= ' background: '.$bclr.';'; else $bclr= '';
-    $result= '<span id="id_'.$name.'" style= "padding: 2px 5px; position: relative;'.$bclr.'; ">';
+    $oid= sys_uid('id_'.$name);                                  # Unique ids (was id_<name>: the same id as an htm_Input with that name)
+    $result= '<span id="'.$oid.'" style= "padding: 2px 5px; position: relative;'.$bclr.'; ">';
     if ($hint>'') $result.= ' <abbr class= "hint">';
     switch ($vrnt) { // Variants:
-        case 'outp' : $result.= '<label for="id_'.$name.'_outp">'.$icon.lang($labl).'</label>'. # Output element with label and hint
-                                '<output id="id_'.$name.'_outp" name="'.$name.'outp" for="'.$valu.'" form="'.$form.'">
+        case 'outp' : $result.= '<label for="'.$oid.'_outp">'.$icon.lang($labl).'</label>'. # Output element with label and hint
+                                '<output id="'.$oid.'_outp" name="'.$name.'outp" for="'.$valu.'" form="'.$form.'">
                                 </output>';  break;
 /*      case 'outp' : echo '
                         <form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
@@ -636,8 +639,8 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
                          break;'
 */
         case 'pgrs' : if ($valu<0) $value=''; else $value=' value="'.$valu.'"';
-                      $result.= '<label for="id_'.$name.'_pgrs">'.$icon.lang($labl).'</label>'. # Output Progress indicator
-                                '<progress id="id_'.$name.'_pgrs" '.$value.' max="'.$vmax.'" >
+                      $result.= '<label for="'.$oid.'_pgrs">'.$icon.lang($labl).'</label>'. # Output Progress indicator
+                                '<progress id="'.$oid.'_pgrs" '.$value.' max="'.$vmax.'" >
                                 </progress>';  break;
         default     : $result.= ' htm_Output(): Illegal vrnt ! ';
     }
@@ -1903,12 +1906,13 @@ function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',
         case 'R': $lblalign = 'margin-left:   auto;';  break;   // Align label Right
         default : $lblalign = 'margin-left:   auto;';
     }
-    $result= '<div class="inpField" id="'.sys_uid('id_'.$name).'" style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
+    $fid= sys_uid('id_'.$name);
+    $result= '<div class="inpField" id="'.$fid.'" role="group"'.($labl>'' ? ' aria-labelledby="'.$fid.'_lbl"' : '').' style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
              '; display: inline-block; box-shadow:none; '.$attr.'"> '; // float: left;
     $result.= '<div class="boxStyle" style="padding:5px; margin-top:6px; '.$styl.' ">'.$body.'</div>';
     $result.= ' <abbr class= "hint">'.
             ($labl>'' ? 
-               '<label for="id_'.$name.'" style="font-size: 14px; '.$ftop. '">
+               '<label id="'.$fid.'_lbl" style="font-size: 14px; '.$ftop. '">
                     <div style="white-space: nowrap; box-shadow: none; border: none;'.$lblalign.'">'.lang($labl).'</div>
                </label>'
                : '').
@@ -4866,8 +4870,8 @@ $javaScripts.= "
 # Start creating a page [Necessary basic element]
 function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'', attr:'', pbrd:true) 
     $titl='',           # string: Page title
-    $hint='',           # string: Page tip  (vertical text - left)
-    $info='',           # string: Page into (vertical text - right)
+    $hint='',           # string: Page tip  (vertical text - left) - plain text
+    $info='',           # string: Page info (vertical text - right) - plain text
     # $foot='',         ¤ string: Page footer text at page bottom
     $inis='',           # string: Page initial CSS/js script in page header
     $algn='center',     # string: align - "text-align"
@@ -5206,7 +5210,7 @@ tfoot input {
 ";
 } # LIB_TABLESORTER
 
-if (!(isset($LIB_FONTAWESOME[0]) && array_key_exists(0, $LIB_FONTAWESOME) && ($LIB_FONTAWESOME[0]==0) )) 
+if ((int)($LIB_JQUERY[0] ?? 0) != 0)    # This script needs jQuery (was: tested Font Awesome - without jQuery: "$ is not defined")
    $javaScripts.= "
 <script>
 
@@ -6516,14 +6520,14 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
     if ($info>'')   // Page into (vertical text - right)
         $sideTxt.= '<div class="p2hSideTxt" style="position: fixed; z-index: 99; float: right; display: inline-block; width: max-content; line-height: 14px;line-height: 14px; right: 0;
             transform-origin: bottom left; transform: rotate(-90deg); translate: 100% 85vh; white-space: nowrap; 
-            padding: 2px; background-color:#ddddddbd;"><span style="font-size: 0.8em;">'.lang($info).'</span></div>';
+            padding: 2px; background-color:#ddddddbd;"><span style="font-size: 0.8em;">'.sys_enc(lang($info)).'</span></div>';   # Text (was raw: a file name like <yourFile>.page.php became a tag)
 
     if ($hint>'')   // Page tip  (vertical text - left)
         $sideTxt.= '<div class="p2hSideTxt" style="position: fixed; width: min-content; line-height: 14px; bottom: -10px; left: 0px; z-index: 99;
             transform-origin: top left; transform: rotate(-90deg); white-space: nowrap; padding: 2px; background-color:#ddddddbd;" '.
             'title="'.lang('@CTRL-Scroll UP/Down mousewheel to zoom window content.').'">'.
     // '<data-hint>CTRL-Scroll UP/Down mousewheel to zoom window content</data-hint>'.
-            '<small>'.lang($hint).'</small></div>';
+            '<small>'.sys_enc(lang($hint)).'</small></div>';                   # Text (was raw)
     // echo '<div class="ver_right"; style="color:red;">[[[[[[[[[HHHHH__HHHHHH]]]]]]]]]]</div>';
 
     echo $javaScripts;
