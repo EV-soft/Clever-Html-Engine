@@ -5170,6 +5170,7 @@ tfoot input {
     padding: 0 5px;
     height: 300px;   /* Adjusted in HTML: $ ViewHeight */
     overflow-y: auto;
+    scrollbar-gutter: stable;   /* Room for the scroll bar always: when the rows were about as high as the window, the bar came and went in a loop (the table shook) */
 }
 
 #overlay0, #overlay1 {
