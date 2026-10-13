@@ -4249,12 +4249,14 @@ if (DEBUG) return false;
 } // Pmnu_
 
 //      function Pmnu_Item($type='plain',$labl='',$hint='',$icon='',$id='',$click='',$attr='',$short='',$enbl='true',$rtrn=false) 
-function Pmnu_Item(# labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false) 
-                    $labl='',$icon='',$hint='',$vrnt='plain',$name='',$clck='',$attr='',$shrt='',$enbl='true',$rtrn=false) 
+function Pmnu_Item(# labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false, disa:null)
+                    $labl='',$icon='',$hint='',$vrnt='plain',$name='',$clck='',$attr='',$shrt='',$enbl='true',$rtrn=false,$disa=null)
 { // Create jsCode:
 if (DEBUG) return false;
+    # Enabled: enbl true/'true' (default) - false/'false'/0 disables the item (greyed, no click). disa:true does the same (the uniform name).
+    $enabled= ($disa !== null) ? !$disa : (is_bool($enbl) ? $enbl : !in_array(strtolower(trim((string)$enbl)), ['false', '0', 'no', 'off'], true));
     $result= '
-    {label: "'.lang($labl).'", hint: "'.lang($hint).'", cssIcon: "'.$icon.'"';    // or imgIcon !
+    {label: "'.lang($labl).'", hint: "'.lang($hint).'", cssIcon: "'.$icon.'"'.($enabled ? '' : ', enabled: false');    // or imgIcon !  (enabled: was never sent)
         switch ($vrnt) {
             case 'plain'    : $result.= ', shortcut: "<small>'.$shrt.'</small>", id:"'.$name.'", name:"'.$name.'", onClick: () => {'.$clck.'} '; break;  
             case 'custom'   : $result.= ', shortcut: "'.       $shrt.'", id:"'.        $name.'", name:"'.$name.'", onClick: () => {'.$clck.'} '; break;
@@ -4310,19 +4312,19 @@ if (DEBUG) return false;
 # Init popup context menu group
 function htm_Pmnu_(# elem:'id', capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', cntx:true, rtrn:false)
     $elem='id',$capt='', $wdth='210px', $icon='', $stck='false', $attr='background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', $cntx=true, $rtrn=false) {
-             Pmnu_($elem,     $capt,    $wdth,         $icon,    $stck,         $attr, $cntx, $rtrn);
+      return Pmnu_($elem,     $capt,    $wdth,         $icon,    $stck,         $attr, $cntx, $rtrn);
 }
 
 # Add a popup context menu item
-function htm_Pmnu_Item(# labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false)
-    $labl='', $icon='', $hint='', $vrnt='plain', $name='', $clck='', $attr='', $shrt='', $enbl='true', $rtrn=false) {
-             Pmnu_Item($labl,    $icon,    $hint,    $vrnt,         $name,    $clck,    $attr,    $shrt,    $enbl,        $rtrn);
+function htm_Pmnu_Item(# labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false, disa:null)
+    $labl='', $icon='', $hint='', $vrnt='plain', $name='', $clck='', $attr='', $shrt='', $enbl='true', $rtrn=false, $disa=null) {
+      return Pmnu_Item($labl,    $icon,    $hint,    $vrnt,         $name,    $clck,    $attr,    $shrt,    $enbl,        $rtrn, $disa);
 }
 
 # Finish a popup context menu group
 function htm_Pmnu_end(# labl:'', hint:'', attr:'', rtrn:false)
     $labl='', $hint='', $attr='', $rtrn=false) {
-             Pmnu_end($labl,    $hint,    $attr,    $rtrn);
+      return Pmnu_end($labl,    $hint,    $attr,    $rtrn);
 }
 
 /* 
