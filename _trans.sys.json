@@ -352,6 +352,9 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "A submit button: the server gets btn_hid_&lt;table&gt;_&lt;row&gt; at once and can hide the record":"En send-knap: serveren får btn_hid_&lt;tabel&gt;_&lt;række&gt; med det samme og kan skjule posten",
+      "button (label @Delete, @Hide, @Copy, @Rename or @Select): a submit button per row - the form is sent at once, and the server gets e.g. btn_hid_&lt;table&gt;_&lt;row&gt;.":"button (label @Delete, @Hide, @Copy, @Rename eller @Select): en send-knap pr. række - formularen sendes med det samme, og serveren får fx btn_hid_&lt;tabel&gt;_&lt;række&gt;.",
+      "rowact del or button @Delete? rowact removes the row in the browser (the server sees it is missing when you save); button @Delete asks the server to delete it now.":"rowact del eller button @Delete? rowact fjerner rækken i browseren (serveren ser, at den mangler, når du gemmer); button @Delete beder serveren slette den med det samme.",
       "Show the code":"Vis koden",
       "Hide the code":"Skjul koden",
       "All details, with examples:":"Alle detaljer, med eksempler:",

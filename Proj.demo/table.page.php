@@ -131,7 +131,8 @@ docPostCard();                                      # What the server got when a
 ## 4. Prefix and suffix columns
     htm_Card_(capt:'@Columns before and after the data (pref, suff)', icon:'fas fa-hand-pointer', form:'tblActs', clas:'cardW800', styl:'background-color: white;', vhgh:'none');
         htm_TextDiv(body: lang('@rowact: delete, copy, move and undo in the browser - the new order is posted when you save.').'<br>'.
-                          lang('@button (label @Delete, @Hide, @Copy, @Rename or @Select): a submit button per row - the server gets e.g. btn_del_&lt;table&gt;_&lt;row&gt;.').'<br>'.
+                          lang('@button (label @Delete, @Hide, @Copy, @Rename or @Select): a submit button per row - the form is sent at once, and the server gets e.g. btn_hid_&lt;table&gt;_&lt;row&gt;.').'<br>'.
+                          lang('@rowact del or button @Delete? rowact removes the row in the browser (the server sees it is missing when you save); button @Delete asks the server to delete it now.').'<br>'.
                           lang('@Other suffix types show field 6 as HTML. Suffix columns are shown only with modi:true.'), attr:'white-space: normal;');
         // EXAMPLE: acts
         $tasks= [['31', 'Write the offer',   'Anna'],
@@ -144,8 +145,8 @@ docPostCard();                                      # What the server got when a
                    ['@Task', '46%', 'text', '', ['left'], 'task', '@The task'],
                    ['@Who',  '20%', 'text', '', ['left'], 'who',  '@Who does it']],
             suff: [['@Rows',   '16%', 'rowact', '', ['center'], '@Delete, copy, move and undo in the browser', 'del copy move undo'],
-                   ['@Delete', '6%',  'button', '', ['center'], '@A submit button: the server deletes the row',
-                    '<ic class="fas fa-trash-alt" style="color:#c62828;"></ic>'],
+                   ['@Hide',   '6%',  'button', '', ['center'], '@A submit button: the server gets btn_hid_&lt;table&gt;_&lt;row&gt; at once and can hide the record',
+                    '<ic class="fas fa-eye-slash" style="color:#6d4c41;"></ic>'],
                    ['@Info',   '6%',  'text',   '', ['center'], '@Any HTML', '<ic class="fas fa-info-circle" style="color:#1565c0;"></ic>']],
             data: $tasks, crea: '@New task', filt: false, vhgh: '160px');
         // END
