@@ -134,7 +134,7 @@ htm_Input(labl:\'@Amount\', icon:\'fas fa-euro\', vrnt:\'dec2\',
           name:\'dec2\', valu:0, wdth:\'150px\', algn:\'center\', unit:\'<$ \'); 
 
 ';
-        htm_CodeBox(($strCode));
+        htm_CodeBox($strCode, fold:'closed');
         
         htm_TextDiv('@<i>will produce css-data and this html code:</i>');
         

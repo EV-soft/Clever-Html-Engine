@@ -34,7 +34,7 @@ docPostCard();                                      # What the server got when a
                          ['@Date', '30%', 'date', '', ['center'], 'date']],
                   data: $people, crea: false, vhgh: '160px');
         // END
-        htm_CodeBox(code: docExample('minimal'));
+        htm_CodeBox(code: docExample('minimal'), fold:'closed');
     htm_Card_end();
 
 ## 2. Column types
@@ -60,7 +60,7 @@ docPostCard();                                      # What the server got when a
             suff: [['@Del.', '3%', 'rowact', '', ['center'], '@Delete the row (it asks first - Undo brings it back)', 'del']],
             data: $items, crea: '@New item', vhgh: '170px', filt: false);
         // END
-        htm_CodeBox(code: docExample('types'));
+        htm_CodeBox(code: docExample('types'), fold:'closed');
         $typeList= [
             ['text, data, area, sttu', lang('@An editable text field'), lang('@yes')],
             ['show',       lang('@A read only field'), lang('@yes')],
@@ -92,7 +92,7 @@ docPostCard();                                      # What the server got when a
                             fn($r) => toNum($r['qty']) * toNum($r['price']) * (100 - toNum($r['disc'])) / 100]],
                   data: $lines, crea: false, filt: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: docExample('calc'));
+        htm_CodeBox(code: docExample('calc'), fold:'closed');
     htm_Card_end(labl:'@Save', subm:true, foot:'@Save posts the card form - see the card at the top');
 
 ## 3. Formats and styles
@@ -112,7 +112,7 @@ docPostCard();                                      # What the server got when a
                 ['L',    '14%', 'html', 'L',  ['center'], 'fL', '@Blue (type html)']],
             data: $numbers, crea: false, modi: false, filt: false, sort: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: docExample('formats'));
+        htm_CodeBox(code: docExample('formats'), fold:'closed');
         htm_TextDiv(body:'@The numbers use the separators of the program (DecimalSep / ThousandsSep).', attr:'white-space: normal;');
         // EXAMPLE: styles
         $styled= [['Normal', 'Yellow cell', 'Italic field', 'Marked cell', 'Small text'],
@@ -125,7 +125,7 @@ docPostCard();                                      # What the server got when a
                 ['@[4] font-size',   '20%', 'text', '', ['left', '', '', '', '10px'],                  'e', '@[4] font-size']],
             data: $styled, crea: false, filt: false, sort: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: docExample('styles'));
+        htm_CodeBox(code: docExample('styles'), fold:'closed');
     htm_Card_end();
 
 ## 4. Prefix and suffix columns
@@ -149,7 +149,7 @@ docPostCard();                                      # What the server got when a
                    ['@Info',   '6%',  'text',   '', ['center'], '@Any HTML', '<ic class="fas fa-info-circle" style="color:#1565c0;"></ic>']],
             data: $tasks, crea: '@New task', filt: false, vhgh: '160px');
         // END
-        htm_CodeBox(code: docExample('acts'));
+        htm_CodeBox(code: docExample('acts'), fold:'closed');
     htm_Card_end(labl:'@Save', subm:true, foot:'@Save posts the rows in their new order');
 
 ## 5. Above and below the table
@@ -167,7 +167,7 @@ docPostCard();                                      # What the server got when a
             note: '<small>'.lang('@note: HTML below the table').'</small>',
             data: $orders, crea: false, filt: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: docExample('capt'));
+        htm_CodeBox(code: docExample('capt'), fold:'closed');
         htm_TextDiv(body:'@capt types: show (only the text), rows (the number of rows), html (field 7 as HTML), data (a field with the name in field 3 - posted), '.
                          'text / number / date ... (a field without a name - not posted). The fields above are shown only when the table has data.', attr:'white-space: normal;');
     htm_Card_end(labl:'@Save', subm:true);
@@ -184,7 +184,7 @@ docPostCard();                                      # What the server got when a
         htm_Table(body: $cols, data: $asList,  crea: false, filt: false, vhgh: '125px');
         htm_Table(body: $cols, data: $asNames, crea: false, filt: false, vhgh: '125px');
         // END
-        htm_CodeBox(code: docExample('data'));
+        htm_CodeBox(code: docExample('data'), fold:'closed');
     htm_Card_end();
 
 ## 7. Export to CSV
@@ -199,7 +199,7 @@ docPostCard();                                      # What the server got when a
                          ['@%-rate',      '20%', 'text', '', ['right'],  'vat_rate']],
                   data: $vat, crea: false, filt: false, vhgh: '160px', expo: 'tableexport.csv');
         // END
-        htm_CodeBox(code: docExample('expo'));
+        htm_CodeBox(code: docExample('expo'), fold:'closed');
         htm_LinkButt(labl:'@Download the table as CSV (expo:)', hint:'@Text starting with = + - @ is written with a leading apostrophe, so Excel does not run it as a formula', link:'tableexport.csv', targ:'_blank');
     htm_Card_end();
 

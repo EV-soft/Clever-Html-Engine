@@ -33,7 +33,7 @@ docPostCard();                                      # What the server got when a
             htm_TextDiv(body:'@The content of the card.');
         htm_Card_end();
         // END
-        htm_CodeBox(code: docExample('minimal'));
+        htm_CodeBox(code: docExample('minimal'), fold:'closed');
     htm_Card_end();
 
 ## 2. Form and footer
@@ -46,7 +46,7 @@ docPostCard();                                      # What the server got when a
             htm_Input(labl:'@Email', name:'mail', valu:$_POST['mail'] ?? '', vrnt:'mail', wdth:'90%');
         htm_Card_end(labl:'@Save', icon:'fas fa-floppy-disk', subm:true, foot:'@Remember to save');
         // END
-        htm_CodeBox(code: docExample('form'));
+        htm_CodeBox(code: docExample('form'), fold:'closed');
         htm_TextDiv(body:'@kind: the color of the button - save, navi, goon, eras, crea, home, get_, put_, spc1, spc2. akey: the access key (Alt+key).', attr:'white-space: normal;');
     htm_Card_end();
 
@@ -72,7 +72,7 @@ docPostCard();                                      # What the server got when a
             htm_TextDiv(body:'show:false, hint:&#39;&#39;, poup:false');
         htm_Card_end();
         // END
-        htm_CodeBox(code: docExample('header'));
+        htm_CodeBox(code: docExample('header'), fold:'closed');
         htm_TextDiv(body:'@The buttons at the right (mode 2): toggle the height, toggle the width, close all cards, open all cards. Right-click a header: a menu for all cards (poup).', attr:'white-space: normal;');
     htm_Card_end();
 
@@ -88,7 +88,7 @@ docPostCard();                                      # What the server got when a
             htm_TextDiv(body: str_repeat(lang('@More content than the height (vhgh) - it scrolls.').'<br>', 6), attr:'white-space: normal;');
         htm_Card_end();
         // END
-        htm_CodeBox(code: docExample('size'));
+        htm_CodeBox(code: docExample('size'), fold:'closed');
         htm_TextDiv(body:'@clas: the width - cardWmax (full), cardWaut (the content), cardW120 (1200px), cardW110, cardW100, cardW960, cardW800, cardW720, cardW640, cardW560, cardW480, cardW400, cardW320, cardW280, cardW240, cardW160. '.
                          'On a narrow screen the cards are placed below each other. vhgh: the max height of the body (none: no limit).', attr:'white-space: normal;');
     htm_Card_end();
@@ -104,7 +104,7 @@ docPostCard();                                      # What the server got when a
             htm_Card_end();
         htm_Card_end(labl:'@Save', subm:true);
         // END
-        htm_CodeBox(code: docExample('nested'));
+        htm_CodeBox(code: docExample('nested'), fold:'closed');
     htm_Card_end();
 
 ## 6. Semantic element
@@ -115,7 +115,7 @@ docPostCard();                                      # What the server got when a
             htm_TextDiv(body:'&lt;article aria-labelledby=...&gt;');
         htm_Card_end();
         // END
-        htm_CodeBox(code: docExample('elem'));
+        htm_CodeBox(code: docExample('elem'), fold:'closed');
     htm_Card_end();
 
 ## 7. Moving and resizing

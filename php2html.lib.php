@@ -852,12 +852,13 @@ function highlight_code($code, $styl='color:cyan; font-style:italic;') {
 }
 
 # A span containing syntax formattet php-code
-function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', rtrn:false)
+function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', fold:'', rtrn:false)
     $code='',       # string: php-code with syntax display
     $synt=true,     # bool:   Activate syntax output
     $repl=false,    # bool:   Do output formattet string
     $fmat='',       # string: Format string
     $valu='',       # string: Value to replace
+    $fold='',       # string: 'closed': the code is hidden - a "Show the code" line opens it ('open': shown, can be closed; '': always shown)
     $rtrn=false,    # bool:   Function Return or echo result
     $vlue=null      # (Old name of valu - still works)
     ){
@@ -870,6 +871,9 @@ function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', rtrn:fa
               <pre style= "background-color: #121212; text-align: left;  padding:6px; overflow-x: auto; ">'.
               (($synt==true) ? highlight_code($code) : $code ).    # Only the parameter names are marked - not words in comments and strings
               '</pre></span>';
+    if (in_array($fold, ['closed', 'open'], true))           # Hidden until asked for (a <details>: no JavaScript, works with the keyboard)
+        $result= '<details class="p2hCodeFold"'.($fold=='open' ? ' open' : '').'><summary><ic class="fa-solid fa-code" aria-hidden="true"></ic> '.
+                 '<span class="p2hCfShow">'.lang('@Show the code').'</span><span class="p2hCfHide">'.lang('@Hide the code').'</span></summary>'.$result.'</details>';
     if ($rtrn==false) echo $result; else return $result;
 };
 
@@ -7599,6 +7603,13 @@ abbr.hint.p2hGripHint { position: absolute; right: 0; bottom: 0; z-index: 3; tex
 abbr.hint.p2hGripHint:hover data-hint, abbr.hint.p2hGripHint:focus-within data-hint { left: auto; top: auto; right: 4px; bottom: 18px; width: 240px; }
 .p2hGripCol, .p2hColview .p2hGripTxt { display: none; }
 .p2hColview .p2hGripCol { display: inline; }                    /* Column view: only the height can be dragged */
+/* htm_CodeBox(fold:) - the code hidden until asked for */
+.p2hCodeFold { text-align: left; margin: 4px 0; }
+.p2hCodeFold > summary { cursor: pointer; display: inline-block; font-size: 13px; padding: 2px 8px; border-radius: 4px; opacity: 0.8; }
+.p2hCodeFold > summary:hover, .p2hCodeFold > summary:focus-visible { opacity: 1; background: rgba(127,127,127,0.15); }
+.p2hCodeFold[open] > summary { opacity: 1; }
+.p2hCodeFold .p2hCfHide, .p2hCodeFold[open] .p2hCfShow { display: none; }
+.p2hCodeFold[open] .p2hCfHide { display: inline; }
 /* htm_Table() row actions (suffix type rowact) */
 .p2hRowAct { background: none; border: 0; padding: 1px 3px; cursor: pointer; box-shadow: none; font-size: 13px; }
 .p2hRowAct:hover, .p2hRowAct:focus-visible { background: rgba(127,127,127,0.18); border-radius: 3px; }

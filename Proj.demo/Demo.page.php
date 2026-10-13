@@ -212,29 +212,11 @@ method          Method used for returning the created QR code image (PNG): BASE6
     );
 
         htm_Card_( capt:'@PHP Source-code: htm_Table();', icon:'fas fa-code', hint:'@View part of the demo source-code. !', form:'', acti:'', clas:'cardW960', wdth:'640px', styl:'background-color: lightgray;', attr:'margin:0;', help:'CustHelp.htm');
-        htm_CodeBox("
-function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px', styl:'', from:__FILE__,list:[],expo:'');
-    \$capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:horJust',       '5:Tip',    '6:placeholder', '7:Content';], ...
-           ],
-    \$pref= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:Html'], ...
-           ],           // if ((\$ModifyRec) or (\$RowBody[0][2]!='indx')) is 2% ColWidth can be used to => row-select-button
-    \$body= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:fldKey', '6:ColTip','7:placeholder','8:default','9:[selectList]'], ...
-           ],           # Field 4: \$FieldProporties - is composed of: [horJust, FieldBgColor, FieldStyle, TdColor, SorterON, FilterON, SelectON,
-    \$suff= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:value! '], ...
-           ],
-    \$note= '',         # string: HTML-string - note to be shown below the table
-   &\$data,             # array:  [{\"name_0\":value_0, \"name_1\":value_1, \"name_2\":value_2, \"name_3\":value_3, \"name_4\":value_4, \"name_5\":value_5, \"name_6\":value_6, \"name_7\":value_7, \"name_8\":value_8, \"name_9\":value_9},{...},{...}]
-    \$filt= true,       # bool:   Ability to hide records that do not match filter // Does not work with hidd fields!
-    \$sort= true,       # bool:   Ability to sort records by column content
-    \$crea= true,       # bool:   Ability to create a records - string: Labeltext on createButton
-    \$modi= true,       # bool:   Ability to select and change data in a row
-    \$vhgh= '400px',    # string: The height of the visible part of the table's data
-    \$styl= '',         # string: Style for the span that holds the table;
-    \$from= __FILE__,   # string: = __FILE__ / __FUNCTION__ (debugging: locate error)
-    \$list= ['',''],    # array:  LookupLists for options // Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
-    \$expo= ''          # string: Export values in table data fields to CSV-file
-)
-");
+        $rf= new ReflectionFunction('htm_Table');                       # The declaration, read from the library (was a copy that had got out of date)
+        $decl= array_slice(file($rf->getFileName()), $rf->getStartLine() - 1, 80);
+        $end= 0;  foreach ($decl as $i => $l) if (preg_match('~^\)~', $l)) { $end= $i;  break; }
+        htm_CodeBox(code: implode('', array_slice($decl, 0, $end + 1)), fold:'closed');
+        htm_TextDiv(body: lang('@All details, with examples:').' <a href="table.page.php">table.page.php</a>');
         htm_Card_end();
     htm_Card_end();
 
@@ -284,7 +266,7 @@ htm_Fieldset_end(rtrn:false);
 STRING
 ;
 
-        htm_CodeBox($strCode);
+        htm_CodeBox($strCode, fold:'closed');
         echo 'echo \'You place your html-objects here inside fieldset-frames...\';';
     htm_Card_end();
     
@@ -308,7 +290,7 @@ htm_Field(labl:'Label with hint',
                
 STRING
 ; 
-        htm_CodeBox($strCode);
+        htm_CodeBox($strCode, fold:'closed');
     htm_Card_end();
         
         
@@ -339,7 +321,7 @@ htm_wrapp_end();
     
 STRING
 ; 
-        htm_CodeBox($strCode); //    /* highlight_words */(highlight_string($strCode,true)));
+        htm_CodeBox($strCode, fold:'closed'); //    /* highlight_words */(highlight_string($strCode,true)));
     htm_Card_end();
 
         htm_nl(2);

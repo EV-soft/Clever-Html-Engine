@@ -352,6 +352,9 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "Show the code":"Vis koden",
+      "Hide the code":"Skjul koden",
+      "All details, with examples:":"Alle detaljer, med eksempler:",
       "A card is a span. elem: section, article, aside, main, header, footer or div - a semantic element gets the caption as its accessible name (aria-labelledby). The caption is a heading.":"Et kort er en span. elem: section, article, aside, main, header, footer eller div - et semantisk element får overskriften som sit tilgængelige navn (aria-labelledby). Overskriften er en heading.",
       "A card is htm_Card_() ... htm_Card_end() with your content in between. Click the header to fold the card.":"Et kort er htm_Card_() ... htm_Card_end() med dit indhold imellem. Klik på hovedet for at folde kortet.",
       "A form in the card - and the footer":"En formular i kortet - og bunden",
@@ -1698,6 +1701,9 @@
          "note":"2020-06-03",
          "DateTime":"de_DE.utf8",
          "translation":{
+      "Show the code":"Code anzeigen",
+      "Hide the code":"Code ausblenden",
+      "All details, with examples:":"Alle Details, mit Beispielen:",
       "Delete the row":"Zeile löschen",
       "Copy the row (the copy is inserted below it)":"Zeile kopieren (die Kopie wird darunter eingefügt)",
       "Move the row up":"Zeile nach oben",
@@ -2286,6 +2292,9 @@
          "note":"2020-06-06",
          "DateTime":"\"fr_FR.UTF8\", \"fr.UTF8\"",
          "translation":{
+      "Show the code":"Afficher le code",
+      "Hide the code":"Masquer le code",
+      "All details, with examples:":"Tous les détails, avec des exemples :",
       "Delete the row":"Supprimer la ligne",
       "Copy the row (the copy is inserted below it)":"Copier la ligne (la copie est insérée en dessous)",
       "Move the row up":"Monter la ligne",
@@ -3706,6 +3715,9 @@
          "note":"2020-06-06",
          "DateTime":"xxx.utf8",
          "translation":{
+      "Show the code":"Visa koden",
+      "Hide the code":"Dölj koden",
+      "All details, with examples:":"Alla detaljer, med exempel:",
       "Delete the row":"Radera raden",
       "Copy the row (the copy is inserted below it)":"Kopiera raden (kopian infogas under den)",
       "Move the row up":"Flytta raden uppåt",

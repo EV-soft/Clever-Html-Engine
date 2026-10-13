@@ -57,7 +57,7 @@ echo 'You place your page-content here...<br>';
 htm_Page_end();
 STRING
 ; 
-        htm_CodeBox($strCode);
+        htm_CodeBox($strCode, fold:'closed');
         htm_Card_end();
 
     htm_Card_end();
