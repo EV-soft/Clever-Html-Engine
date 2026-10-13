@@ -1949,14 +1949,14 @@ function htm_Card_(# capt:'', icon:'', hint:'', form:'', acti:'', clas:'cardWmax
     if (!is_array($gbl_CardStack)) $gbl_CardStack= [];
     $outerForm= in_array(true, $gbl_CardStack, true);
     if (($form>'') and !$outerForm) { //  Without name form will not be created, so local forms can be used !
-        $gbl_CardStack[]= true;
+        $gbl_CardStack[]= true;  $GLOBALS['gbl_CardFormName'][]= $form;   # (the footer button submits this form)
         $gbl_CardForm= true;
         $formCrea=  "\n\n".'<form name="'.$form.'" id="'.$form.'" action="'.$acti.'" 
                     method="POST" enctype="multipart/form-data"
                     style="margin-block-end: 0;">'."\n".
                     csrf_field(true)."\n"; // CSRF-token indlejres automatisk i hver formular
     }
-    else { $gbl_CardStack[]= false; $formCrea= ''; }   # $gbl_CardForm keeps the state of an enclosing form
+    else { $gbl_CardStack[]= false; $GLOBALS['gbl_CardFormName'][]= ''; $formCrea= ''; }   # $gbl_CardForm keeps the state of an enclosing form
     
     $prnHtml= $icon.ucfirst($capt);
     if ($last=='') $last= $Card_contrl. $Card_help;
@@ -2036,7 +2036,7 @@ else { # Clean and simple header output:
 } // htm_Card_()
 
 # Finalize htm_Card_()
-function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false)
+function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, attr:'', akey:'', kind:'save', simu:false, foot:'')
     $labl='',       # string: Label on the submit button in the footer
     $icon='',       # string: Icon left to label
     $hint='',       # string: Hint on hover the submit button
@@ -2047,26 +2047,31 @@ function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'',subm:false, 
     $akey='',       # string: Shortcut to activate the button
     $kind='save',   # string: The button appearance 
     $simu=false,    # bool:   Button only simulate
-    $foot=''        # string: Footer text above htm_AcceptButt()
+    $foot=''        # string: Footer text (HTML, translated) - the footer stays below the scrolling body and is hidden with it when the card is folded
 )
 {   global $gbl_CardForm, $gbl_CardStack;    dvl_pretty('htm_Card_end ');
     $ownForm= is_array($gbl_CardStack) && $gbl_CardStack ? array_pop($gbl_CardStack) : false;  # Did THIS card open a form?
+    $cardForm= (is_array($GLOBALS['gbl_CardFormName'] ?? null) && $GLOBALS['gbl_CardFormName']) ? array_pop($GLOBALS['gbl_CardFormName']) : '';
+    if ($ownForm and ($cardForm > '')) $form= $cardForm;    # The footer button submits this card's form (a different form: name did nothing)
     $gbl_CardForm= is_array($gbl_CardStack) && in_array(true, $gbl_CardStack, true);         # Is an enclosing form still open?
     //if ($disa==true) $aktiv=' disabled '; else $aktiv= '';
     if ($hint=='') {$hint= '@Remember to save here if you changed anything above, before leaving the window.'; $kind='save';}
     echo '</div>';  $prnHtml= '</div>';  // class="cardContent"
-    if ($ownForm)
-        if (($subm==true) or ($foot>'')) { # Show footer:
-            echo '<hr class="style13" style= "height:4px;">';
-            if ($foot>'') echo '<small>'.lang($foot).'</small>' ;
-            if ($subm==true) {
-                if ($foot>'') echo '<br>';
-                echo '<span class="center" style="height:35px; display: inline-block; position: relative;">';
-                htm_AcceptButt(labl:$labl, icon:$icon, hint:$hint, form:$form, attr:$attr, akey:$akey, kind:$kind, rtrn:false, tplc:'LblTip_N', tsty:'left: auto; top: -65px;');
-                echo '</span>';
-            }
-        }
     echo '</span>'; $prnHtml.= '</span>'; // HideBody to here !
+    # The footer: below the scrolling body (always visible while the card is open, hidden with the body when it is folded - see .p2hCardFoot).
+    # Shown when there is a text, or a submit button (subm:true in a card with its own form).
+    # (Was: only in cards with their own form, and inside the scrolling body - a tall card scrolled it out of sight.)
+    $subm= (($subm==true) and $ownForm);           # The button submits THIS card's form (a nested card has none - the button would do nothing)
+    if ($subm or ($foot > '')) {
+        echo '<div class="p2hCardFoot">';
+        if ($foot > '') echo '<small>'.lang($foot).'</small>';
+        if ($subm) {
+            echo '<span class="center" style="height:35px; display: inline-block; position: relative;">';
+            htm_AcceptButt(labl:$labl, icon:$icon, hint:$hint, form:$form, attr:$attr, akey:$akey, kind:$kind, rtrn:false, tplc:'LblTip_N', tsty:'left: auto; top: -65px;');
+            echo '</span>';
+        }
+        echo '</div>';
+    }
     if ($ownForm) echo "\n".'</form>'.'<!-- /'.$name.' -->'."\n\n"; //  CardForm-end
     $elem= (is_array($GLOBALS['gbl_CardElem'] ?? null) && $GLOBALS['gbl_CardElem']) ? array_pop($GLOBALS['gbl_CardElem']) : 'span';
     if ($GLOBALS['gbl_CardResize'] ?? true)              # Drag grip: card width and body height (remembered per card, see p2hCardSize)
@@ -7407,6 +7412,10 @@ abbr.hint.p2hMoveHint:hover data-hint, abbr.hint.p2hMoveHint:focus-within data-h
 .p2hArrange [data-p2h-move=toggle] { outline: 2px dashed var(--AccnColr, DarkGreen); outline-offset: 2px; }
 .p2hMoving { opacity: 0.6; outline: 2px dashed var(--AccnColr, DarkGreen) !important; outline-offset: 2px; }
 .p2hDragging, .p2hDragging * { user-select: none !important; cursor: grabbing !important; }
+/* htm_Card_end(foot:, subm:) - the card footer: below the scrolling body, hidden when the card is folded */
+.p2hCardFoot { border-top: 2px solid var(--grayColor, #ccc); margin: 2px 4px 0; padding: 6px 8px 4px; text-align: center; display: flex;
+    flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 12px; }
+:has(> [id^=HideBody][style*="display: none"]) > .p2hCardFoot { display: none; }
 [id^=card]:has(> [id^=HideBody][style*="display: none"], > form > [id^=HideBody][style*="display: none"]) > .p2hGripHint { display: none; }   /* Folded card: no grip */
 
 abbr.hint:hover data-hint, abbr.hint:focus-within data-hint, .inpField:focus-within > abbr.hint data-hint {

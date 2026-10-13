@@ -147,6 +147,8 @@ htm_Page_(titl:'card.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocV
         <b>htm_Card_()</b> - prepares the start of a card.<br>
         and: <br>
         <b>htm_Card_end()</b> - finalize the card.     <br><br>
+        Optional footer: <b>htm_Card_end(foot:&#39;...&#39;, subm:true)</b> - a text and a save button below the content.<br>
+        It stays visible below the scrolling content, and is hidden with it when the card is folded.<br><br>
         In between, you add your content.             <br><br>
         <small>See the source in php2html.lib.php to manage the function parameters.</small>
         ');
