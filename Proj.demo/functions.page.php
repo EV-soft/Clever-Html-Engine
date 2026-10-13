@@ -26,7 +26,7 @@ htm_Page_( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center', 
     
     htm_Card_( capt: '@Overview over the system functions:', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_TextPre('<big>FUNCTIONS - vers. '.$DocVer.' - '.date("Y-m-d").':</big><br>'.
+        htm_TextDiv(styl: 'padding: 5px;', body: '<big>FUNCTIONS - vers. '.$DocVer.' - '.date("Y-m-d").':</big><br>'.
             file_get_contents('Functions.html'));
         $lines = count(file('Functions.html'));
         // echo 'Total: '.floor(0.5+($lines/3)-1),' htm_Functions';

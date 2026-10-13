@@ -451,10 +451,10 @@ STRING
 
     $w= 0;
     foreach ($task as $t) $w= max($w,strlen($t[0]));
-    echo '<span style="text-align:left;">';
-    echo '<style> table, th, td { border: none; border-collapse: collapse;} 
-        td span { writing-mode: vertical-lr; transform: rotate(180deg); height: '.($w*7.5).'px; }
-        </style>';
+    echo '<div id="usrRights" style="text-align:left;">';      # (was a <span> that was never closed - the card ended too early)
+    echo '<style> #usrRights table, #usrRights th, #usrRights td { border: none; border-collapse: collapse;}
+        #usrRights td span { writing-mode: vertical-lr; transform: rotate(180deg); height: '.($w*7.5).'px; }
+        </style>';                                                 # Only these tables (was: every table and td span of the page)
         
     htm_Fieldset(capt:'@Users',icon:'',hint:'',wdth:'90%',marg:'',attr:'scale:80%;',rtrn:false);
     echo '<table style="margin: auto; font-size: smaller; "><tr style="padding:5px;">
@@ -491,10 +491,10 @@ STRING
     <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:0, acti:false, styl:'').' <small>: '. lang('@Undefined').'</small></td>
     <td colspan="'.(count($task)-8).'" style="text-align:right;"><small>'.lang('@CLICK symbol to change').'</small>&nbsp;</td></tr>';
     echo '</table>';
-    # (A stray </span> here ended the card too early)
     htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'crea',  rtrn:false, 
                    tplc:'LblTip_text', tsty:'left: auto; top: 0; position: relative;',acti:'htm_Toast("Create new user<br>Cant create yet !","orange","black")');
     htm_Fieldset_end();
+    echo '</div>';
     htm_MiniNote('This is an example of using the multi-state button.');
     htm_nl(1);
     

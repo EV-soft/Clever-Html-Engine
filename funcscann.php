@@ -140,7 +140,7 @@
                 //_// 
                 $html.= $elem['val']; 
                 }
-            //_// echo '</div>';  $html.= '</div>';
+            $html.= '</div>';                                    # (was never closed)
             
           $count= substr('000'.$count,-3); 
           if ($count>0) $buff[] = '<br>Ialt: '.$count.' '.$nn.' forekomst(er) af: "<font color=red>'.$searchWord.'</font>" i <i>'.$dir.'</i><b>'.$sourceFile.'</b>';

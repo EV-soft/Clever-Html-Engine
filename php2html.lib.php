@@ -2363,7 +2363,7 @@ function htm_Wrapp_(# vhgh:'400px') # WrapperCard - open
     $vhgh='400px') # WrapperCard - vhgh: ViewHeight
 {   echo '<span class="wrapper" style="padding:0; margin: 0 0 6px; border:1px solid gray; height:'.$vhgh.'; display: block;">'; 
 }
-# Filalixe a wraooer window
+# Finalize a wrapper window
 function htm_Wrapp_end()         # WrapperCard - close
 {   echo '</span>';
 }
@@ -2487,7 +2487,7 @@ function htm_RowCol_end() #             # ColumnBottom
 }
 ## Importent: $RowColWdth - Only use defined width ! (See CSS: @media screen)
 
-# A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submig  [Necessary basic element]
+# A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submit  [Necessary basic element]
 function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'home', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'')
     $labl='',           # string: The caption on the button
     $icon='',           # string: The iconclass ('<i class="fas fa-plus"> </i> ';)
