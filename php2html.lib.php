@@ -225,9 +225,9 @@ function arrPrint($arr,$name='',$rtrn=false)  ## Output actual value of any vari
 }
 
 function arrPretty($arrVar,$titl='',$attr='rows="20" cols="135"',$wdth='100%',$rtrn=false)  ## Pretty output of any variable
-{   $result= "<meta charset='UTF-8'>
+{   $result= "
     <div style='background: lightcyan; width:".$wdth.";'>".$titl."</div>
-              <textarea ".$attr." wrap = 'off' style='padding: 10px; width: ".$wdth."; display: block;'>".
+              <textarea ".$attr." readonly aria-label='".sys_enc(strip_tags($titl ?: 'Data'))."' wrap='off' style='padding: 10px; width: ".$wdth."; display: block;'>".   # (was: <meta charset> in the page, editable, no name)
                     sys_enc(print_r($arrVar,true)).                    # Escaped: values may come from the request
               "</textarea><hr>\n"; // </pre>
     if (!$rtrn) echo $result;  else return $result;
@@ -414,7 +414,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
                                  # labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'gray' bclr:'white', akey:'', rtrn:false)
                                 htm_IconButt($btnlabl='', $btnicon='far fa-eye fa-fw colrgreen',$btnhint= lang('@Show/Hide password'),
                                              $btntype='button', $btnname='tgl_'.$name, $btnlink='',
-                                             $btnevnt='onmousedown=\'togglePassword(document.getElementById("'.$iid.'"),this)\'', $wdth='', $btnfont='14px;', 
+                                             $btnevnt='onclick=\'togglePassword(document.getElementById("'.$iid.'"),this)\'', $wdth='', $btnfont='14px;',   # (was onmousedown: not with the keyboard)
                                              $btnfclr='green', $btnbclr='white; padding-right:3px; padding-bottom:1px; margin-top:1px; width:28px;',
                                              $btnakey='', $btnrtrn=true ).
                             '</div>';
@@ -1492,7 +1492,9 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                     $prf[6]= str_replace('name="','name="i'.$RowIx.'_',$prf[6]);
                     $prf[6]= str_replace('label for="','label for="i'.$RowIx.'_',$prf[6]);
                     }
-                $rowField.= '<td style="width:'.$prf[1].'; text-align:'.$prf[4][0].'; ">'.lang($prf[6]).' </td>';
+                $pLbl= sys_enc(trim(strip_tags(lang($prf[0]))));     # Fields in the prefix HTML: named by the column label (like the data cells)
+                $rowField.= '<td style="width:'.$prf[1].'; text-align:'.$prf[4][0].'; ">'.
+                    ($pLbl > '' ? preg_replace('/<(input|select|textarea)\b(?![^>]*\baria-label)(?![^>]*type=\s*"hidden")/i', '<$1 aria-label="'.$pLbl.'"', lang($prf[6])) : lang($prf[6])).' </td>';
                 $newRow.= '<td><div style= "background-color: gray;"> </div></td>';
             }
             if ($selectable) $rowField.=  '<td style="text-align:right; width:2%;">'.$RowSelect.'</td>';
@@ -1573,6 +1575,7 @@ $ixalign= $ixalign ?? '';
                 if (is_array($DataRow))
                 if ($ColIx<count($DataRow)) {  //  If colspan is there stopped here, when the row is over
                     // if ($emptyTD== true) $rowField.= '<td>'; else
+                    $cellStart= strlen($rowField);                     # (the fields of this cell get the column label - see after </td>)
                     $rowField.= '<td style="'.(stripos($ixalign, 'text-align') !== false ? $ixalign : 'text-align:'.$bdy[4][0].'; '.$ixalign).   # (the row rule's text-align won anyway)
                                 ' width:'.$bdy[1].'; '.$bgColor.$tdColor.$txtSize.$rowBg.($colsp ?? ''); //  tablefield-property
 
@@ -1676,13 +1679,16 @@ $ixalign= $ixalign ?? '';
                                 }
                     }   // :switch InputTypes
                     $rowField.= '</td>';
+                    $ariaLbl= sys_enc(trim(strip_tags(lang($bdy[0]))));     # Fields in a cell: named by the column label (had no accessible name)
+                    if ($ariaLbl > '') $rowField= substr($rowField, 0, $cellStart).
+                        preg_replace('/<(input|select|textarea)\b(?![^>]*\baria-label)(?![^>]*type=\s*"hidden")/i', '<$1 aria-label="'.$ariaLbl.'"', substr($rowField, $cellStart));
                 }      // '<td style="text-align:'.$Body[4][0].'; width:'.$Body[1].'; '.
                 if ($bdy[2]=='hidd')                     # Hidden column: an empty hidden field (a new record) - else the fields after it were one column out of place
                     $newRow.= '<td style="width:0; padding:0; border:none; display:none;"><input type= "hidden" name="'.$fldNames[$ColIx].'[]" value="" /></td>';
                 else {
                     if ($bdy[0]=='@Order Date') $currDate= date('Y-m-d'); else $currDate='';
                     $newRow.= '<td style="text-align:'.$bdy[4][0].'; width:'.$bdy[1].';" >'. # ColWidth
-                              '<input type= "text" '.$GotoEdit.' name="'.$fldNames[$ColIx].'[]" value="'.$currDate.
+                              '<input type= "text" '.$GotoEdit.' name="'.$fldNames[$ColIx].'[]" aria-label="'.sys_enc(trim(strip_tags(lang($bdy[0])))).'" value="'.$currDate.
                               '" placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.' width: 98%;  background-color: lightyellow; font-style:inherit;" /> </td>';
                               if (!in_array($bdy[2],['show','indx','calc'])) $GotoEdit= '';
                               }
@@ -2739,7 +2745,8 @@ function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:
         <abbr class="hint">
             '.$formOpen.'
                 <button class="buttstyl" type= "'.$type.'" id="'.$name.'" name="btn_ico_'.$btnix.'"'.$btnTarget.
-                 ' style="color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" accesskey="'.$akey.'" '.$evnt.'>'.
+                 ' style="color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" accesskey="'.$akey.'" '.$evnt.
+                 ((trim(strip_tags(lang($labl))) === '' and $hint > '') ? ' aria-label="'.sys_enc(trim(strip_tags(lang($hint)))).'"' : '').'>'.   # Icon only: the hint names it
                 ' <data-ic class="'.$icon.'" style="font-size:'.$font.'; color:'.$fclr.';  '.$gbl_ButtnBgrd.'; "> </data-ic> '.
                 lang($labl). '&nbsp; 
                 </button>

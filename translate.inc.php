@@ -96,7 +96,7 @@ function scannLngStrings($code= 'dk') {
     
     echo '<span style="padding-left:60px;">KEY (english)</span>   <span style="margin-left:300px;">TRANSLATED</span><br>';
     
-    echo '<textarea rows="30" id="EditText" name="EditText" style="line-height:100%; width:100%; white-space: pre; overflow-x: auto;" >';   // .$valu.'</textarea>';
+    echo '<textarea rows="30" id="EditText" name="EditText" aria-label="'.sys_enc(strip_tags(lang('@The strings to translate (JSON)'))).'" style="line-height:100%; width:100%; white-space: pre; overflow-x: auto;" >';   // .$valu.'</textarea>';
     $lf= "\n";                 # (was &#013;&#010; - a CR reference is a parse error in HTML)
     ## Translation Start:
     echo $lf.'{';

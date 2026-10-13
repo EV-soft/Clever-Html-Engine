@@ -352,6 +352,10 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "The strings to translate (JSON)":"Strengene der skal oversættes (JSON)",
+      "The 4 character name":"Navnet på 4 tegn",
+      "What the name means":"Hvad navnet betyder",
+      "A note":"En note",
       "The file could not be uploaded.":"Filen kunne ikke uploades.",
       "The file is too big (max. 200 KB).":"Filen er for stor (maks. 200 KB).",
       "Only .htm, .html and .txt files.":"Kun .htm-, .html- og .txt-filer.",
