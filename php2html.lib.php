@@ -2286,7 +2286,7 @@ function htm_DataGroup(# capt:'', icon:'', hint:'', head:'', data:[['Label0','Da
        global $gbl_iconColor;
     $capt= lang($capt); 
     $icon= '<ic class="'.$icon.'" style="font-size: 20px; color: '.$gbl_iconColor.'; '.$fclr.'margin: 0 5px;"></ic>';
-    if ($bord>'') $bord= 'border: '.$bord. 'border-radius: 5px;'; else $bord= '';
+    if ($bord>'') $bord= 'border: '.rtrim(trim($bord), ';').'; border-radius: 5px;'; else $bord= '';   # (bord without ";" broke the style)
     if ($hint>'') $hint= '<data-hint> '.lang($hint).' </data-hint>';
    # Field - ScrollWindow - Caption - Header - dataRecords - Footer
     echo # Field:
@@ -3734,7 +3734,7 @@ if ($form>'') $result.= ' <form name="'.sys_enc($form).'" id="'.sys_enc($form).'
     $result.= '    
         <div class="grab-slider-field">
             <div class="grab-slider-wrapper" title="'.lang($hint).'">
-                <div class="grab-slider" style="padding: 0 5px; font-size: 12px;">'.
+                <div class="grab-slider" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0" aria-label="'.sys_enc(strip_tags(lang($capt))).'" style="padding: 0 5px; font-size: 12px;">'.
                     '<abbr class= "hint" style="white-space: nowrap;">'.
                         lang($capt). (($icon>'') ? ' <i class="'.$icon.'"></i>' : '').
                         '<data-hint style="left: auto;"> '.
@@ -3767,6 +3767,12 @@ $result.= '
       }
       function up() { slider.removeEventListener("pointermove", move); slider.removeEventListener("pointerup", up); slider.removeEventListener("pointercancel", up); }
       slider.addEventListener("pointermove", move);  slider.addEventListener("pointerup", up);  slider.addEventListener("pointercancel", up);
+    });
+    slider.addEventListener("keydown", function(e) {      /* Keyboard: Enter, Space, right arrow or End solves it (was: mouse only - the form could not be sent) */
+      if (["Enter", " ", "ArrowRight", "End"].indexOf(e.key) < 0) return;
+      e.preventDefault();
+      slider.style.left= (wrapper.clientWidth - slider.offsetWidth) + "px";  wrapper.classList.add("human");
+      input.value= "notbot";  slider.setAttribute("aria-valuenow", "1");
     });
   }
   function go() { document.querySelectorAll(".grab-slider-wrapper").forEach(init); }
@@ -3811,7 +3817,10 @@ function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow
     $vhgh='',       # string: ViewHeight (future !)
     $dflt=false     # boolean: Open as default
     ) 
-{   $b= 'small'; 
+{   $b= 'small';
+    static $tabNo= 0;  $tabNo++;
+    $name= preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$name);   # A safe id (it is used in onclick)
+    if ($name === '') $name= 'p2hTab'.$tabNo;                      # Without a name: an id of its own (was id="" - the tab could not be opened)
     $GLOBALS['TabLabl'].= '
         <button class="tablinks" type="button" id="tab_'.$name.'" title="'.lang('@Show this Tab-content').'" 
         onclick="openTab(event, \''.$name.'\')" 
@@ -3871,13 +3880,15 @@ function htm_TextArea(# labl:'', hint:'', name:'area', form:'', valu:'', rows:'1
     $widt=null      # (Old name of wdth - still works)
 )
 {   if ($widt !== null) $wdth= $widt;
-    $result= '<textarea rows="'.sys_enc($rows).'" id="'.sys_enc($name).'" name="'.sys_enc($name).'"'.($form>'' ? ' form="'.sys_enc($form).'"' : '').
+    $tid= sys_uid('ta_'.preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$name));   # Unique id (was the name: the same name twice gave the same id)
+    $result= '<textarea rows="'.sys_enc($rows).'" id="'.$tid.'" name="'.sys_enc($name).'"'.($form>'' ? ' form="'.sys_enc($form).'"' : '').
         ' placeholder="'.sys_enc(lang($plho)).'" style="width:'.$wdth.'; font-size: 1em; border: 1px solid Gainsboro; border-radius: 4px; margin-top: 10px; '.$attr.'">'.
         sys_enc((string)$valu).'</textarea>';
+    $lbl= ($labl > '') ? '<label for="'.$tid.'">'.lang($labl).'</label>' : '';     # A real label (was plain text)
     if ($hint > '')
-        $result.= '<abbr class="hint">'. lang($labl).'<data-hint>'.lang($hint).'</data-hint></abbr>';
+        $result.= '<abbr class="hint">'.$lbl.'<data-hint>'.lang($hint).'</data-hint></abbr>';
     else
-        $result.= lang($labl);   # (was: lang($labl).$result - which output the textarea twice)
+        $result.= $lbl;
     if (!$rtrn) echo $result; else return $result;
 }
 
@@ -6665,7 +6676,7 @@ function htm_Page_end()
 function Lbl_Tip(# labl,hint,plac:'',$h='13px',$t='') 
     $labl,$hint,$plac='',$h='13px',$t='') 
 { # Label with popup-tip / info / LongLabel / details to the user, when mouseover the label.
-    if ($t!='')  $t= ' top:'.$t;
+    if ($t!='')  $t= ' top:'.$t.';';
     if ($labl=='') return '';
     else {    dvl_pretty('Lbl_Tip');
         if ($h=='0px') {$h='';}
@@ -6680,9 +6691,9 @@ function Lbl_Tip(# labl,hint,plac:'',$h='13px',$t='')
         default :  $class= 'LblTip_text';         # Plac. Over
         }
         if (strlen($hint.' ')<140) {$wdth='';} else {$wdth='style ="min-width: 320px;"';}
-        if ($hint=='') $hint=lang('@No details !');
-        $hint= '<span class="'.$class.'" '.$wdth.'>'.lang($hint).'</span>';
-        return '<span class="LblTip" style="height:'.$h.$t.'">'.ucfirst(lang($labl).' ').$hint.'</span>';
+        $hint= (trim(strip_tags((string)$hint)) === '') ? '' :          # No hint: no popup (was a popup with "No details !")
+               '<span class="'.$class.'" '.$wdth.'>'.lang($hint).'</span>';
+        return '<span class="LblTip" style="'.($h > '' ? 'height:'.$h.';' : '').$t.'">'.ucfirst(lang($labl).' ').$hint.'</span>';
     }
 }
 
