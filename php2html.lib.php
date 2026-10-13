@@ -1973,24 +1973,24 @@ Layout of htm_Card:
 function htm_Card_(# capt:'', icon:'', hint:'tgl', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', help:'', fclr:'', frst:'', last:'', simp:false, fold:'', elem:'span', move:true, rtrn:false);
     $capt = '',                         # string: The card caption
     $icon = '',                         # string: Class: icon to the left of caption
-    $hint = 'tgl',                      # string: The default hint on hover caption (tgl: toggle open/close card-body)
-    $form = '',                         # string: form id/name (No form without a name)
-    $acti = '',                         # string: form action 
-    $clas = 'cardWmax',                 # string: The card class (general CSS-data) The open card width: .cardWmax, .cardWaut, .cardW120 (1200), .cardW110 (1100), .cardW100 (1000),
-                                        #         .cardW960, .cardW800, .cardW720, .cardW640, .cardW560, .cardW480, .cardW400, .cardW320, .cardW280, .cardW240, .cardW160
-    $wdth = '',                         # string: The closed card width
-    $styl = 'background-color: white;', # string: The card body style
-    $attr = 'margin-bottom: 8px;',      # string: general attributes (style) for the card-container
-    $show = true,                       # bool:   Show card-contrl-buttons top-right
-    $mode = '2',                        # string: Mode regarding card-contrl-buttons: 0:none, 1:heiht-only, 2:width-also, ( 3:AllCards, 4:ThisCard )
-    $poup = true,                       # bool:   Activate popup-menu for handling all cards
-    $head = 'background-color: white;', # string: Style for Header background
-    $vhgh = '600px',                    # string: Fixed ViewHeight for span (HideBody) with scrollable content
-    $help = '',                         # string: Link to show custom Card-help (HTML-file to open)
-    $fclr = '',                         # string: Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
-    $frst = '',                         # string: Html content in Caption left
-    $last = '',                         # string: Html content in Caption right
-    $simp = false,                      # bool:   HeaderMode: Simple==true: centered caption in header (hide nav-icons)
+    $hint = 'tgl',                      # string: The hint on the caption ('tgl': "click to open / close this card", '': none)
+    $form = '',                         # string: The name (and id) of a form around the card body - '' no form. Not inside a card that has a form (no nested forms)
+    $acti = '',                         # string: The action of the form ('' this page). The form is POST, multipart, with the CSRF token
+    $clas = 'cardWmax',                 # string: The width class: cardWmax (full), cardWaut (the content), cardW120 (1200px), cardW110, cardW100,
+                                        #         cardW960, cardW800, cardW720, cardW640, cardW560, cardW480, cardW400, cardW320, cardW280, cardW240, cardW160
+    $wdth = '',                         # string: The width of the folded card (a number is px), e.g. '240px' - '' the same width
+    $styl = 'background-color: white;', # string: Style of the card body
+    $attr = 'margin-bottom: 8px;',      # string: Style of the card itself (the outer element)
+    $show = true,                       # bool:   Show the buttons at the right in the header
+    $mode = '2',                        # string: The buttons: '0' none / '1' toggle the height / '2' also: toggle the width, close all, open all
+    $poup = true,                       # bool:   Right-click the header: a menu for all cards (heights, close / open all, original order)
+    $head = 'background-color: white;', # string: Style of the header
+    $vhgh = '600px',                    # string: The max height of the body - more content scrolls ('none': no limit)
+    $help = '',                         # string: A link: a ? icon in the header opens it in a new window
+    $fclr = '',                         # string: Extra style of the header icons and text, e.g. 'color:snow;'
+    $frst = '',                         # string: HTML at the left in the header (the caption is then centered)
+    $last = '',                         # string: HTML at the right in the header - it replaces the buttons (show/mode)
+    $simp = false,                      # bool:   A simple header: only the centered caption (no buttons, no frst/last)
     $fold = '',                         # string: 'closed': the card starts folded (click the caption to open it)
     $elem = 'span',                     # string: The HTML element of the card: span (default) / section / article / aside / main / header / footer / div
                                         #         A semantic element (section...) gets the caption as its accessible name (aria-labelledby)
@@ -2173,16 +2173,16 @@ else { # Clean and simple header output:
 
 # Finalize htm_Card_()
 function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'', subm:false, attr:'', akey:'', kind:'save', simu:false, foot:'', rtrn:false)
-    $labl='',       # string: Label on the submit button in the footer
-    $icon='',       # string: Icon left to label
-    $hint='',       # string: Hint on hover the submit button
-    $name='',       # string: The name of the button to submit
-    $form='',       # string: The name of the form to submit
-    $subm=false,    # bool:   Submit button shown and active
-    $attr='',       # string: Button attributes. Generel use e.g. action= "$link"
-    $akey='',       # string: Shortcut to activate the button
-    $kind='save',   # string: The button appearance 
-    $simu=false,    # bool:   Button only simulate
+    $labl='',       # string: The label of the submit button in the footer
+    $icon='',       # string: An icon left of the label
+    $hint='',       # string: The hint of the button ('' a reminder to save)
+    $name='',       # string: (Only a comment after </form>)
+    $form='',       # string: The form to submit - in a card with its own form: always that form
+    $subm=false,    # bool:   A submit button in the footer - only in a card with its own form (form: in htm_Card_)
+    $attr='',       # string: Attributes of the button
+    $akey='',       # string: Access key of the button (Alt+key)
+    $kind='save',   # string: The color of the button: save, navi, goon, eras, crea, home, get_, put_, spc1, spc2
+    $simu=false,    # bool:   (Not used)
     $foot='',        # string: Footer text (HTML, translated) - the footer stays below the scrolling body and is hidden with it when the card is folded
     $rtrn=false      # bool:   Return the HTML instead of echoing it
 )
@@ -2193,7 +2193,7 @@ function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'', subm:false,
     if ($ownForm and ($cardForm > '')) $form= $cardForm;    # The footer button submits this card's form (a different form: name did nothing)
     $gbl_CardForm= is_array($gbl_CardStack) && in_array(true, $gbl_CardStack, true);         # Is an enclosing form still open?
     //if ($disa==true) $aktiv=' disabled '; else $aktiv= '';
-    if ($hint=='') {$hint= '@Remember to save here if you changed anything above, before leaving the window.'; $kind='save';}
+    if ($hint=='') $hint= '@Remember to save here if you changed anything above, before leaving the window.';   # (kind is kept - it was set to save)
     echo '</div>';  $prnHtml= '</div>';  // class="cardContent"
     echo '</span>'; $prnHtml.= '</span>'; // HideBody to here !
     # The footer: below the scrolling body (always visible while the card is open, hidden with the body when it is folded - see .p2hCardFoot).

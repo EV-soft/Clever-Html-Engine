@@ -12,41 +12,7 @@ $needTinymce=     '0';
 
 require_once($sys.'php2html.lib.php');
 
-# The code of an example: the lines between "// EXAMPLE: <name>" and "// END" in this file - the code shown is the code that runs
-function tblExample($name) {
-    static $src= null;
-    $src ??= file(__FILE__);
-    $out= [];  $on= false;
-    foreach ($src as $l) {
-        if ($on and preg_match('~^\s*// END\s*$~', $l)) break;
-        if ($on) $out[]= rtrim($l)."\n";
-        if (preg_match('~^\s*// EXAMPLE: '.preg_quote($name, '~').'\s*$~', $l)) $on= true;
-    }
-    $ind= min(array_map(function($l) { return strlen($l) - strlen(ltrim($l)); }, array_filter($out, 'trim')) ?: [0]);
-    return implode('', array_map(function($l) use ($ind) { return substr($l, min($ind, strlen($l) - strlen(ltrim($l)))); }, $out));
-}
-
-# The parameters of htm_Table(), read from the library itself (name, default and the comment after it) - so this list cannot get out of date
-function tblParams() {
-    $rf= new ReflectionFunction('htm_Table');
-    $src= implode('', array_slice(file($rf->getFileName()), $rf->getStartLine() - 1, 60));
-    $rows= [];
-    foreach ($rf->getParameters() as $p) {
-        $n= $p->getName();
-        if ($n == 'from') $def= '__FILE__';
-        else {
-            $v= $p->isDefaultValueAvailable() ? $p->getDefaultValue() : null;
-            $def= is_array($v) ? json_encode($v) : var_export($v, true);
-        }
-        $doc= ['', ''];
-        if (preg_match('~&?\$'.$n.'\s*=[^\n#]*#\s*(\w+):\s*([^\n]*)~', $src, $m)) $doc= [$m[1], trim($m[2])];
-        $more= '';                                           # The comment lines that follow (the details of capt / pref / body / suff)
-        if (preg_match('~&?\$'.$n.'\s*=[^\n]*\n((?:[ \t]*#[^\n]*\n)+)~', $src, $m))
-            foreach (explode("\n", trim($m[1])) as $l) $more.= '<br>'.sys_enc(trim(ltrim(trim($l), '#')));
-        $rows[]= [$n.($p->isPassedByReference() ? ' (&amp;)' : ''), sys_enc($def), $doc[0], sys_enc($doc[1]).'<small>'.$more.'</small>'];
-    }
-    return $rows;
-}
+require_once('docHelp.inc.php');                  # docExample(), docParamTable(), docPostCard()
 
 htm_Page_(titl:'table.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$DocVer, inis:'', algn:'center', imag:'../_accessories/_background.png', pbrd:false);
     // $menudata is set in: project.init.php
@@ -54,14 +20,7 @@ htm_Page_(titl:'table.page.php', hint:$©, info:'File: '.$DocFile.' - ver:'.$Doc
     htm_nl(2);
     echo '<div style="text-align: center;">';
 
-## What the server got when a card was saved
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    $got= $_POST;  unset($got['csrf_token']);
-    htm_Card_(capt:'@What the server received ($_POST)', icon:'fas fa-server', clas:'cardW800', styl:'background-color: white;', vhgh:'none');
-        htm_TextDiv(body:'@Every field of a row is posted as fkey[] - one value per row, in the order of the rows (also new rows, and the order after moving rows).', attr:'white-space: normal;');
-        htm_TextPre(body:sys_enc(print_r($got, true)), attr:'max-height: 300px; overflow: auto;');
-    htm_Card_end();
-}
+docPostCard();                                      # What the server got when a card was saved
 
 ## 1. A minimal table
     htm_Card_(capt:'@htm_Table() - a minimal table', icon:'fas fa-table', clas:'cardW800', styl:'background-color: white;', vhgh:'none');
@@ -75,7 +34,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                          ['@Date', '30%', 'date', '', ['center'], 'date']],
                   data: $people, crea: false, vhgh: '160px');
         // END
-        htm_CodeBox(code: tblExample('minimal'));
+        htm_CodeBox(code: docExample('minimal'));
     htm_Card_end();
 
 ## 2. Column types
@@ -101,7 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             suff: [['@Del.', '3%', 'rowact', '', ['center'], '@Delete the row (it asks first - Undo brings it back)', 'del']],
             data: $items, crea: '@New item', vhgh: '170px', filt: false);
         // END
-        htm_CodeBox(code: tblExample('types'));
+        htm_CodeBox(code: docExample('types'));
         $typeList= [
             ['text, data, area, sttu', lang('@An editable text field'), lang('@yes')],
             ['show',       lang('@A read only field'), lang('@yes')],
@@ -133,7 +92,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                             fn($r) => toNum($r['qty']) * toNum($r['price']) * (100 - toNum($r['disc'])) / 100]],
                   data: $lines, crea: false, filt: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: tblExample('calc'));
+        htm_CodeBox(code: docExample('calc'));
     htm_Card_end(labl:'@Save', subm:true, foot:'@Save posts the card form - see the card at the top');
 
 ## 3. Formats and styles
@@ -153,7 +112,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 ['L',    '14%', 'html', 'L',  ['center'], 'fL', '@Blue (type html)']],
             data: $numbers, crea: false, modi: false, filt: false, sort: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: tblExample('formats'));
+        htm_CodeBox(code: docExample('formats'));
         htm_TextDiv(body:'@The numbers use the separators of the program (DecimalSep / ThousandsSep).', attr:'white-space: normal;');
         // EXAMPLE: styles
         $styled= [['Normal', 'Yellow cell', 'Italic field', 'Marked cell', 'Small text'],
@@ -166,7 +125,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 ['@[4] font-size',   '20%', 'text', '', ['left', '', '', '', '10px'],                  'e', '@[4] font-size']],
             data: $styled, crea: false, filt: false, sort: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: tblExample('styles'));
+        htm_CodeBox(code: docExample('styles'));
     htm_Card_end();
 
 ## 4. Prefix and suffix columns
@@ -190,7 +149,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                    ['@Info',   '6%',  'text',   '', ['center'], '@Any HTML', '<ic class="fas fa-info-circle" style="color:#1565c0;"></ic>']],
             data: $tasks, crea: '@New task', filt: false, vhgh: '160px');
         // END
-        htm_CodeBox(code: tblExample('acts'));
+        htm_CodeBox(code: docExample('acts'));
     htm_Card_end(labl:'@Save', subm:true, foot:'@Save posts the rows in their new order');
 
 ## 5. Above and below the table
@@ -208,7 +167,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             note: '<small>'.lang('@note: HTML below the table').'</small>',
             data: $orders, crea: false, filt: false, vhgh: '130px');
         // END
-        htm_CodeBox(code: tblExample('capt'));
+        htm_CodeBox(code: docExample('capt'));
         htm_TextDiv(body:'@capt types: show (only the text), rows (the number of rows), html (field 7 as HTML), data (a field with the name in field 3 - posted), '.
                          'text / number / date ... (a field without a name - not posted). The fields above are shown only when the table has data.', attr:'white-space: normal;');
     htm_Card_end(labl:'@Save', subm:true);
@@ -225,7 +184,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         htm_Table(body: $cols, data: $asList,  crea: false, filt: false, vhgh: '125px');
         htm_Table(body: $cols, data: $asNames, crea: false, filt: false, vhgh: '125px');
         // END
-        htm_CodeBox(code: tblExample('data'));
+        htm_CodeBox(code: docExample('data'));
     htm_Card_end();
 
 ## 7. Export to CSV
@@ -240,19 +199,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                          ['@%-rate',      '20%', 'text', '', ['right'],  'vat_rate']],
                   data: $vat, crea: false, filt: false, vhgh: '160px', expo: 'tableexport.csv');
         // END
-        htm_CodeBox(code: tblExample('expo'));
+        htm_CodeBox(code: docExample('expo'));
         htm_LinkButt(labl:'@Download the table as CSV (expo:)', hint:'@Text starting with = + - @ is written with a leading apostrophe, so Excel does not run it as a formula', link:'tableexport.csv', targ:'_blank');
     htm_Card_end();
 
 ## 8. All parameters
     htm_Card_(capt:'@All parameters of htm_Table()', icon:'fas fa-list', clas:'cardW960', styl:'background-color: white;', vhgh:'none');
         htm_TextDiv(body:'@Read from the library itself: the name, the default value and the description.', attr:'white-space: normal;');
-        $params= tblParams();
-        htm_Table(body: [['@Parameter',   '12%', 'html', '', ['left'], 'p'],
-                         ['@Default',     '14%', 'html', '', ['left'], 'd'],
-                         ['@Type',        '8%',  'html', '', ['left'], 't'],
-                         ['@Description', '66%', 'html', '', ['left'], 'x']],
-                  data: $params, crea: false, modi: false, filt: false, sort: false, vhgh: '700px');
+        docParamTable('htm_Table', vhgh: '700px');
         htm_TextDiv(body: lang('@htm_Table() uses Mottie Tablesorter (sticky header, sort, filter, zebra).').
                           ' <a href="https://mottie.github.io/tablesorter/docs/" target="_blank" rel="noopener">mottie.github.io/tablesorter</a><br>'.
                           lang('@Without jQuery: htm_TableTools() gives search and sort for any table.'), attr:'white-space: normal;');
