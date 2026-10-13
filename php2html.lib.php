@@ -1196,13 +1196,14 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                        #               / text, number, date ... (a field without name - not posted).  Shown only when the table has data.
     $pref= [],         # array:  Columns before the data: [0:labl, 1:wdth, 2:-, 3:-, 4:[algn], 5:hint, 6:html]
                        #         6 is the same HTML in every row; name="x" becomes name="i<row>_x"
-    $body= [],         # array:  The data columns:         [0:labl, 1:wdth, 2:type, 3:frmt, 4:[style], 5:fkey, 6:hint, 7:plho, 8:-, 9:[list, css]]
+    $body= [],         # array:  The data columns:         [0:labl, 1:wdth, 2:type, 3:frmt, 4:[style], 5:fkey, 6:hint, 7:plho, 8:calc, 9:[list, css]]
                        #         2 type: text data area sttu (field) / show (read only) / intg (integer) / date / ddwn (select, 9) / opti (htm_Input option field, 9)
-                       #                 chck (checkbox) / bold ital (read only: is the text bold/italic) / indx keyn (the row number, clickable)
-                       #                 html htm0 (the value as HTML) / blnk (nothing) / hidd (hidden, posted) / calc (CustomerOrder: the line total) / vars (old)
+                       #                 chck (checkbox) / bold ital (read only: is the text bold/italic) / indx keyn (the value as a link, clickable)
+                       #                 html htm0 (the value as HTML) / blnk (nothing) / hidd (hidden, posted) / calc (a number from field 8) / vars (old select)
                        #         3 frmt: 0d 1d 2d (decimals) / 2% (2 decimals + %) / >0 (blank when 0 or less) / '= ' (always blank) / B R L (bold #00000, red, blue - type html)
                        #         4 style: [0:text-align, 1:cell background, 2:field style (text fields), 3:cell background (row marking), 4:font-size]
                        #         5 fkey: the field name - posted as fkey[] (one value per row, in the order of the rows)
+                       #         8 calc: fn($row) => number - $row is [fkey => value], e.g. fn($r) => toNum($r['qty']) * toNum($r['price'])
                        #         9 list: [[[value, label, hint], ...], 'css of the select']  (ddwn/opti)
     $suff= [],         # array:  Columns after the data (only with modi): [0:labl, 1:wdth, 2:type, 3:-, 4:[algn], 5:hint, 6:valu]
                        #         type rowact: row actions in the browser, 6 = 'del copy move undo' (any of them)
@@ -1458,7 +1459,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                 $tmp= [];  foreach ($fldNames as $fn) $tmp[]= $DataRow[$fn] ?? '';  $DataRow= $tmp;
             }
             if (is_array($DataRow))
-            $DataRow= array_values($DataRow);
+            $DataRow= array_pad(array_values($DataRow), count($body), '');   # A short row (e.g. no value for a calc column): the missing cells are empty (were left out - the row was out of line)
             $DataNam= array_keys($DataRow);
             // arrPretty($DataNam,'$DataNam');
             //if ($DataNam[0]=='id') array_shift($DataRow);
@@ -1570,9 +1571,10 @@ $ixalign= $ixalign ?? '';
                                   $parser.= $ColIx. ': { sorter: "select" }, ';
                                   // headers: { 8: { sorter: 'select' } },
                                   break;
-                    case 'vars' : $rowField.= '"'.$sortData.'>'.' <div style="margin-right:0; font-size:x-small">'.
-                                       '<select class="styled-select" name="liste" style="max-width:120px"> <option value=" " >-';
-                                    foreach ($optlist as $rec) {
+                    case 'vars' : # (Old) A select with records [-, value, label, attributes] from field 9, else from the list parameter
+                                  $rowField.= '"'.$sortData.'>'.' <div style="margin-right:0; font-size:x-small">'.
+                                       '<select class="styled-select" name="'.$fldNames[$ColIx].'[]" style="max-width:120px"> <option value=" " >-';   # (was name="liste" - not per row)
+                                    foreach ((($SelectList[0] ?? null) ?: $optlist) as $rec) {  if (!is_array($rec)) continue;  $rec= array_pad($rec, 4, '');
                                       $rowField.= "\n".'<option label="'.$rec[2].'" value="'.$rec[1].'" '.$rec[3];
                                       if ($rec[1]==$valu) $rowField.= ' selected ';
                                       $rowField.= '>'.$lbl=$rec[2].'</option> ';
@@ -1588,9 +1590,16 @@ $ixalign= $ixalign ?? '';
                                   $rowField.= '"'.$sortData.'><input type="checkbox" style="box-shadow:none;" disabled '.($on ? 'checked ' : '').'/>';  break;
                 
                 ### SPECIAL:
-                    case 'calc' : { // [1, '45-876', 2:$antal=3, 'stk', 'Redekasser', 5:$momssats=25, 6:$pris=235.50, 7:$rabat=8,  $sum=($antal*$pris)*(100-$rabat)/100*(100+$momssats)/100, 'DKK'],
-                                  $x= 1;
-                                  $sum= (toNum($DataRow[2+$x])*toNum($DataRow[6+$x]))*(100-toNum($DataRow[7+$x]))/100*(100+toNum($DataRow[5+$x]))/100;
+                    case 'calc' : { # Field 8: the formula - a function that gets the row as [fkey => value] and returns the number, e.g.
+                                    #   fn($r) => toNum($r['qty']) * toNum($r['price'])
+                                    # Without it: the old CustomerOrder formula on fixed columns (quantity 3, VAT 6, price 7, discount 8)
+                                  if (is_callable($bdy[8] ?? null)) {
+                                      $named= [];  foreach ($fldNames as $k => $fn) $named[$fn]= is_array($DataRow[$k] ?? null) ? ($DataRow[$k][0] ?? '') : ($DataRow[$k] ?? '');
+                                      $sum= (float)($bdy[8])($named);
+                                  } else {
+                                      $x= 1;
+                                      $sum= (toNum($DataRow[2+$x])*toNum($DataRow[6+$x]))*(100-toNum($DataRow[7+$x]))/100*(100+toNum($DataRow[5+$x]))/100;
+                                  }
                                   $rowField.= '"> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
                                        'value="'.number_format((float)$sum, 2,DecimalSep,ThousandsSep). '" placeholder="'.lang($bdy[7] ?? '').'"'.
                                        $txAlign.$inpBg.' " readonly /> '; };
@@ -1616,16 +1625,7 @@ $ixalign= $ixalign ?? '';
                                        ' padding-left:2px; padding-right:2px;" /> ';
                                   break;
                     case 'data' : //  Show and edit data:
-                    case 'area' : if ($valu=='New field')  {  # Create new record
-                                    $rowField.= '"'.$sortData.'> '.lang('@New field:').' <div style="margin-right:0; font-size:x-small">'.
-                                         '<select class="styled-select" name="liste"> <option value=" " >-';
-                                      foreach ($ordlist as $rec) {
-                                        $rowField.= '<option label="'.$rec[2].'" value="'.$rec[1].'" '.$rec[3];
-                                        if ($rec[1]==$valu) $rowField.= ' selected';
-                                        $rowField.= '>'.$lbl=$rec[2].'</option> ';
-                                      }
-                                    $rowField.= '</select></div> ';
-                                  } else # Show editable datafield:
+                    case 'area' : # Editable text field (removed: a branch for the value "New field" with an undefined option list)
                                     $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
                                          'value="'.sys_enc((string)$valu).'" placeholder="'.lang($bdy[7] ?? '').'"'.
                                          $txAlign.$inpBg.' padding-left:2px; padding-right:2px;" /> ';
@@ -1636,11 +1636,7 @@ $ixalign= $ixalign ?? '';
                                     .' </span>';
                                 } // print_r($SelectList);
                                   break;
-                    case 'keyn' : //  Selectable and editable index
-                                  $rowField.= '"'.$sortData.'><span style="font-size:small"  name="'.$fldNames[$ColIx].'[]" title="'.
-                                    lang('@The row is selectable. Click here to edit the row`s fields').'">'.RowKlick($modi,$valu,$RowIx,$ColIx,$fldNames,$from,$ixalign).
-                                  '</span>';
-                                  break;
+                    case 'keyn' : # The same as indx (an old name)
                     case 'indx' : //  Selectable but not editable index
                                   $rowField.= '"'.$sortData.'><span style="font-size:small;" title="'.lang('@The row is selectable. Click here to edit the row`s fields').'">'.
                                         RowKlick($modi,$valu,$RowIx,$ColIx,$fldNames,$from,$ixalign).' </span>';

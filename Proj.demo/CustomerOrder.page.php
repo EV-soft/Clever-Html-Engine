@@ -946,7 +946,8 @@ if (!$removeMenu) {
                 ['@VAT' ,         '5%','text', '1d',['center'],'cnt_vat',        '@VAT pct. rate','@vat...'],
                 ['@Price',        '8%','text', '2d',['center'],'cnt_price',      '@Unit price ','@Price...'],
                 ['@%',            '6%','text', '1d',['right' ],'cnt_discount',   '@Discount percent','@Disc...'],
-                ['@Total',       '10%','calc', '2d',['right' ],'cnt_total',      '@Calculated amount for the current posting.',''],
+                ['@Total',       '10%','calc', '2d',['right' ],'cnt_total',      '@Calculated amount for the current posting.','',
+                    fn($r) => toNum($r['cnt_numb']) * toNum($r['cnt_price']) * (100 - toNum($r['cnt_discount'])) / 100 * (100 + toNum($r['cnt_vat'])) / 100],   # calc: the formula (field 8)
                 ['@Currency',     '5%','ddwn', '',  ['center'],'cnt_currency',   '@Currency code for the currency used on the specification.','@Curr...','',[CurrencyArr(),'width: 55px;']],
                 
               //['@Status',       '9%','ddwn', '',  ['left'  ],'cnt_stat',       '@Status',                                               '@Status...',  '',[OrdrStatu(),'width: 65px;']],

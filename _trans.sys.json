@@ -352,6 +352,12 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "The value as a link (e.g. the row number) - with modi a click calls rowLookup(). keyn is an old name of indx":"Værdien som et link (fx rækkenummeret) - med modi kalder et klik rowLookup(). keyn er et gammelt navn for indx",
+      "A calculated number. Field 8: the formula, fn($row) => number - see the example below":"Et beregnet tal. Felt 8: formlen, fn($row) => tal - se eksemplet nedenfor",
+      "Old: a select with records [-, value, label, attributes] from field 9 (else the list parameter)":"Gammel: en rulleliste med poster [-, værdi, label, attributter] fra felt 9 (ellers parameteren list)",
+      "calc: a column with a number calculated from the other fields of the row. Field 8 is the formula: a function that gets the row as [fkey => value].":"calc: en kolonne med et tal beregnet ud fra rækkens andre felter. Felt 8 er formlen: en funktion, der får rækken som [fkey => værdi].",
+      "Disc. %":"Rabat %",
+      "Quantity x price - discount":"Antal x pris - rabat",
       "0 decimals":"0 decimaler",
       "1 decimal":"1 decimal",
       "2 decimals":"2 decimaler",

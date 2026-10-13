@@ -111,16 +111,29 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             ['opti',       lang('@A htm_Input() option field (with its own label). Field 9: [[value, label, hint], ...]'), lang('@yes')],
             ['chck',       lang('@A checkbox. The value posted is checked or empty - for every row'), lang('@yes')],
             ['bold, ital', lang('@A read only checkbox: is the text bold / italic'), lang('@no')],
-            ['indx, keyn', lang('@The value as a link (e.g. the row number) - with modi a click calls rowLookup()'), lang('@yes')],
+            ['indx, keyn', lang('@The value as a link (e.g. the row number) - with modi a click calls rowLookup(). keyn is an old name of indx'), lang('@yes')],
             ['html, htm0', lang('@The value as HTML (htm0: small)'), lang('@no')],
             ['blnk',       lang('@Nothing is shown'), lang('@no')],
             ['hidd',       lang('@A hidden column - e.g. the record id'), lang('@yes')],
-            ['calc',       lang('@CustomerOrder only: the line total of fixed columns (quantity, price, discount, VAT)'), lang('@yes')],
-            ['vars',       lang('@Old: a select with the options of the list parameter (named liste)'), lang('@no')]];
+            ['calc',       lang('@A calculated number. Field 8: the formula, fn($row) => number - see the example below'), lang('@yes')],
+            ['vars',       lang('@Old: a select with records [-, value, label, attributes] from field 9 (else the list parameter)'), lang('@yes')]];
         htm_Table(body: [['@Type',         '20%', 'html', '', ['left'],   'type'],
                          ['@What it does', '65%', 'html', '', ['left'],   'desc'],
                          ['@Posted',       '15%', 'html', '', ['center'], 'post']],
                   data: $typeList, crea: false, modi: false, filt: false, vhgh: '330px');
+        htm_TextDiv(body:'@calc: a column with a number calculated from the other fields of the row. Field 8 is the formula: a function that gets the row as [fkey => value].', attr:'white-space: normal;');
+        // EXAMPLE: calc
+        $lines= [['Hammer', '2', '89.50', '10'],
+                 ['Saw',    '1', '249',   '0']];
+        htm_Table(body: [['@Item',     '34%', 'text', '',   ['left'],  'item'],
+                         ['@Qty.',     '14%', 'text', '',   ['right'], 'qty'],
+                         ['@Price',    '18%', 'text', '2d', ['right'], 'price'],
+                         ['@Disc. %',  '14%', 'text', '',   ['right'], 'disc'],
+                         ['@Total',    '20%', 'calc', '2d', ['right'], 'total', '@Quantity x price - discount', '',
+                            fn($r) => toNum($r['qty']) * toNum($r['price']) * (100 - toNum($r['disc'])) / 100]],
+                  data: $lines, crea: false, filt: false, vhgh: '130px');
+        // END
+        htm_CodeBox(code: tblExample('calc'));
     htm_Card_end(labl:'@Save', subm:true, foot:'@Save posts the card form - see the card at the top');
 
 ## 3. Formats and styles
