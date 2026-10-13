@@ -238,145 +238,17 @@ The library needs PHP 8.1 or newer.<br>
     echo lang('@Details about the most used and complex system functions.');
 
 ##--------------------------------------------
-    $out1= htm_CodeBox("
-function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:true,sort:true,crea:true, modi:true, vhgh:'400px',  styl:'',  from:__FILE__,list:[],expo:'', rtrn:true);
-    \$capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:horJust',       '5:Tip',    '6:placeholder', '7:Content';], ...
-           ],
-    \$pref= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:Html'], ...
-           ],
-    \$body= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:fldKey', '6:ColTip','7:placeholder','8:default','9:[selectList]'], ...
-           ],           # Field 4: \$FieldProporties - is composed of: [horJust, FieldBgColor, FieldStyle, TdColor, SorterON, FilterON, SelectON,
-    \$suff= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[horJust_etc]', '5:ColTip', '6:value! '], ...
-           ],
-    \$note= '',         # string: HTML-string - note to be shown below the table
-   &\$data,             # array:  [{\"name_0\":value_0, \"name_1\":value_1, \"name_2\":value_2, \"name_3\":value_3, \"name_4\":value_4, \"name_5\":value_5, \"name_6\":value_6, \"name_7\":value_7, \"name_8\":value_8, \"name_9\":value_9},{...},{...}]
-    \$filt= true,       # bool:   Ability to hide records that do not match filter // Does not work with hidd fields!
-    \$sort= true,       # bool:   Ability to sort records by column content
-    \$crea= true,       # bool:   Ability to create a records - string: Labeltext on createButton
-    \$modi= true,       # bool:   Ability to select and change data in a row
-    \$vhgh= '400px',    # string: The height of the visible part of the table's data
-    \$styl= '',         # string: Style for the span that holds the table;
-    \$from= __FILE__,   # string: = __FILE__ / __FUNCTION__ (debugging: locate error)
-    \$list= ['',''],    # array:  LookupLists for options // Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
-    \$expo= ''          # string: Export values in table data fields to CSV-file
-    \$rtrn= true        # bool:   Function Return or echo result
-)
-", rtrn:true);
+    # The declaration of htm_Table(), read from the library - so it is always the current one (was a copy that had got out of date)
+    $rf= new ReflectionFunction('htm_Table');
+    $decl= array_slice(file($rf->getFileName()), $rf->getStartLine() - 1, 80);
+    $end= 0;  foreach ($decl as $i => $l) if (preg_match('~^\)~', $l)) { $end= $i;  break; }
+    $out1= htm_CodeBox(code: implode('', array_slice($decl, 0, $end + 3)), rtrn: true).
+           '<br>'.lang('@All details, with examples:').' <a href="table.page.php">table.page.php</a>';
 
-    $htm1= '
-    <table class="tablesorter" id="table1" style="width:auto; padding:1px; margin:0; table-layout: fixed;">    
-        <thead>    
-            <tr style="height:32px;">
-                <th class=" filter-true  sorter-inputs  sorter-text  " data-placeholder= "Filter..." name="xxxx" style="width:10%;  text-align:center;">
-                    <span class="LblTip" style="height:">No. 
-                        <span class="LblTip_SØ" >.No.<br />{Editable}</span>
-                    </span> 
-                </th>
-                <th class=" filter-true  sorter-inputs  sorter-text  " data-placeholder= "Filter..." name="xxxx" style="width:26%;  text-align:center;">
-                    <span class="LblTip" style="height:">Description 
-                        <span class="LblTip_SØ" >Enter text...<br />{Editable}</span>
-                    </span> 
-                </th>
-                <th class=" filter-true  sorter-inputs  sorter-text  " data-placeholder= "Filter..." name="xxxx" style="width:10%;  text-align:center;">
-                    <span class="LblTip" style="height:">Account 
-                        <span class="LblTip_S" >Account...<br />{Editable} </span>
-                    </span> 
-                </th>
-                <th class=" filter-true  sorter-inputs  sorter-text  " data-placeholder= "Filter..." name="xxxx" style="width:10%;  text-align:center;">
-                    <span class="LblTip" style="height:">%-rate 
-                        <span class="LblTip_S" >25 %...<br />{Editable} </span>
-                    </span> 
-                </th>
-                <th class=" filter-true  sorter-inputs  sorter-text  " data-placeholder= "Filter..." name="xxxx" style="width:40%;  text-align:center;">
-                    <span class="LblTip" style="height:">Note 
-                        <span class="LblTip_S" >.?.<br />{Editable} </span>
-                    </span> 
-                </th>
-                <th class="filter-false sorter-false" style="width:4%; align:center; ">
-                    <span class="LblTip" style="height:">Delete 
-                        <span class="LblTip_SW" >Click the red cross to delete a entry </span>
-                    </span>
-                </th>    
-            </tr>
-            <style >$("#table1").tablesorter({ widgetOptions { filter_cellFilter: ["","","","",""]}} </style>
-        </thead>     
-        <tbody>
-            <tr class="row" id="tabl_row0" style="display: revert;">
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "0" > 
-                    <input type= "text" name="@Position number in the group[]" value="1"  placeholder="" style="text-align:center;  background-color:transparent;   width:98%; " /> 
-                </td>
-                <td style="text-align:left;  width:26%;  background-color:;  background-color:;  font-size:; " data-sort= "0" > 
-                    <input type= "text" name="@Item Description. A descriptive text of your choice[]" value="Input VAT" placeholder="" style="text-align:left;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "0" > 
-                    <input type= "text" name="@The number in the statement of account to which the sales tax must be posted.[]" value="66200" placeholder="" style="text-align:center;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "0" > 
-                    <input type= "text" name="@VAT % rate[]" value="25,00" placeholder="" style="text-align:center;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:left;  width:40%;  background-color:;  background-color:;  font-size:; " data-sort= "0" > 
-                    <input type= "text" name="@Note about the record[]" value=""  placeholder="" style="text-align:left;  background-color:transparent;   width:98%; " /> 
-                </td>
-                <td style="text-align:center; width:4%;" disabled >
-                    <ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>
-                </td>
-            </tr>
-            <tr class="row" id="tabl_row1" style="display: revert;">
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "1" > 
-                    <input type= "text" name="@Position number in the group[]" value="2"  placeholder="" style="text-align:center;  background-color:transparent;   width:98%; " /> 
-                </td>
-                <td style="text-align:left;  width:26%;  background-color:;  background-color:;  font-size:; " data-sort= "1" > 
-                    <input type= "text" name="@Item Description. A descriptive text of your choice[]" value="Input VAT" placeholder="" style="text-align:left;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "1" > 
-                    <input type= "text" name="@The number in the statement of account to which the sales tax must be posted.[]" value="66201" placeholder="" style="text-align:center;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "1" > 
-                    <input type= "text" name="@VAT % rate[]" value="25,00" placeholder="" style="text-align:center;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:left;  width:40%;  background-color:;  background-color:;  font-size:; " data-sort= "1" > 
-                    <input type= "text" name="@Note about the record[]" value=""  placeholder="" style="text-align:left;  background-color:transparent;   width:98%; " /> 
-                </td>
-                <td style="text-align:center; width:4%;" disabled >
-                    <ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>
-                </td>
-            </tr>
-            <tr class="row" id="tabl_row2" style="display: revert;">
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "2" > 
-                    <input type= "text" name="@Position number in the group[]" value="3"  placeholder="" style="text-align:center;  background-color:transparent;   width:98%; " /> 
-                </td>
-                <td style="text-align:left;  width:26%;  background-color:;  background-color:;  font-size:; " data-sort= "2" > 
-                    <input type= "text" name="@Item Description. A descriptive text of your choice[]" value="Input VAT" placeholder="" style="text-align:left;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td><td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "2" > 
-                    <input type= "text" name="@The number in the statement of account to which the sales tax must be posted.[]" value="66202" placeholder="" style="text-align:center;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:center;  width:10%;  background-color:;  background-color:;  font-size:; " data-sort= "2" > 
-                    <input type= "text" name="@VAT % rate[]" value="25,00" placeholder="" style="text-align:center;  background-color:transparent; width:98%; padding-left:2px; padding-right:2px;" /> 
-                </td>
-                <td style="text-align:left;  width:40%;  background-color:;  background-color:;  font-size:; " data-sort= "2" > 
-                    <input type= "text" name="@Note about the record[]" value=""  placeholder="" style="text-align:left;  background-color:transparent;   width:98%; " /> 
-                </td>
-                <td style="text-align:center; width:4%;" disabled >
-                    <ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>
-                </td>
-            </tr>
-        </tbody>
-    </table>';
-     $htm1= preCode($htm1);
-    /* 
-    $htm1= highlight_words($htm1, $wrds='html thead tbody th tr td class style ic 
-    a abbr address area  article aside audio b bdi bdo blockquote br button canvas cite code data datalist del details dfn dialog div dl em embed 
-    fieldset figure footer form h1 h2 h3 h4 h5 h6 header hgroup hr i iframe img input ins kbd label link main mapmark  math menu meta 
-    meter nav noscript object ol output p picture pre progress q ruby s sampscript search section select slot small span strong sub sup svg table 
-    template textarea time u ul var video wbr
-    ', $styl='color:red; ',$patt='~\w{2,10}~');
-    
-    !doctype ^data- a abbr accept accept-charset accesskey acronym action address align alink alt applet archive area article aside async audio autocomplete autofocus axis b background base basefont bdi bdo bgcolor bgsound big blink blockquote body border br button canvas caption cellpadding cellspacing center char charoff charset checkbox checked cite class classid clear code codebase codetype col colgroup color cols colspan command compact content contenteditable contextmenu coords data datafld dataformatas datalist datapagesize datasrc datetime dd declare defer del details dfn dialog dir disabled div dl draggable dropzone dt element em embed enctype event face fieldset figcaption figure file font footer for form formaction formenctype formmethod formnovalidate formtarget frame frameborder frameset h1 h2 h3 h4 h5 h6 head header headers height hgroup hidden hr href hreflang hspace html http-equiv i id iframe image img input ins isindex ismap kbd keygen label lang language leftmargin legend li link list listing longdesc main manifest map marginheight marginwidth mark marquee max maxlength media menu menuitem meta meter method min multicol multiple name nav nobr noembed noframes nohref noresize noscript noshade novalidate nowrap object ol onabort onafterprint onautocomplete onautocompleteerror onbeforeonload onbeforeprint onblur oncancel oncanplay oncanplaythrough onchange onclick onclose oncontextmenu oncuechange ondblclick ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended onerror onfocus onhashchange oninput oninvalid onkeydown onkeypress onkeyup onload onloadeddata onloadedmetadata onloadstart onmessage onmousedown onmouseenter onmouseleave onmousemove onmouseout onmouseover onmouseup onmousewheel onoffline ononline onpagehide onpageshow onpause onplay onplaying onpointercancel onpointerdown onpointerenter onpointerleave onpointerlockchange onpointerlockerror onpointermove onpointerout onpointerover onpointerup onpopstate onprogress onratechange onreadystatechange onredo onreset onresize onscroll onseeked onseeking onselect onshow onsort onstalled onstorage onsubmit onsuspend ontimeupdate ontoggle onundo onunload onvolumechange onwaiting optgroup option output p param password pattern picture placeholder plaintext pre profile progress prompt public q radio readonly rel required reset rev reversed role rows rowspan rp rt rtc ruby rules s samp sandbox scheme scope scoped script seamless section select selected shadow shape size sizes small source spacer span spellcheck src srcdoc standby start step strike strong style sub submit summary sup svg svg:svg tabindex table target tbody td template text textarea tfoot th thead time title topmargin tr track tt type u ul usemap valign value valuetype var version video vlink vspace wbr width xml xmlns xmp
-    */
    
-    $arrData= array([['1'],['@Input VAT'],['66200'],['25,00'],['']], 
-                    [['2'],['@Input VAT'],['66201'],['25,00'],['']], 
-                    [['3'],['@Input VAT'],['66202'],['15,00'],['']] );
+    $arrData= [['1', lang('@Input VAT'), '66200', '25,00', ''],
+               ['2', lang('@Input VAT'), '66201', '25,00', ''],
+               ['3', lang('@Input VAT'), '66202', '15,00', '']];
 
     $tbl1= htm_Table(
                 capt: array(
@@ -385,14 +257,14 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:t
                 ),
                 pref: array(),      
                 body: array(
-                  ['@No.',         '10%','text','',['center'],'@Position number in the group','.No.'],
-                  ['@Description', '26%','data','',['left'  ],'@Item Description. A descriptive text of your choice','@Enter text...'],
-                  ['@Account',     '10%','data','',['center'],'@The number in the statement of account to which the sales tax must be posted.','Account...'],
-                  ['@%-rate',      '10%','data','',['center'],'@VAT % rate','25 %...'],
-                  ['@Note',        '40%','text','',['left'  ],'@Note about the record','.?.'],
+                  ['@No.',         '10%','text','',['center'],'vat_no',  '@Position number in the group','.No.'],
+                  ['@Description', '26%','data','',['left'  ],'vat_desc','@Item Description. A descriptive text of your choice','@Enter text...'],
+                  ['@Account',     '10%','data','',['center'],'vat_acc', '@The number in the statement of account to which the sales tax must be posted.','Account...'],
+                  ['@%-rate',      '10%','data','',['center'],'vat_rate','@VAT % rate','25 %...'],
+                  ['@Note',        '36%','text','',['left'  ],'vat_note','@Note about the record','.?.'],
                 ),
                 suff: array(
-                  ['@Delete',       '4%','butt','',['center'],'@Click the red cross to delete a entry', '<ic class="far fa-times-circle" style="color:red; font-size:13px; "></ic>'],
+                  ['@Rows',         '8%','rowact','',['center'],'@Delete, copy, move and undo in the browser', 'del copy move undo'],
                 ),                 
                 note: 'Table-note:',          
                 data: $arrData,    
@@ -407,6 +279,7 @@ function htm_Table(# capt:[], pref:[], body:[]',suff:[], note:'', data:[],filt:t
                 expo: '',
                 rtrn: true
             );
+    $htm1= preCode($tbl1);                                       # The HTML the example makes
 
         htm_Tabs_( head:'<b>htm_Card()</b>', styl:'', rtrn:false);
 ##--------------------------------------------
@@ -608,14 +481,14 @@ htm_Table(capt: array(
           ),
           pref: array(),      
           body: array(
-            ['@No.',         '10%','text','',['center'],'@Position number in the group','.No.'],
-            ['@Description', '26%','data','',['left'  ],'@Item Description. A descriptive text of your choice','@Enter text...'],
-            ['@Account',     '10%','data','',['center'],'@The number in the statement of account to which the sales tax must be posted.','Account...'],
-            ['@%-rate',      '10%','data','',['center'],'@VAT % rate','25 %...'],
-            ['@Note',        '40%','text','',['left'  ],'@Note about the record','.?.'],
+            ['@No.',         '10%','text','',['center'],'vat_no',  '@Position number in the group','.No.'],
+            ['@Description', '26%','data','',['left'  ],'vat_desc','@Item Description. A descriptive text of your choice','@Enter text...'],
+            ['@Account',     '10%','data','',['center'],'vat_acc', '@The number in the statement of account to which the sales tax must be posted.','Account...'],
+            ['@%-rate',      '10%','data','',['center'],'vat_rate','@VAT % rate','25 %...'],
+            ['@Note',        '36%','text','',['left'  ],'vat_note','@Note about the record','.?.'],
           ),
           suff: array(
-            ['@Delete',       '4%','butt','',['center'],'@Click the red cross to delete a entry', '<ic class=\"far fa-times-circle\" style=\"color:red; font-size:13px; \"></ic>'],
+            ['@Rows',         '8%','rowact','',['center'],'@Delete, copy, move and undo in the browser', 'del copy move undo'],
           ),                 
           note: 'Table-note:',          
           data: \$arrData,    
