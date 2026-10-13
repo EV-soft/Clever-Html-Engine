@@ -175,15 +175,15 @@ docPostCard();                                      # What the server got when a
 
 ## 6. Data
     htm_Card_(capt:'@The data: lists or rows with field names', icon:'fas fa-database', clas:'cardW800', styl:'background-color: white;', vhgh:'none');
-        htm_TextDiv(body:'@A row can be a list (the values in the order of body) or have field names (e.g. a database row) - then the values are placed by the field names, in any order.', attr:'white-space: normal;');
+        htm_TextDiv(body:'@Each row can be a list (the values in the order of body) or have field names (e.g. a database row) - then the values are placed by the field names, in any order, and a missing field is empty. Both kinds can be mixed, as here.', attr:'white-space: normal;');
         // EXAMPLE: data
-        $asList=  [['1', 'Anna', 'Copenhagen'],                              # In the order of body
-                   ['2', 'Bo',   'Aarhus']];
-        $asNames= [['city' => 'Copenhagen', 'id' => '1', 'name' => 'Anna'],  # With field names (any order)
-                   ['name' => 'Bo', 'city' => 'Aarhus', 'id' => '2']];
-        $cols= [['@Id', '20%', 'show', '', ['center'], 'id'], ['@Name', '40%', 'text', '', ['left'], 'name'], ['@City', '40%', 'text', '', ['left'], 'city']];
-        htm_Table(body: $cols, data: $asList,  crea: false, filt: false, vhgh: '125px');
-        htm_Table(body: $cols, data: $asNames, crea: false, filt: false, vhgh: '125px');
+        $rows= [['1', 'Anna', 'Copenhagen'],                                  # A list: the values in the order of body
+                ['city' => 'Aarhus', 'id' => '2', 'name' => 'Bo'],            # Field names: any order
+                ['name' => 'Carl', 'id' => '3']];                             # Field names: a missing field is empty
+        htm_Table(body: [['@Id',   '20%', 'show', '', ['center'], 'id'],
+                         ['@Name', '40%', 'text', '', ['left'],   'name'],
+                         ['@City', '40%', 'text', '', ['left'],   'city']],
+                  data: $rows, crea: false, filt: false, vhgh: '160px');
         // END
         htm_CodeBox(code: docExample('data'), fold:'closed');
     htm_Card_end();
