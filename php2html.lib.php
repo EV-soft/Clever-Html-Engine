@@ -881,21 +881,21 @@ function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', fold:''
 };
 
 # Vertical orientated text
-function htm_TextVer(# body, algn:'left', marg:'8px', attr:'', font:'', code:false, rtrn:false) ## Vertical text
+function htm_TextVer(# body, algn:'left', marg:'auto', attr:'', font:'', code:false, rtrn:false) ## Vertical text
     $body,          # string: Html-text inside div
     $algn='left',   # string: text alignment
-    $marg='8px',    # string: Default margin
+    $marg='auto',   # string: Margin (was ignored: "margin: auto" was written after it)
     $attr='',       # string: Other style
     $font='',       # string: text font
     $code=false,     # bool:   convert: &lt;b&gt;bold&lt;/b&gt;
     $rtrn=false      # bool:   Return the HTML instead of echoing it
 ) { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
-    if ($code) $body= htmlspecialchars($body); // convert: &lt;b&gt;bold&lt;/b&gt;
+    $body= $code ? htmlspecialchars($body) : lang($body);     // code: &lt;b&gt;bold&lt;/b&gt; - else translated like the other text functions
     if ($font>'') $font= ' font-family: '.$font.'; ';
-    echo '<div style="margin: '.$marg.'; text-align: '.$algn.'; '.$font.' 
-    position: relative; 
+    echo '<div style="margin: '.$marg.'; text-align: '.$algn.'; '.$font.'
+    position: relative;
     transform-origin: top left; transform: rotate(-90deg) translate(-30%, 49.5%);
-    margin: auto; line-height: 1.44; '.$attr.'">'. $body. '</div>';
+    line-height: 1.44; '.$attr.'">'. $body. '</div>';
 }
 
 # A very small text line
@@ -923,7 +923,7 @@ function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'', rtr
     echo '<div style="'.$wdth. $algn.'; border:1px solid gray; ">'.
         '<div style="background-color: '.$colr.';'.                # Caption text: black or white, the best contrast to a hex color
             (preg_match('/^#([0-9a-f]{3}|[0-9a-f]{6})$/i', $colr) ? ' color: '.getOptimalBackground($colr).';' : '').'">'.lang($capt). '</div>'.
-        '<div style="padding: 8px; ">'.$body.'</div>'.
+        '<div style="padding: 8px; ">'.lang($body).'</div>'.          # (translated like the caption)
     '</div>';
 }
 
@@ -2405,23 +2405,23 @@ function getState() {   // https://bobbyhadz.com/blog/javascript-get-all-element
 
 function CardMin($indx) {
    global $CardState;
-   echo '<script> CardMinimize'.$indx.'(); </script>'; $CardState[$indx]= [$indx,'none'];
+   echo '<script> if (window.CardMinimize'.$indx.') CardMinimize'.$indx.'(); </script>'; $CardState[$indx]= [$indx,'none'];
 }
 function CardMinimize($last) {
     global $CardState;
     echo '<script> ';
-        for ($ix=0; $ix<=$last; $ix++) { 
-            echo 'CardMinimize'.$ix.'(); '; $CardState[1+$ix]= [1+$ix,'none']; 
+        for ($ix=1; $ix<=$last; $ix++) {                     # Cards start at 1 (was 0: CardMinimize0() does not exist - nothing was closed)
+            echo 'if (window.CardMinimize'.$ix.') CardMinimize'.$ix.'(); '; $CardState[$ix]= [$ix,'none'];
         }
     echo '</script>';
 }
 function CardRange($frst,$last)  //  Minimize an interval
 {   echo '<script> ';
-        for ($ix=$frst; $ix<=$last; $ix++) echo 'CardMinimize'.$ix.'(); ';
+        for ($ix=$frst; $ix<=$last; $ix++) echo 'if (window.CardMinimize'.$ix.') CardMinimize'.$ix.'(); ';   # (a missing card stopped the rest)
     echo '</script>';
 }
 function CardMax($indx) 
-{   echo '<script> CardMaximize'.$indx.'(); </script>';
+{   echo '<script> if (window.CardMaximize'.$indx.') CardMaximize'.$indx.'(); </script>';
 }
 function CardOff($frst,$last)    //  Minimize an interval
 {   CardRange($frst,$last); 
@@ -3481,9 +3481,9 @@ function htm_ThemeEditor(# rtrn:false)
     static $no= 0; $no++;  $id= 'p2hThemeEd'.$no;
     $fields= ['page'=>'@Page background', 'card'=>'@Card background', 'text'=>'@Text', 'input'=>'@Input fields', 'accent'=>'@Accent (titles and buttons)'];
     $result= '<div id="'.$id.'"><div class="p2hThemeEd">'.
-             '<span>'.lang('@Start from').'</span><select data-k="base"><option value="light">'.lang('@Light').'</option><option value="dark">'.lang('@Dark').'</option></select>';
-    foreach ($fields as $k=>$labl)
-        $result.= '<span>'.lang($labl).'</span><input type="color" data-k="'.$k.'" />';
+             '<label for="'.$id.'_base">'.lang('@Start from').'</label><select id="'.$id.'_base" data-k="base"><option value="light">'.lang('@Light').'</option><option value="dark">'.lang('@Dark').'</option></select>';
+    foreach ($fields as $k=>$labl)                             # Real labels (were spans: the fields had no name)
+        $result.= '<label for="'.$id.'_'.$k.'">'.lang($labl).'</label><input type="color" id="'.$id.'_'.$k.'" data-k="'.$k.'" />';
     $result.= '</div><div class="p2hThemeEdButt">'.
               '<button type="button" data-act="save">'.lang('@Use my theme').'</button>'.
               '<button type="button" data-act="reset">'.lang('@Reset').'</button></div></div>'.
@@ -4467,7 +4467,8 @@ $rtrn=false                  # bool:   Return the HTML instead of echoing it
                         ' style="'.$styl.($dis ? ' opacity:0.8; pointer-events:none;' : '').'">'.
                         $icon. lang($item[2]). ($subm != [] ? ' <i class="fa fa-caret-down"></i>' : '').
                     '</a>';
-                    if ($item[3]>'') echo $hintEl(trim(lang($item[3]).' '.(trim((string)($item[4] ?? ''), '@ ')>'' ? lang($item[4]) : '')),   # Each part translated
+                    $mDesc= (trim((string)($item[4] ?? ''), '@ ')>'') ? lang($item[4]) : '';
+                    if (($item[3]>'') or ($mDesc>'')) echo $hintEl(trim(($item[3]>'' ? lang($item[3]) : '').' '.$mDesc),   # Hint and/or description (was: only with a hint)
                                                   'left: 160px; top: 35px; overflow:visible;'.$niv2);
                 echo '
                 </abbr>
