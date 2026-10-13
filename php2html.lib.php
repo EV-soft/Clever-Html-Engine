@@ -807,6 +807,50 @@ function highlight_str($code,$rtrn=true) {
     if ($rtrn==false) echo $result; else return $result;
 }
    
+# PHP code as HTML with syntax colors (the colors of highlight_string(): ini highlight.*) - and the parameter names marked:
+# the named arguments (labl: ...) and the parameters of a function declaration. Comments and strings are never changed
+# (highlight_words() marks the words everywhere - also in comments and texts).
+function highlight_code($code, $styl='color:cyan; font-style:italic;') {
+    $clr= function($k) { return rtrim((string)ini_get('highlight.'.$k), '; '); };
+    $span= function($c, $t) { return ($t === '') ? '' : '<span style="color: '.$c.';">'.$t.'</span>'; };
+    $toks= token_get_all('<?php '.$code);
+    array_shift($toks);                                                 # The <?php that was added
+    $isWs= function($t) { return is_array($t) and in_array($t[0], [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT], true); };
+    $out= '';  $depth= 0;  $declWait= false;  $declDepth= -1;  $prev= null;
+    $n= count($toks);
+    for ($i= 0; $i < $n; $i++) {
+        $t= $toks[$i];
+        $id= is_array($t) ? $t[0] : null;
+        $tx= is_array($t) ? $t[1] : $t;
+        $e= htmlspecialchars($tx, ENT_NOQUOTES, 'UTF-8');
+        if ($id === T_WHITESPACE) { $out.= $e;  continue; }
+        if ($id === T_COMMENT or $id === T_DOC_COMMENT) { $out.= $span($clr('comment'), $e);  continue; }
+        # Brackets: the parameter list of a declaration
+        if ($tx === '(') { $depth++;  if ($declWait) { $declDepth= $depth;  $declWait= false; } }
+        if ($tx === ')') { if ($depth === $declDepth) $declDepth= -1;  $depth--; }
+        if ($id === T_FUNCTION) $declWait= true;
+        if ($id === T_FN) $declWait= true;
+        # A named argument: a name, then ":" (not "::"), after "(" or "," or at the start
+        $named= false;
+        if (preg_match('~^[A-Za-z_]\w*$~', $tx) and in_array($prev, [null, '(', ','], true)) {
+            for ($j= $i + 1; $j < $n and $isWs($toks[$j]); $j++);
+            $named= ($j < $n) && ($toks[$j] === ':');
+        }
+        if ($named or ($id === T_VARIABLE and $declDepth > 0 and $depth === $declDepth))
+            $out.= '<span style="'.$styl.'">'.$e.'</span>';
+        elseif (in_array($id, [T_CONSTANT_ENCAPSED_STRING, T_ENCAPSED_AND_WHITESPACE, T_START_HEREDOC, T_END_HEREDOC], true) or $tx === '"')
+            $out.= $span($clr('string'), $e);
+        elseif ($id === T_INLINE_HTML)
+            $out.= $span($clr('html'), $e);
+        elseif (in_array($id, [T_STRING, T_VARIABLE, T_LNUMBER, T_DNUMBER, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED, T_STRING_VARNAME, T_NUM_STRING], true))
+            $out.= $span($clr('default'), $e);
+        else
+            $out.= $span($clr('keyword'), $e);
+        $prev= $tx;
+    }
+    return $out;
+}
+
 # A span containing syntax formattet php-code
 function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', rtrn:false)
     $code='',       # string: php-code with syntax display
@@ -824,7 +868,7 @@ function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', rtrn:fa
     }
     $result= '<span style="text-align: left; white-space: nowrap; overflow-x: auto; line-height: 1;">
               <pre style= "background-color: #121212; text-align: left;  padding:6px; overflow-x: auto; ">'.
-              (($synt==true) ? highlight_words(highlight_str($code)) : $code ).
+              (($synt==true) ? highlight_code($code) : $code ).    # Only the parameter names are marked - not words in comments and strings
               '</pre></span>';
     if ($rtrn==false) echo $result; else return $result;
 };

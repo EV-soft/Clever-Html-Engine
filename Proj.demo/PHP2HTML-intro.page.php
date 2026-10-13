@@ -192,12 +192,12 @@ $strCode= '// HTML:
             Cards has predefined widths, and its position will swap, if the window-width is to small.<br>
             Cards can be used as a "Local Menu" and to keep overview...<br>
             Example: htm_Card_(<abbr class= "hint">
-            <data-hint style="background-color:#151515;"> '. highlight_words(highlight_str( 
-                "htm_Card_(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''"),styl:'color:'.'blue; font-style:italic;').
+            <data-hint style="background-color:#151515;"> '. highlight_code(
+                "htm_Card_(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''", styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>) and htm_Card_end(<abbr class= "hint">
-            <data-hint>htm_Card_end('. highlight_words(highlight_str( 
-                "labl:'@Save', icon:'', hint:'', name:'', form:'', subm:true, attr:'', akey:'', kind:'save', simu:false)"),styl:'color:'.'blue; font-style:italic;').
+            <data-hint>htm_Card_end('. highlight_code(
+                "labl:'@Save', icon:'', hint:'', name:'', form:'', subm:true, attr:'', akey:'', kind:'save', simu:false)", styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>)
 		');
