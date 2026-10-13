@@ -206,14 +206,12 @@ function DbXXXRead($tabl,$name){ // (A) DATABASE & SELECT SQL
 
 
 global $db_Link, $debug;
-$debug= true;
+$debug= $debug ?? false;                # Set $debug= true before the include to see the SQL (was true: every query was shown on the page)
 
 // if (!function_exists('msg_Besked')) {include_once('../../_base/msg_lib.php');};   //  msg_Besked erstatter msg_Dialog !
 function onTest($outStr) {  if ($GLOBALS['debug']) echo $outStr; }
-function SQLerror($errtxt) {
-  $fp= fopen('./sys_sql.err.log','a'); 
-    fwrite($fp,"\n".date("Y-m-d H:i:s").' '.$_SERVER['REQUEST_URI'].' -- '.$errtxt);    
-  fclose($fp);
+function SQLerror($errtxt) {          # To the PHP error log (was ./sys_sql.err.log in the web folder: the SQL and URL could be read by anyone)
+    error_log('php2html SQL: '.($_SERVER['REQUEST_URI'] ?? '').' -- '.strip_tags(str_replace('<br>', ' ', (string)$errtxt)));
 }
 
 function msg_Tip($title='@Tip',        $messg='Besked') {
@@ -261,7 +259,7 @@ if (!function_exists('dbi_connect')) ##  $onFile and $onLine regarding fault loc
                                 SQLerror('dbi_succes: '.'Connect failed'); exit();
                              } 
                              return mysqli_connect_errno(); break;
-            case 'postgres': return pg_last_error;          break;
+            case 'postgres': return pg_last_error();        break;   # (was pg_last_error - an undefined constant: fatal error)
             default: msg_Error(lang('@Not supported database: ').DB_TYPE);
         }
     }
@@ -288,12 +286,10 @@ if (!function_exists('dbi_connect')) ##  $onFile and $onLine regarding fault loc
         global $db_Problem, $pageTitl;    //  db_fetch_array($qtext)
         $result= [];
         if (!$Qresult)  {
-            msg_Besked ($BgColr= 'error',$title='',  
-                        $reason='#File: '.substr($onFile,strpos($onFile,'Program')).'<br>#Line: '.$onLine.'<br>#Func: '.$onFunc.'<br>#Call: '.$strQuery, 
-                        $messg = lang('@Function call from').' "'.
-                        $pageTitl.'"<br>'.lang('@No data in the table, error in the query, or access denied!').'<br>'.
-                                          lang('@If necessary, look for the cause in the error log of the program or the database!'),
-                        $actions=['close']);
+            $reason= '#File: '.basename((string)$onFile).' #Line: '.$onLine.' #Func: '.$onFunc;   # (the SQL goes to the log, not to the page)
+            msg_Error('@DB:', lang('@Function call from').' "'.sys_enc((string)$pageTitl).'"<br>'.
+                              lang('@No data in the table, error in the query, or access denied!').'<br>'.
+                              lang('@If necessary, look for the cause in the error log of the program or the database!'));   # (was msg_Besked() - it does not exist: fatal error)
             SQLerror('dbi_assoData: '.$reason.' <br>SQL:'.$strQuery);
             exit;
         } 

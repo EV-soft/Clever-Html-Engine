@@ -6810,29 +6810,29 @@ function sys_get_translations($transTable=[])
     if (isset($_POST['alllang']))  $alllang = $_POST['alllang']; else $alllang = '';
     if ($arrLang == null)     // Prevent repeating calls
     try {
-        if (is_readable('./_trans.sys.json'))
-             $content = file_get_contents('./_trans.sys.json');
-        else $content = file_get_contents($gbl_ProgRoot.'_trans.sys.json');
+        $tf= is_readable('./_trans.sys.json') ? './_trans.sys.json' : $gbl_ProgRoot.'_trans.sys.json';
+        $content= is_readable($tf) ? file_get_contents($tf) : FALSE;     # No file: English only (was a PHP warning on the page - e.g. the minimal setup)
          // echo $content;
         if ($content !== FALSE) {
             $lng = json_decode($content, TRUE);
             // arrPretty($lng,'$lng');
-            if ($lng != null)
+            if (is_array($lng["language"] ?? null))
             foreach ($lng["language"] as $key => $value)
             // if ((!$value["translation"] == null) or ($alllang == 'All'))    // Only if translation exists for that language
-            {   $lang_rec["code"]        = $value["code"];                  // $value["code"];
-                $lang_rec["name"]        = $value["name"];                  // $value["name"];      Name in english
-                $lang_rec["native"]      = $value["native"];                // $value["native"];    Name translated from english
-                $lang_rec["author"]      = $value["author"];                // $value["author"];
-                $lang_rec["note"]        = $value["note"];                  // $value["note"];
-                $lang_rec["DateTime"]    = $value["DateTime"];              // $value["DateTime"]; // setlocale(LC_TIME, 'da_DK','da','da_DK.utf8'); ?
-                $lang_rec["translation"] = $value["translation"];
+            {   if (!is_array($value) or !isset($value["code"])) continue;   # Only code and translation are needed (the other fields gave warnings when missing)
+                $lang_rec["code"]        = $value["code"];
+                $lang_rec["name"]        = $value["name"]     ?? $value["code"];    # Name in english
+                $lang_rec["native"]      = $value["native"]   ?? $lang_rec["name"]; # Name in the language
+                $lang_rec["author"]      = $value["author"]   ?? '';
+                $lang_rec["note"]        = $value["note"]     ?? '';
+                $lang_rec["DateTime"]    = $value["DateTime"] ?? '';
+                $lang_rec["translation"] = is_array($value["translation"] ?? null) ? $value["translation"] : [];
                 $arrLang[] = $lang_rec;
 
                 // if ($transTable) { $transTable[$value["code"]] = $value["translation"]; }    // $value["translation"];
                 if (substr($_SESSION['proglang'],0,2)==$lang_rec["code"]) $_SESSION['currLang']= $lang_rec;
             }
-            else $arrLang= ['ERROR on decoding: _trans.sys.json',' '];
+            else { $arrLang= [];  error_log('php2html: _trans.sys.json could not be decoded - English only'); }   # (was a list of 2 texts used as languages)
             // arrPretty($arrLang,'$arrLang');
             # if (false) { $out = fopen('json.out', "w"); fwrite($out, PHP_EOL. print_r($value["translation"], true)); fclose($out); } // save pretty JSON-file
             return $arrLang;
