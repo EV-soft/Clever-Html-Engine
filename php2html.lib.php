@@ -739,18 +739,18 @@ function htm_TextPre(# body, algn:'left', marg:'8px', attr:'', font:'', code:fal
  */
  
 # Starting various types ef text list
-function htm_List_(# capt:'', vrnt:'ul', type:'circle', $strt:'0', styl:'text-align:left;', rtrn:false)
+function htm_List_(# capt:'', vrnt:'ul', type:'disc', strt:'', styl:'text-align:left;', rtrn:false)
 $capt='',                   # string: Html-text
 $vrnt='ul',                 # string: Variants: <ul> an unordered list  /  <ol> an ordered list  /  <li> a list item  /  <dl> a description list
 $type='disc',               # string: List-style marker type (Ref: https://www.w3schools.com/cssref/playdemo.php?filename=playcss_list-style-type)
-$strt='0',                  # string: Index start for ordered list
+$strt='',                   # string: Index start for ordered list ('' = 1)
 $styl='text-align:left;',   # string: Other style rel. body
 $rtrn=false                 # bool:   Function Return or echo result
 ) { $mark=' style="list-style-type: '.$type.'; "';
 $result= '<span style="'.$styl.'">';
     switch ($vrnt= strtolower($vrnt)) {
         case 'ul' : $result.='<ul '.$mark.'>';                    break; # Unordered list
-        case 'ol' : $result.='<ol '.$mark.' start="'.$strt.'">';  break; # Ordered list
+        case 'ol' : $result.='<ol '.$mark.(((string)$strt > '') ? ' start="'.(int)$strt.'"' : '').'>';  break; # Ordered list (was start="0" by default: numbered from 0)
         case 'li' : $result.='<ul '.$mark.'>'; $vrnt='ul';        break; # List of items with the chosen marker
         case 'dl' : $result.='<dl '.$mark.'>';                    break; # Description list
         default   : $result.='<'.$vrnt.' '.$mark.'>';                    # Custom variant
@@ -1668,7 +1668,9 @@ $ixalign= $ixalign ?? '';
                         }
                         spool( '<td style="text-align:'.$Suf[4][0].'; width:'.$Suf[1].';" disabled >'.$output.'</td>');
                     }
-                    $newRow.= '<td><div style= "background-color: gray;"> </div></td>';
+                    $newRow.= ($modi and $Suf[2]=='rowact')                     # Row actions also in a new row (was a grey cell: it could not be deleted)
+                            ? '<td style="text-align:'.$Suf[4][0].'; width:'.$Suf[1].';">'.p2h_rowActs((string)$Suf[6]).'</td>'
+                            : '<td><div style= "background-color: gray;"> </div></td>';
                 }   //  [' @Slet',     '4%',         'text',         '',        'center',   ' @Klik på rødt kryds for at slette  ', '<ic class="far fa-times-circle" style="color:red; font-size:13px;"></ic>']
                 //  ['0:ColLabl', '1:ColWidth', '2:ContType', '3:Format', '4:FeltJust', '5:ColTip', '6:value!     '            ]
             //echo '<td>'.'</td>';
@@ -1762,7 +1764,8 @@ if ($crea) {
     
     $rowField= str_replace('<td','<td style="background-color: lightyellow;" ',$rowField);
     //$rowField= str_replace('"','\"',$rowField);
-    $newRow= '`<tr style=" border: 3px solid red;">'.$newRow.'</tr>`';
+    # The new row as a JSON string: no ' " & < > in it, so it is safe in onclick='...' (was a `template`: an apostrophe in a text broke the button)
+    $newRow= json_encode('<tr class="row" style=" border: 3px solid red;">'.$newRow.'</tr>', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
     spool( '<div style="text-align: center;">'. 
             htm_AcceptButt($labl='<i class="fas fa-plus"> </i> '.lang($ButtLabl),$icon='', // Create new item record
                         $hint='@Create an empty row, so you can fill in data in the yellow fields ! ', 
@@ -3745,7 +3748,7 @@ function htm_Tabs_(# head:'', styl:'', rtrn:false)
     $styl='', 
     $rtrn=false
 )
-{   $GLOBALS['TabLabl']='<div class="tab">';
+{   $GLOBALS['TabLabl']='<div class="p2hTabs"><div class="tab">';     # p2hTabs: the group - openTab()/closeTabs() only work inside it
     $GLOBALS['TabBody']='';
     $GLOBALS['TabDflt']='';
     $result= '
@@ -3787,8 +3790,8 @@ function htm_Tabs_end(# foot:'', styl:'', rtrn:false)
     ) 
 {   $result=
         $GLOBALS['TabLabl'].'<span style="float:right;" title="'.lang('@Hide the Tab-content').
-                            '" role="button" tabindex="0" aria-label="'.lang('@Hide the Tab-content').'" onclick="closeTabs()"><i class="far fa-window-close"></i>&nbsp;</span> </div>'.
-        $GLOBALS['TabBody'];
+                            '" role="button" tabindex="0" aria-label="'.lang('@Hide the Tab-content').'" onclick="closeTabs(this)"><i class="far fa-window-close"></i>&nbsp;</span> </div>'.
+        $GLOBALS['TabBody'].'</div>';
         if ($foot>'') $result.= '<span style="'.$styl.'">'.lang($foot).'</span>';
         $result.= '<hr style="border-top: 2px solid #aaa; margin-top: 0;">';
         if (($GLOBALS['TabDflt'] ?? '')>'')                 # The default tab: open it like a click (openTab() is defined at the page end)
@@ -3806,7 +3809,8 @@ function htm_LinkButt(# labl:'', hint:'', attr:'', link:'', targ:'_blank', rtrn:
     $targ='_blank', # string: 
     $rtrn=false     # bool:   Function Return or echo result
 )
-{   $result= '<span '.$attr.'><a class="button" href="'.$link.'" target="'.$targ.'" title="'.lang($hint).'">'.lang($labl).'</a></span>';
+{   $a= '<a class="button" href="'.sys_enc($link).'" target="'.sys_enc($targ).'"'.($targ=='_blank' ? ' rel="noopener"' : '').'>'.lang($labl).'</a>';
+    $result= '<span '.$attr.'>'.($hint > '' ? '<abbr class="hint">'.$a.'<data-hint>'.lang($hint).'</data-hint></abbr>' : $a).'</span>';   # (was: title, not escaped)
     if (!$rtrn) echo $result; else return $result;
 }
 
@@ -6522,20 +6526,20 @@ function htm_Page_end()
     # Regards Cards:
     echo '
     <script>
-    function closeTabs() {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
+    function closeTabs(el) {                                     /* Only the tabs of this group (el: an element in it) */
+      var i, tabcontent, tablinks, g = (el && el.closest && el.closest(".p2hTabs")) || document;
+      tabcontent = g.getElementsByClassName("tabcontent");
       for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
       }
     }
-    function openTab(evt, TabName) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
+    function openTab(evt, TabName) {                             /* Only the tabs of this group (was: all groups on the page) */
+      var i, tabcontent, tablinks, g = (evt.currentTarget.closest && evt.currentTarget.closest(".p2hTabs")) || document;
+      tabcontent = g.getElementsByClassName("tabcontent");
       for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
       }
-      tablinks = document.getElementsByClassName("tablinks");
+      tablinks = g.getElementsByClassName("tablinks");
       for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
