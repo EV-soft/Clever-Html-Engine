@@ -290,7 +290,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
     }
     if (($llgn == '') and ($gbl_labelAlgn >'')) $llgn= $gbl_labelAlgn;
     if (!empty($GLOBALS['gbl_CardForm'])) $form= '';      # Inside a card form: the field belongs to that form (forms cannot be nested)
-    ($form=='' ? $result= '' : $result= '<form name="'.sys_enc($form).'" method="post" style="display:inline;">'.csrf_field(true));
+    ($form=='' ? $result= '' : $result= '<form name="'.sys_enc($form).'" method="post"'.($vrnt=='file' ? ' enctype="multipart/form-data"' : '').' style="display:inline;">'.csrf_field(true));   # (file: else only the name was sent)
     if ($form>'') $subm= '<input type="submit" value="OK" style="padding:0 0 0 2px; border-radius: 3px; width:22px; position: relative; color:blue;" title="Submit" />';
     if ($wdth>'') $wdth= ' width: '.$wdth.'; '; else $wdth='';
     if ($ftop>'') $ftop= ' top: '.$ftop.'; '; else $ftop='';
@@ -354,7 +354,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         /* case 'qrcd' : $result.= '<input type= "text" '. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr.  // 2D QR code
                         $inpStyle. ' font-family:barcode; font-size:19px; font-weight:normal; '. '" />';  break; */
         case 'mail' : $result.= '<input type= "email"'. $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr. 
-                        $inpStyle. '" '.$pattern='pattern="^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$"'. ' />';  break;       // (?i)\b[A-Z0-9._%+-]              +@(?:[A-Z0-9-]+   \.)+[A-Z]{2,6}\b
+                        $inpStyle. '" pattern="^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$" />';  break;     # (was: the regex with ' />' shown in the hint)       // (?i)\b[A-Z0-9._%+-]              +@(?:[A-Z0-9-]+   \.)+[A-Z]{2,6}\b
         case 'link' : $result.= '<input type= "url" '.  $inpIdNm. ' value="'.$valu.'" '. $eventInvalid. $aktiv. $plh. $attr. 
                         //'pattern="^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?"'.
                         $inpStyle. '" pattern="https?://.+" />';  break;
@@ -430,11 +430,11 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                         $eventInvalid. $aktiv. $plh.$attr.' >'.$valu.'</textarea></span>'; $just= 'top: -4px; position: relative;'; break;
 
         case 'html' : $result.= ## HTML-TEXT:
-                        '<div class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px; font-size: smaller;"><div contenteditable="true" role="textbox" aria-multiline="true" id="'.$iid.'"'.
+                        '<div class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px; font-size: smaller;"><div contenteditable="'.($disa ? 'false' : 'true').'" role="textbox" aria-multiline="true"'.($disa ? ' aria-disabled="true"' : '').' id="'.$iid.'"'.
                         ' oninput="this.nextElementSibling.value= this.innerHTML;"'.     # The hidden field carries the HTML to the server
                         ' style="background-color: white; min-height: '.($rows>'1' ? '34px;' : '5px;').' border: 1px solid Gainsboro; padding: 2px; " '. //  Like area, but with html-content
-                        $aktiv.' data-placeholder="'.lang($plho).'" '. $attr.' >'. $valu.'</div>'.
-                        '<input type="hidden" name="'.$name.'" value="'.sys_enc((string)$valu).'" /></div>';
+                        ' data-placeholder="'.lang($plho).'" '. $attr.' >'. $valu.'</div>'.         # (disa: not editable - was the attribute disabled, which a div ignores)
+                        '<input type="hidden" name="'.$name.'" value="'.sys_enc((string)$valu).'"'.$aktiv.'/></div>';
                         // if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';  
                         $just= 'top: -4px; position: relative;'; break;
 
@@ -469,7 +469,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                                 if ($valu==$rec[0]) $chk= ' checked '; else $chk= ' ';
                                     $result.= '<input type= "radio" id="'.$iid.'_'.$rec[0].'" name="'.$name.'" value="'.$rec[0].'" '.
                                         $chk.($rec[3] ?? '').$aktiv. ' '.$attr.' style="width: 20px; box-shadow: none;">'.
-                                     '<label for="'.$iid.'_'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; ').'</label>';
+                                     '<label for="'.$iid.'_'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1] ?? $rec[0],$rec[2] ?? '','','12px; box-shadow: none; ').'</label>';   # (the tooltip is optional - was a PHP warning)
                                 if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
                             }   $result.= '</small>'.($subm ?? '').'</span>';  break;
 
@@ -2261,7 +2261,8 @@ function htm_DataList(# capt: '@Choose here from the list:', icon: 'fas fa-datab
     $rtrn = false                                       # bool:   Act as procedure: Echo result, or as function: Return string:   
 
 )
-{   $html= '<form action="'.$acti.'" method="get">';
+{   $ownForm= empty($GLOBALS['gbl_CardForm']);                 # Inside a card form: no form of its own (its </form> ended the card form)
+    $html= $ownForm ? '<form action="'.sys_enc($acti).'" method="get">' : '';
     static $dlNo= 0; $dlNo++;
     if ($name=='') $name= 'datalist'.$dlNo;                     # Without a name the chosen value is not submitted
     $listId= 'list_'.sys_enc($name);   # Unique per field - several datalists on one page must not share options
@@ -2274,7 +2275,7 @@ function htm_DataList(# capt: '@Choose here from the list:', icon: 'fas fa-datab
     htm_Inbox(labl:$capt, plho:'', icon:$icon, hint:$hint,
               name:$name.'_box', valu:$datalist, form:$form, wdth:$wdth, algn:'center', attr:$fclr, // Box-width - botton-width = input-width
               rtrn:true, unit:'', disa:false, rows:'2', step:'', list:[], llgn:'R', bord:$bord, ftop:'');
-    $html.= '</form>';
+    if ($ownForm) $html.= '</form>';
     if (!$rtrn) echo $html; else return $html;
 } # htm_DataList
  
@@ -6362,13 +6363,21 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
               m.textContent= ".json_encode(lang('@The PDF file could not be shown:'))." + ' ' + url + ' (' + ((err && err.message) || err) + ')';
               canvas.insertAdjacentElement('beforebegin', m);
             }
-            if (url && canvas) try {
-              pdfjsLib.getDocument({url: url}).promise.then(function(pdfDoc_) {  /** Asynchronously downloads PDF ({url}: pdf.js 6 refuses a plain string) */
-                pdfDoc = pdfDoc_;
-                document.getElementById('page_count').textContent = pdfDoc.numPages;
-                renderPage(pageNum);    // Initial/first page rendering
-              }, pdfFail);
-            } catch (err) { pdfFail(err); }           // (An error thrown at once - not a rejected promise)
+            function pdfLoad(src) {     /** Load a PDF: {url: ...} or {data: bytes} (pdf.js 6 refuses a plain string) */
+              try {
+                pdfjsLib.getDocument(src).promise.then(function(pdfDoc_) {
+                  pdfDoc = pdfDoc_;  pageNum = 1;
+                  document.getElementById('page_count').textContent = pdfDoc.numPages;
+                  queueRenderPage(pageNum);    // The first page
+                }, pdfFail);
+              } catch (err) { pdfFail(err); }         // (An error thrown at once - not a rejected promise)
+            }
+            if (url && canvas) pdfLoad({url: url});
+            document.addEventListener('change', function(e) {   /** A PDF chosen in a file field (accept=.pdf) is shown in the viewer (was: nothing happened) */
+              var f = e.target;
+              if (!canvas || !f.matches || !f.matches('input[type=file]') || !/pdf/i.test(f.accept || '') || !f.files || !f.files[0]) return;
+              f.files[0].arrayBuffer().then(function(b) { url = f.files[0].name;  pdfLoad({data: new Uint8Array(b)}); }, pdfFail);
+            });
             </script>";
     }} 
     ## 
