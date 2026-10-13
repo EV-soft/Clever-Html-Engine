@@ -39,6 +39,14 @@ A modern, semantic PHP library for generating HTML interfaces with compact code,
 - **Fixes:** HTML5-valid output (nested forms, unclosed `<style>`, void elements, escaping), `msg_System()` layout, `msg_Dialog()` on the theme-aware dialog (deprecated), session warning after expiry, number formats, folded card widths, page zoom and card resize.
 - New settings: `$gbl_AssetCache`, `$gbl_LazyLibs` (see `project.init.php`).
 
+# 🆕 What's new in 1.6.4
+- **Reference pages:** `table.page.php` and `card.page.php` document `htm_Table()` and `htm_Card_()` / `htm_Card_end()` with live examples - the code shown is the code that runs, and the parameter lists are read from the library (so they cannot get out of date). Code examples are folded (`htm_CodeBox(fold:'closed')`).
+- **Tables:** row actions in the browser (`rowact`: delete, copy, move, undo), `calc` with your own formula (`fn($row) => ...`), rows with field names, short rows padded, the new row gets the row actions, a table no longer shakes when its rows are as high as its window.
+- **Uniform parameters:** `rtrn` in every function, the summary comments match the parameters, uniform names with the old ones still working (`valu`, `wdth`, `vhgh`, `disa`; `htm_Inbox(edit:)`).
+- **Cards:** a real footer (`htm_Card_end(foot:, subm:)`).
+- **Accessibility:** names for table fields, icon buttons and other fields, the password toggle and the captcha slider work with the keyboard, labels that point to the right element.
+- **Fixes:** about 100 bugs found in "find five bugs" rounds - e.g. escaping of names, placeholders and labels, dialogs inside card forms, the translation scanner, the tinyEditor upload, database helper errors (`filedata.inc.php`), PHP warnings without `_trans.sys.json`.
+
 # 📦 Installation
 ```bash
 git clone https://github.com/EV-soft/Clever-Html-Engine.git
