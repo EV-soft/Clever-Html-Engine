@@ -615,7 +615,7 @@ STRING
 
 
     htm_Card_(capt:'@Navigate functions:',icon:'fas fa-info',hint:'@Various buttons to link to project pages',form:'',acti:'',clas:'cardW800',wdth:'640',styl:'background-color: white;',attr:'', show: true, head: $headbg);           
-    htm_TextDiv('To navigate in your project, you can use the Menu_Topdropdown() shown on top of all demo pages.<br>
+    htm_TextDiv('To navigate in your project, you can use htm_Menu_TopDown() - the menu on top of all demo pages (its content: $menudata in project.init.php).<br>
                  You can also use various buttons for that...
     ');
     htm_Card_end(labl:'', icon:'', hint:'', name:'', form:'tb', subm:false, attr:'', akey:'s',  kind:'save', simu:false);

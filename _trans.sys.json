@@ -352,6 +352,13 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "The file could not be uploaded.":"Filen kunne ikke uploades.",
+      "The file is too big (max. 200 KB).":"Filen er for stor (maks. 200 KB).",
+      "Only .htm, .html and .txt files.":"Kun .htm-, .html- og .txt-filer.",
+      "The file is loaded into the editor (in this session):":"Filen er indlæst i editoren (i denne session):",
+      "Load a local .htm, .html or .txt file into the editor (in this session only)":"Indlæs en lokal .htm-, .html- eller .txt-fil i editoren (kun i denne session)",
+      "Load the file into the editor":"Indlæs filen i editoren",
+      "Upload local file to edit":"Upload en lokal fil til redigering",
       "Each row can be a list (the values in the order of body) or have field names (e.g. a database row) - then the values are placed by the field names, in any order, and a missing field is empty. Both kinds can be mixed, as here.":"Hver række kan være en liste (værdierne i rækkefølgen fra body) eller have feltnavne (fx en databaserække) - så placeres værdierne efter feltnavnene, i vilkårlig rækkefølge, og et manglende felt er tomt. Begge slags kan blandes, som her.",
       "A submit button: the server gets btn_hid_&lt;table&gt;_&lt;row&gt; at once and can hide the record":"En send-knap: serveren får btn_hid_&lt;tabel&gt;_&lt;række&gt; med det samme og kan skjule posten",
       "button (label @Delete, @Hide, @Copy, @Rename or @Select): a submit button per row - the form is sent at once, and the server gets e.g. btn_hid_&lt;table&gt;_&lt;row&gt;.":"button (label @Delete, @Hide, @Copy, @Rename eller @Select): en send-knap pr. række - formularen sendes med det samme, og serveren får fx btn_hid_&lt;tabel&gt;_&lt;række&gt;.",

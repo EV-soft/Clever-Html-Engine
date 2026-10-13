@@ -29,11 +29,15 @@ htm_Page_(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag:
     ','left',$marg='8px',$attr='line-height: 0.6;');
     
     htm_TextPre('For now there are the following files:
-       _assets              (folder: support libraries) 
-       _background.png      Image used as background in cards etc.
+       _assets              (folder: the libraries - jquery, tablesorter, font-awesome, tinymce, pdfview, dialog-polyfill)
+       _accessories         (folder: images and fonts - e.g. _background.png, barcode.ttf)
+       _cache               (folder: the CSS/JS of the pages, written by the library - can be deleted)
        _trans.sys.json      Data-file with translations
        php2html.<i>lib</i>.php     The main library
-       menu.<i>inc</i>.php         Include regarding the system menu
+       project.<i>init</i>.php     Your settings (menu, colors, libraries ...) - read by the library
+       customRules.<i>inc</i>.php  Your row rules for htm_Table() (optional)
+       customLib.<i>inc</i>.php    Your own functions (optional)
+       menu.<i>inc</i>.php         Include regarding the drop-down menu Menu_Topdropdown()
        translate.<i>inc</i>.php    Include library regarding the translate system
 
        Demo.<b>page</b>.php        Intro...

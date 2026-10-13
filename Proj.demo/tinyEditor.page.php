@@ -1,7 +1,7 @@
 <?php   $DocFile= './Proj.demo/tinyEditor.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';      $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
-$sys= $GLOBALS["gbl_ProgRoot"]= '../'; 
+$sys= $GLOBALS["gbl_ProgRoot"]= '../';
 $gbl_ProgRoot= './../';
 
 ## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
@@ -13,19 +13,35 @@ $needTinymce=     '3';
 
 require_once ($sys.'php2html.lib.php');
 
-if (isset($_POST['UploadFile'])) $UploadFile = $_POST['UploadFile']; 
-                            else $UploadFile = '';
+$UploadFile= '';
+# Upload: a local .htm/.html/.txt file is loaded into the editor - in this session only, like the edits (the shared file is never changed)
+# (Before: the hint said it was not working yet - the file was never read)
+$upMsg= '';  $upKind= 'success';
+if (isset($_FILES['UploadFile']) and is_array($_FILES['UploadFile']) and (($_FILES['UploadFile']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE)) {
+    $up= $_FILES['UploadFile'];
+    if ($up['error'] !== UPLOAD_ERR_OK or !is_uploaded_file($up['tmp_name']))         { $upMsg= lang('@The file could not be uploaded.');  $upKind= 'error'; }
+    elseif ($up['size'] > 200000)                                                     { $upMsg= lang('@The file is too big (max. 200 KB).');  $upKind= 'error'; }
+    elseif (!preg_match('/\.(html?|txt)$/i', (string)$up['name']))                    { $upMsg= lang('@Only .htm, .html and .txt files.');  $upKind= 'error'; }
+    else {
+        $txt= (string)file_get_contents($up['tmp_name']);
+        if (!mb_check_encoding($txt, 'UTF-8')) $txt= mb_convert_encoding($txt, 'UTF-8', 'Windows-1252');
+        if (preg_match('/\.txt$/i', $up['name'])) $txt= nl2br(htmlspecialchars($txt, ENT_QUOTES, 'UTF-8'));   # Plain text: shown as text
+        if (preg_match('~<body[^>]*>(.*)</body>~is', $txt, $m)) $txt= $m[1];                                   # A whole HTML page: only the body
+        $_SESSION['tinyEditDoc']= $txt;
+        $upMsg= lang('@The file is loaded into the editor (in this session):').' '.htmlspecialchars($up['name'], ENT_QUOTES, 'UTF-8');
+    }
+}
 
 htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:'File: '.$DocFile.' - Ver:'.$DocVer, inis:'', algn:'center',  imag:'../_accessories/_background.png', pbrd:false);
     echo '<style> body { padding-top: 0; margin-top:0; } </style>';
-    
+
     // $menudata is set in: project.init.php
-    htm_Menu_TopDown(capt:'@Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
+    htm_Menu_TopDown(capt:'@Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote);
     htm_nl(2);
-    
+
     htm_Card_(capt: '@Working with tiny Editor:', icon: 'fas fa-info', hint: '@HINT for this card', form: 'head6', acti: '', clas: 'cardW100', wdth: '640', styl: 'background-color: white;', attr: '',  show : true,  head: $headbg, vhgh:'1200px');
-        if ($LIB_TINYMCE[0] > 0) # Config editor: https://www.tiny.cloud/docs/tinymce/6/basic-setup/ 
-        echo 
+        if ($LIB_TINYMCE[0] > 0) # Config editor: https://www.tiny.cloud/docs/tinymce/6/basic-setup/
+        echo
             " <script type=\"text/javascript\">
               tinymce.init({
                 selector: '#TinyTextarea',
@@ -49,7 +65,7 @@ htm_Page_(titl:'HTML-editor - Introduction to the tiny Editor:', hint:$©, info:
               });
               </script>";
         $EditFile= 'EditContent.htm';
-/* 
+/*
 https://www.tiny.cloud/docs/tinymce/latest/plugins/#open-source-plugins
 Free plugins: (In demo | Indented: not used)
 Accordion
@@ -88,29 +104,29 @@ Word Count
         if (isset($_POST['TinyTextarea']) and is_string($_POST['TinyTextarea']))
             $_SESSION['tinyEditDoc']= substr($_POST['TinyTextarea'], 0, 200000);
         $docContent= $_SESSION['tinyEditDoc'] ?? file_get_contents($EditFile);                # Load content
-        htm_Input(labl:'@This is the HTML editor', 
-                  plho:'@Enter your text here...', icon:'', 
+        htm_Input(labl:'@This is the HTML editor',
+                  plho:'@Enter your text here...', icon:'',
                   hint:'@Based on open source: tinyMCE',vrnt: 'area',
-                  name:'TinyTextarea' /* Name must match selector in tinymce.init() */, 
+                  name:'TinyTextarea' /* Name must match selector in tinymce.init() */,
                   valu:$docContent, form:'', wdth:'', algn:'left',
                   attr:'', rtrn:false, unit:'', disa:false, rows:'60', step:'' ,list:[], llgn:'C', bord:'', ftop:'');
-        
+
     htm_Card_end(labl:'GEM', icon:'', hint:'', name:'', form:'head6', subm:false,  attr:'', akey:'s', kind:'save', simu:false);
-   
+
     htm_Card_(capt:'@Data-file for tiny Editor: '.$EditFile, icon: 'fas fa-database', form:'fmUpload', acti:'', clas: 'cardW100');
         htm_textdiv('<b>Info:</b> '.lang('@The editor starts with the file').' '.$EditFile.'. '.lang('@Your changes are saved in this browser session only (not on the server).').' '. str_sp('8').
-            htm_Field(labl:'Upload local file to edit', body:
-                htm_Input(labl:'', 
-                          plho:'@Enter your filename here...', icon:'', 
-                          hint:'@Upload file to '.$EditFile.'<br>Not working yet !', vrnt:'file', 
-                          name:'UploadFile' , 
+            htm_Alert(body:$upMsg, kind:$upKind, rtrn:true).
+            htm_Field(labl:'@Upload local file to edit', body:
+                htm_Input(labl:'',
+                          plho:'@Enter your filename here...', icon:'',
+                          hint:'@Load a local .htm, .html or .txt file into the editor (in this session only)', vrnt:'file',
+                          name:'UploadFile' ,
                           valu:$UploadFile,  form:'fmUpload', wdth:'220px', algn:'left',
-                          attr:'', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'',ftop:''). 
-                          // 1:Backup current Editfile, 2:Upload file, 3:saveAs EditContent.htm
+                          attr:'accept=".htm,.html,.txt"', rtrn:true, unit:'', disa:false, rows:'', step:'', list:[], llgn:'R', bord:'',ftop:'').
                 str_sp('4').
-                htm_AcceptButt(labl:'OK', hint:'Upload now', form:'fmUpload', rtrn:true, tplc:'LblTip_text'), 
-                icon:'',hint:'@Upload file to '.$EditFile.'<br>Not working yet !',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:true,ftop:'').
-             
+                htm_AcceptButt(labl:'OK', hint:'@Load the file into the editor', form:'fmUpload', rtrn:true, tplc:'LblTip_text'),
+                icon:'',hint:'@Load a local .htm, .html or .txt file into the editor (in this session only)',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:true,ftop:'').
+
              htm_Field(labl:'@Download file', body:
                  htm_ActionButt(labl:'@Download', icon:'fas fa-download', hint:'@Save the text in the editor as a file on your computer',
                                 type:'button', name:'btnDownload', acti:'p2hDownloadDoc()', rtrn:true).
@@ -119,12 +135,12 @@ Word Count
                       var html= ed ? ed.getContent() : (ta ? ta.value : "");
                       var a= document.createElement("a");  a.href= URL.createObjectURL(new Blob([html], {type: "text/html"}));
                       a.download= "EditContent.htm";  document.body.appendChild(a);  a.click();  a.remove();
-                  }</script>',  
+                  }</script>',
                       icon:'', hint:'@Save the text in the editor as a file on your computer', name:'fld', wdth:'', styl:'', attr:'', llgn:'C', rtrn:true, ftop:'')
             );  // 1:Download file, 2:Save as newName,
             htm_textdiv(body:'@Alternative you can copy/paste from/to content in Source Code window.', styl:'white-space: nowrap;', rtrn:true,
                         attr:'margin: auto; display:inline-block; position: relative;');
     htm_Card_end(labl:'GEM', icon:'', hint:'', name:'', form:'fmUpload', subm:false,  attr:'', akey:'s', kind:'save', simu:false);
-     
+
 htm_Page_end();
 ?>

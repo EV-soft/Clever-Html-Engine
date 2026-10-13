@@ -20,31 +20,9 @@ function scannLngStrings($code= 'dk') {
         $sys_Root= '../';
         ## Source files to scann:
         $lines = file(__FILE__);  // This file: translate.inc.php
-        $files= [$sys_Root.'php2html.lib.php',
-            //   $gbl_ProgRoot.'menu.inc.php',
-                $gbl_ProgRoot.'translate.page.php',
-                $gbl_ProgRoot.'../filedata.inc.php',
-        ## Other project files to scann:
-                $gbl_ProgRoot.'Demo.page.php',
-                $gbl_ProgRoot.'CustomerOrder.page.php',
-                $gbl_ProgRoot.'accountPlan.page.php',
-                $gbl_ProgRoot.'tinyEditor.page.php',
-                $gbl_ProgRoot.'functions.page.php',
-                $gbl_ProgRoot.'PHP2HTML-intro.page.php',
-                $gbl_ProgRoot.'card.page.php',
-                $gbl_ProgRoot.'input.page.php',
-                $gbl_ProgRoot.'table.page.php',
-                $gbl_ProgRoot.'pages.page.php',
-                $gbl_ProgRoot.'translate.page.php',
-                $gbl_ProgRoot.'files.page.php',
-                $gbl_ProgRoot.'navigate.page.php',
-                $gbl_ProgRoot.'description.page.php',
-                $gbl_ProgRoot.'support.page.php',
-                $gbl_ProgRoot.'other.page.php'
-                
-                // './Proj.demo/CustomerOrder.page.php'
-                //  $gbl_ProgRoot.'folder-explorer.php'
-                ];
+        # All pages and includes of the project folder, the library and filedata.inc.php (was a fixed list: new pages were not scanned)
+        $files= array_merge([$sys_Root.'php2html.lib.php', $gbl_ProgRoot.'../filedata.inc.php'],
+                            glob($gbl_ProgRoot.'*.page.php') ?: [], glob($gbl_ProgRoot.'*.inc.php') ?: []);
         echo '<br><b>Searching </b>for string: '.$searchPref.'<small>';
         foreach ($files as $fname) { 
             $lin= file($fname); 
@@ -143,7 +121,8 @@ function scannLngStrings($code= 'dk') {
     // $arrLang['en']= [];  // Build new translate table for english
     
     ## Translation Body:
-    $indx = array_search('da', array_column($arrLang, 'code'));
+    $indx = array_search($code, array_column($arrLang, 'code'));    # The language being analysed (was always 'da')
+    if ($indx === false) $indx= -1;                                   # Not in _trans.sys.json: everything is missing
     // echo $indx; 
     // arrPretty($arrLang[$indx]['translation'],'$arrLang[$indx][\'translation\']');
     foreach ($arrStrings as $str) {
@@ -155,7 +134,7 @@ function scannLngStrings($code= 'dk') {
         $rawStr= str_replace("\\'", "'", $str);               # The key as lang() sees it (\' in the PHP source is ')
         $str= str_replace ('"', '\"', $str );
         $arrLang['en'][$str] = $str; 
-        $strLang= @$arrLang[$indx]['translation'][$str];    // Supress error messages
+        $strLang= $arrLang[$indx]['translation'][$str] ?? '';
         if (!$strLang) { $missing= ''.$code.' ???: '.$str; $miss= $miss+1; $strMiss.= '"'.$str.'"'.chr(13).chr(10); } 
         else             $missing= '';
         if ($i>=$n-2) $next= ''; 
