@@ -284,6 +284,8 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
     $ftop= '',              # string: Ajust field vertical position
     $lpos= ''               # string: style rel. Label offset (chck)
     ) {
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+
     global $gbl_GridOn, $gbl_iconColor, $gbl_labelAlgn;
     if ($vrnt != 'html') {                                       // Escape brugerinput for at undgå XSS (også hidden + textarea).
         $valu= htmlspecialchars((string)$valu, ENT_QUOTES, 'UTF-8');  // Kun html-varianten må indeholde markup
@@ -298,7 +300,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
     $hint= lang($hint);
     $labl= lang($labl);
     if ($icon>'') $icon= '<ic class="'.$icon.'" style="color: '.$gbl_iconColor.'; margin: 0 5px;"></ic>&nbsp;'; else $icon= '';
-    ($plho=='' ? $plh='' : $plh=' placeholder="'.lang($plho).'" '); // .'<span style="font-weight:300;">'.lang($plho).'</span>" ');
+    ($plho=='' ? $plh='' : $plh=' placeholder="'.sys_enc(strip_tags(lang($plho))).'" ');   # Escaped (a " in the text broke the field)
     if (substr($unit,0,1)=='<') { $pref= substr($unit,1); $suff= '';} else { $suff= $unit; $pref= ''; }
     if (strpos(' '.$attr,'required')>0) $bord.= 'border: 2px solid orange;';
     if (/* ($vrnt=='date') and */ ($valu=='')) $dataStyle= 'font-weight: 200; color:var(--grenColr1);'; else $dataStyle='font-weight: 600; ';
@@ -433,7 +435,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
                         '<div class="fieldContent boxStyle" style="'.$bord.' padding: 10px 4px 4px; font-size: smaller;"><div contenteditable="'.($disa ? 'false' : 'true').'" role="textbox" aria-multiline="true"'.($disa ? ' aria-disabled="true"' : '').' id="'.$iid.'"'.
                         ' oninput="this.nextElementSibling.value= this.innerHTML;"'.     # The hidden field carries the HTML to the server
                         ' style="background-color: white; min-height: '.($rows>'1' ? '34px;' : '5px;').' border: 1px solid Gainsboro; padding: 2px; " '. //  Like area, but with html-content
-                        ' data-placeholder="'.lang($plho).'" '. $attr.' >'. $valu.'</div>'.         # (disa: not editable - was the attribute disabled, which a div ignores)
+                        ' data-placeholder="'.sys_enc(strip_tags(lang($plho))).'" '. $attr.' >'. $valu.'</div>'.         # (disa: not editable - was the attribute disabled, which a div ignores)
                         '<input type="hidden" name="'.$name.'" value="'.sys_enc((string)$valu).'"'.$aktiv.'/></div>';
                         // if ($disa) $result.= '<script>document.getElementById("'.$name.'").contentEditable = "false"; </script>';  
                         $just= 'top: -4px; position: relative;'; break;
@@ -476,7 +478,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
         case 'opti' : $result.= ## OPTION:
                             '<span class="fieldContent boxStyle"  style="'.$bord.' background-color; white; text-align: center; padding: 10px 4px 4px;"><small>';
                             $result.= '<select class="styled-select" id="'.$iid.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
-                            $result.= '<option label="'.lang($plho).'" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
+                            $result.= '<option label="'.sys_enc(strip_tags(lang($plho))).'" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
                                 $result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2] ?? '').'" value="'.$rec[0].'" '.($rec[3] ?? '').' '.($rec[4] ?? ''); //  Firefox does not support Label !
                                 if ($rec[0]==$valu) $result.= ' selected ';
@@ -553,6 +555,8 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'noUse', 
     $ftop= '',                              # string: Ajust field vertical position
     $edit= null                             # bool:   true: the content can be edited (use this - not disa)
     ) {
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+
     global $gbl_iconColor, $gbl_labelAlgn;
     if ($llgn == '') $llgn= $gbl_labelAlgn;
     $canEdit= ($edit !== null) ? (bool)$edit : ($disa==true);     # (old: disa:true made it editable - the opposite of disa elsewhere)
@@ -620,7 +624,9 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
     $attr= '',          # string: Give more (special / non system) attrib to the field 
     $bclr= 'white',     # string: span background-color
     $rtrn= false,       # bool:  Act as procedure: Echo result, or as function: Return string
-) { global $gbl_iconColor;
+) {
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+ global $gbl_iconColor;
     if ($icon>'') $icon= '<ic class="'.$icon.'" style="color: '.$gbl_iconColor.'; margin: 0 5px;"></ic>&nbsp;'; else $icon= '';
     if ($bclr>'') $bclr= ' background: '.$bclr.';'; else $bclr= '';
     $oid= sys_uid('id_'.$name);                                  # Unique ids (was id_<name>: the same id as an htm_Input with that name)
@@ -1235,6 +1241,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
 #    Hidden columns (hidd) are posted too - e.g. the record id. A new row has an empty id.
 
 { global $gbl_blueColor, $gbl_LineBrun, $gbl_RollTabl, $gbl_HeaderFont, $gbl_IconStyle, $gbl_CardIx, $gbl_TblIx, $gbl_rowCount, $gbl_novice, $rowHtml, $ordrTotal, $spool;
+    if ($rtrn) ob_start();                                # rtrn: what is echoed on the way is returned too (see the end)
     $spool= '';
     $creaInpBg= 'LightYellow';
     $gbl_BodyBcgrd= 'yellow';
@@ -1820,8 +1827,8 @@ if ($crea) {
     spool( '</span>'); // tableStyle
     if (DEBUG) dvl_pretty('End-htm_Table: '.$from);
     
-    if (!$rtrn) echo $spool; 
-    else      return $spool;
+    if (!$rtrn) echo $spool;
+    else      return ob_get_clean().$spool;                # (rtrn: with the scripts echoed on the way - they were written at once before)
 } // htm_Table
 
 
@@ -1884,6 +1891,7 @@ function htm_Embed(# name:'', type:'application/pdf', wdth:'800px', vhgh:'2100px
         '" width="'.sys_enc($wdth).'" height="'.sys_enc($vhgh).'" type="'.sys_enc($type).'">';     # (embed is a void element: no </embed>)
     if (!$rtrn) echo $result; else return $result;
     }
+    return '';                                                  # (no file: was NULL with rtrn)
 };
 
 
@@ -1900,7 +1908,9 @@ function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',
     $llgn='C',      # string: label align L/C/R
     $rtrn=false,    # bool:   Act as procedure: Echo result, or as function: Return string:   
     $ftop=''        # string: fieldtop: label y-offset
-){  switch (strtoupper($llgn)) {
+){
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+  switch (strtoupper($llgn)) {
         case 'L': $lblalign = 'margin-right:  auto;';  break;   // Align label Left
         case 'C': $lblalign = 'margin:        auto;';  break;   // Align label Center
         case 'R': $lblalign = 'margin-left:   auto;';  break;   // Align label Right
@@ -2339,7 +2349,7 @@ function htm_DataList(# capt: '@Choose here from the list:', icon: 'fas fa-datab
     static $dlNo= 0; $dlNo++;
     if ($name=='') $name= 'datalist'.$dlNo;                     # Without a name the chosen value is not submitted
     $listId= 'list_'.sys_enc($name);   # Unique per field - several datalists on one page must not share options
-    $datalist= '<input list="'.$listId.'" name="'.sys_enc($name).'" id="'.sys_enc($name).'" onfocus="this.value=\'\'" onchange="this.blur();" placeholder="'.lang($plho).'" style="width:65%;">';
+    $datalist= '<input list="'.$listId.'" name="'.sys_enc($name).'" id="'.sys_enc($name).'" onfocus="this.value=\'\'" onchange="this.blur();" placeholder="'.sys_enc(strip_tags(lang($plho))).'" style="width:65%;">';
         $datalist.= '<datalist id="'.$listId.'">';
             for ($ix=0; $ix<count($data); $ix++) $datalist.= '<option value="'.sys_enc($data[$ix]).'">';
         $datalist.= '</datalist>';
@@ -2673,7 +2683,9 @@ function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', for
     $attr='',       # string: Button attributes. 
     $rtrn=true      # bool:   return string or echo string
     ) 
-{ global $ButtName;
+{
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+ global $ButtName;
     $ButtName= $name;
     if ($hint>'') {
     $s1= '<abbr class= \'hint\'>';
@@ -2710,7 +2722,9 @@ function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:
     $akey='',       # string: Keyboard shortcut
     $rtrn=false     # bool:   Function Return or echo
     )
-{   global $gbl_ButtnBgrd, $gbl_ShortKeys, $btnix;
+{
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+   global $gbl_ButtnBgrd, $gbl_ShortKeys, $btnix;
     dvl_pretty('htm_IconButt');
     if ($wdth) $wdth= ' width: '.$wdth.';';
     if ($akey) $keytip= '<br>'.lang('@Keyboard shortcut: ').$akey; else $keytip='';
@@ -2751,7 +2765,7 @@ function htm_SubmitButt(# labl:'',  hint:'', type:'submit', wdth:'', font:'32px'
 {   if ($wdth) $wdth= ' min-width: '.$wdth.';';
     $result= '<span class="tooltip" style="display:inline; padding:0; width:200px;"> 
         <abbr class="hint">
-            <input class="buttstyl" type="'.$type.'" value="'.lang($labl).'" 
+            <input class="buttstyl" type="'.sys_enc($type).'" value="'.sys_enc(strip_tags(lang($labl))).'" 
                     style="border-width: 2px; font-size:'.$font.'; color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" >'.
             ' <data-hint>'.lang($hint).'</data-hint>'.
         '</abbr>
@@ -3614,7 +3628,9 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
     $styl='padding:1px;',   # string: Style
     $rtrn=true              # bool:   Return the HTML (default) or echo it 
     )
-{   $Bicon= ['<i class="far fa-square colrgray"          style="'.$styl.'" ></i>',
+{
+    $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
+   $Bicon= ['<i class="far fa-square colrgray"          style="'.$styl.'" ></i>',
              '<i class="far fa-minus-square colrred"     style="'.$styl.'" ></i>',
              '<i class="far fa-check-square colrorange"  style="'.$styl.'" ></i>',
              '<i class="far fa-plus-square colrgreen"    style="'.$styl.'" ></i>'
