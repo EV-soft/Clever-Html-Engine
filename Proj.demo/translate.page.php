@@ -19,7 +19,7 @@ require_once ($sys.'translate.inc.php');
 require_once ($sys.'filedata.inc.php');
 
 if (!isset($_SESSION['currLang'])) {
-    $_SESSION['currLang']= 'en';
+    $_SESSION['currLang']= ['code'=>'en', 'name'=>'English', 'native'=>'English'];   # (an array, as translate.inc.php reads it - was the text 'en')
     $_SESSION['native']= 'English';
 }
 

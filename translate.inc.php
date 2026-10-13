@@ -95,7 +95,7 @@ function scannLngStrings($code= 'dk') {
     $lang= 'en';    //  System
     //$code= 'de';  //  Analyse
     $name= ($_SESSION['currLang']['name'] ?? '');
-    $nati= ($_SESSION['currLang']['native'] ?? ''); // Update problem ! FIXIT
+    $nati= is_array($_SESSION['currLang'] ?? null) ? ($_SESSION['currLang']['native'] ?? '') : '';   # (translate.page set a text here)
     // $nati= $arrLang[$code]['native'];
     // arrPrint($_SESSION['currLang'],'$_SESSION["currLang"]');
     if(array_key_exists('en',$arrLang ?? [])) {echo 'Data: '.$arrLang['en']; }
@@ -186,14 +186,7 @@ function scannLngStrings($code= 'dk') {
  //   echo '<button type="button" data-title="'.lang('@Save the content in edit-window to file (Inactive DEMO)').'" onclick="file_save($doSave= true;)">
  //            <span >SAVE</span>
  //         </button>'. ' Demo!';
-    $workarea= $_POST['EditText'] ?? '';
-    if ($doSave == true)    // @FIXIT
-    //if ((isset($workarea)) and (strlen($workarea)>10))
-        { $f = fopen('new.json',"w");   
-            fwrite($f, $workarea);  fclose($f); 
-            set_msg('@File Saved Successfully');
-            toast(lang('@Saved in systemfile ').'new.json');
-        }
+    # (Removed: dead code that would write the posted text to new.json - $doSave was never true)
     
     htm_nl(2);
     htm_Form_(name:'transFiles', acti:'', mode:'POST');
@@ -222,7 +215,7 @@ function scannLngStrings($code= 'dk') {
     $i= 0;
     echo '<br><b>Outdated keys ?</b><br>Unused keys in language "'.$App_Conf['language'].' / '.$nati.'" in this project (maybe renamed key):<br>';
     foreach ($arrLang[$code] ?? [] as $key => $value) {
-       if (!in_array($key,$arrLang['en'])) echo '<br>Outd: '.$i++.' '.$key; # FIXIT ?
+       if (!in_array($key,$arrLang['en'])) echo '<br>Outd: '.$i++.' '.sys_enc($key);   # A translated key no longer used in the source
     }
     if ($i==0) echo 'None<br>';
     

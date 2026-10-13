@@ -318,6 +318,13 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
     $numPattern= ' pattern="^[^0-9\-]{0,4}\s?-?\d[\d\s.,]*\s?[^0-9]{0,4}$" ';   # Formatted numbers: "$ 1 234,50", "87 %", "-12.5"
 
     if ($disa==true) $aktiv=' disabled '; else $aktiv= '';
+    # Number fields (dec0..2, num0..3): the value as formatted number - empty stays empty, a non-number is shown as typed
+    $numVal= function($dec) use ($valu) {
+        $v= trim((string)$valu);
+        if ($v === '') return '';
+        if (!preg_match('/\d/', $v)) return sys_enc($v);
+        return number_format(sys_toFloat($v), $dec, DecimalSep, ThousandsSep);
+    };
     $top= '';
     $just= ''; 
 
@@ -326,13 +333,13 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh. $attr.' />';  break;
         case 'dec0' : # Used for quantity - outputs unit as prefix or suffix
         case 'dec1' : # Used for Amount -  // SPACE as thousands separator
-        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. ' value="'.$pref. number_format(sys_toFloat($valu),(int)substr($vrnt,3,1),DecimalSep,ThousandsSep).$suff. '" '.
+        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. ' value="'.$pref. $numVal((int)substr($vrnt,3,1)).$suff. '" '.
                         $inpStyle. '"'. $eventInvalid. $aktiv. $plh. $attr. $numPattern. ' />';  break;
         case 'num0' : 
         case 'num1' :   // thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
         case 'num2' :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
         case 'num3' : $result.= '<input type="text" '. $inpIdNm. ' lang="en" step="'.$step.
-                            '" value="'.$pref.number_format(sys_toFloat($valu),(int)substr($vrnt,3,1),DecimalSep,ThousandsSep).$suff.'" '. // FIXIT: Wrong output
+                            '" value="'.$pref.$numVal((int)substr($vrnt,3,1)).$suff.'" '.      # (was FIXIT "Wrong output": empty became 0,00)
                             //'" value="'.$valu.'" '. 
                             $eventInvalid. $aktiv. $plh. $attr. 
                         $inpStyle. '" '.$numPattern. ' />';  break; // No unit but with browser type check ! 
@@ -371,11 +378,11 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
                                 <output style="top: -18px; left: 45%; position: relative; font-size: 10px">'.$valu.'</output>'.
                             '<div class="bubble" 
                                   style="font-size: 10px; position: relative; width: 100%; text-align: center; opacity: 80%; top: -37px; "> '. // ' min="0" max="50"'
-                                   '<span style="width: 10%; float:left;">'.str_replace('"','',substr($attr,1,7)).'</span> '.
+                                   '<span style="width: 10%; float:left;">min='.(preg_match('/\bmin\s*=\s*["\']?(-?[\d.]+)/', $attr, $mn) ? $mn[1] : '0').'</span> '.
                                   // '<span style="width: 33.33%;"> './* $valu. */'</span> '.
-                                   '<span style="width: 20%; float:right;">'.str_replace('"','',substr($attr,-9)).'</span>'.
+                                   '<span style="width: 20%; float:right;">max='.(preg_match('/\bmax\s*=\s*["\']?(-?[\d.]+)/', $attr, $mx) ? $mx[1] : '100').'</span>'.
                             '</div>'.
-                            '</span>';  break; // (FIXIT:) setBubble - Output min-val-max
+                            '</span>';  break; // min / value / max (the min and max from the attributes, as the browser uses them)
 
         case 'butt' : $result.= '<span class="fieldContent boxStyle" style="min-height: 28px;">'.
                             '<input type= "button" '.   $inpIdNm. ' value="'.$valu.'" '. $aktiv. $attr.
@@ -1155,10 +1162,10 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
                        # 4: 5: 6: ...
                        # Only impact on Body areas.
 
-# !  FIXIT:  Fixed/Sticky header only works on 1st table when there are several tables in the same window!
+#    (Fixed: sticky headers in every table - each is attached to its own wrapper.)
 # !          Zebra streaks (Update Issue!) Failure, as well as filter problems when hidden columns are also present.
-# !  FIXIT:  Change value in INPUT dont only works i 1. table on page.
-# !  FIXIT:  Fieldnames are not used on reading records from $TblData, only the order are used !
+#    (Checked: input values are posted from every table.)
+#    (Fixed: rows with field names are placed by the field names of body; rows without names by their order.)
 
 { global $gbl_blueColor, $gbl_LineBrun, $gbl_RollTabl, $gbl_HeaderFont, $gbl_IconStyle, $gbl_CardIx, $gbl_TblIx, $gbl_rowCount, $gbl_novice, $rowHtml, $ordrTotal, $spool;
     $spool= '';
@@ -1279,17 +1286,19 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
     // htm_toast('<div style="color:red;"> DataError! '.$datCount.'(data)/'. $fldCount.'(flds)<div>');
     
     if ($selectable) spool(  '<th class="filter-false sorter-false" > </th>');
+    $colPos= $selectable ? 1 : 0;  $hiddCols= [];               # The positions of the hidden columns (their filter cells are hidden too)
     foreach ($body as $bdy) { dvl_pretty();
         $colfilt= ' ';
         $resizable_widths[]= $bdy[1]; # ColWidth
         if (($GLOBALS["Øshow"] ?? ''>0) and ($bdy[2]=='hidd')) $bdy[2]= 'text';
-        // if ($bdy[9]==true) $selt= ' filter-select filter-onlyAvail'; else $selt= ' ';  //  FIXIT: sorting of datefields don’t works!
+        // if ($bdy[9]==true) $selt= ' filter-select filter-onlyAvail'; else $selt= ' ';  //  (date fields sort: sorter-isoDate)
         if ($Export) $cvrData.= sys_csvCell(lang($bdy[0])).',';
 
-        if ($bdy[2]=='hidd') // FIXIT: showing filter-fields, gets columns out of syncronisation ! - $filter_cellFilter obvious don’t work: https://mottie.github.io/tablesorter/docs/#widget-filter-cellfilter
-            { array_push($filter_cellFilter, 'hidden');
+        $colPos++;
+        if ($bdy[2]=='hidd') // Hidden column: its filter cell is hidden by the CSS written after the header (was FIXIT: the filter fields were out of place)
+            { array_push($filter_cellFilter, 'hidden');  $hiddCols[]= $colPos;
                 $hiddcount++;
-                spool( '<th class="filter-false sorter-false sortPrefix" style="width:0;" ></th>'); // FIXIT: Filter-fields is showing hidden columns ! <td data-column="9" style="display:none" > fixes it
+                spool( '<th class="filter-false sorter-false sortPrefix" style="width:0;" ></th>');
             } //  visibility:hidden;    //  columnSelector_columns : { 5 : false, 6 : false}
         else // Special behavior:
             { $cNo++; array_push($filter_cellFilter, '');
@@ -1334,6 +1343,9 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
              $gbl_HeaderFont.' text-align:center;">'.$goUp.Lbl_Tip($label,($bdy[6] ?? '').$lblsuff,$tipplc,$h='0px').' </th>');
         } // else (not hidd)
     } // foreach
+    if ($hiddCols) spool('<style>'.implode(', ', array_map(function($c) use ($gbl_TblIx) {     # Filter cells of hidden columns: hidden like the column
+                                 return '#table'.$gbl_TblIx.' .tablesorter-filter-row > td:nth-child('.$c.'), #table'.$gbl_TblIx.'-sticky .tablesorter-filter-row > td:nth-child('.$c.')'; }, $hiddCols)).
+                         ' { display: none; }</style>');
     foreach ($suff as $suf) { dvl_pretty();
         $resizable_widths[]= $suf[1];
         spool( '<th class="filter-false sorter-false" style="width:'.$suf[1].'; align:'.$suf[4][0].'; '.$gbl_HeaderFont.'">'.
@@ -1348,7 +1360,7 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
       resizable: true,
       resizable_widths = $resizable_widths
     }"); */
-    # (Was: JavaScript written into a <style> block - it never ran. $filter_cellFilter is not applied: see FIXIT above)
+    # (Was: JavaScript written into a <style> block - it never ran. Hidden columns: see the CSS after the header)
 
 ### Column-FILTER:   (created of tablesorter, but there are a problem with hidd-fields!) filter-onlyAvail
     spool( '    </thead>');
@@ -1378,11 +1390,15 @@ function htm_Table(# capt:[], pref:[], body:[],suff:[], note:'', data:[], filt:t
             $rowField= '';
             $newRow= '';
             $parser= 'headers: {  ';
-        //  foreach ($fldNames as $fld) {   // Sort data to correct output order   FIXIT
+        //  foreach ($fldNames as $fld) {   // Sort data to correct output order   (done below: rows with field names)
         //      $arrTmp[$fld]= $DataRow[$fld];
         //  }
         //  $DataRow= $arrTmp;
 
+            # A row with field names (e.g. a database row): place the values by the field names of body (was: by their order only)
+            if (is_array($DataRow) and $DataRow and !array_is_list($DataRow) and array_intersect($fldNames, array_keys($DataRow))) {
+                $tmp= [];  foreach ($fldNames as $fn) $tmp[]= $DataRow[$fn] ?? '';  $DataRow= $tmp;
+            }
             if (is_array($DataRow))
             $DataRow= array_values($DataRow);
             $DataNam= array_keys($DataRow);
@@ -1654,7 +1670,7 @@ $ixalign= $ixalign ?? '';
             widthFixed : true,
             widgets: ['zebra', 'cssStickyHeaders', 'filter', 'editable', 'resizable'],
             widgetOptions: {
-                cssStickyHeaders_attachTo : '.wrapper',
+                cssStickyHeaders_attachTo : $('#table".$gbl_TblIx."').closest('.wrapper'),     /* Its own wrapper (was: the first of the page) */
                 cssStickyHeaders_filteredToTop : false,
                 cssStickyHeaders_offset: 0,
                 cssStickyHeaders_addCaption : true,
@@ -4879,7 +4895,7 @@ $javaScripts.= "
 <script>
     $(function () {
     /* $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({ gbl_TblIx       */
-    if ($.fn.tablesorter) $('table.tablesorter').filter(function () { return /^table\\d+$/.test(this.id); }).tablesorter({   /* All htm_Table() tables (Tablesorter is loaded by the first one) */
+    if ($.fn.tablesorter) $('table.tablesorter').filter(function () { return /^table\\d+$/.test(this.id); }).each(function () { var wrap= $(this).closest('.wrapper'); $(this).tablesorter({   /* All htm_Table() tables (Tablesorter is loaded by the first one) */
       theme: 'blue',
       dateFormat : \"Y-m-d\",
       widthFixed : true,
@@ -4892,7 +4908,7 @@ $javaScripts.= "
         stickyHeaders_addResizeEvent: true, // trigger \"resize\" event on headers
         stickyHeaders_includeCaption: true, // if false and a caption exist, it won't be included in the sticky header
         stickyHeaders_zIndex: 2,            // The zIndex of the stickyHeaders, allows the user to adjust this to their needs
-        stickyHeaders_attachTo: '.wrapper', // jQuery selector or object to attach sticky header to
+        stickyHeaders_attachTo: wrap,       // The wrapper of THIS table (was '.wrapper': the first of the page - FIXIT: only the 1st table had sticky headers)
         stickyHeaders_xScroll: null,        // jQuery selector or object to monitor horizontal scroll position (defaults: xScroll > attachTo > window)
         stickyHeaders_yScroll: null,        // jQuery selector or object to monitor vertical scroll position (defaults: yScroll > attachTo > window)
         stickyHeaders_filteredToTop: true,  // scroll table top into view after filtering
@@ -4927,9 +4943,9 @@ $javaScripts.= "
           // filter_cellFilter: {[]}
           // filter_cellFilter : \"tablesorter-filter-cell\"
       }
-    });
+    }); });                                                      /* (each table) */
 
-//  // make second table scroll within its wrapper  - FIXIT
+//  // (old: make second table scroll within its wrapper - done: each table is attached to its own wrapper)
 //  $('#table0, #table1, #table2, #table3, #table4, #table5, #table6').tablesorter({
 //    widthFixed : true,
 //    headerTemplate : '{content} {icon}',  /* Add icon for various themes */

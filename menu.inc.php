@@ -138,11 +138,11 @@ function Menu_BottomScroll() { global $arrHref;
         value = isNaN(value) ? 0 + step : value + step;
         document.getElementById('number').value = value;
     }");
-    function ButtBuild($labl,$step,$pg,$ic) {
-        echo '<button onclick="changeValue('.$step.')" title="'.lang('@Go to ').$pg.lang(' page').'"><ic class="fas fa-angle-'.$ic.'" </ic> '.$labl.' </button>';
-    }
-    if (isset($_POST['number'])) $i= $_POST['number'];
-    $i= max(min($i,count($arrHref)-1), 0);  // FIXIT
+    if (!function_exists('ButtBuild')) { function ButtBuild($labl,$step,$pg,$ic) {    # (declared once - a 2nd call was a fatal error)
+        echo '<button onclick="changeValue('.$step.')" title="'.lang('@Go to ').$pg.lang(' page').'"><ic class="fas fa-angle-'.$ic.'"></ic> '.$labl.' </button>';
+    }}
+    $i= (int)($_POST['number'] ?? 0);                    # (was undefined without a POST)
+    $i= max(min($i,count($arrHref)-1), 0);               # Inside the list
     $ix= array_search(explode('/',$_SERVER['REQUEST_URI'])[2],array_column($arrHref, 0));
     // $i= $ix;
     echo '<form action="'.$arrHref[$i][0].'" method="post">
