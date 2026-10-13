@@ -187,7 +187,7 @@ $strCode= '// HTML:
             It is build with two functions: htm_Card_() and htm_Card_end()<br>
             It consists of: icon + header - a body with content - and a footer that can be hidden.<br>
             The header-caption is automatic translated to the current selected language.<br>
-            When clicking the caption-text in the header, it will show/hide the body&footer-content.<br>
+            When clicking the caption-text in the header, it will show/hide the body &amp; footer content.<br>
             In the headers right side there are icons to open/close all the cards in the window.<br>
             Cards has predefined widths, and its position will swap, if the window-width is to small.<br>
             Cards can be used as a "Local Menu" and to keep overview...<br>

@@ -325,6 +325,9 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         if (!preg_match('/\d/', $v)) return sys_enc($v);
         return number_format(sys_toFloat($v), $dec, DecimalSep, ThousandsSep);
     };
+    $numUnit= function($dec) use ($numVal, $pref, $suff) {         # With the unit - but an empty field stays empty (the unit alone fails the pattern)
+        $n= $numVal($dec);  return ($n === '') ? '' : $pref.$n.$suff;
+    };
     $top= '';
     $just= ''; 
 
@@ -333,13 +336,13 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt: 'text', 
         case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh. $attr.' />';  break;
         case 'dec0' : # Used for quantity - outputs unit as prefix or suffix
         case 'dec1' : # Used for Amount -  // SPACE as thousands separator
-        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. ' value="'.$pref. $numVal((int)substr($vrnt,3,1)).$suff. '" '.
+        case 'dec2' : $result.= '<input type= "text" '.  $inpIdNm. ' value="'.$numUnit((int)substr($vrnt,3,1)). '" '.
                         $inpStyle. '"'. $eventInvalid. $aktiv. $plh. $attr. $numPattern. ' />';  break;
         case 'num0' : 
         case 'num1' :   // thousands separator ,|. is not allowed in number !  - https://codepen.io/nfisher/pen/YYJoYE/ - SPACE will be removed
         case 'num2' :   /* lang="en" to allow "."-char as decimal separator, and national ","-char */
         case 'num3' : $result.= '<input type="text" '. $inpIdNm. ' lang="en" step="'.$step.
-                            '" value="'.$pref.$numVal((int)substr($vrnt,3,1)).$suff.'" '.      # (was FIXIT "Wrong output": empty became 0,00)
+                            '" value="'.$numUnit((int)substr($vrnt,3,1)).'" '.      # (was FIXIT "Wrong output": empty became 0,00)
                             //'" value="'.$valu.'" '. 
                             $eventInvalid. $aktiv. $plh. $attr. 
                         $inpStyle. '" '.$numPattern. ' />';  break; // No unit but with browser type check ! 
@@ -1005,7 +1008,11 @@ function p2h_assetFiles($html) {
         foreach ($secret as $x) if (strpos($code, $x) !== false) return $m[0];      # Never in a shared file
         $ext= ($m[1] === 'style') ? 'css' : 'js';
         $name= 'p2h-'.substr(md5($code), 0, 16).'.'.$ext;
-        if (!is_file($dir.'/'.$name)) {
+        if (is_file($dir.'/'.$name)) {
+            if (@filemtime($dir.'/'.$name) < time()-86400) @touch($dir.'/'.$name);   # In use: kept fresh (at most once a day)
+        } else {
+            foreach (glob($dir.'/p2h-*') ?: [] as $old)                            # A new version: remove files not used for 30 days
+                if (@filemtime($old) < time()-30*86400) @unlink($old);
             $tmp= $dir.'/'.$name.'.'.getmypid().'.tmp';
             if (@file_put_contents($tmp, $code) === false or !@rename($tmp, $dir.'/'.$name)) { @unlink($tmp); return $m[0]; }
         }
@@ -1608,7 +1615,9 @@ $ixalign= $ixalign ?? '';
                     }   // :switch InputTypes
                     $rowField.= '</td>';
                 }      // '<td style="text-align:'.$Body[4][0].'; width:'.$Body[1].'; '.
-                if ($bdy[2]!='hidd') {
+                if ($bdy[2]=='hidd')                     # Hidden column: an empty hidden field (a new record) - else the fields after it were one column out of place
+                    $newRow.= '<td style="width:0; padding:0; border:none; display:none;"><input type= "hidden" name="'.$fldNames[$ColIx].'[]" value="" /></td>';
+                else {
                     if ($bdy[0]=='@Order Date') $currDate= date('Y-m-d'); else $currDate='';
                     $newRow.= '<td style="text-align:'.$bdy[4][0].'; width:'.$bdy[1].';" >'. # ColWidth
                               '<input type= "text" '.$GotoEdit.' name="'.$fldNames[$ColIx].'[]" value="'.$currDate.
@@ -1658,7 +1667,7 @@ $ixalign= $ixalign ?? '';
     spool( '</table>');
     spool( '</span>'); //  wrapper
     if ($Export) {  // echo '<br>'.$cvrData;
-        file_put_contents($expo, $cvrData."\n", LOCK_EX);   # Locked: two simultaneous page views must not interleave
+        file_put_contents($expo, "\xEF\xBB\xBF".$cvrData."\n", LOCK_EX);   # UTF-8 BOM: else Excel shows æøå wrong   # Locked: two simultaneous page views must not interleave
     }
 
 ### Init Tablesorter:   VIRKER DETTE ? eller $javaScripts ?
@@ -5983,7 +5992,7 @@ $htm_ModalDialog= '
 	background: gray;
 	transition: background 1150ms ease-out;
 }
-.modlButt, modal__close, .label{
+.modlButt, .modal__close, .label{
 	padding: 3px;
     border: 1px solid;
     border-radius: 5px;
@@ -6014,8 +6023,10 @@ $htm_ModalDialog= '
 	opacity: 1;
 	transition: margin-top 150ms ease-out,  opacity 150ms ease-out;
 	background: #eee;
+	color: #222;                       /* The dialog is light in both themes: dark text (was the light theme text in dark mode) */
 	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.6);
 }
+.modal .modlButt { color: #222; }
 
 @media screen and (max-height: 500px) {
 	.modal {
