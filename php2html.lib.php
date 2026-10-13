@@ -1147,47 +1147,39 @@ function sys_csvCell($v) {
 
 # A table with records: sort, filter, edit, add rows and export to CSV [Necessary basic element]
 function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px', styl:'', from:__FILE__, list:['',''], expo:'', rtrn:false, wdth:'98%')
-    $capt= [ # ['0:Label',   '1:Width',    '2:Type',     '3:OutFormat', '4:td-style',       '5:Tip',    '6:placeholder', '7:Content';], ...
-           ],
-    $pref= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[td-style]', '5:ColTip', '6:Html'], ...
-           ],           // if (($modi) or ($body[0][2]!='indx')) is 2% ColWidth can be used to => row-select-button
-    $body= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[td-style]', '5:fldKey', '6:ColTip','7:placeholder','8:default','9:[selectList]'], ...
-             # [ labl,        wdth,         type,         frmt,          feld[],            fkey,       hint,      plho,           dflt,       list ] # Future Fieldnames
-           ],          # Field 4: $FieldProporties - is composed of: [horJust, FieldBgColor, FieldStyle, TdColor, sort, filt, SelectON, Unit?
-                       #                                              just,    bclr,         styl,       colr,    sort, filt, slct,     unit
-    $suff= [ # ['0:ColLabl', '1:ColWidth', '2:ContType', '3:OutFormat', '4:[td-style]', '5:ColTip', '6:value! '], ...
-           ],
-                # $capt= array:  HTML to be shown above the table
-                # $pref= array:  Leding columns left to the table data
-                # $body= array:  Rows with table data
-                # $suff= array:  Ending columns right to the table data
-    $note= '',         # string: HTML-string - note to be shown below the table
-    &$data= [],        # array:  [{"name_0":value_0, "name_1":value_1, "name_2":value_2, "name_3":value_3, "name_4":value_4, "name_5":value_5, "name_6":value_6, "name_7":value_7, "name_8":value_8, "name_9":value_9},{...},{...}]
-    $filt= true,       # bool:   Ability to hide records that do not match filter // Does not work with hidd fields!
-    $sort= true,       # bool:   Ability to sort records by column content
-    $crea= true,       # bool:   Ability to create a records - string: Labeltext on createButton
-    $modi= true,       # bool:   Ability to select and change data in a row
-    $vhgh= '400px',    # string: The height of the visible part of the table's data
-    $styl= '',         # string: Style for the span that holds the table;
-    $from= __FILE__,   # string: = __FILE__ / __FUNCTION__ (debugging: locate error)
-    $list= ['',''],    # array:  LookupLists for options // Test [DataKolonneNr, > grænseværdi] Undlad spec. FieldColor
-    $expo= '',         # string: Export values in table data fields to CSV-file
-    $rtrn= false,      # bool:   Function Return or echo result
-    $wdth= '98%'       # string: The width of the table parent (span)
-// ,$dropFirst=false   # remove first field (dbIndex id) from TblData-rows
+    $capt= [],         # array:  Fields above the table:   [0:labl, 1:wdth, 2:type, 3:name, 4:algn, 5:hint, 6:plho, 7:valu]
+                       #         type: show (only the text) / rows (the number of rows + 6) / html (7 as HTML) / data (a field with name 3 - posted)
+                       #               / text, number, date ... (a field without name - not posted).  Shown only when the table has data.
+    $pref= [],         # array:  Columns before the data: [0:labl, 1:wdth, 2:-, 3:-, 4:[algn], 5:hint, 6:html]
+                       #         6 is the same HTML in every row; name="x" becomes name="i<row>_x"
+    $body= [],         # array:  The data columns:         [0:labl, 1:wdth, 2:type, 3:frmt, 4:[style], 5:fkey, 6:hint, 7:plho, 8:-, 9:[list, css]]
+                       #         2 type: text data area sttu (field) / show (read only) / intg (integer) / date / ddwn (select, 9) / opti (htm_Input option field, 9)
+                       #                 chck (checkbox) / bold ital (read only: is the text bold/italic) / indx keyn (the row number, clickable)
+                       #                 html htm0 (the value as HTML) / blnk (nothing) / hidd (hidden, posted) / calc (CustomerOrder: the line total) / vars (old)
+                       #         3 frmt: 0d 1d 2d (decimals) / 2% (2 decimals + %) / >0 (blank when 0 or less) / '= ' (always blank) / B R L (bold #00000, red, blue - type html)
+                       #         4 style: [0:text-align, 1:cell background, 2:field style (text fields), 3:cell background (row marking), 4:font-size]
+                       #         5 fkey: the field name - posted as fkey[] (one value per row, in the order of the rows)
+                       #         9 list: [[[value, label, hint], ...], 'css of the select']  (ddwn/opti)
+    $suff= [],         # array:  Columns after the data (only with modi): [0:labl, 1:wdth, 2:type, 3:-, 4:[algn], 5:hint, 6:valu]
+                       #         type rowact: row actions in the browser, 6 = 'del copy move undo' (any of them)
+                       #         type button: a submit button named btn_<del|hid|cpy|ren|sel>_<table>_<row> - by 0: @Delete @Hide @Copy @Rename @Select, 6 = its icon
+                       #         else: 6 is shown as HTML (an "open-modal_N" in it opens one dialog per row)
+    $note= '',         # string: HTML below the table ('' with filt: a hint about the filter)
+    &$data= [],        # array:  The rows (by reference - give a variable): [[v0, v1, ...], ...] in the order of body, or [[fkey => value, ...], ...]
+    $filt= true,       # bool:   A filter field below each header
+    $sort= true,       # bool:   Sort by clicking a header (SHIFT+click: by more columns)
+    $crea= true,       # bool:   A button that adds an empty row - a string is the label of the button
+    $modi= true,       # bool:   The fields can be changed, and the suffix columns are shown
+    $vhgh= '400px',    # string: The height of the scrolling window with the rows (the header stays)
+    $styl= '',         # string: Style for the span that holds the table
+    $from= __FILE__,   # string: Where the table is made (__FILE__ / __FUNCTION__) - shown by indx/keyn clicks
+    $list= ['',''],    # array:  The row rules of customRules.inc.php, e.g. ['KONTOPLAN'] - and the options of 'vars' columns
+    $expo= '',         # string: Also write the data to this CSV file (UTF-8, Excel-safe)
+    $rtrn= false,      # bool:   Return the HTML instead of echoing it
+    $wdth= '98%'       # string: The width of the table
 )
-                       # Field 4: $FieldProporties - is composed of: [0:horJust, 1:FieldBgColor, 2:FieldStyle, 3:TdColor, 4:SorterON, FilterON, SelectON, Flst]
-                       # 0:td-style - Arguments to .td: style="text-align:
-                       # 1:FieldBgColor - Arguments to .td: background-color:
-                       # 2:FieldStyle - complete expression, e.g.: 'font-style:italic; '
-                       # 3:TdColor - like 1: but used for "row marking"
-                       # 4: 5: 6: ...
-                       # Only impact on Body areas.
-
-#    (Fixed: sticky headers in every table - each is attached to its own wrapper.)
-# !          Zebra streaks (Update Issue!) Failure, as well as filter problems when hidden columns are also present.
-#    (Checked: input values are posted from every table.)
-#    (Fixed: rows with field names are placed by the field names of body; rows without names by their order.)
+#    Every field of a row is posted as <fkey>[] - $_POST['fkey'][n] is row n (also new rows and the order after row actions).
+#    Hidden columns (hidd) are posted too - e.g. the record id. A new row has an empty id.
 
 { global $gbl_blueColor, $gbl_LineBrun, $gbl_RollTabl, $gbl_HeaderFont, $gbl_IconStyle, $gbl_CardIx, $gbl_TblIx, $gbl_rowCount, $gbl_novice, $rowHtml, $ordrTotal, $spool;
     $spool= '';
@@ -1470,12 +1462,12 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
             ## Special Output formats:
                 if (!($GLOBALS["Øshow"] ?? '')>0)
                     switch ($bdy[3]) { # OutFormat
-                        case '0d': if ($valu==null) $valu= 0;       else $valu= number_format(sys_toFloat($valu), 0,',',' '); break;
-                        case '1d': if ($valu==null) $valu='';       else $valu= number_format(sys_toFloat($valu), 1,',',' '); break;
+                        case '0d': if ($valu==null) $valu= 0;       else $valu= number_format(sys_toFloat($valu), 0,DecimalSep,ThousandsSep); break;
+                        case '1d': if ($valu==null) $valu='';       else $valu= number_format(sys_toFloat($valu), 1,DecimalSep,ThousandsSep); break;
                         case '2d': if ($valu==' ')  $valu= $valu;   else
-                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,',',' '); break;  //  88 888 888,88
+                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep); break;  //  88 888 888,88
                         case '2%': if ($valu==' ')  $valu= $valu;   else
-                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,',',' ').' %';    break;
+                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep).' %';    break;
                         case '>0': if (!(float)$valu>0) $valu= ' ';                      break; // 0 an less is shown as BLANK
                         case '= ':  $valu= ' ';                                          break; // Values is shown as BLANK
                         case 'B':   $valu= '<b>#'.sprintf("%'.05d", $valu).'</b>';       break; // Values is shown as BOLD - ContType must be 'html' Format: #00000
@@ -1556,7 +1548,7 @@ $ixalign= $ixalign ?? '';
                                   $x= 1;
                                   $sum= (toNum($DataRow[2+$x])*toNum($DataRow[6+$x]))*(100-toNum($DataRow[7+$x]))/100*(100+toNum($DataRow[5+$x]))/100;
                                   $rowField.= '"> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
-                                       'value="'.number_format((float)$sum, 2,',',' '). '" placeholder="'.lang($bdy[7]).'"'.
+                                       'value="'.number_format((float)$sum, 2,DecimalSep,ThousandsSep). '" placeholder="'.lang($bdy[7] ?? '').'"'.
                                        $txAlign.$inpBg.' " readonly /> '; };
                                   $ordrTotal+= $sum;
                                   break;
@@ -1575,8 +1567,8 @@ $ixalign= $ixalign ?? '';
                                        $txAlign.$inpBg.' '.$clr.' " readonly /> ';
                                   break;
                     case 'intg' : $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" '.
-                                       'value="'.number_format(sys_toFloat($valu), 0,',',' '). //  0 dec. = Integer
-                                       '" placeholder="'.lang($bdy[7]).'"'.$txAlign.$inpBg.
+                                       'value="'.number_format(sys_toFloat($valu), 0,DecimalSep,ThousandsSep). //  0 dec. = Integer
+                                       '" placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.
                                        ' padding-left:2px; padding-right:2px;" /> ';
                                   break;
                     case 'data' : //  Show and edit data:
@@ -1595,7 +1587,7 @@ $ixalign= $ixalign ?? '';
                                          $txAlign.$inpBg.' padding-left:2px; padding-right:2px;" /> ';
                                   break;
                     case 'opti' :{ $rowField.= '"'.$sortData.'><span '. 
-                                        htm_Input($labl=lang($bdy[7]),$plho= '?...',$icon='',$hint=lang($bdy[6]),$vrnt='opti',$name= $fldNames[$ColIx],$valu,$form='',$wdth='98%',
+                                        htm_Input($labl=lang($bdy[7] ?? ''),$plho= '?...',$icon='',$hint=lang($bdy[6] ?? ''),$vrnt='opti',$name= $fldNames[$ColIx].'[]',$valu,$form='',$wdth='98%',
                                         $algn='left',$attr='',$rtrnx=true,$unit='', $disa=false,$rows='2',$step='',$list=$SelectList,$llgn='R',$bord='border: 1px solid Gainsboro;',$ftop='')
                                     .' </span>';
                                 } // print_r($SelectList);
