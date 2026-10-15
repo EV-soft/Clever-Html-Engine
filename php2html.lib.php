@@ -3829,7 +3829,7 @@ $result.= '
         var left= Math.max(0, Math.min(maxleft, ev.clientX - startX)), ok= (left >= maxleft - 1);
         slider.style.left= left + "px";
         wrapper.classList.toggle("human", ok);
-        input.value= ok ? "notbot" : "isbot";
+        input.value= ok ? "notbot" : "isbot";  slider.setAttribute("aria-valuenow", ok ? "1" : "0");    /* (was set by the keyboard only) */
       }
       function up() { slider.removeEventListener("pointermove", move); slider.removeEventListener("pointerup", up); slider.removeEventListener("pointercancel", up); }
       slider.addEventListener("pointermove", move);  slider.addEventListener("pointerup", up);  slider.addEventListener("pointercancel", up);
@@ -4014,6 +4014,8 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
         $butt[$ix]= $bt;
     }
     static $mNo= 0;  $mNo++;  $mId= 'open-modal_'.$mNo;   // Unique id per dialog - the link must point to the same id
+    $type= ['error'=>'erro', 'warning'=>'warn', 'success'=>'succ', 'message'=>'mess'][strtolower((string)$type)] ?? strtolower((string)$type);
+    if (!isset($css_Box[$type])) $type= 'none';           // (an unknown type gave "Undefined array key" and no colors)
     
     $arrButtons= [];    // Create assoative array:
     foreach ($butt as $bt) $arrButtons[]= [$bt[0] => [$bt[1] ?? '',$bt[2] ?? '',$bt[3] ?? '',$bt[4] ?? '']];
@@ -4033,7 +4035,7 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
         <div id="'.$mId.'" class="modal-window" >
             <div style="border: 4px solid '.$css_Box[$type][0].';">';
                 if (in_array_r('clos',$butt))
-                    $result.= '<a href="#" title="Close" class="modal-close"><i class="fas fa-times"></i>&nbsp;Close</a>';
+                    $result.= '<a href="#" title="'.sys_enc(strip_tags(lang('@Close the window'))).'" class="modal-close"><i class="fas fa-times" aria-hidden="true"></i>&nbsp;'.lang('@Close').'</a>';   // (was "Close" untranslated)
                 $result.=  '
                 <h3  class="mdlHeader" style="background-color: '.$css_Box[$type][1].'; font-weight:600;">'.lang($capt).'</h3>
                 <div class="mdlMessage">'.
@@ -4050,7 +4052,7 @@ global $cssButt;    // JS-free Modal dialog based on CSS only.
                                             '"  title="'.lang(notEmpty($key,$bt[2],2)).
                                             '"  style="background-color: '.$css_Box[$key][1]. ';" class="btnlabl">'.
                                             '<i class="'.notEmpty($key,$bt[0],0).'"></i>&nbsp;'.lang(notEmpty($key,$bt[1],1)).'</a>'; break;
-                    default: $key='none'; $result.=  '<a href="#" title="Confirm'.
+                    default: $key='none'; $result.=  '<a href="#" title="'.sys_enc(strip_tags(lang('@Confirm'))).
                                             '" style="background-color: '.$css_Box[$key][1].';" class="btnlabl">'.
                                             $css_Box[$key][3].'&nbsp;'.$css_Box[$key][2].'</a>';
                 } $result.=  '&nbsp;'; }
@@ -4212,11 +4214,11 @@ function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl
     $rtrn=false             # bool:   Return or echo result
 )  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
 {   static $dlgNo= 0;  $dlgNo++;  $dId= 'htmDialog'.$dlgNo;   # Unique ids - several dialogs on one page
-    $result= '<dialog id="'.$dId.'" style="padding:5px; background-color:lightcyan; border-radius: 6px;">
-        <div class="p2hDlgBody">                                   <!-- (was a form method=dialog: inside a card form its buttons submitted the card form) -->
-            <div style="background-color:'.$bclr.'; padding:4px;">'.lang($capt).'</div>
+    $result= '<dialog id="'.$dId.'" aria-labelledby="'.$dId.'_ttl" style="padding:5px; background-color:lightcyan; border-radius: 6px;">'.     # Named by its caption (was: only "dialog")
+        '<div class="p2hDlgBody">'.                               # (was a form method=dialog: inside a card form its buttons submitted the card form)
+            '<div id="'.$dId.'_ttl" style="background-color:'.$bclr.'; padding:4px;">'.lang($capt).'</div>
             <p>'.lang($body).'</p>'.   //  <p><label>Favorite animal: <select> <option></option> <option>Brine shrimp</option> <option>Red panda</option> <option>Spider monkey</option> </select> </label></p>
-            '<menu style="padding-inline-start: 40px; padding-inline-end: 40px;">'; 
+            '<div role="group" style="margin: 1em 0; padding-inline-start: 40px; padding-inline-end: 40px;">';    # (was <menu>: it may only hold <li>)
                 foreach ($butt as $butn) {
                 $iconClass= $butn[3];
                 // if ($iconClass === '') $icon=''; else 
@@ -4224,7 +4226,7 @@ function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl
                 $result.= '<button type="button"'.($butn[0]>'' ? ' id="'.$dId.'_'.sys_enc($butn[0]).'"' : '').' value="'.sys_enc($butn[1]).'" title="'.sys_enc(strip_tags(lang($butn[5] ?? ''))).'"'.
                           ' onclick="this.closest(&quot;dialog&quot;).close(this.value)" style="padding: 3px 5px;">'.$icon.lang($butn[2]).'</button>&nbsp;';   # Closes the dialog with its value (dialog.returnValue)
                 }
-    $result.= '</menu>
+    $result.= '</div>
         </div>
         </dialog>
         '.($labl>'' ? '<button type="button" onclick="document.getElementById(\''.$dId.'\').showModal()" style="padding: 3px 8px;">'.lang($labl).'</button>' : '').'
@@ -6790,14 +6792,9 @@ function dvl_echo($testlabl='')
 }}
 
 function calcHash($usr_name,$usr_code) 
-{
-    return $result= "<span style='color:red;'>'".htmlspecialchars($usr_name)."' => '".password_hash($usr_code, PASSWORD_BCRYPT)."',</span>". ' '.'//'.' '.$usr_code;
+{   // Klartekst-password vises IKKE i output - kun hash (it was written after the hash: "// <password>")
+    return "<span style='color:red;'>'".htmlspecialchars($usr_name)."' => '".htmlspecialchars(password_hash($usr_code, PASSWORD_BCRYPT))."',</span>";
 }
-/* 
-function calcHash($usr_name,$usr_code) 
-{   // Klartekst-password vises IKKE i output - kun hash
-    return $result= "<span style='color:red;'>'".htmlspecialchars($usr_name)."' => '".password_hash($usr_code, PASSWORD_BCRYPT)."',</span>";
-} */
 
 
 // String-output:
@@ -6861,16 +6858,16 @@ function scannSource($prefix='$name=',$suffix="'",$files=[])
 {
     $rtrn=true;   if (!$rtrn) echo '<br>'.$prefix.' <b>';
     $result= [];    $lines = [];
-    foreach ($files as $fname) $lines = $lines + file($fname);
+    foreach ($files as $fname) $lines = array_merge($lines, file($fname));     # (was "+": the lines of the next files with the same numbers were dropped)
     foreach ($lines as $aline => $line) {
         $pos1= strpos($line,$prefix);
         if (($pos1>0) and (strpos($line,'cannSource')==0)) {
             $tag= substr($line,$pos1+2+strlen($prefix));
             $len= strpos($tag,$suffix)+3;
             $str= trim(substr($line,$pos1+strlen($prefix),$len),"'");
-            $result[]= $str;    ($count ?? 0)+ 1;   if (!$rtrn) echo $str.', ';
+            $result[]= $str;    if (!$rtrn) echo $str.', ';
     }   }
-    if (!$rtrn) { echo '</b> :COUNT: '.$count.' '.count($result).'<br>'; arrPrint($result,'result'); }
+    if (!$rtrn) { echo '</b> :COUNT: '.count($result).'<br>'; arrPrint($result,'result'); }     # ($count was never set)
     return $result;
 }
 
