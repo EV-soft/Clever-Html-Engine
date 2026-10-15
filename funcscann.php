@@ -8,6 +8,24 @@
     }
     $searchWord= 'function ';
 
+    # Mark the parameter names in a declaration line: a name right after "(" or "," - not inside '...' or "...",
+    # and only up to the ")" that ends the parameter list (the text after it is the description)
+    function markParams($line, $styl= 'color:red; ') {
+        $parts= preg_split('~(\'(?:[^\'\\\\]|\\\\.)*\'|"(?:[^"\\\\]|\\\\.)*")~', $line, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $out= '';  $inList= false;  $done= false;
+        foreach ($parts as $i => $part) {
+            if ($done or ($i % 2)) { $out.= $part;  continue; }                 # A string, or after the parameter list
+            $from= 0;
+            if (!$inList) { $from= strpos($part, '(');  if ($from === false) { $out.= $part;  continue; }  $inList= true; }
+            $close= strpos($part, ')', $from);
+            $head= ($close === false) ? $part : substr($part, 0, $close);
+            $head= preg_replace('~([(,]\s*)([A-Za-z_]\w*)(?=\s*(?::(?!:)|,|$))~', '$1<span style="'.$styl.'">$2</span>', $head);
+            $out.= $head.(($close === false) ? '' : substr($part, $close));
+            if ($close !== false) $done= true;
+        }
+        return $out;
+    }
+
     $basekeyList= [];
     if (is_readable('Functions.list')) {
         $basekeyList= file_get_contents('Functions.list');
@@ -90,10 +108,10 @@
                 $x= substr($funcN,strpos($funcN,'htm_'));
                 $x= substr($x,0,strpos($x,'('));
                 $keyList[] = $x;
+                $funcN= str_replace('# ','',$funcN); // Remove comment flag on function parameters
+                $funcN= markParams($funcN);          // Only the parameter names - not words in strings and in the description (was: highlight_words)
                 $funcN= preg_replace('/\(/', '</strong>(<i>', $funcN, 1);                                         // Add format code (the first "(" only)
                 $funcN= str_replace(')',');',$funcN);
-                $funcN= str_replace('# ','',$funcN); // Remove comment flag on function parameters
-                $funcN= highlight_words($funcN,'','color:'.'red; ');
                 $funcN= '<strong style="font-size: 16px;" '.$hint.'>'.substr($funcN,strlen($searchWord)).'</i>';    // Add format code
                 
                 $lno= $LinNo;
