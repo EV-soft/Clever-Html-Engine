@@ -315,7 +315,7 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
     ($name=='') ? $inpIdNm= ' id="'.$iid.'" name="missing" '
                 : $inpIdNm= ' id="'.$iid.'" name="'.$name.'" ';
     $inpStyle= ' class="boxStyle" style="text-align: '.$algn.'; font-size: 14px; '. $dataStyle. $bord; //boxStyle - border: 1px solid var(--grayColor);
-    $eventInvalid= ' oninvalid="this.setCustomValidity(\''.lang('@Wrong or missing data in ').$labl.' ! \')" oninput="setCustomValidity(\'\')" ';
+    $eventInvalid= ' oninvalid="this.setCustomValidity('.sys_enc(json_encode(lang('@Wrong or missing data in ').trim(strip_tags($labl)).' !', JSON_UNESCAPED_UNICODE)).')" oninput="setCustomValidity(\'\')" ';   # (a ' in the label was a script error)
     $pattern= '';
     $numPattern= ' pattern="^[^0-9\-]{0,4}\s?-?\d[\d\s.,]*\s?[^0-9]{0,4}$" ';   # Formatted numbers: "$ 1 234,50", "87 %", "-12.5"
 
@@ -458,8 +458,9 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
                                 // if(isset($_POST['subscribe'])) echo 'checked';   (isset($_POST['subscribe']) ? 'checked' : '')
                              // $result.= '<input type= "hidden"   id="'.$rec[0].'" name="'.$rec[0].'" value="unchecked" /><label for="'.$rec[0].'"></label>'; # Hidden field because Unchecked boxes is not included in $_POST !
                              // $result.= '<input type= "checkbox" id="'.$rec[0].'" name="'.$rec[0].'" value="checked" '.$aktiv. (is_array($rec[3]) ? $rec[3][$i++][1] : $rec[3]).' '. $rec[4]. ' '.$valu.' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
-                                $result.= '<input type= "checkbox" id="'.$rec[0].'" name="'.$rec[0].'" value="checked" '.$aktiv. $chk. $rec[4]. ' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
-                                   '<label for="'.$rec[0].'" style="position: relative; top: 0px; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
+                                $cid= sys_uid(preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$rec[0]) ?: 'chk');    # A unique, safe id (was the value itself)
+                                $result.= '<input type= "checkbox" id="'.$cid.'" name="'.sys_enc((string)$rec[0]).'" value="checked" '.$aktiv. $chk. $rec[4]. ' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
+                                   '<label for="'.$cid.'" style="position: relative; top: 0px; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
                                  //  '<label for="'.$rec[0].'"                                              ">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
                                 $result.= '</span>';
                              //   if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
@@ -480,9 +481,10 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
                             $result.= '<select class="styled-select" id="'.$iid.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
                             $result.= '<option label="'.sys_enc(strip_tags(lang($plho))).'" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
-                                $result.= '<option '. /* .'label="'.lang($rec[x]).'" '. */ 'title="'.lang($rec[2] ?? '').'" value="'.$rec[0].'" '.($rec[3] ?? '').' '.($rec[4] ?? ''); //  Firefox does not support Label !
-                                if ($rec[0]==$valu) $result.= ' selected ';
-                                $result.= '>'.$lbl=lang($rec[1]).'</option> ';
+                                $ov= sys_enc((string)($rec[0] ?? ''));                 # Escaped like $valu (a " in a value or text broke the list)
+                                $result.= '<option '. 'title="'.sys_enc(strip_tags(lang($rec[2] ?? ''))).'" value="'.$ov.'" '.($rec[3] ?? '').' '.($rec[4] ?? ''); //  Firefox does not support Label !
+                                if ($ov==$valu) $result.= ' selected ';
+                                $result.= '>'.sys_enc(strip_tags(lang($rec[1] ?? ''))).'</option> ';
                             }   $result.= '</select></small>'.($subm ?? '').'</span>';  break;
                             
     //  case 'show' : $result.= '<input type= "text"   id="id_'.$name.'" name="'.$name.'" value="'.$valu.'" disabled />';  break;
@@ -1613,9 +1615,9 @@ $ixalign= $ixalign ?? '';
                                   $rowField.= '"'.$sortData.'>'.' <div style="margin-right:0; font-size:x-small">'.
                                        '<select class="styled-select" name="'.$fldNames[$ColIx].'[]" style="max-width:120px"> <option value=" " >-';   # (was name="liste" - not per row)
                                     foreach ((($SelectList[0] ?? null) ?: $optlist) as $rec) {  if (!is_array($rec)) continue;  $rec= array_pad($rec, 4, '');
-                                      $rowField.= "\n".'<option label="'.$rec[2].'" value="'.$rec[1].'" '.$rec[3];
+                                      $rowField.= "\n".'<option label="'.sys_enc((string)$rec[2]).'" value="'.sys_enc((string)$rec[1]).'" '.$rec[3];   # Escaped
                                       if ($rec[1]==$valu) $rowField.= ' selected ';
-                                      $rowField.= '>'.$lbl=$rec[2].'</option> ';
+                                      $rowField.= '>'.sys_enc((string)$rec[2]).'</option> ';
                                     }
                                   $rowField.= '</select></div> ';   break;
                     case 'chck' : # Checkbox per row: the hidden field carries the value, so every row is posted (an unchecked box is not)
@@ -2590,7 +2592,7 @@ function htm_RowCol_(# wdth:240, rtrn:false)        # ColumnTop // Must be follo
 { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
       dvl_pretty('htm_RowColTop');      // RowColTop RowCol240, RowCol320 (Look at CSS ! )
     echo '<div style="text-align: center; width:min-content; left: 0; right: 0; margin: 0 auto;">'.
-         '<data-ColnHead'.RowColTest('yellow').'> <span id="colnwrap" '.RowColTest('green').'> '.
+         '<data-ColnHead'.RowColTest('yellow').'> <span class="colnwrap" id="'.sys_uid('colnwrap').'" '.RowColTest('green').'> '.   # (was id="colnwrap" on every column block)
          '<data-RowCol class="RowCol'.$wdth.'" '.RowColTest('blue').' >';
 }
 
@@ -6978,9 +6980,9 @@ function DropDown($name, $valu, $list ,$attr='')
               '" style="max-width:140px; background-color:transparent; '.$attr.
               '"> '."\n".'<option label="" value="" > - </option>';  //  selected disabled hidden
     foreach ($list as $rec) { dvl_pretty();
-        $Result.= "\n".'<option label="'.lang($rec[1]).'" value="'.$rec[0].'" title="'.lang($rec[2]).'"';
+        $Result.= "\n".'<option label="'.sys_enc(strip_tags(lang($rec[1]))).'" value="'.sys_enc((string)$rec[0]).'" title="'.sys_enc(strip_tags(lang($rec[2] ?? ''))).'"';   # Escaped (a " broke the option)
             if ($rec[0]==$valu) $Result.= ' SELECTED ';
-        $Result.= '>'.$lbl=lang($rec[1]).'</option> ';
+        $Result.= '>'.sys_enc(strip_tags(lang($rec[1]))).'</option> ';
     }
     $Result.= '</select></div> ';
     // echo '<pre>'.$Result.'</pre>';
@@ -7004,12 +7006,12 @@ function menuCapt ($h='32',$w='120',$label='')
 
 function menuButt ($h='32',$w='120',$label='',$link='',$Hint='') // Icon ?
 {  dvl_pretty();
-    if (strpos($link,'blindAlley.page.php')>0)
+    if (str_contains((string)$link,'blindAlley.page.php'))     # (strpos>0 missed a link that starts with it)
         { $state= ' disabled '; $mess= str_lf().' (A blind alley yet!)';}
     else {$mess=''; $state=''; };
-    echo '<button type="button" onclick="location.href=\''.$link.'\'"
+    echo '<button type="button" onclick="location.href='.sys_enc(json_encode((string)$link)).'"
             style="background-image: linear-gradient(white, lightgray); height: '.$h.'px; width: '.$w.'px; border: solid 1px darkgray; text-align: center;"
-            title="'. lang($Hint).$mess.'" '.$state.'data-tiptxt="'.lang($Hint).$mess.'" >
+            title="'. sys_enc(strip_tags(lang($Hint))).$mess.'" '.$state.'data-tiptxt="'.sys_enc(strip_tags(lang($Hint))).$mess.'" >
             <span style= "white-space: nowrap;">'.ucfirst(str_replace(' ','&nbsp;',lang($label))).'</span>
             </button>';
 }
@@ -7338,7 +7340,7 @@ $CSS_system = '
  /* RowColS: (Adaptation to narrow screens) */
  /* for 960px or greater */
 @media screen and (min-width: 960px) {
-    #colnwrap   {width: 99%; padding: 0px;    /*  margin: 5px 5px; */}
+    .colnwrap   {width: 99%;padding: 0px;    /*  margin: 5px 5px; */}
     .RowCol240  {width: 240px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
     .RowCol280  {width: 280px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
     .RowCol320  {width: 320px;  padding: 5px 5px; margin: 5px 5px 5px 0px; float: left; }
@@ -7355,7 +7357,7 @@ $CSS_system = '
 
  /* for 960px or less */
 @media screen and (max-width: 960px) {
-    #colnwrap   {width: 99%;  }
+    .colnwrap   {width: 99%;}
     .RowCol320  {width: 41%;  padding: 5px 5px;   margin: 0px 0px 5px 5px;}
     .RowColsaut {width: auto; padding: 5px 5px;   margin-left: 0px;   clear: both;    float: none;  }
     data-PanlHead, PanlFoot {padding: 1px 5px;   clear: both;}
