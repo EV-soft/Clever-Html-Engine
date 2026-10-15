@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.2';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.3';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
 defined('P2H_VERSION') or define('P2H_VERSION', $DocVer);   # The library version - $DocVer is overwritten by every file that is included later
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
@@ -1791,6 +1791,21 @@ $ixalign= $ixalign ?? '';
             parsed: true,                               /* The filter searches the value too (the cell text is empty: the value is in a field) */
             type: 'numeric'
         });
+        if ($.tablesorter.resizable && !$.tablesorter.resizable.p2hFix) {      /* Column resize grips on the column lines: Tablesorter subtracted the table's offset in its wrapper */
+            var p2hRsOrig= $.tablesorter.resizable.setHandlePosition;          /* (it must be added - the grips were beside the lines when the table is not at the left edge, e.g. in a centered card, and with zoom) */
+            $.tablesorter.resizable.setHandlePosition= function (c, wo) {
+                p2hRsOrig.apply(this, arguments);
+                var box= wo.\$resizable_container && wo.\$resizable_container[0], t= c.table;  if (!box) return;
+                var dx= t.offsetLeft - box.offsetLeft;                          /* CSS pixels - not changed by zoom */
+                wo.\$resizable_container.children().each(function () {
+                    var hd= $(this).data('header'), th= hd && hd[0];
+                    if (!th || this.style.display === 'none' || th.offsetParent !== t) return;
+                    this.style.left= (dx + th.offsetLeft + th.offsetWidth - Math.floor(this.offsetWidth / 2)) + 'px';
+                });
+            };
+            $.tablesorter.resizable.p2hFix= true;
+            $(window).on('load resize', function () { $('table.tablesorter').trigger('resizableUpdate'); });   /* The layout settles after the init (scrollbar, fonts): the grips follow */
+        }
         $('#table".$gbl_TblIx."').tablesorter({
             theme: 'blue',"
             .($parser ?? '')."

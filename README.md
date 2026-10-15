@@ -70,6 +70,9 @@ A function without a heading text keeps its main content first: `htm_TextDiv(bod
 34 functions got a new order, e.g. `htm_Input(labl, icon, hint, plho, vrnt, name, valu, list, form, ...)` (plho was 2nd), `htm_Table(... note, list, data, wdth, vhgh, styl, filt, ...)`, `msg_System(capt, vrnt, ...)`, and `htm_SwitchButt()` / `htm_SwitchButton()` now have the same order.
 Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in its message, and its label no longer points to a missing field.
 
+# 🆕 What's new in 1.7.3 - column resize grips
+- **Tables:** the grips for changing a column width are on the column lines again. Tablesorter subtracted the table's offset in its wrapper (it must be added), so the grips were beside the lines when the table was not at the left edge - e.g. in a centered card - and with zoom. They are also placed again when the page has loaded and when the window is resized.
+
 # 🆕 What's new in 1.7.2 - rtrn:false in every function
 - `htm_TextArea()`, `htm_ActionButt()`, `htm_MultistateButt()` and `htm_ModalDialog()` now **echo** the HTML by default, as all other functions (they returned it - called alone they showed nothing).
 - **Upgrading:** where you use the result of one of them (`echo htm_TextArea(...)`, `'...'.htm_ActionButt(...)`, `$x= ...`) without `rtrn`, add `rtrn:true` - or run `php tools/named_args.php <folder> --write`, which does it for you.
