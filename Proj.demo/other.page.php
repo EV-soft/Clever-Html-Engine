@@ -12,6 +12,7 @@ $needFontawesome= '2';
 $needTinymce=     '0';
 
 require_once ($sys.'php2html.lib.php');
+require_once('docHelp.inc.php');                  # docExample(): the code shown is the code that runs
 
 htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
     // $menudata is set in: project.init.php
@@ -135,6 +136,22 @@ htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$Do
         $row('htm_TextVer()',    function(){ echo '<div style="width:40px; height:135px;">';   # The text is rotated up over its own box - give it room above
                                              htm_TextVer(body:'htm_TextVer()', attr:'width:130px; white-space:nowrap; margin-top:55px;'); echo '</div>'; });
         echo '</table>';
+    htm_Card_end();
+
+    ###### FAQ - questions with folded answers
+    htm_Card_(capt:'@Questions and answers - htm_faq():', icon:'fa-solid fa-circle-question', hint:'', clas:'cardW800', wdth:'640');
+        // EXAMPLE: faq
+        htm_faq(ques:'@What is php2html?', grup:'demoFaq', open:true,
+                answ:'@A PHP library that builds the HTML of a page with one function call per element.');
+        htm_faq(ques:'@Does the FAQ need JavaScript?', grup:'demoFaq',
+                answ:'@No - it is a &lt;details&gt; element. It also works with the keyboard and screen readers.');
+        htm_faq(ques:'@Can more answers be open at the same time?', grup:'demoFaq',
+                answ:'@Not when the questions share a grup: opening one closes the others. Leave grup empty to open them all.');
+        htm_faq(ques:'@Can the answer be shown as plain text?', code:true,
+                answ:'With code:true the answer is not html: <b>this is not bold</b>');
+        // END
+        htm_nl();
+        htm_CodeBox(code: docExample('faq'), fold:'closed');
     htm_Card_end();
 
     ###### iFrame

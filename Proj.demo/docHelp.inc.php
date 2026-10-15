@@ -1,5 +1,5 @@
-<?php $DocFile= './Proj.demo/docHelp.inc.php';    $DocVer='1.6.4';    $DocRev='2026-10-13';      $DocIni='evs';  $ModulNr=0; ## File informative only
-$©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
+<?php # File: ./Proj.demo/docHelp.inc.php - ver:1.6.4 - 2026-10-15 - evs    (only a comment: the variables $DocFile, $DocVer ... belong to the page that includes this file)
+# Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE
 # Helpers for the reference pages of the demo (table.page.php, card.page.php ...)
 
 # The code of an example: the lines between "// EXAMPLE: <name>" and "// END" in the page - the code shown is the code that runs

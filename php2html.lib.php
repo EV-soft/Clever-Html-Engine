@@ -933,6 +933,24 @@ function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'', rtr
     '</div>';
 }
 
+# A question with a folded answer (FAQ) - one at a time when they share a grup
+function htm_faq(# ques:'', answ:'', open:false, grup:'', wdth:'', code:false, rtrn:false) ## Question and answer
+    $ques='',       # string: The question (always visible)
+    $answ='',       # string: The answer (shown when the question is clicked)
+    $open=false,    # bool:   The answer is shown from the start
+    $grup='',       # string: Questions with the same grup: opening one closes the others
+    $wdth='',       # string: The width, e.g. '600px' (default: the full width)
+    $code=false,    # bool:   The answer is text, not html: &lt;b&gt;bold&lt;/b&gt;
+    $rtrn=false     # bool:   Return the HTML instead of echoing it
+) { # A <details>: no JavaScript, works with the keyboard and screen readers
+    $answ= $code ? nl2br(htmlspecialchars($answ)) : lang($answ);
+    $result= '<details class="p2hFaq"'.($open ? ' open' : '').($grup>'' ? ' name="'.sys_enc($grup).'"' : '').
+             ($wdth>'' ? ' style="width: '.sys_enc($wdth).';"' : '').'>'.
+             '<summary class="p2hFaqQ"><ic class="fa-solid fa-chevron-right" aria-hidden="true"></ic> '.lang($ques).'</summary>'.
+             '<div class="p2hFaqA">'.$answ.'</div></details>';
+    if ($rtrn) return $result; else echo $result;
+}
+
 # A div containing a text with a hidden hint
 function htm_TextHint(# text:'', hint:'', styl:'', attr:'', rtrn:false) {
     $text='Visibly Text',               # string: Visibly Text       
@@ -7650,6 +7668,15 @@ abbr.hint.p2hGripHint:hover data-hint, abbr.hint.p2hGripHint:focus-within data-h
 .p2hCodeFold[open] > summary { opacity: 1; }
 .p2hCodeFold .p2hCfHide, .p2hCodeFold[open] .p2hCfShow { display: none; }
 .p2hCodeFold[open] .p2hCfHide { display: inline; }
+/* htm_faq() - question with a folded answer */
+.p2hFaq { text-align: left; margin: 2px 0; border-bottom: 1px solid rgba(127,127,127,0.3); }
+.p2hFaq > summary { cursor: pointer; list-style: none; padding: 6px 4px; font-weight: bold; }
+.p2hFaq > summary::-webkit-details-marker { display: none; }
+.p2hFaq > summary:hover, .p2hFaq > summary:focus-visible { background: rgba(127,127,127,0.12); }
+.p2hFaq > summary > ic { display: inline-block; width: 1em; transition: transform 0.2s; }
+.p2hFaq[open] > summary > ic { transform: rotate(90deg); }
+.p2hFaqA { padding: 2px 8px 10px 1.6em; }
+@media (prefers-reduced-motion: reduce) { .p2hFaq > summary > ic { transition: none; } }
 /* htm_Table() row actions (suffix type rowact) */
 .p2hRowAct { background: none; border: 0; padding: 1px 3px; cursor: pointer; box-shadow: none; font-size: 13px; }
 .p2hRowAct:hover, .p2hRowAct:focus-visible { background: rgba(127,127,127,0.18); border-radius: 3px; }
