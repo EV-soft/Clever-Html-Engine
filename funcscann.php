@@ -109,7 +109,7 @@ if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   #
                 $x= substr($funcN,strpos($funcN,'htm_'));
                 $x= substr($x,0,strpos($x,'('));
                 $keyList[] = $x;
-                $funcN= str_replace('# ','',$funcN); // Remove comment flag on function parameters
+                $funcN= preg_replace('~(?<![\w#])#{1,2} ~', '', $funcN); // Remove comment flags: "# " on the parameters and "## " before the description (gave "#Text")
                 $funcN= markParams($funcN);          // Only the parameter names - not words in strings and in the description (was: highlight_words)
                 $funcN= preg_replace('/\(/', '</strong>'.($hint > '' ? $hint.'</abbr>' : '').'(<i>', $funcN, 1);   // Add format code (the first "(" only) - and the hint after the name
 $funcN= str_replace(')',');',$funcN);

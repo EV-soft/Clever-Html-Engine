@@ -2660,7 +2660,7 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', 
         $keytip= '<br><em>'.lang('@Keyboard shortcut: ').'Alt+'.sys_enc(mb_strtoupper($akey)).'</em>';
         $akey= 'accesskey="'.sys_enc($akey).'" ';
     } else $akey= '';
-    if (strpos($attr,'disabled')>0) $info=' Disabled ! '; else $info='';
+    if ($disa or (strpos($attr,'disabled') !== false)) $info=' Disabled ! '; else $info='';   # (>0 missed attr:'disabled', and disa:true was not shown)
 ## Appearance & name:
     switch ($kind) {
     case 'save'   : {$colors= ' background:'.$gbl_BtSavBgrd.'; color:'.$gbl_BtSavText.';'.$gbl_dimmed;}  $midn= 'sav_';  break; # Submit-Butt: BLUE
@@ -4323,7 +4323,10 @@ function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['gobac
 
 
 //       Pmnu_Prepare:
-function Pmnu_(#  elem:'id', capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan;', cntx:true, rtrn:false) 
+# A text as a JavaScript string literal - safe inside <script> (quotes, backslashes, line breaks and </script> escaped)
+function p2h_jsStr($s) { return json_encode((string)$s, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_INVALID_UTF8_SUBSTITUTE); }
+
+function Pmnu_(#  elem:'id',capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan;', cntx:true, rtrn:false) 
                  $elem='id',$capt='', $wdth='210px', $icon='', $stck='false', $attr='background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', $cntx=true, $rtrn=false) // Note: $elem is used to link to the calling element
 { // Create jsCode:
 if (DEBUG) return false;
@@ -4347,7 +4350,7 @@ if (DEBUG) return false;
     left: '40%".   /* TEST1 */ "',
     items: [    // ITEMS:
     ";
-    if ($capt>'') $result.= '{label: "'.lang($capt).'", hint: "Just an informative Caption", cssicon: "'.$icon.'", custAttr: "'.$attr.'"}, 
+    if ($capt>'') $result.= '{label: '.p2h_jsStr(lang($capt)).', hint: "Just an informative Caption", cssicon: '.p2h_jsStr($icon).', custAttr: '.p2h_jsStr($attr).'},
         ';
     
     if (!$rtrn) echo $result; else return $result;
@@ -4361,10 +4364,10 @@ if (DEBUG) return false;
     # Enabled: enbl true/'true' (default) - false/'false'/0 disables the item (greyed, no click). disa:true does the same (the uniform name).
     $enabled= ($disa !== null) ? !$disa : (is_bool($enbl) ? $enbl : !in_array(strtolower(trim((string)$enbl)), ['false', '0', 'no', 'off'], true));
     $result= '
-    {label: "'.lang($labl).'", hint: "'.lang($hint).'", cssIcon: "'.$icon.'"'.($enabled ? '' : ', enabled: false');    // or imgIcon !  (enabled: was never sent)
+    {label: '.p2h_jsStr(lang($labl)).', hint: '.p2h_jsStr(lang($hint)).', cssIcon: '.p2h_jsStr($icon).($enabled ? '' : ', enabled: false');    // or imgIcon !  (enabled: was never sent) - JS strings: a " in a text broke the menu
         switch ($vrnt) {
-            case 'plain'    : $result.= ', shortcut: "<small>'.$shrt.'</small>", id:"'.$name.'", name:"'.$name.'", onClick: () => {'.$clck.'} '; break;  
-            case 'custom'   : $result.= ', shortcut: "'.       $shrt.'", id:"'.        $name.'", name:"'.$name.'", onClick: () => {'.$clck.'} '; break;
+            case 'plain'    : $result.= ', shortcut: '.p2h_jsStr('<small>'.$shrt.'</small>').', id:'.p2h_jsStr($name).', name:'.p2h_jsStr($name).', onClick: () => {'.$clck.'} '; break;
+            case 'custom'   : $result.= ', shortcut: '.p2h_jsStr($shrt).', id:'.p2h_jsStr($name).', name:'.p2h_jsStr($name).', onClick: () => {'.$clck.'} '; break;
 /*          case 'multi'    : this.multiButton(opts.items);   break;
             case 'normal'   : this.button
                                   (opts.label, 
@@ -4399,8 +4402,8 @@ function Pmnu_end(# labl:'', hint:'', attr:'', rtrn:false)
 { // Create jsCode:
 if (DEBUG) return false;
     $result= '
-    {' . ($attr > '' ? ('custAttr: "'.$attr.'", ') : '')
-      .'label: "'. lang($labl).'", hint: "'.lang($hint). '" '
+    {' . ($attr > '' ? ('custAttr: '.p2h_jsStr($attr).', ') : '')
+      .'label: '.p2h_jsStr(lang($labl)).', hint: '.p2h_jsStr(lang($hint)).' '
       . // 'type: "footer"'
    '}'. 
     " 
@@ -6400,7 +6403,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
         g = (255 - g).toString(16);
         b = (255 - b).toString(16);
         // pad each with zeros and return
-        return '#' + padZero(r) + padZero(g) + padZero(b);
+        return '#' + ('0' + r).slice(-2) + ('0' + g).slice(-2) + ('0' + b).slice(-2);   // (called padZero(), that did not exist)
     }");
 
 //   run_Script('function addRow(tableID) {                      // Get a reference to the table
@@ -6808,7 +6811,7 @@ function str_sp($rept=1)            {return str_repeat('&nbsp;',$rept);}
 function str_space($wdth)           {return '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
 
 function markFirstChar($str='',$tag='u',$att='') 
-{ $str= lang($str); $str= '<'.$tag.' '.$att.'>'.substr($str,0,1).'</'.$tag.'>'.substr($str,1); return $str; }
+{ $str= lang($str); $str= '<'.$tag.' '.$att.'>'.mb_substr($str,0,1).'</'.$tag.'>'.mb_substr($str,1); return $str; }   # mb_: "Åbn" was cut in the middle of the Å
 function markAllChars($str='',$tag='u',$att='')  
 { $str= lang($str); $str= '<'.$tag.' '.$att.'>'.$str.'</'.$tag.'>'; return $str; }
 
