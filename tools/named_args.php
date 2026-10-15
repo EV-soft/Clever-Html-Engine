@@ -13,6 +13,8 @@
 #
 #  An old-style argument  $labl= '...'  (an assignment used as a name) becomes  labl: '...'  when the name fits its position.
 #  Code written for 1.7 must not be run through the tool (its positions would be read as the old ones).
+#  1.7.2: htm_TextArea(), htm_ActionButt(), htm_MultistateButt() and htm_ModalDialog() echo by default, as all other functions
+#  (they returned the HTML before) - a call whose result is used (echo, ., =, return) gets rtrn: true.
 
 if (PHP_SAPI !== 'cli') { http_response_code(403); exit('Run this tool from the command line: php tools/named_args.php <folder>'); }
 
@@ -96,6 +98,9 @@ const P2H_ORDER_163 = [
     'htm_TextArea'  => ['labl', 'hint', 'name', 'form', 'valu', 'rows', 'widt', 'plho', 'attr', 'rtrn'],
 ];
 
+# 1.7.2: these 4 functions echo by default, as all others (they returned the HTML before) - function => position of rtrn (0-based) in 1.6
+const P2H_RTRN_WAS_TRUE = ['htm_textarea' => 9, 'htm_actionbutt' => 8, 'htm_multistatebutt' => 4, 'htm_modaldialog' => 5];
+
 function na_order(): array {        # function name in lower case => [old order, new order, name]
     static $map = null;
     if ($map !== null) return $map;
@@ -120,7 +125,7 @@ function na_rewrite(string $src, string $file, array &$log): string {
         # htm_Input(, \htm_Input( (in a namespace) and HTM_INPUT( (function names ignore case) - was only the exact spelling
         if (!is_array($t) || !in_array($t[0], [T_STRING, T_NAME_FULLY_QUALIFIED])) continue;
         $key = strtolower(ltrim($t[1], '\\'));
-        if (!isset(na_order()[$key])) continue;
+        if (!isset(na_order()[$key]) && !isset(P2H_RTRN_WAS_TRUE[$key])) continue;
         $p = $prev($i);
         if (is_array($p) && in_array($p[0], [T_FUNCTION, T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW, T_NULLSAFE_OBJECT_OPERATOR])) continue;
         $o = $next($i);
@@ -134,6 +139,26 @@ function na_rewrite(string $src, string $file, array &$log): string {
             elseif ($c === ',' && $depth === 0) { $args[] = [$start, $j - 1];  $start = $j + 1; }
         }
         if ($end === null) continue;
+        // 1.7.2: these functions echo by default (returned before) - a call whose result is used gets rtrn: true
+        if (isset(P2H_RTRN_WAS_TRUE[$key])) {
+            $given = false;  $npos = 0;
+            foreach ($args as [$a, $b]) {
+                $f = $next($a - 1);  if ($f > $b) continue;
+                $g = $next($f);
+                if (is_array($toks[$f]) && $g <= $b && $toks[$g] === ':') { if ($toks[$f][1] === 'rtrn') $given = true; }
+                else $npos++;
+            }
+            if ($npos > P2H_RTRN_WAS_TRUE[$key]) $given = true;                      // rtrn given by position
+            $pt = $prev($i);  $pc = is_array($pt) ? $pt[1] : $pt;
+            $statement = (in_array($pc, [';', '{', '}', ':', ')', null], true) || (is_array($pt) && in_array($pt[0], [T_OPEN_TAG, T_ELSE])))
+                         && (($toks[$next($end)] ?? '') === ';');
+            if (!$given && !$statement) {
+                $last = $toks[$next($o)] === ')' ? '' : ', ';
+                $edits[] = [$offs[$end], $offs[$end], $last.'rtrn: true'];
+                $log[] = "$file:{$t[2]}  {$t[1]}(): the result is used - rtrn: true added (the function echoes by default since 1.7.2)";
+            }
+            if (!isset(na_order()[$key])) continue;
+        }
         [$old, $new] = na_order()[$key];
         $first = null;                                          // first position whose name has changed
         foreach ($old as $k => $nm) if (($new[$k] ?? null) !== $nm) { $first = $k;  break; }

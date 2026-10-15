@@ -446,7 +446,7 @@ STRING
     echo '</tr>';
     foreach ($users as $u => $usr) { $i= 0;
         echo '<tr style="height: 22px;"><td style="height: 22px;"><a href="">'.$usr[0].'</a></td><td>'.$usr[1].'</td>';
-            foreach ($usr[2] as $a)   echo '<td style="height: 22px; width: 22px; text-align: center;">'.htm_MultistateButt(name:'ROW'.$u.'COL'.$i++, valu: $a).'</td>';
+            foreach ($usr[2] as $a)   echo '<td style="height: 22px; width: 22px; text-align: center;">'.htm_MultistateButt(name:'ROW'.$u.'COL'.$i++, valu: $a, rtrn:true).'</td>';
         echo '</tr>';
     }
     echo '<tr><td>&nbsp;</td></tr>';
@@ -457,7 +457,7 @@ STRING
     echo '<table style="width:94%;">';
     echo '
     <tr><td colspan="2" style="text-align:right; scale:80%;"><i>'.lang('@Rights:').'</i></td>';
-    for ($i=0; $i<count($task); $i++) echo '<td style="height: 22px; width: 33px; text-align: center;">'. htm_MultistateButt(name:'newROWyCOL'.$i, valu:2) .'</td>';
+    for ($i=0; $i<count($task); $i++) echo '<td style="height: 22px; width: 33px; text-align: center;">'. htm_MultistateButt(name:'newROWyCOL'.$i, valu:2, rtrn:true) .'</td>';
     
     echo '<tr>
     <td><input type= "text" name="name1" value="" style="width: 50px; border: 1px solid var(--grayColor);" placeholder="name..." /></td>
@@ -467,10 +467,10 @@ STRING
     echo '<tr><td>&nbsp;</td></tr>';
     echo '<tr style="border: 1px solid lightgray;">
     <td colspan="1"> &nbsp;<small><strong>'.lang('@Meaning:').'</strong></small></td>
-    <td colspan="1">'.htm_MultistateButt(name:'dontCare', valu:1, acti:false, styl:'').' <small>: '. lang('@No access').'</small></td>
-    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:2, acti:false, styl:'').' <small>: '. lang('@Read only').'</small></td>
-    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:3, acti:false, styl:'').' <small>: '. lang('@Full access').'</small></td>
-    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:0, acti:false, styl:'').' <small>: '. lang('@Undefined').'</small></td>
+    <td colspan="1">'.htm_MultistateButt(name:'dontCare', valu:1, acti:false, styl:'', rtrn:true).' <small>: '. lang('@No access').'</small></td>
+    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:2, acti:false, styl:'', rtrn:true).' <small>: '. lang('@Read only').'</small></td>
+    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:3, acti:false, styl:'', rtrn:true).' <small>: '. lang('@Full access').'</small></td>
+    <td colspan="4">'.htm_MultistateButt(name:'dontCare', valu:0, acti:false, styl:'', rtrn:true).' <small>: '. lang('@Undefined').'</small></td>
     <td colspan="'.(count($task)-8).'" style="text-align:right;"><small>'.lang('@CLICK symbol to change').'</small>&nbsp;</td></tr>';
     echo '</table>';
     htm_AcceptButt(labl:'@Create', icon:'',hint:lang('@Create new user'), form:'head3',  wdth:'100px', attr:'' ,akey:'', kind:'crea',  rtrn:false, 

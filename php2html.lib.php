@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.1';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.2';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
 defined('P2H_VERSION') or define('P2H_VERSION', $DocVer);   # The library version - $DocVer is overwritten by every file that is included later
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
@@ -2727,7 +2727,7 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
 } # :htm_AcceptButt()
 
 # A generel action button 
-function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', form:'', acti:'', attr:'', rtrn:true)
+function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', form:'', acti:'', attr:'', rtrn:false)
     $labl='',       # string: Text on the button
     $icon='',       # string: Icon before the label
     $hint='',       # string: Hint about the button function
@@ -2738,7 +2738,7 @@ function htm_ActionButt(# labl:'', icon:'', hint:'', type:'button', name:'', for
     $acti='',       # string: Function to run
                  
     $attr='',       # string: Button attributes. 
-    $rtrn=true      # bool:   return string or echo string
+    $rtrn=false     # bool:   Echo the HTML (default - as all functions since 1.7.2; was true) or return it
     ) 
 {
     $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
@@ -3692,12 +3692,12 @@ function htm_SwitchButton(# labl, hint:'', name:'switchbox_id', valu:'', list:[]
 } # htm_SwitchButton()
 
 # A special button to switch between many states
-function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:true)
+function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:false)
     $name='ROWyCOLx',       # string: Name of the field
     $valu='',               # string: State 0..3
     $acti=true,             # bool:   Clickable
     $styl='padding:1px;',   # string: Style
-    $rtrn=true              # bool:   Return the HTML (default) or echo it 
+    $rtrn=false             # bool:   Echo the HTML (default - as all functions since 1.7.2; was true) or return it
     )
 {
     $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
@@ -3955,7 +3955,7 @@ function htm_LinkButt(# labl:'', hint:'', link:'', targ:'_blank', attr:'', rtrn:
 }
 
 # Create a HTML-textarea with multibly lines
-function htm_TextArea(# labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:true)
+function htm_TextArea(# labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:false)
     $labl='',       # string: Label after the field
     $hint='',       # string: Hint on the label
     $plho='?',      # string: Placeholder
@@ -3965,7 +3965,7 @@ function htm_TextArea(# labl:'', hint:'', plho:'?', name:'area', valu:'', form:'
     $wdth='',       # string: Width
     $attr='',       # string: More style
     $rows='1',      # string: Number of rows
-    $rtrn=true,     # bool:   Return the HTML (default) or echo it
+    $rtrn=false,    # bool:   Echo the HTML (default - as all functions since 1.7.2; was true) or return it
     $widt=null      # (Old name of wdth - still works)
 )
 {   if ($widt !== null) $wdth= $widt;
@@ -3997,13 +3997,13 @@ function str_WithHint(# labl:'', hint:'', icon:'', $styl);
 
 // echo $htm_ModalDialog; Initiated in htm_Page_ ($htm_ModalDialog)
 # Create a modal popup window with color-coded background
-function htm_ModalDialog(# capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['type:','icon:','labl:','hint:','link:'], rtrn:true) 
+function htm_ModalDialog(# capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['type:','icon:','labl:','hint:','link:'], rtrn:false) 
     $capt='@Voilà!',
     $type='none', # Variant
     $mess='',
     $html='CSS-based Modal Dialog',
     $butt=['$type','$icon','$labl','$hint','$link'],
-    $rtrn=true
+    $rtrn=false     # bool:   Echo the HTML (default - as all functions since 1.7.2; was true) or return it
 ) // https://codepen.io/timothylong/pen/AJxrPR
 { 
 global $cssButt;    // JS-free Modal dialog based on CSS only.

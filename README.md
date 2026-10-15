@@ -70,6 +70,10 @@ A function without a heading text keeps its main content first: `htm_TextDiv(bod
 34 functions got a new order, e.g. `htm_Input(labl, icon, hint, plho, vrnt, name, valu, list, form, ...)` (plho was 2nd), `htm_Table(... note, list, data, wdth, vhgh, styl, filt, ...)`, `msg_System(capt, vrnt, ...)`, and `htm_SwitchButt()` / `htm_SwitchButton()` now have the same order.
 Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in its message, and its label no longer points to a missing field.
 
+# 🆕 What's new in 1.7.2 - rtrn:false in every function
+- `htm_TextArea()`, `htm_ActionButt()`, `htm_MultistateButt()` and `htm_ModalDialog()` now **echo** the HTML by default, as all other functions (they returned it - called alone they showed nothing).
+- **Upgrading:** where you use the result of one of them (`echo htm_TextArea(...)`, `'...'.htm_ActionButt(...)`, `$x= ...`) without `rtrn`, add `rtrn:true` - or run `php tools/named_args.php <folder> --write`, which does it for you.
+
 # 🆕 What's new in 1.7.1 - fixes
 - **Tables:** number columns (`0d`, `1d`, `2d`, `2%`) are sorted as numbers (were sorted as text: "1 234,00" before "9,00") and can be filtered with e.g. `>9`; the number 0 is shown as 0,00 (was blank); the format `>0` also hides negative numbers; the CSV export (`expo`) writes the data as shown (it removed `@` and translated values).
 - **Fields:** a field without a label is named by its hint or placeholder; `intg` fields get an integer (a decimal value made every typed integer invalid); radio buttons and option values are escaped and get valid, unique ids; the group label of a checkbox/radio list points to its own first box.
@@ -87,6 +91,7 @@ Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in i
   Code written for **1.6.3 or older**: add `--from=1.6.3` (in those versions `htm_CodeBox()` had `rtrn` as argument 6 - `fold` since 1.6.4).
   Do not run the tool on code written for 1.7 - it would read the positions as the old ones.
 - The old alias names (`vlue`, `widt`, `heig`, `hght`) still work.
+- **1.7.2:** `htm_TextArea()`, `htm_ActionButt()`, `htm_MultistateButt()` and `htm_ModalDialog()` echo by default - the tool adds `rtrn: true` where their result is used.
 
 # 📦 Installation
 ```bash
