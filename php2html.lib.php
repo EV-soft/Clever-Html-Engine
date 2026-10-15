@@ -459,6 +459,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                              // $result.= '<input type= "hidden"   id="'.$rec[0].'" name="'.$rec[0].'" value="unchecked" /><label for="'.$rec[0].'"></label>'; # Hidden field because Unchecked boxes is not included in $_POST !
                              // $result.= '<input type= "checkbox" id="'.$rec[0].'" name="'.$rec[0].'" value="checked" '.$aktiv. (is_array($rec[3]) ? $rec[3][$i++][1] : $rec[3]).' '. $rec[4]. ' '.$valu.' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
                                 $cid= sys_uid(preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$rec[0]) ?: 'chk');    # A unique, safe id (was the value itself)
+                                if (!isset($lblFirst)) $lblFirst= $cid;          # The group label points to the first box
                                 $result.= '<input type= "checkbox" id="'.$cid.'" name="'.sys_enc((string)$rec[0]).'" value="checked" '.$aktiv. $chk. $rec[4]. ' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
                                    '<label for="'.$cid.'" style="position: relative; top: 0px; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
                                  //  '<label for="'.$rec[0].'"                                              ">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
@@ -470,16 +471,18 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                             '<span class="fieldContent boxStyle" style="'.$bord.'"><small>';
                             foreach ($list as $rec) { // $list= [[0:'value',1:'Label',2:'@ToolTip',3:state:'checked/selected'], ['Label','@ToolTip'],...]
                                 if ($valu==$rec[0]) $chk= ' checked '; else $chk= ' ';
-                                    $result.= '<input type= "radio" id="'.$iid.'_'.$rec[0].'" name="'.$name.'" value="'.$rec[0].'" '.
+                                    $rid= sys_uid($iid.'_'.(preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$rec[0]) ?: 'opt'));   # A unique, safe id (was the raw value)
+                                    if (!isset($lblFirst)) $lblFirst= $rid;      # The group label points to the first button
+                                    $result.= '<input type= "radio" id="'.$rid.'" name="'.$name.'" value="'.sys_enc((string)$rec[0]).'" '.
                                         $chk.($rec[3] ?? '').$aktiv. ' '.$attr.' style="width: 20px; box-shadow: none;">'.
-                                     '<label for="'.$iid.'_'.$rec[0].'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1] ?? $rec[0],$rec[2] ?? '','','12px; box-shadow: none; ').'</label>';   # (the tooltip is optional - was a PHP warning)
+                                     '<label for="'.$rid.'" style="position: relative; top: -2px;">'. Lbl_Tip($rec[1] ?? $rec[0],$rec[2] ?? '','','12px; box-shadow: none; ').'</label>';   # (the tooltip is optional - was a PHP warning)
                                 if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
                             }   $result.= '</small>'.($subm ?? '').'</span>';  break;
 
         case 'opti' : $result.= ## OPTION:
                             '<span class="fieldContent boxStyle"  style="'.$bord.' background-color; white; text-align: center; padding: 10px 4px 4px;"><small>';
                             $result.= '<select class="styled-select" id="'.$iid.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
-                            $result.= '<option label="'.sys_enc(strip_tags(lang($plho))).'" value="'.$valu.'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
+                            $result.= '<option label="'.sys_enc(strip_tags(lang($plho))).'" value="'.sys_enc((string)$valu).'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
                                 $ov= sys_enc((string)($rec[0] ?? ''));                 # Escaped like $valu (a " in a value or text broke the list)
                                 $result.= '<option '. 'title="'.sys_enc(strip_tags(lang($rec[2] ?? ''))).'" value="'.$ov.'" '.($rec[3] ?? '').' '.($rec[4] ?? ''); //  Firefox does not support Label !
@@ -500,8 +503,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
 
 # htm_Input: LABEL & HINT:
     $lblFor= $iid;                                        # Group label: point to the first option (there is no element id_<name>)
-    if (($vrnt=='rado') and isset($list[0][0])) $lblFor= $iid.'_'.$list[0][0];
-    if (($vrnt=='chck') and isset($list[0][0])) $lblFor= $list[0][0];
+    if (in_array($vrnt, ['rado','chck']) and isset($lblFirst)) $lblFor= $lblFirst;
     if ($vrnt=='area') $lblFor= $iid;                            # The <textarea> has id = name (tinyMCE selectors use it) - the first one
     if (!empty($noField)) $lblFor= '';
     switch (strtoupper($llgn)) {

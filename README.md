@@ -78,6 +78,8 @@ Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in i
   php tools/named_args.php  my_project/  --write    # changes the files (a copy is saved as *.bak)
   ```
   It knows the old and the new order of the 34 functions and rewrites a call to named arguments from the first position whose name has changed - the result works with both 1.6 and 1.7. An old-style argument `$labl= '...'` becomes `labl: '...'`. Code examples inside strings are not changed - check them yourself.
+  Code written for **1.6.3 or older**: add `--from=1.6.3` (in those versions `htm_CodeBox()` had `rtrn` as argument 6 - `fold` since 1.6.4).
+  Do not run the tool on code written for 1.7 - it would read the positions as the old ones.
 - The old alias names (`vlue`, `widt`, `heig`, `hght`) still work.
 
 # 📦 Installation
@@ -119,7 +121,7 @@ htm_Table(
 );
 ```
 # 🌐 Resources
-- Online demo and documentation: [ev-soft.work/p2h/v1.6.x](https://ev-soft.work/p2h/v1.6.x/Proj.demo/PHP2HTML-intro.page.php) (use the top menu)
+- Online demo and documentation: [ev-soft.work/p2h/v1.7.x](https://ev-soft.work/p2h/v1.7.x/Proj.demo/PHP2HTML-intro.page.php) (use the top menu)
 - Project page: [ev-soft.github.io/Clever-Html-Engine](https://ev-soft.github.io/Clever-Html-Engine/)
 - Source and releases: [github.com/EV-soft/Clever-Html-Engine](https://github.com/EV-soft/Clever-Html-Engine/releases)
 
@@ -261,7 +263,7 @@ To learn the system and its possibilities, it is recommended to study the *.page
 
 Get inspired and test the system.
 
-Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.6.x/Proj.demo/CustomerOrder.page.php)
+Go to the full window demo and see advanced example: [CustomerOrder](https://ev-soft.work/p2h/v1.7.x/Proj.demo/CustomerOrder.page.php)
 
 Use the top menu to view documentation and examples.
 

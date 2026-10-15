@@ -3,13 +3,16 @@
 #  Upgrade helper for version 1.7: in 1.7 the parameters of 34 functions got a new order
 #  (texts first: labl/capt, icon, hint, plho - then variant, name, value, data - form, action - size, style, attr - own parameters - rtrn last).
 #  Calls with named arguments (labl:'...') are not affected. Calls with positional arguments are:
-#  this tool rewrites them to named arguments - from the first position whose name has changed - so they work with both 1.6 and 1.7.
+#  this tool rewrites them to named arguments - from the first position whose name has changed - so they work with both your old version and 1.7.
 #
 #  Run it on YOUR code BEFORE you replace the library with 1.7 (from the command line only):
 #     php tools/named_args.php  <file or folder> ...            # shows what would be changed
 #     php tools/named_args.php  <file or folder> ... --write    # changes the files (a copy is saved as <file>.bak)
+#     php tools/named_args.php  <folder> --from=1.6.3 ...        # your code was written for 1.6.3 or older (1.5 - 1.6.3):
+#                                                                # htm_CodeBox() had rtrn as argument 6 (fold since 1.6.4), and 4 parameters had other names
 #
 #  An old-style argument  $labl= '...'  (an assignment used as a name) becomes  labl: '...'  when the name fits its position.
+#  Code written for 1.7 must not be run through the tool (its positions would be read as the old ones).
 
 if (PHP_SAPI !== 'cli') { http_response_code(403); exit('Run this tool from the command line: php tools/named_args.php <folder>'); }
 
@@ -85,6 +88,26 @@ const P2H_ORDER = [
                     ['titl', 'hint', 'algn', 'attr', 'info', 'inis', 'imag', 'pbrd']],
 ];
 
+# Before 1.6.4 (1.5 - 1.6.3): the old order of these 4 functions (the names still work in 1.7 as aliases)
+const P2H_ORDER_163 = [
+    'htm_CodeBox'   => ['code', 'synt', 'repl', 'fmat', 'vlue', 'rtrn'],
+    'htm_iFrame'    => ['srce', 'wdth', 'heig', 'titl', 'styl', 'rtrn'],
+    'htm_Humantest' => ['capt', 'icon', 'hint', 'form', 'wdth', 'hght', 'yclr', 'nclr', 'bclr', 'xytx', 'ntxt', 'rtrn'],
+    'htm_TextArea'  => ['labl', 'hint', 'name', 'form', 'valu', 'rows', 'widt', 'plho', 'attr', 'rtrn'],
+];
+
+function na_order(): array {        # function name in lower case => [old order, new order, name]
+    static $map = null;
+    if ($map !== null) return $map;
+    global $from;
+    $map = [];
+    foreach (P2H_ORDER as $fn => [$old, $new]) {
+        if ($from !== null && version_compare($from, '1.6.4', '<') && isset(P2H_ORDER_163[$fn])) $old = P2H_ORDER_163[$fn];
+        $map[strtolower($fn)] = [$old, $new, $fn];
+    }
+    return $map;
+}
+
 function na_rewrite(string $src, string $file, array &$log): string {
     $toks = token_get_all($src);
     $n = count($toks);  $edits = [];  $pos = 0;  $offs = [];
@@ -94,7 +117,10 @@ function na_rewrite(string $src, string $file, array &$log): string {
     $next = function ($i) use ($toks, $skip, $n) { for ($j = $i + 1; $j < $n; $j++) if (!is_array($toks[$j]) || !in_array($toks[$j][0], $skip)) return $j; return $n; };
     for ($i = 0; $i < $n; $i++) {
         $t = $toks[$i];
-        if (!is_array($t) || $t[0] !== T_STRING || !isset(P2H_ORDER[$t[1]])) continue;
+        # htm_Input(, \htm_Input( (in a namespace) and HTM_INPUT( (function names ignore case) - was only the exact spelling
+        if (!is_array($t) || !in_array($t[0], [T_STRING, T_NAME_FULLY_QUALIFIED])) continue;
+        $key = strtolower(ltrim($t[1], '\\'));
+        if (!isset(na_order()[$key])) continue;
         $p = $prev($i);
         if (is_array($p) && in_array($p[0], [T_FUNCTION, T_OBJECT_OPERATOR, T_DOUBLE_COLON, T_NEW, T_NULLSAFE_OBJECT_OPERATOR])) continue;
         $o = $next($i);
@@ -108,7 +134,7 @@ function na_rewrite(string $src, string $file, array &$log): string {
             elseif ($c === ',' && $depth === 0) { $args[] = [$start, $j - 1];  $start = $j + 1; }
         }
         if ($end === null) continue;
-        [$old, $new] = P2H_ORDER[$t[1]];
+        [$old, $new] = na_order()[$key];
         $first = null;                                          // first position whose name has changed
         foreach ($old as $k => $nm) if (($new[$k] ?? null) !== $nm) { $first = $k;  break; }
         if ($first === null) continue;
@@ -139,7 +165,9 @@ function na_rewrite(string $src, string $file, array &$log): string {
 }
 
 $write = in_array('--write', $argv);
-$paths = array_values(array_filter(array_slice($argv, 1), fn($a) => $a !== '--write'));
+$from  = null;                                          # --from=1.6.3: the code was written for that version
+foreach ($argv as $a) if (preg_match('/^--from=(\d+\.\d+(?:\.\d+)?)$/', $a, $fm)) $from = $fm[1];
+$paths = array_values(array_filter(array_slice($argv, 1), fn($a) => $a !== '--write' && !str_starts_with($a, '--from=')));
 if (!$paths) { fwrite(STDERR, "Use: php tools/named_args.php <file or folder> ... [--write]\n");  exit(1); }
 $files = [];
 foreach ($paths as $p) {
