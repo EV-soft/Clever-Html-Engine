@@ -2766,7 +2766,7 @@ function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:
     <span class="tooltip" style="display:inline; padding:0; width:200px;">
         <abbr class="hint">
             '.$formOpen.'
-                <button class="buttstyl" type= "'.$type.'" id="'.$name.'" name="btn_ico_'.$btnix.'"'.$btnTarget.
+                <button class="buttstyl" type= "'.$type.'"'.($name > '' ? ' id="'.sys_uid($name).'"' : '').' name="btn_ico_'.$btnix.'"'.$btnTarget.   # (was id="" without a name - and not unique)
                  ' style="color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" accesskey="'.$akey.'" '.$evnt.
                  ((trim(strip_tags(lang($labl))) === '' and $hint > '') ? ' aria-label="'.sys_enc(trim(strip_tags(lang($hint)))).'"' : '').'>'.   # Icon only: the hint names it
                 ' <data-ic class="'.$icon.'" style="font-size:'.$font.'; color:'.$fclr.';  '.$gbl_ButtnBgrd.'; "> </data-ic> '.
@@ -3570,13 +3570,13 @@ function htm_SwitchButt(# labl:'', hint:'', name:'switchbox_id', valu:'', list:[
     if ($wdth=='') $strWd= (max(mb_strlen($yes),mb_strlen($no))+2).'ch';
     else           $strWd= $wdth;
     $on  = sys_switchIsOn($valu);
-    $id  = 'id_'.sys_enc($name);
+    $id  = sys_uid('id_'.preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$name));   # Unique (two switches with the same name: the label switched the first)
     # Self-contained toggle: no external JS needed. The hidden input carries the state (1/0) in the form POST.
     $result = '
         <'.$gbl_progZoom.'>
         <abbr class="hint">
             <button type="button" role="switch" class="switchbox'.($on ? ' is-pressed' : '').'" aria-checked="'.($on ? 'true' : 'false').'"
-                style="width:'.$strWd.'; --sw-width: '.$strWd.'; '.($bclr>'' ? '--themeColr: '.$bclr.'; ' : '').'"
+                style="width:'.$strWd.'; --sw-width: '.$strWd.'; '.($bclr>'' ? '--themeColr: '.$bclr.'; ' : '').$styl.'"
                 id="'.$id.'"
                 onclick="var on= this.classList.toggle(\'is-pressed\'); this.setAttribute(\'aria-checked\', on); this.nextElementSibling.value= on ? \'1\' : \'0\';">
                 <span class="switchbox-yes">'.$yes.'</span>
@@ -3634,9 +3634,10 @@ function htm_SwitchButton(# labl, name:'switchbox_id', valu:'', wdth:'', bclr:''
     $result= $css.'
         <abbr class="hint">
             <small style="vertical-align:middle;">
-            <label class="switch" style="width:'.$strWd.'; --sw-width: '.$strWd.'; '.($bclr>'' ? '--themeColr: '.$bclr.'; ' : '').'">
+            <label class="switch" style="width:'.$strWd.'; --sw-width: '.$strWd.'; '.($bclr>'' ? '--themeColr: '.$bclr.'; ' : '').$styl.'">
                 <input type="hidden" name="'.$nm.'" value="0" />
-                <input type="checkbox" role="switch" id="id_'.$nm.'" name="'.$nm.'" value="1"'.($on ? ' checked' : '').' />
+                <input type="checkbox" role="switch" id="'.sys_uid('id_'.preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$name)).'" name="'.$nm.'" value="1"'.($on ? ' checked' : '').
+                    ((trim(strip_tags(lang($labl))) > '') ? ' aria-label="'.sys_enc(trim(strip_tags(lang($labl)))).'"' : '').' />
                 <span class="slider round"></span>
                 <span class="sw-yes">'.$yes.'</span>
                 <span class="sw-no">'.$no.'</span>
@@ -6370,7 +6371,8 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
         x.className = 'show';
         x.style.background = bclr;
         x.style.color = fclr;
-        setTimeout(function(){ x.className = x.className.replace('show', ''); }, tout);
+        clearTimeout(x.p2hTimer);      // A new message gets its full time (the timer of the previous one hid it early)
+        x.p2hTimer = setTimeout(function(){ x.className = x.className.replace('show', ''); }, tout);
     }");
 /*        
     run_Script("function deleteThisRow(table) {
