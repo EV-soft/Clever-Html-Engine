@@ -315,8 +315,12 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
     $iid= sys_uid($vrnt=='area' ? ($name ?: 'missing') : ($name=='' ? 'missing' : 'id_'.$name));   # Unique id (the same name can occur several times, e.g. in a loop)
     ($name=='') ? $inpIdNm= ' id="'.$iid.'" name="missing" '
                 : $inpIdNm= ' id="'.$iid.'" name="'.$name.'" ';
+    $ariaNm= (trim(strip_tags(lang($labl))) === '' and ($hint > '' or $plho > ''))   # No label: the field is named by its hint / placeholder (was nameless)
+           ? 'aria-label="'.sys_enc(trim(strip_tags(lang($hint))) ?: trim(strip_tags(lang($plho)))).'" ' : '';
+    $inpIdNm.= $ariaNm;
     $inpStyle= ' class="boxStyle" style="text-align: '.$algn.'; font-size: 14px; '. $dataStyle. $bord; //boxStyle - border: 1px solid var(--grayColor);
-    $eventInvalid= ' oninvalid="this.setCustomValidity('.sys_enc(json_encode(lang('@Wrong or missing data in ').trim(strip_tags($labl)).' !', JSON_UNESCAPED_UNICODE)).')" oninput="setCustomValidity(\'\')" ';   # (a ' in the label was a script error)
+    $fldName= trim(strip_tags(lang($labl))) ?: (trim(strip_tags(lang($hint))) ?: (trim(strip_tags(lang($plho))) ?: $name));   # No label: the hint, placeholder or name
+    $eventInvalid= ' oninvalid="this.setCustomValidity('.sys_enc(json_encode(lang('@Wrong or missing data in ').$fldName.' !', JSON_UNESCAPED_UNICODE)).')" oninput="setCustomValidity(\'\')" ';   # (a ' in the label was a script error)
     $pattern= '';
     $numPattern= ' pattern="^[^0-9\-]{0,4}\s?-?\d[\d\s.,]*\s?[^0-9]{0,4}$" ';   # Formatted numbers: "$ 1 234,50", "87 %", "-12.5"
 
@@ -335,7 +339,8 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
     $just= ''; 
 
     switch ($vrnt) { ## VARIANTS:
-        case 'intg' : $result.= '<input type= "number" '.$inpIdNm. $inpStyle. '"'.($step>'' ? ' step="'.$step.'"' : ''). ' value="'.$valu.'" '. $aktiv. $plh. $attr.' />';  break;
+        case 'intg' : $ival= preg_match('/\d/', (string)$valu) ? (string)(int)round(sys_toFloat($valu)) : '';   # An integer (1234.5 gave stepMismatch for every typed number)
+                      $result.= '<input type= "number" '.$inpIdNm. $inpStyle. '"'.($step>'' ? ' step="'.$step.'"' : ''). ' value="'.$ival.'" '. $aktiv. $plh. $attr.' />';  break;
         case 'text' : $result.= '<input type= "text" '.  $inpIdNm. $inpStyle. '" value="'. $valu.'" '. $eventInvalid. $aktiv. $plh. $attr.' />';  break;
         case 'dec0' : # Used for quantity - outputs unit as prefix or suffix
         case 'dec1' : # Used for Amount -  // SPACE as thousands separator
@@ -481,8 +486,8 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                             }   $result.= '</small>'.($subm ?? '').'</span>';  break;
 
         case 'opti' : $result.= ## OPTION:
-                            '<span class="fieldContent boxStyle"  style="'.$bord.' background-color; white; text-align: center; padding: 10px 4px 4px;"><small>';
-                            $result.= '<select class="styled-select" id="'.$iid.'" name="'.$name.'" '.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
+                            '<span class="fieldContent boxStyle"  style="'.$bord.' background-color: white; text-align: center; padding: 10px 4px 4px;"><small>';
+                            $result.= '<select class="styled-select" id="'.$iid.'" name="'.$name.'" '.$ariaNm.($events ?? '') .' '.$eventInvalid.'style="width: 98%; border-color: Gainsboro; '.($valu>'' ? 'font-weight: 600;':'color:var(--grenColr1)').($colr ?? '').'" '.$attr.' '.$aktiv.'> '; dvl_pretty();
                             $result.= '<option label="'.sys_enc(strip_tags(lang($plho))).'" value="'.sys_enc((string)$valu).'">'.lang('@Select!').'</option> ';  # title="'.$hint.'"     selected="'.$valu.'"
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
                                 $ov= sys_enc((string)($rec[0] ?? ''));                 # Escaped like $valu (a " in a value or text broke the list)
@@ -652,7 +657,7 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', valu:'', 
                         </form>';
                          break;'
 */
-        case 'pgrs' : if ($valu<0) $value=''; else $value=' value="'.$valu.'"';
+        case 'pgrs' : $value= (is_numeric($valu) and $valu >= 0) ? ' value="'.sys_enc((string)$valu).'"' : '';   # A number (was written raw: a " broke the tag; "" or text: indeterminate)
                       $result.= '<label for="'.$oid.'_pgrs">'.$icon.lang($labl).'</label>'. # Output Progress indicator
                                 '<progress id="'.$oid.'_pgrs" '.$value.(((string)$vmax > '') ? ' max="'.sys_enc($vmax).'"' : '').' '.$attr.'>
                                 </progress>';  break;
@@ -1420,6 +1425,8 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
                      $pars= ' filter-parsed ';
                 else $pars= '';
                 $sort= $sortInit;
+                if (($sortInit !== ' sorter-false ') and in_array($bdy[3] ?? '', ['0d','1d','2d','2%'], true))
+                    $sort= ' sorter-p2hNum '.$sort;            # Number columns: sorted as numbers (the field holds "1 234,50" - sorted as text: "-5,00" last). The first sorter- class wins
                 switch ($bdy[2]) { // '2:ContType'
                     case 'date': $sort.= ' sorter-isoDate '; break;
                     case 'ddwn': $sort= preg_replace('/sorter-\S+/', '', $sort).' sorter-select-text '; break;   # By the chosen option (the first sorter- class wins)
@@ -1549,19 +1556,19 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
                     $sortData= ' data-sort= "'. $RowIx. /*trim($valu,' '). /* */ '" ';   // Used to sort on unformatted raw data
                     if ($Export) {
                         if (strlen((string)$valu)>550) $cvrData.= sys_csvCell('To complex ! ('.strlen((string)$valu).')').',';
-                        else $cvrData.= sys_csvCell(lang((string)$valu)).',';  // Unformatted datapost - translated like on screen
+                        else $cvrData.= sys_csvCell((string)$valu).',';  // Unformatted datapost - as on screen (lang() removed @ and translated data)
                     }
 
             ## Special Output formats:
                 if (!($GLOBALS["Øshow"] ?? '')>0)
                     switch ($bdy[3]) { # OutFormat
                         case '0d': if ($valu==null) $valu= 0;       else $valu= number_format(sys_toFloat($valu), 0,DecimalSep,ThousandsSep); break;
-                        case '1d': if ($valu==null) $valu='';       else $valu= number_format(sys_toFloat($valu), 1,DecimalSep,ThousandsSep); break;
+                        case '1d': if ($valu===null or $valu==='') $valu='';  else $valu= number_format(sys_toFloat($valu), 1,DecimalSep,ThousandsSep); break;
                         case '2d': if ($valu==' ')  $valu= $valu;   else
-                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep); break;  //  88 888 888,88
+                                        if ($valu===null or $valu==='') $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep); break;  //  88 888 888,88  (0 was shown blank: 0==null)
                         case '2%': if ($valu==' ')  $valu= $valu;   else
-                                        if ($valu==null) $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep).' %';    break;
-                        case '>0': if (!(float)$valu>0) $valu= ' ';                      break; // 0 an less is shown as BLANK
+                                        if ($valu===null or $valu==='') $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep).' %';    break;
+                        case '>0': if (sys_toFloat($valu) <= 0) $valu= ' ';              break; // 0 and less is shown as BLANK (was !$valu>0: negative numbers were shown)
                         case '= ':  $valu= ' ';                                          break; // Values is shown as BLANK
                         case 'B':   $valu= '<b>#'.sprintf("%'.05d", $valu).'</b>';       break; // Values is shown as BOLD - ContType must be 'html' Format: #00000
                         case 'R':   $valu= '<font style="color:red;">'.$valu.'</font>';  break; // Values is shown in red - ContType must be 'html'
@@ -1773,6 +1780,17 @@ $ixalign= $ixalign ?? '';
 
 ### Init Tablesorter:   VIRKER DETTE ? eller $javaScripts ?
     run_Script("
+        $.tablesorter.addParser({                       /* Number columns: the value of the field in the program's number format - before .tablesorter(), else it is unknown */
+            id: 'p2hNum',
+            is: function () { return false; },
+            format: function (s, table, cell) {
+                var i= $(cell).find('input,select').first(), v= String(i.length ? i.val() : s).replace(/[\\s\\u00a0\\u202f%]/g, '');
+                v= ".json_encode(DecimalSep).' === "," ? v.replace(/\\./g, "").replace(",", ".") : v.replace(/,/g, "");'."
+                var m= v.match(/-?(\\d+(\\.\\d+)?|\\.\\d+)/);  return m ? parseFloat(m[0]) : '';
+            },
+            parsed: true,                               /* The filter searches the value too (the cell text is empty: the value is in a field) */
+            type: 'numeric'
+        });
         $('#table".$gbl_TblIx."').tablesorter({
             theme: 'blue',"
             .($parser ?? '')."
@@ -1956,7 +1974,7 @@ function htm_Field(# labl:'', icon:'', hint:'', name:'fld', body:'', wdth:'', st
     $fid= sys_uid('id_'.$name);
     $icon= ($icon>'') ? '<ic class="'.sys_enc($icon).'" style="color: '.($GLOBALS['gbl_iconColor'] ?? 'DarkGreen').'; margin: 0 5px;" aria-hidden="true"></ic>' : '';   # (icon was never shown)
     $lblTop= ($ftop>'') ? ' position: relative; top: '.$ftop.';' : '';    # (ftop was written raw into the label style: "font-size: 14px; 10px")
-    $result= '<div class="inpField" id="'.$fid.'" role="group"'.($labl>'' ? ' aria-labelledby="'.$fid.'_lbl"' : '').' style="margin: auto; min-width: 100px; width: '.$wdth.
+    $result= '<div class="inpField" id="'.$fid.'" role="group"'.($labl>'' ? ' aria-labelledby="'.$fid.'_lbl"' : '').' style="margin: auto; min-width: 100px; '.($wdth > '' ? 'width: '.$wdth.';' : '').
              '; display: inline-block; box-shadow:none; '.$attr.'"> '; // float: left;
     $result.= '<div class="boxStyle" style="padding:5px; margin-top:6px; '.$styl.' ">'.$body.'</div>';
     $result.= ' <abbr class= "hint">'.
@@ -2780,7 +2798,7 @@ function htm_IconButt(# labl:'', icon:'', hint:'', type:'submit', name:'', link:
                 <button class="buttstyl" type= "'.$type.'"'.($name > '' ? ' id="'.sys_uid($name).'"' : '').' name="btn_ico_'.$btnix.'"'.$btnTarget.   # (was id="" without a name - and not unique)
                  ' style="color:'.$fclr.'; background:'.$bclr.'; '.$wdth.'" accesskey="'.$akey.'" '.$evnt.
                  ((trim(strip_tags(lang($labl))) === '' and $hint > '') ? ' aria-label="'.sys_enc(trim(strip_tags(lang($hint)))).'"' : '').'>'.   # Icon only: the hint names it
-                ' <data-ic class="'.$icon.'" style="font-size:'.$font.'; color:'.$fclr.';  '.$gbl_ButtnBgrd.'; "> </data-ic> '.
+                ' <data-ic class="'.$icon.'" style="font-size:'.$font.'; color:'.$fclr.';"> </data-ic> '.
                 lang($labl). '&nbsp; 
                 </button>
             '.$formEnd.'
@@ -3803,7 +3821,7 @@ if (!empty($GLOBALS['gbl_CardForm'])) $form= '';     # Inside a card form: no fo
 if ($form>'') $result.= ' <form name="'.sys_enc($form).'" id="'.sys_enc($form).'">';
     $result.= '    
         <div class="grab-slider-field">
-            <div class="grab-slider-wrapper" title="'.lang($hint).'">
+            <div class="grab-slider-wrapper" title="'.sys_enc(strip_tags(lang($hint))).'">
                 <div class="grab-slider" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0" aria-label="'.sys_enc(strip_tags(lang($capt))).'" style="padding: 0 5px; font-size: 12px;">'.
                     '<abbr class= "hint" style="white-space: nowrap;">'.
                         lang($capt). (($icon>'') ? ' <i class="'.$icon.'"></i>' : '').
@@ -4636,7 +4654,7 @@ function htm_Menu_Leftout(# capt:'Clever html engine', data:[], wdth:'180px', st
             '<data-ic class="'.$icon.' fa-fw" style="font-size:16px;"></data-ic>';  
             echo                                                                    
             '<abbr class= "hint menulabl" >                                                             
-                <a href="'.$link.'" target=_self style="text-decoration: none; color: white; onhover {text-decoration: underline;}">'.
+                <a class="p2hLoLink" href="'.sys_enc((string)$link).'" target=_self style="text-decoration: none; color: white;">'.   # (href was raw; "onhover {...}" in style= did nothing)
                     lang($labl).
                 '</a> ';  
                 if ($hint>'') echo
@@ -6856,7 +6874,7 @@ function sys_toFloat($v) {
     $s= str_replace([' ', "\u{00A0}", "\u{202F}"], '', (string)$v);   # Thousands separators: space, nbsp, narrow nbsp
     if (DecimalSep !== ',') $s= str_replace([ThousandsSep, ','], '', $s);       # Decimal point (DecimalSep "."): commas are thousands
     elseif (strpos($s, ',') !== false) $s= str_replace(['.', ','], ['', '.'], $s);  # Comma is the decimal sign: dots are thousands
-    return preg_match('/-?\d+(\.\d+)?/', $s, $m) ? (float)$m[0] : 0.0;
+    return preg_match('/-?(\d+(\.\d+)?|\.\d+)/', $s, $m) ? (float)$m[0] : 0.0;     # Also ",5" and "-,75" (gave 5 and 75)
 }
 
 function scannSource($prefix='$name=',$suffix="'",$files=[]) 

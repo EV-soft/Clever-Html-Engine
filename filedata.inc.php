@@ -1,4 +1,4 @@
-<?php $DocFile='../filedata.inc.php';    $DocVers='1.5.0';    $DocRev1='2026-10-09';     $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php $DocFileInc='../filedata.inc.php';    $DocVers='1.5.0';    $DocRev1='2026-10-09';     $DocIni='evs';  $ModulNo=0; ## File informative only
 $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 /**
@@ -49,17 +49,18 @@ function csv_parse($filepath, $options = []) {
         'escape'    => '\\',
         'to_object' => FALSE,
     ), $options);
-# Read file, explode into lines
-    $string = file_get_contents($filepath);
-    $lines  = explode($options['eol'], $string);
-# Read the first row, consider as field names
-    $header = array_map('trim', explode($options['delimiter'], array_shift($lines)));
+# Read the records with fgetcsv: quoted fields, also with a line break or a delimiter inside, and quoted field names
+# (was explode() on the lines: "Full name" kept its quotes, a field with a line break became two rows; 'eol' is not needed any more)
+    $fh = fopen($filepath, 'r');
+    if ($fh === false) return FALSE;
+    $first = fgets($fh, 4);  if ($first !== "\xEF\xBB\xBF") rewind($fh);       # A UTF-8 BOM (Excel) is not part of the first field name
+    $header = fgetcsv($fh, 0, $options['delimiter'], $options['enclosure'], $options['escape']);
+    if (!is_array($header)) { fclose($fh);  return []; }
+    $header = array_map(fn($h) => trim((string)$h), $header);
 # Build the associative array
     $csv = [];
-    foreach ($lines as $line) {
-        if (empty($line)) continue;  // Skip if empty
-# Explode the line
-        $fields = str_getcsv($line, $options['delimiter'], $options['enclosure'], $options['escape']);
+    while (($fields = fgetcsv($fh, 0, $options['delimiter'], $options['enclosure'], $options['escape'])) !== FALSE) {
+        if ($fields === [null]) continue;  // Skip an empty line
 # Initialize the line array/object
         $temp   = $options['to_object'] ? new stdClass : [];
         foreach ($header as $index => $key) {
@@ -69,6 +70,7 @@ function csv_parse($filepath, $options = []) {
         }
         $csv[] = $temp;
     }
+    fclose($fh);
     return $csv;
 }
 

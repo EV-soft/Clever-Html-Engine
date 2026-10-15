@@ -6,7 +6,7 @@
 
 
 ## Regarding: $string= highlight_string($strCode,true); :
-if ($darkTheme= true) {
+if ($darkTheme ?? true) {                 # (was "= true": an assignment - $darkTheme= false of a project was overwritten)
     ini_set('highlight.comment', '#bdbdbd;');    // 'gray;');                    
     ini_set('highlight.default', 'Tomato;');
     ini_set('highlight.html',    'orange;');

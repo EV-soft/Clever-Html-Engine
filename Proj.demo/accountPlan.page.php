@@ -1,4 +1,4 @@
-<?php   $DocFile= './Proj.demo/accounPlan.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFile= './Proj.demo/accountPlan.page.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';
@@ -15,7 +15,7 @@ $needTinymce=     '0';
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'filedata.inc.php');
 
-htm_Page_( $titl='accounPlan.page.php',$hint=$©,info: 'File: '.$DocFile.' - ver:'.$DocVer,inis: '',algn: 'center', imag: $gbl_Imag='../_accessories/_background.png',attr: $gbl_Bord=false);
+htm_Page_( $titl='accountPlan.page.php',$hint=$©,info: 'File: '.$DocFile.' - ver:'.$DocVer,inis: '',algn: 'center', imag: $gbl_Imag='../_accessories/_background.png',attr: $gbl_Bord=false);
     
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 

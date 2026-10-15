@@ -1,4 +1,4 @@
-<?php  $DocFile0='../menu.inc.php';    $DocVer='1.5.0';    $DocRev='2026-10-09';       $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFile0='../menu.inc.php';    $DocVersInc='1.5.0';    $DocRev='2026-10-09';       $DocIni='evs';  $ModNo=0; ## File informative only
 $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE';
 
 

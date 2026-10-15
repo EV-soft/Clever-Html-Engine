@@ -1,4 +1,4 @@
-<?php   $DocFile= '.\funcscann.php';    $DocVer='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFileInc= '.\funcscann.php';    $DocVersInc='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
 
     # (Was: $d = dir("../../") - not used)
     // $paths = glob('../../*/*.{htm,php}',GLOB_BRACE); 
@@ -24,6 +24,20 @@
             if ($close !== false) $done= true;
         }
         return $out;
+    }
+
+    # The declaration with ";" after the ")" that ends its parameter list - not after other ")" (in strings or the description)
+    function endParams($line) {
+        $from= strpos($line, '(');  if ($from === false) return $line;
+        $depth= 0;  $q= '';
+        for ($i= $from, $n= strlen($line); $i < $n; $i++) {
+            $c= $line[$i];
+            if ($q !== '') { if ($c === '\\') $i++;  elseif ($c === $q) $q= '';  continue; }
+            if ($c === "'" or $c === '"') { $q= $c;  continue; }
+            if ($c === '(') $depth++;
+            elseif ($c === ')' and --$depth === 0) return (($line[$i+1] ?? '') === ';') ? $line : substr($line, 0, $i+1).';'.substr($line, $i+1);
+        }
+        return $line;
     }
 
     $basekeyList= [];
@@ -109,10 +123,10 @@ if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   #
                 $x= substr($funcN,strpos($funcN,'htm_'));
                 $x= substr($x,0,strpos($x,'('));
                 $keyList[] = $x;
+                $funcN= endParams($funcN);           // ";" after the parameter list only (was str_replace: every ")" - also in the description)
                 $funcN= preg_replace('~(?<![\w#])#{1,2} ~', '', $funcN); // Remove comment flags: "# " on the parameters and "## " before the description (gave "#Text")
                 $funcN= markParams($funcN);          // Only the parameter names - not words in strings and in the description (was: highlight_words)
                 $funcN= preg_replace('/\(/', '</strong>'.($hint > '' ? $hint.'</abbr>' : '').'(<i>', $funcN, 1);   // Add format code (the first "(" only) - and the hint after the name
-$funcN= str_replace(')',');',$funcN);
                 $funcN= ($hint > '' ? '<abbr class="hint" tabindex="0" style="position: relative; text-decoration: none;">' : '').
                         '<strong style="font-size: 16px;">'.ltrim(substr($funcN,strlen($searchWord))).'</i>';    // Add format code
 
