@@ -1319,10 +1319,10 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                 case 'show' : $mode= '" disabled value="';              break;
                 case 'rows' : spool( count($data).' '.lang($cpt[6]));  break;  //  $cpt[6]= feltSuffix
                 case 'html' : spool( ' '.lang($cpt[7] ?? ''));                  break;
-                case 'data' : spool( ' <input type= "'.$cpt[2].'" name="'.$cpt[3].'" title="'.lang($cpt[5]).   //  Input-field with name
-                    $mode.lang($cpt[6]).'" style="width:'.$cpt[1].'; text-align:'.$cpt[4].';" value="'.lang($cpt[7]).'" />&nbsp;&nbsp;'); break;
-                default:      spool( ' <input type= "'.$cpt[2].'" title="'.lang($cpt[5]).   //  Input-field without name (not saved!)
-                    $mode.lang($cpt[6]).'" style="width:'.$cpt[1].'; text-align:'.$cpt[4].';" value="'.lang($cpt[7]).'" />&nbsp;&nbsp;');
+                case 'data' : spool( ' <input type= "'.$cpt[2].'" name="'.sys_enc((string)($cpt[3] ?? '')).'" title="'.sys_enc(strip_tags(lang($cpt[5] ?? ''))).   //  Input-field with name (escaped: a " broke it)
+                    $mode.sys_enc(strip_tags(lang($cpt[6] ?? ''))).'" style="width:'.$cpt[1].'; text-align:'.$cpt[4].';" value="'.sys_enc(lang((string)($cpt[7] ?? ''))).'" />&nbsp;&nbsp;'); break;
+                default:      spool( ' <input type= "'.sys_enc((string)$cpt[2]).'" title="'.sys_enc(strip_tags(lang($cpt[5] ?? ''))).   //  Input-field without name (not saved!)
+                    $mode.sys_enc(strip_tags(lang($cpt[6] ?? ''))).'" style="width:'.$cpt[1].'; text-align:'.$cpt[4].';" value="'.sys_enc(lang((string)($cpt[7] ?? ''))).'" />&nbsp;&nbsp;');
             }
         } // foreach-TblCapt
 
@@ -1367,7 +1367,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
     spool( '    <tr style="height:32px;">');
     //if ($selectable) echo  '<th> </th>';
     foreach ($pref as $prf) { dvl_pretty();
-        spool( '<th class="filter-false sorter-false" style="width:'.$prf[1].' align:'.$prf[4][0].'; '.$gbl_HeaderFont.'"> '.
+        spool( '<th class="filter-false sorter-false" style="width:'.$prf[1].'; text-align:'.($prf[4][0] ?? 'center').'; '.$gbl_HeaderFont.'"> '.   # (was "width:5% align:..." - no ";": the width was ignored)
                 Lbl_Tip($prf[0],$prf[5],'SO',$h='0px').' </th>');
         $resizable_widths[]= $prf[1];
     }   $cNo= -1;
@@ -1382,7 +1382,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
     // htm_toast('<div style="color:red;"> DataError! '.$datCount.'(data)/'. $fldCount.'(flds)<div>');
     
     if ($selectable) spool(  '<th class="filter-false sorter-false" > </th>');
-    $colPos= $selectable ? 1 : 0;  $hiddCols= [];               # The positions of the hidden columns (their filter cells are hidden too)
+    $colPos= count($pref) + ($selectable ? 1 : 0);  $hiddCols= [];  $visCols= count(array_filter($body, function($b) { return ($b[2] ?? '') != 'hidd'; }));   # (the prefix columns come first - without them the wrong filter cell was hidden)# The positions of the hidden columns (their filter cells are hidden too)
     foreach ($body as $bdy) { dvl_pretty();
         $colfilt= ' ';
         $resizable_widths[]= $bdy[1]; # ColWidth
@@ -1402,8 +1402,8 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                      { $lblsuff= str_nl().'{'.lang('@Editable').'}'; $label= $bdy[0]; }
                 else { $lblsuff= '' /* str_nl().lang('@Not editable!') */ ; $label= markAllChars($bdy[0],'div','style="opacity:0.7; margin: 2px;"'); }
 
-                if ($cNo<=1) $tipplc='SO'; else if ($cNo=1) $tipplc='S'; else $tipplc='SW';
-                if ($cNo==count($body)) $tipplc='SW';
+                $tipplc= ($cNo<=1) ? 'SO' : 'S';                     # (was "else if ($cNo=1)": an assignment - the counter was set back to 1 in every column)
+                if ($cNo >= $visCols - 1) $tipplc='SW';   # The last visible column: the tip opens to the left
                 // if (addParser:) class="tags filter-parsed" data-value="sweden"
                 if (    // (true) or 
                     (($fldNames[0]=='ord_id') and ($fldNames[$cNo]=='ord_stat')) 
@@ -1444,7 +1444,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                          ' { display: none; }</style>');
     foreach ($suff as $suf) { dvl_pretty();
         $resizable_widths[]= $suf[1];
-        spool( '<th class="filter-false sorter-false" style="width:'.$suf[1].'; align:'.$suf[4][0].'; '.$gbl_HeaderFont.'">'.
+        spool( '<th class="filter-false sorter-false" style="width:'.$suf[1].'; text-align:'.($suf[4][0] ?? 'center').'; '.$gbl_HeaderFont.'">'.
              Lbl_Tip($suf[0],$suf[5],'SW',$h='0px').'</th>');
     }
     //echo '<th>'.'</th>';
@@ -1692,11 +1692,11 @@ $ixalign= $ixalign ?? '';
                     case 'text' :
                     case 'sttu' :   // "unused" Status
                                 { $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" value="'.sys_enc((string)$valu).'" '. //'contentEditable="true" '.
-                                       ' placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.$fltStyl.' '.$captStyle.'" /> ';  //  font-style:inherit;
+                                       ' placeholder="'.sys_enc(strip_tags(lang($bdy[7] ?? ''))).'"'.$txAlign.$inpBg.$fltStyl.' '.$captStyle.'" /> ';//  font-style:inherit;
                                   break;
                                 }
                     default   : { $rowField.= '"'.$sortData.'> <input type= "text" name="'.$fldNames[$ColIx].'[]" value="'.sys_enc((string)$valu).'" '.
-                                        'placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.$inpBg.$fltStyl.'" /> ';
+                                        'placeholder="'.sys_enc(strip_tags(lang($bdy[7] ?? ''))).'"'.$txAlign.$inpBg.$fltStyl.'" /> ';
                                        // htm_toast('Invalid type: '.$Body[2].' in htm_Table() - error !','orange','black');
                                 }
                     }   // :switch InputTypes
@@ -1711,7 +1711,7 @@ $ixalign= $ixalign ?? '';
                     if ($bdy[0]=='@Order Date') $currDate= date('Y-m-d'); else $currDate='';
                     $newRow.= '<td style="text-align:'.$bdy[4][0].'; width:'.$bdy[1].';" >'. # ColWidth
                               '<input type= "text" '.$GotoEdit.' name="'.$fldNames[$ColIx].'[]" aria-label="'.sys_enc(trim(strip_tags(lang($bdy[0])))).'" value="'.$currDate.
-                              '" placeholder="'.lang($bdy[7] ?? '').'"'.$txAlign.' width: 98%;  background-color: lightyellow; font-style:inherit;" /> </td>';
+                              '" placeholder="'.sys_enc(strip_tags(lang($bdy[7] ?? ''))).'"'.$txAlign.' width: 98%;  background-color: lightyellow; font-style:inherit;" /> </td>';
                               if (!in_array($bdy[2],['show','indx','calc'])) $GotoEdit= '';
                               }
             };  //  foreach $RowBody
@@ -1738,8 +1738,8 @@ $ixalign= $ixalign ?? '';
                                                     Lbl_Tip($Suf[6],lang('@Copy pos: ').$RowIx,'SW','0px'). '</button>'; }
                             if ($Suf[0]=='@Rename') { $output='<button type= "submit" name="btn_ren_'.$btnSuff.'>'.
                                                     Lbl_Tip($Suf[6],lang('@Rename pos: ').$gbl_TblIx.'_'.$RowIx,'SW','0px'). '</button>'; }
-                            if ($Suf[0]=='@Select') { $output='<input type= "checkbox" name="btn_sel_'.$btnSuff.
-                                                    Lbl_Tip($Suf[6],lang('@Select pos: ').$RowIx,'SW','0px'). ' />'; }
+                            if ($Suf[0]=='@Select') { $output='<label><input type= "checkbox" name="btn_sel_'.$btnSuff.' />'.      # (the tip was written inside the <input> tag)
+                                                    Lbl_Tip($Suf[6],lang('@Select pos: ').$RowIx,'SW','0px'). '</label>'; }
                         }
                         spool( '<td style="text-align:'.$Suf[4][0].'; width:'.$Suf[1].';" disabled >'.$output.'</td>');
                     }
