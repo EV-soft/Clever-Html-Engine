@@ -8,9 +8,9 @@ $©= '𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  20
  */
 
 function ReadCSV($filepath='ISO639-1.csv') {    // CSV_file2arr
-    $row = 1;   $result= [''];
+    $row = 1;   $result= [];             # (was [''] - the first "row" was an empty string)
     if (($handle = fopen($filepath, 'r')) !== FALSE) {
-    while (($data = fgetcsv($handle, 1000)) !== FALSE) {
+    while (($data = fgetcsv($handle, 0, ',', '"', '\\')) !== FALSE) {     # escape given: PHP 8.4 deprecates the default; 0: no line limit (was 1000)
             $num = count($data);
             $row++;      $rec= [];
             for ($c=0; $c < $num; $c++)
@@ -26,7 +26,7 @@ function WriteCSV($filepath='',$list=[]) {     // arr2CSV_file
     // $list = array ( array('aaa', 'bbb', 'ccc', 'dddd'), array('123', '456', '789'), array('"aaa"', '"bbb"') );
     $fp = fopen($filepath, 'w');
     if ($fp) {
-        foreach ($list as $fields) { fputcsv($fp, $fields); }
+        foreach ($list as $fields) { fputcsv($fp, $fields, ',', '"', '\\'); }
         fclose($fp);
     }
 }
@@ -64,8 +64,8 @@ function csv_parse($filepath, $options = []) {
         $temp   = $options['to_object'] ? new stdClass : [];
         foreach ($header as $index => $key) {
             $options['to_object']
-                ? $temp->{trim($key)} = trim($fields[$index])
-                : $temp[trim($key)]   = trim($fields[$index]);
+                ? $temp->{trim($key)} = trim((string)($fields[$index] ?? ''))     # A short row: '' (was a warning and trim(null))
+                : $temp[trim($key)]   = trim((string)($fields[$index] ?? ''));
         }
         $csv[] = $temp;
     }

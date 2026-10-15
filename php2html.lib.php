@@ -606,9 +606,10 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'noUse', 
             </div>
         </abbr>
         <div id="'.sys_uid($name).'" class="p2hInbox" '.$disa.' data-ph="'.sys_enc(strip_tags(lang($plho))).'"'.   /* The inner div-field content */
+            ($canEdit ? ' role="textbox" aria-multiline="true" oninput="this.nextElementSibling.value= this.innerHTML;"' : '').
             ' style="font-size: smaller; '.$attr.' ">'.
                     $valu.
-        '</div>
+        '</div>'.($canEdit ? '<input type="hidden" name="'.$name.'" value="'.sys_enc((string)$valu).'" />' : '').'
     </div>';
     if (!$rtrn) echo $result; else return $result;
 } # htm_Inbox
@@ -1139,16 +1140,19 @@ function p2h_rowActs($acts) {
   var T= '.json_encode(['ask'=>strip_tags(lang('@Delete the row?')), 'none'=>strip_tags(lang('@Nothing to undo'))], JSON_HEX_TAG | JSON_HEX_APOS).';
   function upd(t) { if (window.jQuery && t.config) jQuery(t).trigger("update"); }
   function rows(tb) { return [].filter.call(tb.children, function(r) { return r.tagName === "TR" && r.classList.contains("row") && r.style.display !== "none"; }); }
-  function fresh(tr) {                                     /* A copy is a new record: no ids, the record id (first hidden field) empty */
+  function fresh(tr, src) {                                /* A copy is a new record: no ids, the record id (the field of a hidden column) empty */
     tr.removeAttribute("id");  tr.querySelectorAll("[id]").forEach(function(e) { e.removeAttribute("id"); });
-    var h= tr.querySelector("input[type=hidden]");  if (h) h.value= "";
+    var h= null;  [].forEach.call(tr.cells, function(td) { if (!h && td.style.display === "none") h= td.querySelector("input[type=hidden]"); });
+    if (h) h.value= "";                                    /* (was the first hidden field - in a chck column that is the checkbox state) */
+    var a= src.querySelectorAll("select"), b= tr.querySelectorAll("select");      /* cloneNode() does not keep the chosen option */
+    for (var i= 0; i < a.length; i++) if (b[i]) b[i].value= a[i].value;
   }
   document.addEventListener("click", function(e) {
     var b= e.target.closest && e.target.closest(".p2hRowAct");  if (!b) return;
     e.preventDefault();
     var tr= b.closest("tr"), tb= tr.parentNode, t= tr.closest("table"), st= t.p2hUndo || (t.p2hUndo= []), a= b.dataset.act;
     if (a === "del") sysConfirm(T.ask, function() { st.push({k: "del", tr: tr, next: tr.nextSibling, tb: tb});  tb.removeChild(tr);  upd(t); });
-    else if (a === "copy") { var c= tr.cloneNode(true);  fresh(c);  tb.insertBefore(c, tr.nextSibling);  st.push({k: "add", tr: c});  upd(t); }
+    else if (a === "copy") { var c= tr.cloneNode(true);  fresh(c, tr);  tb.insertBefore(c, tr.nextSibling);  st.push({k: "add", tr: c});  upd(t); }
     else if (a === "up" || a === "down") {
       var l= rows(tb), i= l.indexOf(tr), o= l[a === "up" ? i - 1 : i + 1];  if (!o) return;
       st.push({k: "move", tr: tr, next: tr.nextSibling, tb: tb});
@@ -1927,7 +1931,7 @@ function htm_Embed(# name:'', type:'application/pdf', wdth:'800px', vhgh:'2100px
 function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:false,ftop:'') #FIELD:
     $labl='',       # string: label for the box
     $body='',       # string: Html content
-    $icon='',       # string: Class: icon to the left of ?? !
+    $icon='',       # string: Class: icon to the left of the label
     $hint='',       # string: The hint on hover label
     $name='fld',    # string: field name
     $wdth='',       # string: field width
@@ -1945,13 +1949,15 @@ function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',
         default : $lblalign = 'margin-left:   auto;';
     }
     $fid= sys_uid('id_'.$name);
-    $result= '<div class="inpField" id="'.$fid.'" role="group"'.($labl>'' ? ' aria-labelledby="'.$fid.'_lbl"' : '').' style="margin: auto; min-width: 100px; width: '.$wdth.'; top: '.$ftop.
+    $icon= ($icon>'') ? '<ic class="'.sys_enc($icon).'" style="color: '.($GLOBALS['gbl_iconColor'] ?? 'DarkGreen').'; margin: 0 5px;" aria-hidden="true"></ic>' : '';   # (icon was never shown)
+    $lblTop= ($ftop>'') ? ' position: relative; top: '.$ftop.';' : '';    # (ftop was written raw into the label style: "font-size: 14px; 10px")
+    $result= '<div class="inpField" id="'.$fid.'" role="group"'.($labl>'' ? ' aria-labelledby="'.$fid.'_lbl"' : '').' style="margin: auto; min-width: 100px; width: '.$wdth.
              '; display: inline-block; box-shadow:none; '.$attr.'"> '; // float: left;
     $result.= '<div class="boxStyle" style="padding:5px; margin-top:6px; '.$styl.' ">'.$body.'</div>';
     $result.= ' <abbr class= "hint">'.
             ($labl>'' ? 
-               '<label id="'.$fid.'_lbl" style="font-size: 14px; '.$ftop. '">
-                    <div style="white-space: nowrap; box-shadow: none; border: none;'.$lblalign.'">'.lang($labl).'</div>
+               '<label id="'.$fid.'_lbl" style="font-size: 14px;'.$lblTop.'">
+                    <div style="white-space: nowrap; box-shadow: none; border: none;'.$lblalign.'">'.$icon.lang($labl).'</div>
                </label>'
                : '').
                ($hint>''? ('<data-hint style="top: 45px; left: 2px;">'.lang($hint).'</data-hint>'):'').'
@@ -3370,7 +3376,7 @@ function htm_PageHelp(# rtrn:false)
     }
     if ($lines) $winDone= true;
     if (!$lines) {
-        $result= '<button type="button" class="p2hHelpButt" disabledtitle="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
+        $result= '<button type="button" class="p2hHelpButt" disabled title="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
         if (!$rtrn) echo $result; else return $result;
         return;
     }
