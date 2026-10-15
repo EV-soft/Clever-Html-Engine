@@ -19,7 +19,7 @@ require_once ($sys.'php2html.lib.php');
 
 // $darkTheme= true;
 
-htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hint=$©,$info='File: '.$DocFile.' - Ver:'.$DocVer, $inis='',$algn='center', $gbl_Imag='', $gbl_Bord=false);
+htm_Page_($titl='PHP2HTML - Introduction to the systems most used modules:',$hint=$©,info: 'File: '.$DocFile.' - Ver:'.$DocVer, inis: '',algn: 'center', imag: $gbl_Imag='', attr: $gbl_Bord=false);
 
     htm_Menu_Leftout(capt:'Clever html engine', data:$menudata, foot:'PHP2HTML', styl:'top:88px;'); 
     run_script('desc_div("narrow","capt");');   // Init htm_Menu_Leftout() to narrow state
@@ -193,11 +193,11 @@ $strCode= '// HTML:
             Cards can be used as a "Local Menu" and to keep overview...<br>
             Example: htm_Card_(<abbr class= "hint">
             <data-hint style="background-color:#151515;"> '. highlight_code(
-                "htm_Card_(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', clas:'cardW720', wdth:'', styl:'background-color: white;', attr:''", styl:'color:'.'blue; font-style:italic;').
+                "htm_Card_(capt:'@CARDS:', icon:'fas fa-info', hint:'', form:'', acti:'', wdth:'', styl:'background-color: white;', attr:'', clas:'cardW720'", styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>) and htm_Card_end(<abbr class= "hint">
             <data-hint>htm_Card_end('. highlight_code(
-                "labl:'@Save', icon:'', hint:'', name:'', form:'', subm:true, attr:'', akey:'', kind:'save', simu:false)", styl:'color:'.'blue; font-style:italic;').
+                "labl:'@Save', icon:'', hint:'', kind:'save', name:'', form:'', attr:'', subm:true, akey:'', simu:false)", styl:'color:'.'blue; font-style:italic;').
             '</data-hint>
             Parameters</abbr>)
 		');
@@ -232,7 +232,7 @@ $strCode= '// HTML:
             Row wise it can: Create - Change - Delete - Spec. Buttons - set background color<br>
             Above and underneth the table, you can use special captions and notes.<br>
             Example: htm_Table(<abbr class= "hint"><data-hint>htm_Table('.
-            highlight_words('capt:[], pref:[], body:[],suff:[], note:\'\', data:[],filt:true,sort:true,crea:true, modi:true, vhgh:\'400px\',  styl:\'\',  from:__FILE__,list:[],expo:\'\')','','color:'.'red; ').
+            highlight_words('capt:[], pref:[], body:[], suff:[], note:\'\', list:[], data:[], wdth:\'98%\', vhgh:\'400px\', styl:\'\', filt:true, sort:true, crea:true, modi:true, from:__FILE__, expo:\'\')','','color:'.'red; ').
             '</data-hint>Parameters</abbr>)
 		');
 	htm_Card_end();

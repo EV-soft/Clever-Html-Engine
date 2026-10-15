@@ -15,7 +15,7 @@ $needTinymce=     '0';
 require_once ($sys.'php2html.lib.php');
 require_once ($sys.'filedata.inc.php');
 
-htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
+htm_Page_( $titl='accounPlan.page.php',$hint=$©,info: 'File: '.$DocFile.' - ver:'.$DocVer,inis: '',algn: 'center', imag: $gbl_Imag='../_accessories/_background.png',attr: $gbl_Bord=false);
     
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
@@ -25,7 +25,7 @@ htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver
     // $accoPlan= newFieldOrder($accoPlan,['pln_id__','pln_nmbr','pln_name','pln_type','pln_from','pln_vat_','pln_sald','pln_curr','pln_cour','pln_shrt','pln_stat']);
     // arrPretty($accoPlan,'$accoPlan');
     
-    htm_Card_($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',$form= $fm='plan',$acti= '',$clas= 'cardW110',$wdth= '',$styl= 'background-color: white;',$attr= '');
+    htm_Card_($capt= '@Account Plan: (Danish standard)',$icon= 'fas fa-info',$hint= '',form: $fm='plan',acti: '',clas: 'cardW110',wdth: '',styl: 'background-color: white;',attr: '');
     htm_Table(capt:[['@Danish Business Authority\'s standard.', 'Width', 'html', 'OutFormat', 'horJust', 'Tip', '', '']],
         pref:[],    #  Kontoplan baseret på Erhvervsstyrelsens standard.
         body:[
@@ -58,7 +58,7 @@ htm_Page_( $titl='accounPlan.page.php',$hint=$©,$info='File: '.$DocFile.' - ver
             [id^=HideBody] { max-height: none !important; overflow: visible !important; }
         }</style>';
         
-    htm_Card_end('@Save','','@Save to database','save',$fm,true); 
+    htm_Card_end('@Save','','@Save to database',name: 'save',form: $fm,subm: true); 
     htm_nl();                                     # Erhvervsstyrelsen har udgivet en standard kontoplan med tilhørende vejledning
     echo str_WithHint($labl='@Kontoplan v1, 2019',$hint='@The Danish Business Authority has published a standard chart of accounts with accompanying guidance til postering på kontiene.',$icon='').'<br><br>';
 //  echo '<a href="https://erhvervsstyrelsen.dk/sites/default/files/2019-03/Vejledning%20til%20den%20frivillige%20standardkontoplan%20V.1.pdf" target="_blank">Vejledning til standard kontoplanen</a><br><br>';

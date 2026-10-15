@@ -14,11 +14,11 @@ $needTinymce=     '0';
 require_once ($sys.'php2html.lib.php');
 require_once('docHelp.inc.php');                  # docExample(): the code shown is the code that runs
 
-htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$DocVer,$inis='',$algn='center', $gbl_Imag='../_accessories/_background.png',$gbl_Bord=false);
+htm_Page_($titl='other.page.php',$hint=$©,info: 'File: '.$DocFile.' - ver:'.$DocVer,inis: '',algn: 'center', imag: $gbl_Imag='../_accessories/_background.png',attr: $gbl_Bord=false);
     // $menudata is set in: project.init.php
     htm_Menu_TopDown(capt:'Clever html engine',data:$menudata, foot:'PHP2HTML', styl:'top:0px;', note:$menunote); 
     htm_nl(2);
-    htm_Card_($capt= 'Other htm_functions:',$icon= 'fas fa-info',$hint= '',$form= '',$acti= '',$clas= 'cardW480',$wdth= '',$styl= 'background-color: white;',$attr= '' /* ,$where='Undefined',$BookMark='' */ );
+    htm_Card_($capt= 'Other htm_functions:',$icon= 'fas fa-info',$hint= '',form: '',acti: '',clas: 'cardW480',wdth: '',styl: 'background-color: white;',attr: '' /* ,$where='Undefined',$BookMark='' */ );
                 
     htm_TextDiv("There are a lot of small functions <br>
             that could be mentiond here.
@@ -30,19 +30,19 @@ htm_Page_($titl='other.page.php',$hint=$©,$info='File: '.$DocFile.' - ver:'.$Do
     \$icon='',           # string: The iconclass ( class=\"fas fa-plus\" ) 
     \$hint='',           # string: hint about the button function                     
                                                                                       
+    \$kind='home',       # string: save, navi, goon, erase, create, home (Appearance) 
     \$form='',           # string: The form the element belongs to, if a name is given
+    \$acti='',           # string: Function to run                    
+                                                                                      
     \$wdth='',           # string: The width of the button                            
     \$attr='',           # string: Generel use e.g. ' action= \"\$link\" '            
                                                                                       
     \$akey='',           # string: Shortcut to activate the button                    
-    \$kind='',           # string: save, navi, goon, erase, create, home (Appearance) 
-    \$rtrn=true,         # bool:   Act as procedure: Echo string, or as function: Return string
-                        
     \$tplc='LblTip_text',# string: Class for Placement of the tooltip 
     \$tsty='',           # string: Style for Placement of the tooltip 
-    \$acti='',           # string: Function to run                    
     \$idix='',           # string: ix-suffix on name/id               
-    \$disa=false         # bolean: 'disabled' to deactivate the button
+    \$disa=false,        # bolean: 'disabled' to deactivate the button
+    \$rtrn=false         # bool:   Act as procedure: Echo string, or as function: Return string
     ",attr:'white-space:pre;'); 
 
     htm_TextDiv("

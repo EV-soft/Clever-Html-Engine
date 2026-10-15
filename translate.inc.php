@@ -175,9 +175,9 @@ function scannLngStrings($code= 'dk') {
     echo '<br>'.lang('@The file').'<b> _trans.'.$code.'.tmp.json</b> '.
          lang('@contains the translation-data<br>You can use it to update _trans.sys.json.<br>').
          lang('@You can also let Gemini translate all strings containing "en ???: " and get a complete translation group to substitupe in translate file.(_trans.sys.json)');
-    htm_Input($labl='_trans.'.$code.'.tmp.json',$plho='@Empty !',$icon='',$hint='@The newly generated file _trans.'.$code.'.tmp.json',
-              $type= 'area',$name='file',$valu= $tempData,
-              $form='',$wdth='930px',$algn='left',$attr= ' wrap="off"',$rtrn=false,$unit='',$disa=false,$rows='10');
+    htm_Input($labl='_trans.'.$code.'.tmp.json',plho: '@Empty !',icon: '',hint: '@The newly generated file _trans.'.$code.'.tmp.json',
+              vrnt: $type= 'area',name: 'file',valu: $tempData,
+              form: '',wdth: '930px',algn: 'left',attr: ' wrap="off"',rtrn: false,unit: '',disa: false,rows: '10');
 
     htm_nl(2);
     echo '<br><br>'.lang('@<b>The file with all keys: sys_2Google.txt</b><br>You can use it in Google translate.<br>');
@@ -186,9 +186,9 @@ function scannLngStrings($code= 'dk') {
                                  // $gog= file_get_contents ("sys_2Google.txt");
                                  // foreach ($gog as $line) $string= $string + '<br>' + $line;
     
-    htm_Input($labl='sys_2Google.txt',$plho='@Empty !',$icon='',$hint='@The newly generated file to Google-translate',
-              $type= 'area',$name='goog',$valu= $googleData,
-              $form='',$wdth='930px',$algn='left',$attr=' wrap="off"',$rtrn=false,$unit='',$disa=false,$rows='10');
+    htm_Input($labl='sys_2Google.txt',plho: '@Empty !',icon: '',hint: '@The newly generated file to Google-translate',
+              vrnt: $type= 'area',name: 'goog',valu: $googleData,
+              form: '',wdth: '930px',algn: 'left',attr: ' wrap="off"',rtrn: false,unit: '',disa: false,rows: '10');
     htm_nl(2);
 
     $i= 0;
@@ -200,13 +200,13 @@ function scannLngStrings($code= 'dk') {
     
     echo '<br><br><b>'.lang('@Status:').' '. round(100-($miss/$n*100)). ' % '.lang('@translated').'</b><br>'.lang('@There are missing').': '.$miss.' of '.count($arrStrings);
     echo '<br>';
-    htm_Input($labl='@Missing translate',$plho='@Empty !',$icon='',$hint=lang('@Missing in ').$nati,
-              $type= 'area',$name='goog',$valu=$strMiss,$form='',$wdth='930px',$algn='left',$attr= '',$rtrn=false,$unit='',$disa=false,$rows='10');
+    htm_Input($labl='@Missing translate',plho: '@Empty !',icon: '',hint: lang('@Missing in ').$nati,
+              vrnt: $type= 'area',name: 'goog',valu: $strMiss,form: '',wdth: '930px',algn: 'left',attr: '',rtrn: false,unit: '',disa: false,rows: '10');
 
     $trns= file_get_contents ("../_trans.sys.json");
     echo '<br><br><b>Active translate table</b><br>';
-    htm_Input($labl='_trans.sys.json',$plho='@Empty !',$icon='',$hint='@Here you can see the actuel translate table',
-              $type= 'area',$name='goog',$valu=$trns, $form='',$wdth='930px',$algn='left',$attr=' wrap="off"',$rtrn=false,$unit='',$disa=false,$rows='10');
+    htm_Input($labl='_trans.sys.json',plho: '@Empty !',icon: '',hint: '@Here you can see the actuel translate table',
+              vrnt: $type= 'area',name: 'goog',valu: $trns, form: '',wdth: '930px',algn: 'left',attr: ' wrap="off"',rtrn: false,unit: '',disa: false,rows: '10');
     echo '<br><br>';
 } // scannLngStrings();
 

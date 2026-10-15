@@ -116,7 +116,7 @@ method          Method used for returning the created QR code image (PNG): BASE6
         htm_Input(labl:'htm_Input(Dec2)',  plho:'', icon:'', hint:'Demo of htm_Input Field type dec2: right aligned number with %-suffix',  vrnt:'dec2', name:'dec2a', valu:'87654321',  form:'', wdth:'', algn:'right',  attr:'', rtrn:false, unit:' %');
         htm_nl(2);
         htm_Input(labl:'@htm_Input(num1)', plho:'', icon:'', hint:'@Demo of htm_Input Field type numb: number with 1 decimal',              vrnt:'num1', name:'num1',  valu:'87654321',  form:'', wdth:'150px;', algn:'center');
-        htm_Input(     '@htm_Input(num0)',      '',      '',      '@Demo of htm_Input Field type numb: left-justified number',                   'num0',      'num0',       '87654321',      '',      '150px;');
+        htm_Input(     '@htm_Input(num0)',      plho: '',      icon: '',      hint: '@Demo of htm_Input Field type numb: left-justified number',                   vrnt: 'num0',      name: 'num0',       valu: '87654321',      form: '',      wdth: '150px;');
         htm_Input(labl:'@htm_Input(Date)', plho:'', icon:'', hint:'@Demo of htm_Input Field type date with browser popup selector',         vrnt:'date', name:'date',  valu:$date,       form:'', wdth:'160px',  algn:'center');
     htm_Fieldset_end();
     htm_nl(2);
@@ -197,18 +197,18 @@ method          Method used for returning the created QR code image (PNG): BASE6
                     Records can be sorted, filtered, created, modifyed and more...<br>
                     The visibly rows can be scrolled in a window below the fixed header.
                     ',
-        $tblData,               # = array(),
+        data: $tblData,               # = array(),
        /*  array( [['1'],['@Input VAT'],['66200'],['25,00'],['']], 
                [['2'],[''],[''],[''],[''] ], 
                [['3'],[''],[''],[''],[''] ] ), */
-        $FilterOn= true,        # Mulighed for at skjule records som ikke matcher filter   //  Virker ikke med hidd-felter!
-        $SorterOn= true,        # Mulighed for at sortere records efter kolonne indhold
-        $CreateRec=false,        # Mulighed for at oprette en record
-        $ModifyRec=true,        # Mulighed for at vælge og ændre data i en row
-        $ViewHeight= '200px',   # Højden af den synlige del af tabellens data
-        $TblStyle= 'background-color: lightyellow;',
-        $CalledFrom='',         // = __FUNCTION__
-        $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
+        filt: $FilterOn= true,        # Mulighed for at skjule records som ikke matcher filter   //  Virker ikke med hidd-felter!
+        sort: $SorterOn= true,        # Mulighed for at sortere records efter kolonne indhold
+        crea: $CreateRec=false,        # Mulighed for at oprette en record
+        modi: $ModifyRec=true,        # Mulighed for at vælge og ændre data i en row
+        vhgh: $ViewHeight= '200px',   # Højden af den synlige del af tabellens data
+        styl: $TblStyle= 'background-color: lightyellow;',
+        from: $CalledFrom='',         // = __FUNCTION__
+        list: $Criterion= ['','']     # Test [DataKolonneNr, > grænseværdi] Undlad spec. feltColor
     );
 
         htm_Card_( capt:'@PHP Source-code: htm_Table();', icon:'fas fa-code', hint:'@View part of the demo source-code. !', form:'', acti:'', clas:'cardW960', wdth:'640px', styl:'background-color: lightgray;', attr:'margin:0;', help:'CustHelp.htm');
@@ -631,8 +631,8 @@ STRING
         </small>
         That means a simpler way to call functions.<br><br>
         Positional arguments (fixed order - all arguments up to the last one you need):<br><code><div style="background-color:whitesmoke">
-        htm_Input($labl=\'@htm_Input(Dec2)\', $plho=\'\', $hint=\'@Demo of htm_Input Field type dec2: number with 2 decimal\', ,<br>
-         $vrnt=\'dec2\', $name=\'dec2\', $valu=$dec2, $wdth=\'\', $algn=\'center\', $unit=\'&lt;$ \');</div></code><br><br>
+        htm_Input(\'@htm_Input(Dec2)\', \'\', \'@Demo of htm_Input Field type dec2: number with 2 decimal\', \'\',<br>
+         \'dec2\', \'dec2\', $dec2, [], \'\', \'\', \'center\', \'\', \'\', \'&lt;$ \');</div></code><br><br>
         Named arguments (free order - only the ones you need):<br><code><div style="background-color:whitesmoke">
         htm_Input('.b('labl').':\'@htm_Input(Dec2)\', '.b('vrnt').':\'dec2\','.b('name').':\'dec2\','.b('valu').':$dec2,'.b('unit').':\'&lt;$ \','.
         b('hint').':\'@Demo of htm_Input Field type dec2: number with 2 decimal\');</div></code><br>

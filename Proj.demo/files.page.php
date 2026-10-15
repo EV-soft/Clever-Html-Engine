@@ -26,7 +26,7 @@ htm_Page_(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag:
          |    └──────► Content kind: <i>lib</i>/<i>inc</i><i>/min</i>/<i>css</i>/<i>page</i>/<i>dat</i>/...  <br>
          └───────────► File name: descriptive word     <br>
                                     <br>
-    ','left',$marg='8px',$attr='line-height: 0.6;');
+    ','left',$marg='8px',attr: 'line-height: 0.6;');
     
     htm_TextPre('For now there are the following files:
        _assets              (folder: the libraries - jquery, tablesorter, font-awesome, tinymce, pdfview, dialog-polyfill)
@@ -48,7 +48,7 @@ htm_Page_(titl:'files.page.php', hint:'', info:'', inis:'', algn:'center', imag:
        card.<b>page</b>.php        Intro...
        table.<b>page</b>.php       Intro...
        translate.<b>page</b>.php   Intro...
-       And more...<br>','left',$marg='8px',$attr='line-height: 1.4;');
+       And more...<br>','left',$marg='8px',attr: 'line-height: 1.4;');
        
     htm_Card_end();
 

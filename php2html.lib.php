@@ -254,35 +254,35 @@ function set_Style($att='',$string='') {
 ## ver 1.2.0 # PHP7: $labl='',$plho= '@Enter...',$icon='',$hint='',$type= 'text',$name= '',$valu= '',$form= '',$wdth= '100%',$algn= 'left',$attr= '',$rtrn= false,$unit= '',$disa= false,$rows= '2',$step= '',$list= [],$llgn= 'R',$bord= '',$ftop= ''
 
 # An advanced object rel. in-output of data [Necessary basic element]
-function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', name:'', valu:'', form:'', wdth:'100%', algn:'left', attr:'', rtrn:false, unit:'', disa:false, rows:'2', step:'', list:[], llgn:'R', bord:'', ftop:'', lpos:'')
+function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', name:'', valu:'', list:[], form:'', wdth:'100%', algn:'left', bord:'', attr:'', unit:'', disa:false, rows:'2', step:'', llgn:'R', ftop:'', lpos:'', rtrn:false)
 
     # Generel order:
     $labl= '',              # string: Translated label above the input field
-    $plho= '@Enter...',     # string: Translated placeholder shown when field is empty. Default: Enter...
     $icon= '',              # string: The icon left of the label (label prefix)
     $hint= '',              # string: Translated description for the field
+    $plho= '@Enter...',     # string: Translated placeholder shown when field is empty. Default: Enter...
     
     $vrnt= 'text',          # string: Input Variant - text, date, ... Look at source ! 
     $name= '',              # string: Set the fields name (and id)
     $valu= '',              # string: The current content in input field
-    $form= '',              # string: With Local form given, click on showed OK-butt to submit
+    $list= [],              # array:  Data for subitems in "multi-list" (eg. options, checkbox, radiolist) {opti:value,label,hint,attr}
     
+    $form= '',              # string: With Local form given, click on showed OK-butt to submit
     $wdth= '100%',          # string: Width of the field-container
     $algn= 'left',          # string: The alignment of input content Default: left
-    $attr= '',              # string: Give more (special / non system) input attrib to the input (height priority)
-    $rtrn= false,           # bool:   Act as procedure: Echo result, or as function: Return string
+    $bord= '',              # string: BoxBorder color to mark required/optional field.   Default= 'border: 1px solid var(--grayColor);'
     
     # htm_Input() only:
+    $attr= '',              # string: Give more (special / non system) input attrib to the input (height priority)
     $unit= '',              # string: A unit added to the content eg. currency or % If in front: '<' it is added as a prefix, else a suffix
     $disa= false,           # bool:   Disable the field. Default: field is active
     $rows= '2',             # string: Number of rows in multiline input (eg. area/html) Default: 2 (Radio/Check-list: 1 to output horisontal)
-    $step= '',              # string: the value of stepup/stepdown for numbers
     
-    $list= [],              # array:  Data for subitems in "multi-list" (eg. options, checkbox, radiolist) {opti:value,label,hint,attr}
+    $step= '',              # string: the value of stepup/stepdown for numbers
     $llgn= 'R',             # string: Label align Default: Right
-    $bord= '',              # string: BoxBorder color to mark required/optional field.   Default= 'border: 1px solid var(--grayColor);'
     $ftop= '',              # string: Ajust field vertical position
-    $lpos= ''               # string: style rel. Label offset (chck)
+    $lpos= '',              # string: style rel. Label offset (chck)
+    $rtrn= false            # bool:   Act as procedure: Echo result, or as function: Return string
     ) {
     $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
 
@@ -528,34 +528,34 @@ function htm_Input(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'text', n
 
 
 # A ontainer with: Border, Label, Hint, (Placeholder)
-function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'noUse', name:'Body_div', valu:'', form:'noUse', wdth:'200px', algn:'left', attr:'', rtrn:false, unit:'noUse', disa:false, rows:'noUse', step:'noUse', list:['noUse'], llgn:'R', bord:'1px solid var(--grayColor);', ftop:'', edit:null)
+function htm_Inbox(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'noUse', name:'Body_div', valu:'', list:['noUse'], form:'noUse', wdth:'200px', algn:'left', bord:'1px solid var(--grayColor);', attr:'', unit:'noUse', disa:false, rows:'noUse', step:'noUse', llgn:'R', ftop:'', edit:null, rtrn:false)
     # Inbox: container with: Border, Label, Hint, (Placeholder)
     # Design and parameters same as htm_Input()
     $labl= '',                              # string: Translated label above the input field
-    $plho= '@Enter...',                     # string: The placeholder shown with blank value
     $icon= '',                              # string: The icon left of the label
     $hint= '',                              # string: The Translated description for the field
+    $plho= '@Enter...',                     # string: The placeholder shown with blank value
 
     $vrnt= 'noUse',                         # string: Variant
     $name= 'Body_div',                      # String: Set the Editable name (and id)
     $valu= '',                              # string: The HTML content of the box-body
-    $form= 'noUse',                         # 
+    $list= ['noUse'],                       # 
 
+    $form= 'noUse',                         # 
     $wdth= '200px',                         # string: The outher Width of the field-container
     $algn= 'left',                          # string: The alignment of input content Default: left 
-    $attr= '',                              # string: Give more (special / non system) attrib to the field 
-    $rtrn= false,                           # bool:  Act as procedure: Echo result, or as function: Return string
+    $bord= '1px solid var(--grayColor);',   # string: BoxBorder color to mark required/optional field.   Default= 'border: 1px solid var(--grayColor);' 
 
+    $attr= '',                              # string: Give more (special / non system) attrib to the field 
     $unit= 'noUse',                         # 
     $disa= false,                           # bool:   (Old) true makes the box editable - the opposite of disa elsewhere: use edit
     $rows= 'noUse',                         # 
-    $step= 'noUse',                         # 
 
-    $list= ['noUse'],                       # 
+    $step= 'noUse',                         # 
     $llgn= 'R',                             # string: Label align Default: Right 
-    $bord= '1px solid var(--grayColor);',   # string: BoxBorder color to mark required/optional field.   Default= 'border: 1px solid var(--grayColor);' 
     $ftop= '',                              # string: Ajust field vertical position
-    $edit= null                             # bool:   true: the content can be edited (use this - not disa)
+    $edit= null,                            # bool:   true: the content can be edited (use this - not disa)
+    $rtrn= false                            # bool:  Act as procedure: Echo result, or as function: Return string
     ) {
     $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
 
@@ -615,17 +615,17 @@ function htm_Inbox(# labl:'', plho:'@Enter...', icon:'', hint:'', vrnt:'noUse', 
 } # htm_Inbox
 
 # General output for pt. Progress etc. [Necessary basic element]
-function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', valu:'', vmax:'',attr:'',bclr:'white',rtrn:false)
+function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', valu:'', form:'', bclr:'white', attr:'', vmax:'', rtrn:false)
     $labl='',           # string: The caption text                                               
     $icon='',           # string: comming new (label prefix)                                     
     $hint='',           # string: The hint/tooltip
     $vrnt= 'pgrs',      # string: Variant (outp/pgrs)
     $name= '',          # String: Set the name/id
-    $form= '',          # String: Form name
     $valu= '',          # string: The actual value / list of other elements' ids
-    $vmax= '',          # string: The Max value
-    $attr= '',          # string: Give more (special / non system) attrib to the field 
+    $form= '',          # String: Form name
     $bclr= 'white',     # string: span background-color
+    $attr= '',          # string: Give more (special / non system) attrib to the field 
+    $vmax= '',          # string: The Max value
     $rtrn= false,       # bool:  Act as procedure: Echo result, or as function: Return string
 ) {
     $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
@@ -720,12 +720,12 @@ function htm_TextDiv(# body:'', algn:'left', marg:'8px', styl:'box-shadow: 3px 3
 }
 
 # Text displayed in a fixed-width font, and preserves both spaces and line breaks
-function htm_TextPre(# body, algn:'left', marg:'8px', attr:'', font:'', code:false, rtrn:false)  ## Preformatted HTML text
+function htm_TextPre(# body, algn:'left', marg:'8px', font:'', attr:'', code:false, rtrn:false)  ## Preformatted HTML text
     $body,          # string: Html-text inside pre
     $algn='left',   # string: pre-text alignment
     $marg='8px',    # string: Default pre margin
-    $attr='',       # string: Other style
     $font='',       # string: pre-text font
+    $attr='',       # string: Other style
     $code=false,    # bool:   convert: &lt;b&gt;bold&lt;/b&gt;
     $rtrn=false     # bool:   Act as procedure: Echo result, or as function: Return string
 ) {
@@ -751,12 +751,12 @@ function htm_TextPre(# body, algn:'left', marg:'8px', attr:'', font:'', code:fal
  */
  
 # Starting various types ef text list
-function htm_List_(# capt:'', vrnt:'ul', type:'disc', strt:'', styl:'text-align:left;', rtrn:false)
+function htm_List_(# capt:'', vrnt:'ul', type:'disc', styl:'text-align:left;', strt:'', rtrn:false)
 $capt='',                   # string: Html-text
 $vrnt='ul',                 # string: Variants: <ul> an unordered list  /  <ol> an ordered list  /  <li> a list item  /  <dl> a description list
 $type='disc',               # string: List-style marker type (Ref: https://www.w3schools.com/cssref/playdemo.php?filename=playcss_list-style-type)
-$strt='',                   # string: Index start for ordered list ('' = 1)
 $styl='text-align:left;',   # string: Other style rel. body
+$strt='',                   # string: Index start for ordered list ('' = 1)
 $rtrn=false                 # bool:   Function Return or echo result
 ) { if ((strtolower($vrnt)=='ol') and ($type=='disc')) $type= 'decimal';    # An ordered list with the default marker: numbers (was bullets)
     $mark=' style="list-style-type: '.$type.'; "';
@@ -866,12 +866,12 @@ function highlight_code($code, $styl='color:cyan; font-style:italic;') {
 }
 
 # A span containing syntax formattet php-code
-function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', fold:'', rtrn:false)
+function htm_CodeBox(# code:'', valu:'', synt:true, repl:false, fmat:'', fold:'', rtrn:false)
     $code='',       # string: php-code with syntax display
+    $valu='',       # string: Value to replace
     $synt=true,     # bool:   Activate syntax output
     $repl=false,    # bool:   Do output formattet string
     $fmat='',       # string: Format string
-    $valu='',       # string: Value to replace
     $fold='',       # string: 'closed': the code is hidden - a "Show the code" line opens it ('open': shown, can be closed; '': always shown)
     $rtrn=false,    # bool:   Function Return or echo result
     $vlue=null      # (Old name of valu - still works)
@@ -892,12 +892,12 @@ function htm_CodeBox(# code:'', synt:true, repl:false, fmat:'', valu:'', fold:''
 };
 
 # Vertical orientated text
-function htm_TextVer(# body, algn:'left', marg:'auto', attr:'', font:'', code:false, rtrn:false) ## Vertical text
+function htm_TextVer(# body, algn:'left', marg:'auto', font:'', attr:'', code:false, rtrn:false) ## Vertical text
     $body,          # string: Html-text inside div
     $algn='left',   # string: text alignment
     $marg='auto',   # string: Margin (was ignored: "margin: auto" was written after it)
-    $attr='',       # string: Other style
     $font='',       # string: text font
+    $attr='',       # string: Other style
     $code=false,     # bool:   convert: &lt;b&gt;bold&lt;/b&gt;
     $rtrn=false      # bool:   Return the HTML instead of echoing it
 ) { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
@@ -939,12 +939,12 @@ function htm_TextTip(# capt:'TIP', body:'', wdth:'', algn:'center', colr:'', rtr
 }
 
 # A question with a folded answer (FAQ) - one at a time when they share a grup
-function htm_faq(# ques:'', answ:'', open:false, grup:'', wdth:'', code:false, rtrn:false) ## Question and answer
+function htm_faq(# ques:'', answ:'', wdth:'', open:false, grup:'', code:false, rtrn:false) ## Question and answer
     $ques='',       # string: The question (always visible)
     $answ='',       # string: The answer (shown when the question is clicked)
+    $wdth='',       # string: The width, e.g. '600px' (default: the full width)
     $open=false,    # bool:   The answer is shown from the start
     $grup='',       # string: Questions with the same grup: opening one closes the others
-    $wdth='',       # string: The width, e.g. '600px' (default: the full width)
     $code=false,    # bool:   The answer is text, not html: &lt;b&gt;bold&lt;/b&gt;
     $rtrn=false     # bool:   Return the HTML instead of echoing it
 ) { # A <details>: no JavaScript, works with the keyboard and screen readers
@@ -978,14 +978,14 @@ function htm_TextHint(# text:'', hint:'', styl:'', attr:'', rtrn:false) {
 }
 
 # A image with caption, label and a hint
-function htm_Figure(# capt:'', type:'h1', imag:'', info:'', styl:'', labl:'', hint:'', rtrn:false) {
+function htm_Figure(# capt:'', labl:'', hint:'', type:'h1', styl:'', imag:'', info:'', rtrn:false) {
     $capt= '',      # string: The header text
-    $type= 'h1',    # string: Header type (h1..h6)
-    $imag='',       # string: Path to the image
-    $info= '',      # string: alternative text
-    $styl= '',      # string: Styles for the image
     $labl= '',      # string: The figure caption/label
     $hint= '',      # string: Hidden description
+    $type= 'h1',    # string: Header type (h1..h6)
+    $styl= '',      # string: Styles for the image
+    $imag='',       # string: Path to the image
+    $info= '',      # string: alternative text
     $rtrn= false    # bool:   Function Return or echo result
 ) 
 {   $result= '<'.$type.'>'.lang($capt).'</'.$type.'>
@@ -1002,14 +1002,14 @@ function htm_Figure(# capt:'', type:'h1', imag:'', info:'', styl:'', labl:'', hi
 }
 
 # A summery list with collapsible details
-function htm_Details(# capt:'', type:'h1', labl:'', body:'', styl:'', hint:'', mode:'', rtrn:false) { # Collapsibly text
+function htm_Details(# capt:'', labl:'', hint:'', type:'h1', mode:'', body:'', styl:'', rtrn:false) { # Collapsibly text
     $capt= '',      # string: The header text 
-    $type= 'h1',    # string: Header type (h1..h6)
     $labl= '',      # string: The details summary
+    $hint= '',      # string: Hidden description
+    $type= 'h1',    # string: Header type (h1..h6)
+    $mode= '',      # string: Initial mode: 'open'/''
     $body='',       # string: The details text
     $styl= '',      # string: Styles for capt & body & labl
-    $hint= '',      # string: Hidden description
-    $mode= '',      # string: Initial mode: 'open'/''
     $rtrn= false    # bool:   Function Return or echo result
 ) 
 {   if ($capt>'')
@@ -1230,7 +1230,7 @@ function sys_csvCell($v) {
 }
 
 # A table with records: sort, filter, edit, add rows and export to CSV [Necessary basic element]
-function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], filt:true, sort:true, crea:true, modi:true, vhgh:'400px', styl:'', from:__FILE__, list:['',''], expo:'', rtrn:false, wdth:'98%')
+function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['',''], data:[], wdth:'98%', vhgh:'400px', styl:'', filt:true, sort:true, crea:true, modi:true, from:__FILE__, expo:'', rtrn:false)
     $capt= [],         # array:  Fields above the table:   [0:labl, 1:wdth, 2:type, 3:name, 4:algn, 5:hint, 6:plho, 7:valu]
                        #         type: show (only the text) / rows (the number of rows + 6) / html (7 as HTML) / data (a field with name 3 - posted)
                        #               / text, number, date ... (a field without name - not posted).  Shown only when the table has data.
@@ -1250,18 +1250,18 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', data:[], f
                        #         type button: a submit button named btn_<del|hid|cpy|ren|sel>_<table>_<row> - by 0: @Delete @Hide @Copy @Rename @Select, 6 = its icon
                        #         else: 6 is shown as HTML (an "open-modal_N" in it opens one dialog per row)
     $note= '',         # string: HTML below the table ('' with filt: a hint about the filter)
+    $list= ['',''],    # array:  The row rules of customRules.inc.php, e.g. ['KONTOPLAN'] - and the options of 'vars' columns
     &$data= [],        # array:  The rows (by reference - give a variable): [[v0, v1, ...], ...] in the order of body, or [[fkey => value, ...], ...]
+    $wdth= '98%',      # string: The width of the table
+    $vhgh= '400px',    # string: The height of the scrolling window with the rows (the header stays)
+    $styl= '',         # string: Style for the span that holds the table
     $filt= true,       # bool:   A filter field below each header
     $sort= true,       # bool:   Sort by clicking a header (SHIFT+click: by more columns)
     $crea= true,       # bool:   A button that adds an empty row - a string is the label of the button
     $modi= true,       # bool:   The fields can be changed, and the suffix columns are shown
-    $vhgh= '400px',    # string: The height of the scrolling window with the rows (the header stays)
-    $styl= '',         # string: Style for the span that holds the table
     $from= __FILE__,   # string: Where the table is made (__FILE__ / __FUNCTION__) - shown by indx/keyn clicks
-    $list= ['',''],    # array:  The row rules of customRules.inc.php, e.g. ['KONTOPLAN'] - and the options of 'vars' columns
     $expo= '',         # string: Also write the data to this CSV file (UTF-8, Excel-safe)
-    $rtrn= false,      # bool:   Return the HTML instead of echoing it
-    $wdth= '98%'       # string: The width of the table
+    $rtrn= false       # bool:   Return the HTML instead of echoing it
 )
 #    Every field of a row is posted as <fkey>[] - $_POST['fkey'][n] is row n (also new rows and the order after row actions).
 #    Hidden columns (hidd) are posted too - e.g. the record id. A new row has an empty id.
@@ -1848,10 +1848,10 @@ if ($crea) {
     spool( '<div style="text-align: center;">'. 
             htm_AcceptButt($labl='<i class="fas fa-plus"> </i> '.lang($ButtLabl),$icon='', // Create new item record
                         $hint='@Create an empty row, so you can fill in data in the yellow fields ! ', 
-                        $form='form_'.$gbl_CardIx.'_'.$gbl_TblIx, $wdth='200px; min-height:16px;', 
-                        $attr='', $akey='c', $kind='spc2',$rtrnx=true, $tplc='LblTip_NW', 
-                        $tsty='position: absolute; right: 100px;',
-                        $acti='appendRow(table'.$gbl_TblIx.','.$newRow.')').
+                        form: 'form_'.$gbl_CardIx.'_'.$gbl_TblIx, wdth: '200px; min-height:16px;', 
+                        attr: '', akey: 'c', kind: 'spc2',rtrn: $rtrnx=true, tplc: 'LblTip_NW', 
+                        tsty: 'position: absolute; right: 100px;',
+                        acti: 'appendRow(table'.$gbl_TblIx.','.$newRow.')').
                         '</div>'
         );
 }
@@ -1894,11 +1894,11 @@ function htm_Fieldset_end(# rtrn:false)
 }
 
 # Output external content in a local frame
-function htm_iFrame(# srce:'', wdth:'300px', vhgh:'200px', titl:'', styl:'', rtrn:false)
+function htm_iFrame(# titl:'', srce:'', wdth:'300px', vhgh:'200px', styl:'', rtrn:false)
+    $titl= '',      # string: iframe title
     $srce= '',      # string: Source with html content
     $wdth= '300px', # string: iframe width
     $vhgh= '200px', # string: iframe height
-    $titl= '',      # string: iframe title
     $styl= '',      # string: iframe style (eg. border)
     $rtrn= false,   # bool:   Act as procedure: Echo result, or as function: Return string
     $heig= null     # (Old name of vhgh - still works)
@@ -1928,18 +1928,18 @@ function htm_Embed(# name:'', type:'application/pdf', wdth:'800px', vhgh:'2100px
 
 
 # Make a box like htm_input() with label, icon and hint 
-function htm_Field(# labl:'',body:'',icon:'',hint:'',name:'fld',wdth:'',styl:'',attr:'',llgn:'C',rtrn:false,ftop:'') #FIELD:
+function htm_Field(# labl:'', icon:'', hint:'', name:'fld', body:'', wdth:'', styl:'', attr:'', llgn:'C', ftop:'', rtrn:false) #FIELD:
     $labl='',       # string: label for the box
-    $body='',       # string: Html content
     $icon='',       # string: Class: icon to the left of the label
     $hint='',       # string: The hint on hover label
     $name='fld',    # string: field name
+    $body='',       # string: Html content
     $wdth='',       # string: field width
     $styl='',       # string: field style
     $attr='',       # string: field attributes
     $llgn='C',      # string: label align L/C/R
-    $rtrn=false,    # bool:   Act as procedure: Echo result, or as function: Return string:   
-    $ftop=''        # string: fieldtop: label y-offset
+    $ftop='',       # string: fieldtop: label y-offset
+    $rtrn=false     # bool:   Act as procedure: Echo result, or as function: Return string:   
 ){
     $name= sys_enc((string)$name);                          # Safe in id= and name= (was written raw)
   switch (strtoupper($llgn)) {
@@ -2023,24 +2023,24 @@ Layout of htm_Card:
 */
 
 # An advanced span with lots of functionality [Necessary basic element]
-function htm_Card_(# capt:'', icon:'', hint:'tgl', form:'', acti:'', clas:'cardWmax', wdth:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', show:true, mode:'2', poup:true, head:'background-color: white;', vhgh:'600px', help:'', fclr:'', frst:'', last:'', simp:false, fold:'', elem:'span', move:true, rtrn:false);
+function htm_Card_(# capt:'', icon:'', hint:'tgl', mode:'2', form:'', acti:'', wdth:'', vhgh:'600px', fclr:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', clas:'cardWmax', show:true, poup:true, head:'background-color: white;', help:'', frst:'', last:'', simp:false, fold:'', elem:'span', move:true, rtrn:false);
     $capt = '',                         # string: The card caption
     $icon = '',                         # string: Class: icon to the left of caption
     $hint = 'tgl',                      # string: The hint on the caption ('tgl': "click to open / close this card", '': none)
+    $mode = '2',                        # string: The buttons: '0' none / '1' toggle the height / '2' also: toggle the width, close all, open all
     $form = '',                         # string: The name (and id) of a form around the card body - '' no form. Not inside a card that has a form (no nested forms)
     $acti = '',                         # string: The action of the form ('' this page). The form is POST, multipart, with the CSRF token
-    $clas = 'cardWmax',                 # string: The width class: cardWmax (full), cardWaut (the content), cardW120 (1200px), cardW110, cardW100,
                                         #         cardW960, cardW800, cardW720, cardW640, cardW560, cardW480, cardW400, cardW320, cardW280, cardW240, cardW160
     $wdth = '',                         # string: The width of the folded card (a number is px), e.g. '240px' - '' the same width
+    $vhgh = '600px',                    # string: The max height of the body - more content scrolls ('none': no limit)
+    $fclr = '',                         # string: Extra style of the header icons and text, e.g. 'color:snow;'
     $styl = 'background-color: white;', # string: Style of the card body
     $attr = 'margin-bottom: 8px;',      # string: Style of the card itself (the outer element)
+    $clas = 'cardWmax',                 # string: The width class: cardWmax (full), cardWaut (the content), cardW120 (1200px), cardW110, cardW100,
     $show = true,                       # bool:   Show the buttons at the right in the header
-    $mode = '2',                        # string: The buttons: '0' none / '1' toggle the height / '2' also: toggle the width, close all, open all
     $poup = true,                       # bool:   Right-click the header: a menu for all cards (heights, close / open all, original order)
     $head = 'background-color: white;', # string: Style of the header
-    $vhgh = '600px',                    # string: The max height of the body - more content scrolls ('none': no limit)
     $help = '',                         # string: A link: a ? icon in the header opens it in a new window
-    $fclr = '',                         # string: Extra style of the header icons and text, e.g. 'color:snow;'
     $frst = '',                         # string: HTML at the left in the header (the caption is then centered)
     $last = '',                         # string: HTML at the right in the header - it replaces the buttons (show/mode)
     $simp = false,                      # bool:   A simple header: only the centered caption (no buttons, no frst/last)
@@ -2225,16 +2225,16 @@ else { # Clean and simple header output:
 } // htm_Card_()
 
 # Finalize htm_Card_()
-function htm_Card_end(# labl:'', icon:'', hint:'', name:'', form:'', subm:false, attr:'', akey:'', kind:'save', simu:false, foot:'', rtrn:false)
+function htm_Card_end(# labl:'', icon:'', hint:'', kind:'save', name:'', form:'', attr:'', subm:false, akey:'', simu:false, foot:'', rtrn:false)
     $labl='',       # string: The label of the submit button in the footer
     $icon='',       # string: An icon left of the label
     $hint='',       # string: The hint of the button ('' a reminder to save)
+    $kind='save',   # string: The color of the button: save, navi, goon, eras, crea, home, get_, put_, spc1, spc2
     $name='',       # string: (Only a comment after </form>)
     $form='',       # string: The form to submit - in a card with its own form: always that form
-    $subm=false,    # bool:   A submit button in the footer - only in a card with its own form (form: in htm_Card_)
     $attr='',       # string: Attributes of the button
+    $subm=false,    # bool:   A submit button in the footer - only in a card with its own form (form: in htm_Card_)
     $akey='',       # string: Access key of the button (Alt+key)
-    $kind='save',   # string: The color of the button: save, navi, goon, eras, crea, home, get_, put_, spc1, spc2
     $simu=false,    # bool:   (Not used)
     $foot='',        # string: Footer text (HTML, translated) - the footer stays below the scrolling body and is hidden with it when the card is folded
     $rtrn=false      # bool:   Return the HTML instead of echoing it
@@ -2315,19 +2315,19 @@ function CardInit($cardCount) {     // JS functions to handle Cards:
 
 
 # A span/group with a set of labels and data
-function htm_DataGroup(# capt:'', icon:'', hint:'', head:'', data:[['Label0','Data0','Lstyl','Dstyl']], foot:'', wdth:'', vhgh:'600px', fclr:'', attr:'', styl:'', bord:'3px solid black;', rtrn:false)
+function htm_DataGroup(# capt:'', icon:'', hint:'', data:[['Label0','Data0','Lstyl','Dstyl']], wdth:'', vhgh:'600px', bord:'3px solid black;', fclr:'', styl:'', attr:'', head:'', foot:'', rtrn:false)
     $capt = '',                             # string: The group caption
     $icon='',                               # string: Icon left to label
     $hint='',                               # string: Hint on hover the submit button
-    $head = '',                             # string: The group header
     $data = [['Label0','Data0','Lstyl','Dstyl']],    # array:  Records with label, Data and style
-    $foot = '',                             # string: The group footer
     $wdth = '',                             # string: group width
     $vhgh = '600px',                        # string: ViewHeight for group with scrollable content
-    $fclr = '',                             # Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
-    $attr = '',                             # string: additional style for the ScrollWindow
-    $styl = '',                             # string: Custom style for div containing data
     $bord = '3px solid black;',              # string: The group border style
+    $fclr = '',                             # Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
+    $styl = '',                             # string: Custom style for div containing data
+    $attr = '',                             # string: additional style for the ScrollWindow
+    $head = '',                             # string: The group header
+    $foot = '',                             # string: The group footer
     $rtrn=false                              # bool:   Return the HTML instead of echoing it
 )
 { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
@@ -2362,19 +2362,19 @@ function htm_DataGroup(# capt:'', icon:'', hint:'', head:'', data:[['Label0','Da
 } # htm_DataGroup
 
 # An input field with a list of values to pick from (HTML datalist)
-function htm_DataList(# capt: '@Choose here from the list:', icon: 'fas fa-database', hint: '@Use datalist to pick a value from list', plho: '?',name: '', form: '', acti: '', data: ['Itm1','Itm2','Itm3','Itm4'], wdth: '220px', fclr: 'color: green;', attr: '', bord: '1px solid black; border-radius: 5px;', rtrn: false )
+function htm_DataList(# capt: '@Choose here from the list:', icon: 'fas fa-database', hint: '@Use datalist to pick a value from list', plho: '?', name: '', data: ['Itm1','Itm2','Itm3','Itm4'], form: '', acti: '', wdth: '220px', bord: '1px solid black; border-radius: 5px;', fclr: 'color: green;', attr: '', rtrn: false)
     $capt = '@Choose here from the list:',              # string: The group caption
     $icon = 'fas fa-database',                          # string: Icon left to label
     $hint = '@Use datalist to pick a value from list',  # string: Hint on hover the submit button
     $plho = '@Type or pick a value',                    # string: The placeholder shown when blank value
     $name = '',                                         # string: The field name submitted with the choice. '' => datalist1, datalist2...
+    $data = ['Itm1','Itm2','Itm3','Itm4'],              # array:  Record with Data
     $form = '',                                         # string: The name of the form to submit
     $acti = '',                                         # string: Form action
-    $data = ['Itm1','Itm2','Itm3','Itm4'],              # array:  Record with Data
     $wdth = '220px',                                    # string: the width
+    $bord = '1px solid black; border-radius: 5px;',     # string: The group border style
     $fclr = 'color: green;',                            # Special header forground-style  (Icon, text and arrow-icons). Ex.: fclr:'color:snow;'
     $attr = '',                                         # string: additional style 
-    $bord = '1px solid black; border-radius: 5px;',     # string: The group border style
     $rtrn = false                                       # bool:   Act as procedure: Echo result, or as function: Return string:   
 
 )
@@ -2491,11 +2491,11 @@ function htm_Wrapp_end(# rtrn:false)
 }
 
 # Start creating a form
-function htm_Form_(# name:'', acti:'', mode:'POST', type:'multipart/form-data', attr:'', rtrn:false)
+function htm_Form_(# name:'', type:'multipart/form-data', mode:'POST', acti:'', attr:'', rtrn:false)
     $name= '',                      # string: The name of the form
-    $acti= '',                      # string: Form action
-    $mode= 'POST',                  # string: Form method
     $type= 'multipart/form-data',   # string: enctype
+    $mode= 'POST',                  # string: Form method
+    $acti= '',                      # string: Form action
     $attr= '',                       # string: Other attributes
     $rtrn=false                      # bool:   Return the HTML instead of echoing it
     )
@@ -2620,21 +2620,21 @@ function htm_RowCol_end(# rtrn:false)
 ## Importent: $RowColWdth - Only use defined width ! (See CSS: @media screen)
 
 # A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submit  [Necessary basic element]
-function htm_AcceptButt(# labl:'', icon:'', hint:'', form:'', wdth:'', attr:'', akey:'', kind:'home', rtrn:false, tplc:'LblTip_text', tsty:'', acti:'', idix:'', disa:false)
+function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:'', wdth:'', attr:'', akey:'', tplc:'LblTip_text', tsty:'', idix:'', disa:false, rtrn:false)
     $labl='',           # string: The caption on the button
     $icon='',           # string: The iconclass ('<i class="fas fa-plus"> </i> ';)
     $hint='',           # string: hint about the button function
+    $kind='home',       # string: save, navi, goon, erase, create, home (rel. Appearance)
     $form='',           # string: The form the element belongs to, if a name is given
+    $acti='',           # string: Function to run, or submit if empty
     $wdth='',           # string: The width of the button
     $attr='',           # string: Generel use e.g. ' action= "$link" '
     $akey='',           # string: Shortcut to activate the button
-    $kind='home',       # string: save, navi, goon, erase, create, home (rel. Appearance)
-    $rtrn=false,        # bool:   Act as procedure: Echo result, or as function: Return string
     $tplc='LblTip_text',# string: Class for Placement of the tooltip
     $tsty='',           # string: Style for Placement of the tooltip
-    $acti='',           # string: Function to run, or submit if empty
     $idix='',           # string: ix-suffix on name/id
-    $disa=false         # bolean: 'disabled' to deactivate the button
+    $disa=false,        # bolean: 'disabled' to deactivate the button
+    $rtrn=false         # bool:   Act as procedure: Echo result, or as function: Return string
     )
 {   global $gbl_ShortKeys, $gbl_ButtnBgrd, $gbl_BtLnkBgrd, $gbl_TextLight, $gbl_TextDark, $gbl_BtDelBgrd, 
            $gbl_BtDelText, $gbl_BtNavBgrd,  $gbl_BtSavBgrd, $gbl_BtSavText, $gbl_dimmed, $gbl_BtNewBgrd , 
@@ -3609,15 +3609,15 @@ function htm_SwitchButt(# labl:'', hint:'', name:'switchbox_id', valu:'', list:[
 } # htm_SwitchButt()
 
 # Another button with switch layout
-function htm_SwitchButton(# labl, name:'switchbox_id', valu:'', wdth:'', bclr:'', styl:'', hint:'', list:[], rtrn:false) 
+function htm_SwitchButton(# labl, hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false) 
     $labl,                  # string: Button label
+    $hint='',               # string: Hint about the button function
     $name='switchbox_id',   # string: 
     $valu='',               # string: 
+    $list=[],               # string: 
     $wdth='',               # string: Width
     $bclr='',               # string: 
     $styl='',               # string: 
-    $hint='',               # string: Hint about the button function
-    $list=[],               # string: 
     $rtrn=false             # bool:   Act as procedure: Echo result, or as function: Return string
 )
 {   static $styleDone= false;   # The CSS is only needed once per page
@@ -3712,17 +3712,16 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
 }
  
 # Button for test human or robot
-function htm_Humantest(# capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', 
-                       # form:'form-id', wdth:'200px', vhgh:'24px', yclr:'lightgray', nclr:'white', bclr: '#1bd441', xytx:'@YES', ntxt:'@NO',rtrn: false);
+function htm_Humantest(# capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', form:'form-id', wdth:'200px', vhgh:'24px', bclr: '#1bd441', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO', rtrn: false);
 $capt= '@Are you human? ',                          # string: capt $quest= '@Are you human?',
 $icon= 'fa-solid fa-arrow-right-to-bracket',        # string: icon after caption
 $hint= '@Grab and slide to right to change state',  # string: hint $slide_hint= '@Grab and slide to right to change state'
 $form= 'form-id',                                   # string: form $form_id= 'form-id',
 $wdth= '200px',                                     # string: wdth $grab_width= '200px',
 $vhgh= '24px',                                      # string: height of the slider
+$bclr= '#1bd441',                                   # string: background in human state
 $yclr= 'lightgray',                                 # string: yclr $yclr= 'lightgray',
 $nclr= 'white',                                     # string: nclr $no_colr= 'white',
-$bclr= '#1bd441',                                   # string: background in human state
 $xytx= '@YES',                                      # string: xytx $yes_text= '@YES',
 $ntxt= '@NO',                                       # string: ntxt $no_text= '@NO',
 $rtrn= false,                                       # bool: Act as procedure: Echo result, or as function: Return string
@@ -3873,14 +3872,14 @@ function htm_Tabs_(# head:'', styl:'', rtrn:false)
 }
 
 # Create a tab in the htm_Tabs_() object [Necessary basic element]
-function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', bclr:'white', vhgh:'', dflt:false)
+function htm_Tab(# labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', dflt:false)
     $labl='',       # string: Tab Label
-    $body='',       # string: Content on tab
     $name='',       # string: id
+    $body='',       # string: Content on tab
+    $vhgh='',       # string: ViewHeight (future !)
+    $bclr='white',  # string: Background color
     $styl=          # string: Style
           'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;',
-    $bclr='white',  # string: Background color
-    $vhgh='',       # string: ViewHeight (future !)
     $dflt=false     # boolean: Open as default
     ) 
 {   $b= 'small';
@@ -3918,12 +3917,12 @@ function htm_Tabs_end(# foot:'', styl:'', rtrn:false)
 }
 
 # A general link-button
-function htm_LinkButt(# labl:'', hint:'', attr:'', link:'', targ:'_blank', rtrn:false)
+function htm_LinkButt(# labl:'', hint:'', link:'', targ:'_blank', attr:'', rtrn:false)
     $labl='',       # string: Label
     $hint='',       # string: 
-    $attr='',       # string: 
     $link='',       # string: 
     $targ='_blank', # string: 
+    $attr='',       # string: 
     $rtrn=false     # bool:   Function Return or echo result
 )
 {   $a= '<a class="button" href="'.sys_enc($link).'" target="'.sys_enc($targ).'"'.($targ=='_blank' ? ' rel="noopener"' : '').'>'.lang($labl).'</a>';
@@ -3932,16 +3931,16 @@ function htm_LinkButt(# labl:'', hint:'', attr:'', link:'', targ:'_blank', rtrn:
 }
 
 # Create a HTML-textarea with multibly lines
-function htm_TextArea(# labl:'', hint:'', name:'area', form:'', valu:'', rows:'1', wdth:'', plho:'?', attr:'', rtrn:true)
+function htm_TextArea(# labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:true)
     $labl='',       # string: Label after the field
     $hint='',       # string: Hint on the label
-    $name='area',   # string: Name and id
-    $form='',       # string: The form the field belongs to (when it is outside it)
-    $valu='',       # string: The text
-    $rows='1',      # string: Number of rows
-    $wdth='',       # string: Width
     $plho='?',      # string: Placeholder
+    $name='area',   # string: Name and id
+    $valu='',       # string: The text
+    $form='',       # string: The form the field belongs to (when it is outside it)
+    $wdth='',       # string: Width
     $attr='',       # string: More style
+    $rows='1',      # string: Number of rows
     $rtrn=true,     # bool:   Return the HTML (default) or echo it
     $widt=null      # (Old name of wdth - still works)
 )
@@ -3974,12 +3973,12 @@ function str_WithHint(# labl:'', hint:'', icon:'', $styl);
 
 // echo $htm_ModalDialog; Initiated in htm_Page_ ($htm_ModalDialog)
 # Create a modal popup window with color-coded background
-function htm_ModalDialog(# type:'none', capt:'@Voilà!', mess:'', butt:['type:','icon:','labl:','hint:','link:'], html:'CSS-based Modal Dialog', rtrn:true) 
-    $type='none', # Variant
+function htm_ModalDialog(# capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['type:','icon:','labl:','hint:','link:'], rtrn:true) 
     $capt='@Voilà!',
+    $type='none', # Variant
     $mess='',
-    $butt=['$type','$icon','$labl','$hint','$link'],
     $html='CSS-based Modal Dialog',
+    $butt=['$type','$icon','$labl','$hint','$link'],
     $rtrn=true
 ) // https://codepen.io/timothylong/pen/AJxrPR
 { 
@@ -4091,10 +4090,10 @@ function htm_Banner(# body:'', kind:'warning', rtrn:false)
 }
 
 # A small label: a status, a count or "New" - e.g. in tables and menus (from NH-logistik)
-function htm_Badge(# labl:'', kind:'secondary', hint:'', rtrn:false)
+function htm_Badge(# labl:'', hint:'', kind:'secondary', rtrn:false)
     $labl= '',              # string: The text (translated with lang())
-    $kind= 'secondary',     # string: primary / secondary / success / danger / warning / info
     $hint= '',              # string: Tooltip
+    $kind= 'secondary',     # string: primary / secondary / success / danger / warning / info
     $rtrn= false            # bool:   Return or echo result (rtrn:true to use it inside other output)
 ) {
     $kind= in_array($kind, ['primary','secondary','success','danger','warning','info'], true) ? $kind : 'secondary';
@@ -4103,14 +4102,14 @@ function htm_Badge(# labl:'', kind:'secondary', hint:'', rtrn:false)
 }
 
 # A button for an action that changes data (e.g. Delete): asks "Are you sure?" and then POSTs with the CSRF token (from NH-logistik)
-function htm_ConfirmPostLink(# labl:'', icon:'', hint:'', acti:'', data:[], mess:'@Are you sure?', kind:'danger', rtrn:false)
+function htm_ConfirmPostLink(# labl:'', icon:'', hint:'', kind:'danger', mess:'@Are you sure?', data:[], acti:'', rtrn:false)
     $labl= '',              # string: Button text
     $icon= '',              # string: Icon class, e.g. 'fa-solid fa-trash'
     $hint= '',              # string: Tooltip
-    $acti= '',              # string: Where to POST ('' = this page)
-    $data= [],              # array:  The fields to send: ['name' => 'value', ...]
-    $mess= '@Are you sure?',# string: The question
     $kind= 'danger',        # string: primary / secondary / success / danger / warning / info (button color)
+    $mess= '@Are you sure?',# string: The question
+    $data= [],              # array:  The fields to send: ['name' => 'value', ...]
+    $acti= '',              # string: Where to POST ('' = this page)
     $rtrn= false            # bool:   Return or echo result
 ) {
     # The form is built when confirmed (in JS) - so the button also works inside a card that is a form (forms cannot be nested)
@@ -4135,11 +4134,11 @@ document.addEventListener("click", function(e) {
 }
 
 # Search and sort for a table - without jQuery: a search field with "x of y rows", and sorting by clicking a column header (from NH-logistik)
-function htm_TableTools(# tabl:'', srch:true, sort:true, plho:'@Search...', rtrn:false)
+function htm_TableTools(# tabl:'', plho:'@Search...', srch:true, sort:true, rtrn:false)
     $tabl= '',              # string: id of the table ('' = the next table on the page, e.g. the htm_Table() that follows)
+    $plho= '@Search...',    # string: Placeholder in the search field
     $srch= true,            # bool:   Show the search field
     $sort= true,            # bool:   Sort by clicking a header (only when Tablesorter is not active on the table - it sorts itself)
-    $plho= '@Search...',    # string: Placeholder in the search field
     $rtrn= false            # bool:   Return or echo result
 ) {
     $result= '<div class="p2hTableTools" data-tabl="'.sys_enc($tabl).'" data-sort="'.($sort ? '1' : '0').'"'.
@@ -4203,14 +4202,14 @@ function htm_TableTools(# tabl:'', srch:true, sort:true, plho:'@Search...', rtrn
 }
 
 # Create a Dialog with alternative buttons to select between [Necessary basic element]
-function htm_Dialog(# capt:'CAPTION', body:'', bclr:'lightyellow', butt:[], labl:'@Open dialog', rtrn:false) # Modal dialog:
+function htm_Dialog(# capt:'CAPTION', labl:'@Open dialog', body:'', bclr:'lightyellow', butt:[], rtrn:false) # Modal dialog:
     $capt='CAPTION',
+    $labl='@Open dialog',   # string: Label of the button that opens the dialog ('' = no button; open it with: document.getElementById("htmDialog1").showModal())
     $body='',
     $bclr='lightyellow', # Background color
     $butt= [ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],   // (0:id, 1:value, 2:label, 3:icon, 4:color, 5:hint)
                 ['',          'cancel', '@Cancel', 'fas fa-minus-circle','red','@Break and return']
               ],
-    $labl='@Open dialog',   # string: Label of the button that opens the dialog ('' = no button; open it with: document.getElementById("htmDialog1").showModal())
     $rtrn=false             # bool:   Return or echo result
 )  // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
 {   static $dlgNo= 0;  $dlgNo++;  $dId= 'htmDialog'.$dlgNo;   # Unique ids - several dialogs on one page
@@ -4280,14 +4279,14 @@ function msg_Dialog($vrnt='error', $caption='@User Dialog', $mess='', $Buttons= 
 
 
 ## Short forms of msg_System() - one message with a Close button. (They were commented out, so calling them was a fatal error.)
-function msg_Error($title='@Error',   $messg='') { msg_System('error',   $title, '', $messg, ['goon','close']); }
-function msg_Info($title='@Info',     $messg='') { msg_System('info',    $title, '', $messg, ['close']); }
-function msg_Warn($title='@Warning',  $messg='') { msg_System('warn',    $title, '', $messg, ['goback','close']); }
-function msg_Hint($title='@Tip',      $messg='') { msg_System('hint',    $title, '', $messg, ['close']); }
-function msg_Succ($title='@Hurray',   $messg='') { msg_System('success', $title, '', $messg, ['close']); }
+function msg_Error($title='@Error',   $messg='') { msg_System(vrnt: 'error',   capt: $title, body: '', mess: $messg, list: ['goon','close']); }
+function msg_Info($title='@Info',     $messg='') { msg_System(vrnt: 'info',    capt: $title, body: '', mess: $messg, list: ['close']); }
+function msg_Warn($title='@Warning',  $messg='') { msg_System(vrnt: 'warn',    capt: $title, body: '', mess: $messg, list: ['goback','close']); }
+function msg_Hint($title='@Tip',      $messg='') { msg_System(vrnt: 'hint',    capt: $title, body: '', mess: $messg, list: ['close']); }
+function msg_Succ($title='@Hurray',   $messg='') { msg_System(vrnt: 'success', capt: $title, body: '', mess: $messg, list: ['close']); }
  
 // Afhængig af: msg_lib.css.php   -   Afløser for msg_Dialog()
-function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['goback','goon','close'], $wdth='600px', $rtrn=false) # $type:'error'|'info'|'warn'|'hint'|'success'|'#color'
+function msg_System($capt='',  $vrnt= 'error', $body='', $mess='', $list=['goback','goon','close'], $wdth='600px', $rtrn=false) # $type:'error'|'info'|'warn'|'hint'|'success'|'#color'
 { ## INIT:   (?: instead of ?? - the parameters default to '' and not to null, so ?? never used the defaults)
     static $msgNo= 0;  $msgNo++;  $mId= 'open-modal'.$msgNo;     # Unique id - several messages on one page
     $capt= ucfirst(lang($capt ?: 'PHP2HTML'));
@@ -4441,8 +4440,8 @@ if (DEBUG) return false;
 // Add html_ functions for generel use:
 
 # Init popup context menu group
-function htm_Pmnu_(# elem:'id', capt:'', wdth:'210px', icon:'', stck:'false', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', cntx:true, rtrn:false)
-    $elem='id',$capt='', $wdth='210px', $icon='', $stck='false', $attr='background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', $cntx=true, $rtrn=false) {
+function htm_Pmnu_(# capt:'', icon:'', wdth:'210px', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', elem:'id', stck:'false', cntx:true, rtrn:false)
+    $capt='', $icon='', $wdth='210px', $attr='background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', $elem='id', $stck='false', $cntx=true, $rtrn=false) {
       return Pmnu_($elem,     $capt,    $wdth,         $icon,    $stck,         $attr, $cntx, $rtrn);
 }
 
@@ -4483,13 +4482,13 @@ function htm_Pmnu_end(# labl:'', hint:'', attr:'', rtrn:false)
 { ## Group ******************** htm_Menu: ************************** 
 
 # A page-menu on top of the page
-function htm_Menu_TopDown(# capt:'Clever html engine', data:[], foot:'PHP2HTML', styl:'', wdth:'150px', note:'', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)
+function htm_Menu_TopDown(# capt:'Clever html engine', note:'', data:[], wdth:'150px', styl:'', foot:'PHP2HTML', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)
 $capt='Clever html engine', # string: Title at left
-$data=[],                   # array:  Data for the meny - Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='')
-$foot='PHP2HTML',           # string: Text right to menu
-$styl='',                   # string: Additional style to default style
-$wdth='150px',              # string: Widths of menu columns. NOT used yet !
 $note='',                   # string: Text left to menu
+$data=[],                   # array:  Data for the meny - Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='')
+$wdth='150px',              # string: Widths of menu columns. NOT used yet !
+$styl='',                   # string: Additional style to default style
+$foot='PHP2HTML',           # string: Text right to menu
 $niv0='',                   # string: Style attribute to node niveau 0 (div)
 $niv1='',                   # string: Style attribute to node niveau 1 (div class="dropdown")
 $niv2='',                   # string: Style attribute to node niveau 2 (data-hint)
@@ -4600,12 +4599,12 @@ $rtrn=false                  # bool:   Return the HTML instead of echoing it
 } # htm_Menu_TopDown
 
 # A page-menu to the left of the page
-function htm_Menu_Leftout(# capt:'Clever html engine', data:[], foot:'', styl:'', wdth:'180px', rtrn:false)
+function htm_Menu_Leftout(# capt:'Clever html engine', data:[], wdth:'180px', styl:'', foot:'', rtrn:false)
     $capt='Clever html engine', # string: Title at top
     $data=[],                   # array:  Data for the menu
-    $foot='',                   # string: Note at bottom
-    $styl='',                   # string: Aditional style to default style
     $wdth='180px',               # string: Widths of menu columns
+    $styl='',                   # string: Aditional style to default style
+    $foot='',                   # string: Note at bottom
     $rtrn=false                  # bool:   Return the HTML instead of echoing it
 )
 { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
@@ -4937,15 +4936,15 @@ $javaScripts.= "
 { ## Group ******************** htm_Page: **************************
 
 # Start creating a page [Necessary basic element]
-function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'', attr:'', pbrd:true) 
+function htm_Page_(# titl:'', hint:'', algn:'center', attr:'', info:'', inis:'', imag:'', pbrd:true) 
     $titl='',           # string: Page title
     $hint='',           # string: Page tip  (vertical text - left) - plain text
-    $info='',           # string: Page info (vertical text - right) - plain text
-    # $foot='',         ¤ string: Page footer text at page bottom
-    $inis='',           # string: Page initial CSS/js script in page header
     $algn='center',     # string: align - "text-align"
-    $imag='',           # string: Page background-image
+    # $foot='',         ¤ string: Page footer text at page bottom
     $attr='',           # string: Page attributes
+    $info='',           # string: Page info (vertical text - right) - plain text
+    $inis='',           # string: Page initial CSS/js script in page header
+    $imag='',           # string: Page background-image
     $pbrd=true          # bool:   Draw border around the page body-div
     )
 { # Prepare / initialize a page  # Must be followed by htm_Page_end() to finalise the page
