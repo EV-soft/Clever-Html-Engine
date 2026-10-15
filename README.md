@@ -70,6 +70,12 @@ A function without a heading text keeps its main content first: `htm_TextDiv(bod
 34 functions got a new order, e.g. `htm_Input(labl, icon, hint, plho, vrnt, name, valu, list, form, ...)` (plho was 2nd), `htm_Table(... note, list, data, wdth, vhgh, styl, filt, ...)`, `msg_System(capt, vrnt, ...)`, and `htm_SwitchButt()` / `htm_SwitchButton()` now have the same order.
 Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in its message, and its label no longer points to a missing field.
 
+# 🆕 What's new in 1.7.1 - fixes
+- **Tables:** number columns (`0d`, `1d`, `2d`, `2%`) are sorted as numbers (were sorted as text: "1 234,00" before "9,00") and can be filtered with e.g. `>9`; the number 0 is shown as 0,00 (was blank); the format `>0` also hides negative numbers; the CSV export (`expo`) writes the data as shown (it removed `@` and translated values).
+- **Fields:** a field without a label is named by its hint or placeholder; `intg` fields get an integer (a decimal value made every typed integer invalid); radio buttons and option values are escaped and get valid, unique ids; the group label of a checkbox/radio list points to its own first box.
+- **Upgrade tool:** `tools/named_args.php` also finds `\htm_Input(` and `HTM_INPUT(`, and has `--from=1.6.3` for code written for 1.6.3 or older.
+- **Other:** `sys_toFloat(",5")` is 0.5 (was 5); `csv_parse()` reads quoted field names and fields with line breaks; the function overview shows the library version (`P2H_VERSION`) and no stray ";"; more escaping (`htm_Output`, `htm_Humantest`, `htm_Menu_Leftout`); demo links point to v1.7.x.
+
 # ⬆️ Upgrading to 1.7
 - **Named arguments** (`labl:'@Name', vrnt:'text'`) work as before - nothing to do. They are the recommended way to call the library.
 - **Positional arguments** (`htm_Input('@Name', '@Enter...', ...)`) must be checked: their meaning follows the position. Run the upgrade tool on your code **before** you replace the library:

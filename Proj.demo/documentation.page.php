@@ -64,6 +64,8 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
         then the function&#39;s own parameters, and <code>rtrn</code> last. 34 functions got the new order; a function without a heading text keeps its main content first.
         <b>Upgrading:</b> named arguments (<code>labl:&#39;...&#39;</code>) work as before. Positional calls: run <code>php tools/named_args.php &lt;folder&gt; --write</code>
         on your code before you replace the library - it rewrites them to named arguments (a copy is saved as *.bak).</li>
+    <li><b>1.7.1:</b> number columns sorted as numbers (and filtered with e.g. <code>&gt;9</code>), 0 shown as 0,00, the CSV export writes the data as shown,
+        fields without a label named by their hint, escaped radio values, <code>tools/named_args.php --from=1.6.3</code>, and about 20 other fixes.</li>
     <li><b>Table rows:</b> a suffix column of type <code>rowact</code> gives row actions in the browser - <code>[&#39;@Del.&#39;, &#39;2%&#39;, &#39;rowact&#39;, &#39;&#39;, [&#39;center&#39;], &#39;@Hint&#39;, &#39;del&#39;]</code>
         (values: <code>del copy up down move undo</code>). Delete asks first, a copy is inserted below the row as a new record, Undo takes back the last change.
         The rows are posted with the form in their new order (see the content table on <i>Advanced example</i>).</li>
