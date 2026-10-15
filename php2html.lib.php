@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.6.5';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.0';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -493,7 +493,8 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                             '<input type= "hidden" id="'.$iid.'" name="'.$name.'" value="'.$valu.'" />';  break;
 
         default     : $result.= ## UNSPECIFYED:
-                            ' htm_Input(): Illegal vrnt ! ';
+                            ' htm_Input(): Illegal vrnt ! ('.sys_enc((string)$vrnt).')';
+                      $noField= true;               # No field: the label gets no for= (it pointed to a missing id)
         dvl_pretty();
     }
 
@@ -502,6 +503,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
     if (($vrnt=='rado') and isset($list[0][0])) $lblFor= $iid.'_'.$list[0][0];
     if (($vrnt=='chck') and isset($list[0][0])) $lblFor= $list[0][0];
     if ($vrnt=='area') $lblFor= $iid;                            # The <textarea> has id = name (tinyMCE selectors use it) - the first one
+    if (!empty($noField)) $lblFor= '';
     switch (strtoupper($llgn)) {
     case 'L': $lblalign = 'margin-right: auto;';  break;   // Align label Left
     case 'C': $lblalign = 'margin:       auto;';  break;   // Align label Center
@@ -511,7 +513,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
     if ($vrnt!='hidd')
         $result.= ' <abbr class= "hint">'.
                 ($labl>'' ? 
-                   '<label for="'.$lblFor.'" style="font-size: 12px; '.$top. ' vertical-align:top; ">
+                   '<label'.($lblFor>'' ? ' for="'.$lblFor.'"' : '').' style="font-size: 12px; '.$top. ' vertical-align:top; ">
                         <div style="white-space: nowrap; '.$lblalign.$just.'">'.$icon.$labl.'</div>
                    </label>' : '').($hint>'' ?
                    '<data-hint style="top: 45px; left: 2px;">'. $hint.
@@ -651,7 +653,7 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', valu:'', 
                       $result.= '<label for="'.$oid.'_pgrs">'.$icon.lang($labl).'</label>'. # Output Progress indicator
                                 '<progress id="'.$oid.'_pgrs" '.$value.(((string)$vmax > '') ? ' max="'.sys_enc($vmax).'"' : '').' '.$attr.'>
                                 </progress>';  break;
-        default     : $result.= ' htm_Output(): Illegal vrnt ! ';
+        default     : $result.= ' htm_Output(): Illegal vrnt ! ('.sys_enc((string)$vrnt).')';
     }
     if ($hint>'') $result.= 
                        '<data-hint style="top: 45px; left: 2px;">'. lang($hint). '</data-hint>
@@ -3873,6 +3875,7 @@ function htm_Tabs_(# head:'', styl:'', rtrn:false)
 
 # Create a tab in the htm_Tabs_() object [Necessary basic element]
 function htm_Tab(# labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:'text-align: left; box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; background-color: white;', dflt:false)
+    # No rtrn: htm_Tab() writes nothing - it collects the tab, and htm_Tabs_end() writes all the tabs (use its rtrn)
     $labl='',       # string: Tab Label
     $name='',       # string: id
     $body='',       # string: Content on tab

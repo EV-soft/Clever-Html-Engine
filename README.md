@@ -54,6 +54,32 @@ A modern, semantic PHP library for generating HTML interfaces with compact code,
 - **Accessibility:** names for dialogs and switches, tab state (`aria-expanded`), sortable table headers with Enter/Space, `msg_System()` closable with the keyboard, the captcha slider reports its value.
 - **Fixes:** about 50 bugs found in "find five bugs" rounds - e.g. `htm_Inbox(edit:true)` content was never posted, row copy in tables, `ddwn`/`opti` table cells, unique ids for switches, icon buttons, checkboxes and column blocks, `pbrd:true` page border, `htm_List_` numbered lists, `htm_TextDiv()` without `body`, CSV helpers in `filedata.inc.php`.
 
+# 🆕 What's new in 1.7.0 - one parameter order
+The parameters of all functions now follow one order, so a call reads the same everywhere:
+
+| Group | Parameters |
+|---|---|
+| 1. Texts | `capt` / `labl`, `icon`, `hint`, `plho` |
+| 2. Variant, name, value, content | `vrnt` / `type` / `kind` / `mode`, `name`, `valu`, `body` ..., `list`, `data` |
+| 3. Form and action | `form`, `acti`, `link`, `clck`, `evnt`, `targ` |
+| 4. Size and look | `wdth`, `vhgh`, `algn`, `marg`, `bord`, `font`, `fclr`, `bclr`, `colr`, `styl`, `attr` |
+| 5. The function's own parameters | e.g. `unit`, `rows`, `step` in `htm_Input()` |
+| 6. Return | `rtrn` - always last |
+
+A function without a heading text keeps its main content first: `htm_TextDiv(body)`, `htm_Alert(body)`, `htm_Form_(name)`, `htm_TableTools(tabl)`.
+34 functions got a new order, e.g. `htm_Input(labl, icon, hint, plho, vrnt, name, valu, list, form, ...)` (plho was 2nd), `htm_Table(... note, list, data, wdth, vhgh, styl, filt, ...)`, `msg_System(capt, vrnt, ...)`, and `htm_SwitchButt()` / `htm_SwitchButton()` now have the same order.
+Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in its message, and its label no longer points to a missing field.
+
+# ⬆️ Upgrading to 1.7
+- **Named arguments** (`labl:'@Name', vrnt:'text'`) work as before - nothing to do. They are the recommended way to call the library.
+- **Positional arguments** (`htm_Input('@Name', '@Enter...', ...)`) must be checked: their meaning follows the position. Run the upgrade tool on your code **before** you replace the library:
+  ```bash
+  php tools/named_args.php  my_project/            # shows what would be changed
+  php tools/named_args.php  my_project/  --write    # changes the files (a copy is saved as *.bak)
+  ```
+  It knows the old and the new order of the 34 functions and rewrites a call to named arguments from the first position whose name has changed - the result works with both 1.6 and 1.7. An old-style argument `$labl= '...'` becomes `labl: '...'`. Code examples inside strings are not changed - check them yourself.
+- The old alias names (`vlue`, `widt`, `heig`, `hght`) still work.
+
 # 📦 Installation
 ```bash
 git clone https://github.com/EV-soft/Clever-Html-Engine.git

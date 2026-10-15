@@ -59,6 +59,11 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
         (<code>htm_CodeBox(fold:)</code>), better keyboard and screen reader support, and about 100 bug fixes.</li>
     <li><b>1.6.5:</b> the new function <code>htm_faq()</code> (a question with a folded answer), the complete list of parameter names in the function overview,
         no clear-text password from <code>calcHash()</code>, escaped texts in popup menus, option lists and messages, better keyboard and screen reader support, and about 50 bug fixes.</li>
+    <li><b>1.7.0 - one parameter order:</b> texts first (<code>capt</code>/<code>labl</code>, <code>icon</code>, <code>hint</code>, <code>plho</code>),
+        then variant, name, value and content, then <code>form</code>/<code>acti</code>, then size and look (<code>wdth</code> ... <code>styl</code>, <code>attr</code>),
+        then the function&#39;s own parameters, and <code>rtrn</code> last. 34 functions got the new order; a function without a heading text keeps its main content first.
+        <b>Upgrading:</b> named arguments (<code>labl:&#39;...&#39;</code>) work as before. Positional calls: run <code>php tools/named_args.php &lt;folder&gt; --write</code>
+        on your code before you replace the library - it rewrites them to named arguments (a copy is saved as *.bak).</li>
     <li><b>Table rows:</b> a suffix column of type <code>rowact</code> gives row actions in the browser - <code>[&#39;@Del.&#39;, &#39;2%&#39;, &#39;rowact&#39;, &#39;&#39;, [&#39;center&#39;], &#39;@Hint&#39;, &#39;del&#39;]</code>
         (values: <code>del copy up down move undo</code>). Delete asks first, a copy is inserted below the row as a new record, Undo takes back the last change.
         The rows are posted with the form in their new order (see the content table on <i>Advanced example</i>).</li>
