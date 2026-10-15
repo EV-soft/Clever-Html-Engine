@@ -57,6 +57,8 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
     <li><b>1.6.4:</b> reference pages for <code>htm_Table()</code> (table.page.php) and <code>htm_Card_()</code> (card.page.php) with live examples and the parameters read from the library;
         <code>calc</code> with your own formula, <code>rtrn</code> in every function, uniform parameter names (the old ones still work), folded code examples
         (<code>htm_CodeBox(fold:)</code>), better keyboard and screen reader support, and about 100 bug fixes.</li>
+    <li><b>1.6.5:</b> the new function <code>htm_faq()</code> (a question with a folded answer), the complete list of parameter names in the function overview,
+        no clear-text password from <code>calcHash()</code>, escaped texts in popup menus, option lists and messages, better keyboard and screen reader support, and about 50 bug fixes.</li>
     <li><b>Table rows:</b> a suffix column of type <code>rowact</code> gives row actions in the browser - <code>[&#39;@Del.&#39;, &#39;2%&#39;, &#39;rowact&#39;, &#39;&#39;, [&#39;center&#39;], &#39;@Hint&#39;, &#39;del&#39;]</code>
         (values: <code>del copy up down move undo</code>). Delete asks first, a copy is inserted below the row as a new record, Undo takes back the last change.
         The rows are posted with the form in their new order (see the content table on <i>Advanced example</i>).</li>

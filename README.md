@@ -47,6 +47,13 @@ A modern, semantic PHP library for generating HTML interfaces with compact code,
 - **Accessibility:** names for table fields, icon buttons and other fields, the password toggle and the captcha slider work with the keyboard, labels that point to the right element.
 - **Fixes:** about 100 bugs found in "find five bugs" rounds - e.g. escaping of names, placeholders and labels, dialogs inside card forms, the translation scanner, the tinyEditor upload, database helper errors (`filedata.inc.php`), PHP warnings without `_trans.sys.json`.
 
+# 🆕 What's new in 1.6.5
+- **New function:** `htm_faq()` - a question with a folded answer (`<details>`), works without JavaScript; `grup` keeps only one answer open.
+- **Function overview:** the complete list of the 4-character parameter names; the description is shown as a hint, and only parameter names are marked.
+- **Security:** `calcHash()` no longer writes the clear-text password into the page; `LangCreate.php` reflected XSS closed; texts in popup menus, option lists and messages are escaped (new `p2h_jsStr()`).
+- **Accessibility:** names for dialogs and switches, tab state (`aria-expanded`), sortable table headers with Enter/Space, `msg_System()` closable with the keyboard, the captcha slider reports its value.
+- **Fixes:** about 50 bugs found in "find five bugs" rounds - e.g. `htm_Inbox(edit:true)` content was never posted, row copy in tables, `ddwn`/`opti` table cells, unique ids for switches, icon buttons, checkboxes and column blocks, `pbrd:true` page border, `htm_List_` numbered lists, `htm_TextDiv()` without `body`, CSV helpers in `filedata.inc.php`.
+
 # 📦 Installation
 ```bash
 git clone https://github.com/EV-soft/Clever-Html-Engine.git
