@@ -26,7 +26,7 @@ htm_Page_( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center', 
     
     htm_Card_( capt: '@Overview over the system functions:', icon: 'fas fa-info', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
-        htm_TextDiv(styl: 'padding: 5px;', body: '<big>FUNCTIONS - vers. '.$DocVer.' - '.date("Y-m-d").':</big><br>'.
+        htm_TextDiv(styl: 'padding: 5px;', body: '<big>FUNCTIONS - vers. '.P2H_VERSION.' - '.date("Y-m-d").':</big><br>'.
             file_get_contents('Functions.html'));
         echo 'Total: '.substr_count(file_get_contents('Functions.html'), '<pre>'),' htm_Functions<br>';   # One <pre> per function (was counted from the lines: one too few)
         echo 'Tip: Hovering the mouse over function names (or tabbing to them) displays a short description.';
