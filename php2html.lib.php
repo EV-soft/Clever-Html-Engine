@@ -2494,7 +2494,7 @@ function htm_Form_(# name:'', acti:'', mode:'POST', type:'multipart/form-data', 
     $rtrn=false                      # bool:   Return the HTML instead of echoing it
     )
 { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
-       echo '<form'.($name>'' ? ' name="'.sys_enc($name).'" id="'.sys_enc($name).'"' : '').' action="'.sys_enc($acti).'" method="'.sys_enc($mode).'" enctype="'.sys_enc($type).'" '.$attr.'>';  
+       echo '<form'.($name>'' ? ' name="'.sys_enc($name).'" id="'.sys_enc($name).'"' : '').($acti>'' ? ' action="'.sys_enc($acti).'"' : '').' method="'.sys_enc($mode).'" enctype="'.sys_enc($type).'" '.$attr.'>';  
     if (strtoupper($mode)=='POST') csrf_field();
     /*
     Form attributes:
@@ -3336,7 +3336,9 @@ function htm_QuickBar(# list:[], rtrn:false)
         $lbl= lang($b[1]);
         $result.= '<a class="p2hQbItem" href="'.sys_enc($b[0]>'' ? $b[0] : '#').'"'.
                   ($b[5]>'' ? ' onclick="'.sys_enc($b[5]).'; return false;"' : '').
-                  ($b[3]>'' ? ' title="'.sys_enc(strip_tags(lang($b[3]))).'"' : '').' aria-label="'.sys_enc(strip_tags($lbl)).'">'.
+                  ($b[3]>'' ? ' title="'.sys_enc(strip_tags(lang($b[3]))).'"' : '').
+                  ((trim(strip_tags($lbl)) > '') ? ' aria-label="'.sys_enc(trim(strip_tags($lbl))).'"' :                   # (an icon only got aria-label="": no name)
+                   (($b[3]>'') ? ' aria-label="'.sys_enc(strip_tags(lang($b[3]))).'"' : '')).'>'.
                   ($b[4]>'' ? '<span class="p2hQbDot" style="background:'.sys_enc($b[4]).';"></span>' : '').
                   ($b[2]>'' ? '<ic class="'.sys_enc($b[2]).'" aria-hidden="true"></ic>' : '').
                   '<span class="p2hQbTxt">'.$lbl.'</span></a>';
@@ -3360,8 +3362,15 @@ function htm_PageHelp(# rtrn:false)
     $code= preg_match('/^[a-z]{2}$/', (string)$lang) ? $lang : 'en';
     $lines= ($code!='en' ? $read(preg_replace('/\.json$/', '_'.$code.'.json', $file)) : null) ?? $read($file);
     $t= function($k) { return sys_enc(strip_tags(lang($k))); };
+    static $winDone= false;                                     # One help window per page - more calls: only the button (as htm_NotePad)
+    if ($lines and $winDone) {
+        $result= '<button type="button" class="p2hHelpButt" aria-haspopup="dialog" aria-controls="p2hHelpWin" title="'.$t('@Help for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
+        if (!$rtrn) echo $result; else return $result;
+        return;
+    }
+    if ($lines) $winDone= true;
     if (!$lines) {
-        $result= '<button type="button" class="p2hHelpButt" disabled title="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
+        $result= '<button type="button" class="p2hHelpButt" disabledtitle="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
         if (!$rtrn) echo $result; else return $result;
         return;
     }
@@ -4166,7 +4175,8 @@ function htm_TableTools(# tabl:'', srch:true, sort:true, plho:'@Search...', rtrn
     if (tools.dataset.sort !== "1" || t.config || !t.tHead) return;          /* Tablesorter sorts itself */
     var head= t.tHead.rows[t.tHead.rows.length - 1];
     [].forEach.call(head.cells, function(th, ci) {
-      th.setAttribute("role", "button");  th.tabIndex= 0;  th.classList.add("p2hTtSort");
+      th.tabIndex= 0;  th.classList.add("p2hTtSort");             /* (was role=button: then it is no column header, and aria-sort was not read) */
+      th.addEventListener("keydown", function(e) { if (e.key==="Enter" || e.key===" ") { e.preventDefault();  th.click(); } });
       th.addEventListener("click", function() {
         var asc= th.getAttribute("aria-sort") !== "ascending";
         [].forEach.call(head.cells, function(h) { h.removeAttribute("aria-sort"); });
@@ -4296,7 +4306,7 @@ function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['gobac
               '  <input type="checkbox" id="'.$mId.'" class="modal__toggler" checked />'.  // Hidden checkbox: unchecking it closes the modal
               '  <label class="modal__mask" for="'.$mId.'"></label>';                     // Background mask. Clicking it closes the modal 
     $result.= '  <div class="modal" style="width: '.$wdth.'; margin: 0 auto; ">'.
-              '    <label class="modal__close" for="'.$mId.'" title="'.lang('@Close').'"></label>'.
+              '    <label class="modal__close" for="'.$mId.'" role="button" tabindex="0" aria-label="'.sys_enc(strip_tags(lang('@Close'))).'" title="'.lang('@Close').'"></label>'.   # role+tabindex: Enter/Space (was mouse only)
               '    <div class="modal__header" style="background-color: '.$headColr.';">'.
               '      <h3 style="margin:8px;">'.$pref.$capt.'</h3>'.
               '    </div>'.
@@ -4310,9 +4320,9 @@ function msg_System($vrnt= 'error', $capt='',  $body='', $mess='', $list=['gobac
               '    <div class="modal__footer" style="background-color: '.$headColr.'; ">';
     if (in_array('goback',$list)) $result.= '<label class="modlButt" for="'.$mId.'" role="button" tabindex="0" onclick="history.back();" '.   # (it only closed the window)
                                             'title="'.lang('@Close the window and return to the previous screen').'">'.lang('@Undo').' </label>';
-    if (in_array('goon',  $list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Close the message-window and continue').'">'.lang('@Continue').' </label>';
-    if (in_array('accept',$list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Confirm and continue').'">'.lang('@Accept').' </label>';
-    if (in_array('close', $list)) $result.= '<label class="modlButt" for="'.$mId.'"  title="'.lang('@Close the window!').'">'.lang('@Close')    .' </label>';
+    if (in_array('goon',  $list)) $result.= '<label class="modlButt" for="'.$mId.'" role="button" tabindex="0" title="'.lang('@Close the message-window and continue').'">'.lang('@Continue').' </label>';
+    if (in_array('accept',$list)) $result.= '<label class="modlButt" for="'.$mId.'" role="button" tabindex="0" title="'.lang('@Confirm and continue').'">'.lang('@Accept').' </label>';
+    if (in_array('close', $list)) $result.= '<label class="modlButt" for="'.$mId.'" role="button" tabindex="0" title="'.lang('@Close the window!').'">'.lang('@Close')    .' </label>';
     //  $result.= '      <script> ';
     //  $result.= '        function goBack() { window.history.back() } ';
     //  $result.= '        function winclose() { open(location, "_self").close() } ';
@@ -6217,6 +6227,7 @@ $htm_ModalDialog= '
 }
 
 .modal__toggler:not(:checked) ~ .modal {
+	visibility: hidden;                /* A closed message: its buttons leave the tab order */
 	position: absolute;
 	overflow: hidden;
 	clip: rect(0 0 0 0);
@@ -6230,6 +6241,7 @@ $htm_ModalDialog= '
 }
 
 .modal__toggler:not(:checked) ~ .modal__mask {
+	visibility: hidden;
 	position: absolute;
 	overflow: hidden;
 	clip: rect(0 0 0 0);
