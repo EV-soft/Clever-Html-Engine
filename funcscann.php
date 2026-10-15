@@ -100,20 +100,22 @@
             if ($p=strpos(' '.$line,$searchWord)) { 
             if (($p<6) and               // PLACED at start of line!
             (strpos($line,'htm_')>0)) {  // is an html_ function
-                if (strpos(' '.$prevLine,'# ') > 0) 
-                     $hint= ' title="'.htmlspecialchars(str_replace('# ','Concerning: ',$prevLine), ENT_QUOTES, 'UTF-8').'" '; 
+                if (strpos(' '.$prevLine,'# ') > 0)        # The comment line above the function: shown as a hint (was a title)
+                     $hint= '<data-hint style="left: 0; top: 24px; width: 380px; white-space: normal; text-align: left; font-family: Arial, sans-serif; font-size: 13px; font-weight: normal; z-index: 5;">'.
+                            htmlspecialchars(trim(str_replace('# ', '', $prevLine)), ENT_QUOTES, 'UTF-8').'</data-hint>';
                 else $hint= '';
-                if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   # Same 3 lines per function as without "{" (the overview count relies on it)
+if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   # Same 3 lines per function as without "{" (the overview count relies on it)
                 else                      $funcN= ' '.substr($line,$p);
                 $x= substr($funcN,strpos($funcN,'htm_'));
                 $x= substr($x,0,strpos($x,'('));
                 $keyList[] = $x;
                 $funcN= str_replace('# ','',$funcN); // Remove comment flag on function parameters
                 $funcN= markParams($funcN);          // Only the parameter names - not words in strings and in the description (was: highlight_words)
-                $funcN= preg_replace('/\(/', '</strong>(<i>', $funcN, 1);                                         // Add format code (the first "(" only)
-                $funcN= str_replace(')',');',$funcN);
-                $funcN= '<strong style="font-size: 16px;" '.$hint.'>'.substr($funcN,strlen($searchWord)).'</i>';    // Add format code
-                
+                $funcN= preg_replace('/\(/', '</strong>'.($hint > '' ? $hint.'</abbr>' : '').'(<i>', $funcN, 1);   // Add format code (the first "(" only) - and the hint after the name
+$funcN= str_replace(')',');',$funcN);
+                $funcN= ($hint > '' ? '<abbr class="hint" tabindex="0" style="position: relative; text-decoration: none;">' : '').
+                        '<strong style="font-size: 16px;">'.ltrim(substr($funcN,strlen($searchWord))).'</i>';    // Add format code
+
                 $lno= $LinNo;
                 $lno= str_pad($lno,5,' ',STR_PAD_LEFT);
                 $str= "<pre>

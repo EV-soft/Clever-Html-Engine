@@ -28,11 +28,9 @@ htm_Page_( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
         htm_TextDiv(styl: 'padding: 5px;', body: '<big>FUNCTIONS - vers. '.$DocVer.' - '.date("Y-m-d").':</big><br>'.
             file_get_contents('Functions.html'));
-        $lines = count(file('Functions.html'));
-        // echo 'Total: '.floor(0.5+($lines/3)-1),' htm_Functions';
-        echo 'Total: '.floor(0.5+($lines/3)-1),' htm_Functions<br>';
-        echo 'Tip: Hovering the mouse over function names displays a short description.';
-        htm_nl(2);
+        echo 'Total: '.substr_count(file_get_contents('Functions.html'), '<pre>'),' htm_Functions<br>';   # One <pre> per function (was counted from the lines: one too few)
+        echo 'Tip: Hovering the mouse over function names (or tabbing to them) displays a short description.';
+htm_nl(2);
     htm_Card_end();
 
     htm_Card_( capt: '@Notes about function parameters - Keywords table();', icon: 'fas fa-info', 
