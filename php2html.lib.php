@@ -1605,7 +1605,7 @@ $ixalign= $ixalign ?? '';
                 if ($GLOBALS["Øshow"] ?? ''>0) $bdy[2]= 'text';
                 if ($emptyTD== true) $rowField.= '">'; else
                 switch ($bdy[2]) { # ContType / vrnt
-                    case 'ddwn' : $rowField.= '"'.$sortData.'>'.DropDown($name= $fldNames[$ColIx].'[]', $valu, $list= $SelectList[0], $attr= $SelectList[1].'; ');  
+                    case 'ddwn' : $rowField.= '"'.$sortData.'>'.DropDown($fldNames[$ColIx].'[]', $valu, (array)($SelectList[0] ?? []), ($SelectList[1] ?? '').'; ');   # (was $list= ...: it replaced the table's $list)
                                   // $rowField.= '-XXX-';
                                   // if ($RowIx==1) 
                                   $parser.= $ColIx. ': { sorter: "select" }, ';
@@ -1670,9 +1670,9 @@ $ixalign= $ixalign ?? '';
                                          'value="'.sys_enc((string)$valu).'" placeholder="'.lang($bdy[7] ?? '').'"'.
                                          $txAlign.$inpBg.' padding-left:2px; padding-right:2px;" /> ';
                                   break;
-                    case 'opti' :{ $rowField.= '"'.$sortData.'><span '. 
-                                        htm_Input($labl=lang($bdy[7] ?? ''),$plho= '?...',$icon='',$hint=lang($bdy[6] ?? ''),$vrnt='opti',$name= $fldNames[$ColIx].'[]',$valu,$form='',$wdth='98%',
-                                        $algn='left',$attr='',$rtrnx=true,$unit='', $disa=false,$rows='2',$step='',$list=$SelectList,$llgn='R',$bord='border: 1px solid Gainsboro;',$ftop='')
+                    case 'opti' :{ $rowField.= '"'.$sortData.'><span>'.         # (was '<span ' - no ">": "<span <div ...")
+                                        htm_Input(labl:lang($bdy[7] ?? ''), plho:'?...', hint:lang($bdy[6] ?? ''), vrnt:'opti', name:$fldNames[$ColIx].'[]', valu:$valu,
+                                                  wdth:'98%', algn:'left', rtrn:true, list:$SelectList, llgn:'R', bord:'border: 1px solid Gainsboro;')   # Named (was $list=...: it replaced the table's $list, $wdth ...)
                                     .' </span>';
                                 } // print_r($SelectList);
                                   break;
@@ -7000,7 +7000,7 @@ function DropDown($name, $valu, $list ,$attr='')
     $Result.= '<select class="styled-select" id="'.sys_uid(preg_replace('/[^A-Za-z0-9_\-]/', '', $name)).'" name="'.$name.
               '" style="max-width:140px; background-color:transparent; '.$attr.
               '"> '."\n".'<option label="" value="" > - </option>';  //  selected disabled hidden
-    foreach ($list as $rec) { dvl_pretty();
+    foreach ((array)$list as $rec) { dvl_pretty();  if (!is_array($rec)) continue;  $rec= array_pad($rec, 3, '');
         $Result.= "\n".'<option label="'.sys_enc(strip_tags(lang($rec[1]))).'" value="'.sys_enc((string)$rec[0]).'" title="'.sys_enc(strip_tags(lang($rec[2] ?? ''))).'"';   # Escaped (a " broke the option)
             if ($rec[0]==$valu) $Result.= ' SELECTED ';
         $Result.= '>'.sys_enc(strip_tags(lang($rec[1]))).'</option> ';

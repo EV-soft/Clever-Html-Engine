@@ -21,11 +21,13 @@
             $arrCode[]= $code;
         }
     }
-    if (isset($_POST['submit'])) $compareCode = $_POST['lngCode'];
+    if (isset($_POST['submit']) and is_string($_POST['lngCode'] ?? null) and in_array($_POST['lngCode'], $arrCode, true))   # Only a known code (was printed raw: XSS, and an unknown code was a fatal error)
+        $compareCode = $_POST['lngCode'];
+    if (!isset($arrTrans[$compareCode])) $arrTrans[$compareCode] = [];
     echo '<form action="#" method="post">
           <label for="lngCode">Select a code:</label>
           <select id="lngCode" name="lngCode">';
-    foreach ($arrCode as $code) echo '<option value="'.$code.'" '.($code==$compareCode ? 'selected ' : '').' >'.$code.'</option>';
+    foreach ($arrCode as $code) echo '<option value="'.htmlspecialchars($code).'" '.($code==$compareCode ? 'selected ' : '').' >'.htmlspecialchars($code).'</option>';
     echo '</select>
         <input type="submit" name="submit" value="Analyze Selected" />
         </form>';
@@ -68,8 +70,8 @@
     $arrStrings= array_unique($arrStrings, SORT_REGULAR);
     // sort($arrStrings, SORT_NATURAL | SORT_FLAG_CASE);
     sort($arrStrings);
-    echo '<br>Sorted list without duplicates for code: '.$compareCode.
-         '<p style="font-family:courier; font-size:11; ">';
+    echo '<br>Sorted list without duplicates for code: '.htmlspecialchars($compareCode).
+         '<p style="font-family:courier; font-size:11px; ">'.
     '<pre>
 {
   "appName": "Tiny File Manager",
@@ -100,5 +102,5 @@ echo ' <font color=red><- REMOVE THIS LAST COMMA !</font>
        '<br>Total: '.count($arrStrings).' strings i the sorted list. Longest string is on  '.$longest.' chars.'.
        '<br>You can copy - paste this list to your editor'.
        '<br><font color=red>Remember to escape the char: " </font>with a slash like this: \" if it occurs on translated text !'.
-       '<br>Status of the analyzed language is '.round($miss / count($arrStrings) * 100).' % translated.';
+       '<br>Status of the analyzed language is '.(count($arrStrings) ? round($miss / count($arrStrings) * 100) : 0).' % translated.';   // (no strings: was a division by zero)
 ?>
