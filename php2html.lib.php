@@ -2059,7 +2059,7 @@ function htm_Card_(# capt:'', icon:'', hint:'tgl', form:'', acti:'', clas:'cardW
    // if ($frst == '') { $frst= $icon.' &nbsp;'.$capt; }
     # Per-card JS API (kept for backward compatibility): thin wrappers around the shared p2hCard*() functions (see p2h_themeBoot)
     if (preg_match('/^\d+(\.\d+)?$/', trim((string)$wdth))) $wdth= trim($wdth).'px';     # A plain number (wdth:'640') means pixels
-    $ix= $gbl_CardIx;  $jsW= json_encode((string)$wdth);  $jsH= json_encode((string)$vhgh);  $jsC= json_encode((string)$clas);
+    $ix= $gbl_CardIx;  $jsW= json_encode((string)$wdth);  $jsH= json_encode(((string)$vhgh > '') ? (string)$vhgh : '500px');  $jsC= json_encode((string)$clas);   # (jsH: vhgh:'' starts at 500px - the toggle went back to '' = no limit)
     echo '<script>'.
          'function CardHeight'.$ix.'()   { p2hCardHeight('.$ix.','.$jsH.'); }'.
          'function CardSwitch'.$ix.'()   { p2hCardToggle('.$ix.','.$jsW.'); }'.
@@ -3128,10 +3128,13 @@ function p2hDialog(o) {
         return;
     }
     var d= document.createElement("dialog"); d.className= "p2hDlg";
-    var h= document.createElement("div");    h.className= "p2hDlgHead"; h.textContent= o.title || "";
-    var b= document.createElement("div");    b.className= "p2hDlgBody"; b.textContent= (o.msg === undefined ? "" : String(o.msg));
+    var id= "p2hDlg" + (p2hDialog.n= (p2hDialog.n || 0) + 1);       // The title names the dialog and the message describes it (screen readers said only "dialog")
+    var h= document.createElement("div");    h.className= "p2hDlgHead"; h.textContent= o.title || "";  h.id= id + "h";
+    var b= document.createElement("div");    b.className= "p2hDlgBody"; b.id= id + "b";
+    var m= document.createElement("span");   m.id= id + "m";  m.textContent= (o.msg === undefined ? "" : String(o.msg));  b.appendChild(m);
+    d.setAttribute("aria-labelledby", h.id);  d.setAttribute("aria-describedby", m.id);
     var inp= null;
-    if (o.input) { inp= document.createElement("input"); inp.type= "text"; inp.className= "p2hDlgInp"; inp.value= o.def || ""; b.appendChild(inp); }
+    if (o.input) { inp= document.createElement("input"); inp.type= "text"; inp.className= "p2hDlgInp"; inp.value= o.def || ""; inp.setAttribute("aria-labelledby", m.id); b.appendChild(inp); }
     var f= document.createElement("div");    f.className= "p2hDlgFoot";
     var done= false;
     function close(okay) {
@@ -3684,10 +3687,8 @@ function htm_MultistateButt(# name:'ROWyCOLx', valu:'', acti:true, styl:'padding
                 mButt.setAttribute('aria-label', mButt.id + ': ' + hidden.value);      // The new state for screen readers
             }
             function setCheckBoxes(mButt, value) {
-                if      (value == 0) { mButt.classList.add(                 'colrgray');   mButt.innerHTML = '<p>".$Bicon[0]."</p>'; }
-                else if (value == 1) { mButt.classList.replace('colrgray'  ,'colrred');    mButt.innerHTML = '<p>".$Bicon[1]."</p>'; }
-                else if (value == 2) { mButt.classList.replace('colrred'   ,'colrorange'); mButt.innerHTML = '<p>".$Bicon[2]."</p>'; }
-                else                 { mButt.classList.replace('colrorange','colrgreen');  mButt.innerHTML = '<p>".$Bicon[3]."</p>'; }
+                var icons = ['".$Bicon[0]."', '".$Bicon[1]."', '".$Bicon[2]."', '".$Bicon[3]."'];
+                mButt.innerHTML = icons[value] || icons[0];         // Only the icon (was wrapped in a <p>: a block inside the inline <p> - the icon jumped to a new line)
             }
         </script>";
     }
@@ -3872,7 +3873,7 @@ function htm_Tab(# labl:'', body:'', name:'', styl:'text-align: left; box-shadow
     $name= preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$name);   # A safe id (it is used in onclick)
     if ($name === '') $name= 'p2hTab'.$tabNo;                      # Without a name: an id of its own (was id="" - the tab could not be opened)
     $GLOBALS['TabLabl'].= '
-        <button class="tablinks" type="button" id="tab_'.$name.'" title="'.lang('@Show this Tab-content').'" 
+        <button class="tablinks" type="button" id="tab_'.$name.'" aria-controls="'.$name.'" aria-expanded="false" title="'.lang('@Show this Tab-content').'" 
         onclick="openTab(event, \''.$name.'\')" 
         style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; "><'.$b.'>'.lang($labl).'</'.$b.'></button>';
         if ($dflt==true) $GLOBALS['TabDflt']= $name;          # Opened when the page has loaded (see htm_Tabs_end)
@@ -4930,8 +4931,10 @@ function htm_Page_(# titl:'', hint:'', info:'', inis:'', algn:'center', imag:'',
     $pbrd=true          # bool:   Draw border around the page body-div
     )
 { # Prepare / initialize a page  # Must be followed by htm_Page_end() to finalise the page
-    global $gbl_ProgRoot, $CSS_system, $gbl_TitleColr, $cardCount, $pbrd,$gbl_progZoom, $javaScripts, $headEndScript, 
+    $pbrdArg= $pbrd;                    # "global $pbrd" below replaced the parameter (pbrd:true gave no border) - htm_Page_end() reads the global
+    global $gbl_ProgRoot, $CSS_system, $gbl_TitleColr, $cardCount, $pbrd,$gbl_progZoom,$javaScripts, $headEndScript, 
            $gbl_progDesti, $gbl_copyright, $autoCDN, $LIB_JQUERY, $LIB_JQUERYUI, $LIB_TABLESORTER, $LIB_FONTAWESOME, $LIB_TINYMCE, $LIB_PDFVIEW, $LIB_POLYFILL, $pdf_file;
+    $pbrd= $pbrdArg;
     $pageMess= '<b>ERROR:</b> ';
 
     # Preconnect to the CDN when a library is taken from it: DNS + TLS start at once, not first when the first <script>/<link> is met
@@ -6643,6 +6646,8 @@ function htm_Page_end()
       for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
       }
+      tablinks = g.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", "");  tablinks[i].setAttribute("aria-expanded", "false"); }
     }
     function openTab(evt, TabName) {                             /* Only the tabs of this group (was: all groups on the page) */
       var i, tabcontent, tablinks, g = (evt.currentTarget.closest && evt.currentTarget.closest(".p2hTabs")) || document;
@@ -6653,9 +6658,11 @@ function htm_Page_end()
       tablinks = g.getElementsByClassName("tablinks");
       for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
+        tablinks[i].setAttribute("aria-expanded", "false");
       }
       document.getElementById(TabName).style.display = "block";
       evt.currentTarget.className += " active";
+      evt.currentTarget.setAttribute("aria-expanded", "true");      /* Screen readers: which tab is open */
     }
     </script>
     ';
