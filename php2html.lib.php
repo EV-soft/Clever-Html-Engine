@@ -634,7 +634,7 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
     if ($hint>'') $result.= ' <abbr class= "hint">';
     switch ($vrnt) { // Variants:
         case 'outp' : $result.= '<label for="'.$oid.'_outp">'.$icon.lang($labl).'</label>'. # Output element with label and hint
-                                '<output id="'.$oid.'_outp" name="'.$name.'outp" for="'.$valu.'" form="'.$form.'">
+                                '<output id="'.$oid.'_outp" name="'.$name.'outp" for="'.sys_enc($valu).'"'.($form > '' ? ' form="'.sys_enc($form).'"' : '').' '.$attr.'>
                                 </output>';  break;
 /*      case 'outp' : echo '
                         <form oninput="x.value=parseInt(a.value)+parseInt(b.value)">
@@ -646,7 +646,7 @@ function htm_Output(# labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', form:'', 
 */
         case 'pgrs' : if ($valu<0) $value=''; else $value=' value="'.$valu.'"';
                       $result.= '<label for="'.$oid.'_pgrs">'.$icon.lang($labl).'</label>'. # Output Progress indicator
-                                '<progress id="'.$oid.'_pgrs" '.$value.' max="'.$vmax.'" >
+                                '<progress id="'.$oid.'_pgrs" '.$value.(((string)$vmax > '') ? ' max="'.sys_enc($vmax).'"' : '').' '.$attr.'>
                                 </progress>';  break;
         default     : $result.= ' htm_Output(): Illegal vrnt ! ';
     }
@@ -703,7 +703,7 @@ function htm_Caption(# labl:'',icon:'',hint:'',algn:'',styl:'color:#550000; font
 
 # Text formatted in a div
 function htm_TextDiv(# body:'', algn:'left', marg:'8px', styl:'box-shadow: 3px 3px 6px 0px #ccc; padding: 5px; border: solid 1px lightgray; ',attr:'background-color: white;', rtrn:false )
-    $body,          # string: Html-text inside div
+    $body='',       # string: Html-text inside div  (had no default: htm_TextDiv() without body was a fatal error)
     $algn='left',   # string: div-text alignment
     $marg='8px',    # string: div margin
     $styl=          # string: Other style
@@ -727,7 +727,7 @@ function htm_TextPre(# body, algn:'left', marg:'8px', attr:'', font:'', code:fal
     $rtrn=false     # bool:   Act as procedure: Echo result, or as function: Return string
 ) {
     if ($code) $body= htmlspecialchars($body); // convert: &lt;b&gt;bold&lt;/b&gt;
-    if ($font>0) $font= ' font-family: '.$font.'; ';
+    if ($font>'') $font= ' font-family: '.$font.'; ';         # (was $font>0: false for a name in quotes, e.g. "'Courier New', monospace")
     $result= '<pre style="margin: '.$marg.'; text-align: '.$algn.'; '.$font.' white-space: pre-wrap; '.$attr.'">'. $body. '</pre>';
     if (!$rtrn) echo $result; else return $result;
 }
@@ -755,8 +755,10 @@ $type='disc',               # string: List-style marker type (Ref: https://www.w
 $strt='',                   # string: Index start for ordered list ('' = 1)
 $styl='text-align:left;',   # string: Other style rel. body
 $rtrn=false                 # bool:   Function Return or echo result
-) { $mark=' style="list-style-type: '.$type.'; "';
-$result= '<span style="'.$styl.'">';
+) { if ((strtolower($vrnt)=='ol') and ($type=='disc')) $type= 'decimal';    # An ordered list with the default marker: numbers (was bullets)
+    $mark=' style="list-style-type: '.$type.'; "';
+$result= '<div style="'.$styl.'">'.                                  # (was a span with the list inside - and the caption inside the <ul>)
+         (((string)$capt > '') ? '<div class="p2hListCapt">'.lang($capt).'</div>' : '');
     switch ($vrnt= strtolower($vrnt)) {
         case 'ul' : $result.='<ul '.$mark.'>';                    break; # Unordered list
         case 'ol' : $result.='<ol '.$mark.(((string)$strt > '') ? ' start="'.(int)$strt.'"' : '').'>';  break; # Ordered list (was start="0" by default: numbered from 0)
@@ -764,7 +766,6 @@ $result= '<span style="'.$styl.'">';
         case 'dl' : $result.='<dl '.$mark.'>';                    break; # Description list
         default   : $result.='<'.$vrnt.' '.$mark.'>';                    # Custom variant
     }
-    $result.= lang($capt);
     $GLOBALS['ListVrnt']= $vrnt;
     $GLOBALS['ListMark']= $mark;
     if ($rtrn==false) echo $result; else return $result;
@@ -787,7 +788,7 @@ $rtrn=false     # bool:   Function Return or echo result
 # Ending a text list
 function htm_List_end(# rtrn:false)
 $rtrn=false     # bool:   Function Return or echo result
-) { $result= '</'.$GLOBALS['ListVrnt'].'>'. '</span>';
+) { $result= '</'.$GLOBALS['ListVrnt'].'>'. '</div>';
     if ($rtrn==false) echo $result; else return $result;
 }
 
@@ -6958,12 +6959,13 @@ function postValue(&$id,$varId)
 
 function get_browser_name($user_agent) 
 { # Call: get_browser_name($_SERVER['HTTP_USER_AGENT']);
-    if     (strpos($user_agent, 'Opera') || strpos($user_agent, 'OPR/')) return 'Opera';
-    elseif (strpos($user_agent, 'Edge'))    return 'Edge';
-    elseif (strpos($user_agent, 'Chrome'))  return 'Chrome';
-    elseif (strpos($user_agent, 'Safari'))  return 'Safari';
-    elseif (strpos($user_agent, 'Firefox')) return 'Firefox';
-    elseif (strpos($user_agent, 'MSIE') ||  strpos($user_agent, 'Trident/7')) return 'Internet Explorer';
+    $ua= (string)$user_agent;                       # str_contains: strpos() was 0 (= false) for "Opera/..." at the start
+    if     (str_contains($ua, 'Opera') || str_contains($ua, 'OPR/')) return 'Opera';
+    elseif (str_contains($ua, 'Edg'))     return 'Edge';      # "Edg/" (Chromium Edge - was reported as Chrome), "Edge/" (old)
+    elseif (str_contains($ua, 'Chrome'))  return 'Chrome';
+    elseif (str_contains($ua, 'Safari'))  return 'Safari';
+    elseif (str_contains($ua, 'Firefox')) return 'Firefox';
+    elseif (str_contains($ua, 'MSIE') ||  str_contains($ua, 'Trident/7')) return 'Internet Explorer';
     return 'Other';
 }
 
