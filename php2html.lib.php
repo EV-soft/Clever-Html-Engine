@@ -796,6 +796,7 @@ $rtrn=false     # bool:   Function Return or echo result
 function highlight_words($text, $wrds='', $styl='',$patt='~\w{4,10}~') { 
     if ($wrds=='')
         $wrds='labl capt body foot plho icon hint desc type name valu vmax vmin form subm acti clas wdth heig algn marg styl attr mode font colr fclr bclr llgn link targ akey kind echo unit disa rows step bord plac rept rtrn titl info inis imag pbrd simu clck stck cntx text html srce butt mess tplc tsty head evnt note rept shrt frst last from to__ elem pref suff filt data crea modi expo just sort filt vrnt capt pref body suff idix note data filt sort crea modi vhgh styl from list enbl dflt strt expo show poup help ftop code synt repl tout
+              fold fmat vlue opti extr ques answ grup open edit simp move lpos srch tabl them view yclr nclr xytx ntxt hght widt wrds patt
               ';
     else $wrds.= $wrds;
     $wrds= str_replace(' ',': ',$wrds); # Add : to all words
