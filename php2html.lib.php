@@ -3118,6 +3118,12 @@ var p2hCardMove= (function() {
         addEventListener("pointermove", move, true);  addEventListener("pointerup", up, true);  addEventListener("pointercancel", up, true);
     });
     document.addEventListener("click", function(e) { if (noClick) { noClick= false;  e.preventDefault();  e.stopPropagation(); } }, true);
+    document.addEventListener("click", function(e) {             /* A click on the empty part of a card header folds the card too (as the caption) */
+        var t= e.target, h= t.closest && t.closest("[id^=chead]");  if (!h || e.defaultPrevented) return;
+        if (t.closest("a, button, input, select, textarea, label, form, [role=button], [contenteditable=true], ic, abbr.hint, .p2hMoveIc")) return;   /* Its own action (caption, tool icons, fields) */
+        try { if (String(getSelection()).length) return; } catch(err) {}                                                 /* Selecting text */
+        var f= window["CardSwitch" + h.id.slice(5)];  if (typeof f === "function") f();
+    });
     document.addEventListener("keydown", function(e) {
         var d= e.altKey ? {ArrowUp: -1, ArrowDown: 1}[e.key] : 0;  if (!d) return;
         var t= e.target, card= (t.closest && t.closest(".p2hMoveIc")) ? t.closest("[data-p2h-move]") : cardOf(t);
