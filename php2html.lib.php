@@ -3465,7 +3465,10 @@ function p2h_vbHint($html, $hint) {
 
 # A small floating, movable toolbar: zoom out/in (click the % to reset), full screen and theme.
 # Zoom and position are remembered in this browser. Drag the grip - double-click it (or Home) to put it back.
-function htm_ViewBar(# rtrn:false)
+# user: the logged in user is shown at the end of the bar - lout: the address that logs out (a sign-out button beside the name)
+function htm_ViewBar(# user:'', lout:'', rtrn:false)
+    $user= '',              # string: Name of the logged in user ('' = not shown)
+    $lout= '',              # string: Logout URL ('' = no logout button)
     $rtrn= false            # bool:   Return or echo result
 ) {
     static $no= 0; $no++;  $id= 'p2hViewBar'.$no;
@@ -3484,6 +3487,11 @@ function htm_ViewBar(# rtrn:false)
              htm_NotePad(rtrn:true).                                     # My notes (saved in this browser)
              htm_PageHelp(rtrn:true).                                    # "?" - help for this page (grey when there is none)
              htm_ThemeButt(rtrn:true).
+             ($user > '' ? '<span class="p2hVbSep"></span>'.
+                p2h_vbHint('<span class="p2hVbUser" tabindex="0"><ic class="fa-solid fa-user" aria-hidden="true"></ic> '.sys_enc($user).'</span>',
+                           $t('@Logged in as').' '.sys_enc($user)) : '').
+             ($lout > '' ? p2h_vbHint('<a class="p2hVbLout" href="'.sys_enc($lout).'" aria-label="'.$t('@Log out').'"><ic class="fa-solid fa-right-from-bracket"></ic></a>',
+                           $t('@Log out')) : '').
              '</div>';
     if ($no==1) $result.= '<script>
 function p2hViewBar(bar) {
@@ -8069,6 +8077,10 @@ $CSS_theme = '
 .p2hViewBar button:hover { background: rgba(255,255,255,0.15); }
 .p2hViewBar button:focus-visible, .p2hVbGrip:focus-visible { outline: 2px solid #4fc3f7; outline-offset: -2px; }
 .p2hViewBar .p2hThemeTx { display: none; }
+.p2hViewBar .p2hVbUser { color: #fff; padding: 4px 6px; font-size: 13px; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.p2hViewBar .p2hVbLout { color: #fff; padding: 4px 7px; border-radius: 5px; text-decoration: none; }
+.p2hViewBar .p2hVbLout:hover { background: rgba(255,255,255,0.15); }
+.p2hViewBar .p2hVbLout:focus-visible, .p2hViewBar .p2hVbUser:focus-visible { outline: 2px solid #4fc3f7; outline-offset: -2px; }
 /* Column view (htm_ViewBar button): the cards flow in columns; the browser picks the number of columns from the width */
 .p2hColview { column-width: 480px; column-gap: 16px; padding: 0 8px; }
 .p2hColview > * { column-span: all; }                           /* Menu, headings, text: across all columns */
