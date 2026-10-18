@@ -3776,6 +3776,7 @@ $result= '
 
   .grab-slider-wrapper {
     position: relative;
+    box-sizing: border-box;                         /* The border inside the width (it stuck out 2px at width 100%) */
     width: '.$wdth.';
     height: '.$vhgh.';
     border: 1px solid gray;
@@ -3816,6 +3817,8 @@ $result= '
     border: 1px solid #111;
     border-radius: calc('.$vhgh.' / 2);
     cursor: grab;
+    user-select: none;  -webkit-user-select: none;  /* A drag must not select the text (a native drag of selected text stopped the slider) */
+    transition: left 0.15s;
     background: white;
     color: #111;                                    /* Dark text on the white slider - also in the dark theme */
     border-color: white;
@@ -3836,7 +3839,7 @@ if (!empty($GLOBALS['gbl_CardForm'])) $form= '';     # Inside a card form: no fo
 if ($form>'') $result.= ' <form name="'.sys_enc($form).'" id="'.sys_enc($form).'">';
     $result.= '    
         <div class="grab-slider-field">
-            <div class="grab-slider-wrapper" title="'.sys_enc(strip_tags(lang($hint))).'">
+            <div class="grab-slider-wrapper">
                 <div class="grab-slider" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0" aria-label="'.sys_enc(strip_tags(lang($capt))).'" style="padding: 0 5px; font-size: 12px;">'.
                     '<abbr class= "hint" style="white-space: nowrap;">'.
                         lang($capt). (($icon>'') ? ' <i class="'.$icon.'"></i>' : '').
@@ -3860,16 +3863,28 @@ $result.= '
     if (!slider || !input || wrapper.dataset.p2hInit) return;  wrapper.dataset.p2hInit= "1";
     slider.style.touchAction= "none";
     slider.addEventListener("pointerdown", function(e) {
-      var startX= e.clientX - slider.offsetLeft, maxleft= wrapper.clientWidth - slider.offsetWidth;
-      try { slider.setPointerCapture(e.pointerId); } catch(err) {}
-      function move(ev) {
-        var left= Math.max(0, Math.min(maxleft, ev.clientX - startX)), ok= (left >= maxleft - 1);
-        slider.style.left= left + "px";
+      if (e.button > 0) return;                                 /* Left button, finger or pen */
+      e.preventDefault();                                       /* No text selection and no native drag (it cancelled the slide) */
+      var zoom= parseFloat(getComputedStyle(document.body).zoom) || 1;    /* View bar zoom on <body> */
+      var startX= e.clientX, startLeft= slider.offsetLeft, left= startLeft;
+      function maxleft() { return wrapper.clientWidth - slider.offsetWidth; }
+      function set(l) {
+        left= l;  var ok= (l >= maxleft() - 1);
+        slider.style.left= l + "px";
         wrapper.classList.toggle("human", ok);
-        input.value= ok ? "notbot" : "isbot";  slider.setAttribute("aria-valuenow", ok ? "1" : "0");    /* (was set by the keyboard only) */
+        input.value= ok ? "notbot" : "isbot";  slider.setAttribute("aria-valuenow", ok ? "1" : "0");
       }
-      function up() { slider.removeEventListener("pointermove", move); slider.removeEventListener("pointerup", up); slider.removeEventListener("pointercancel", up); }
-      slider.addEventListener("pointermove", move);  slider.addEventListener("pointerup", up);  slider.addEventListener("pointercancel", up);
+      try { slider.setPointerCapture(e.pointerId); } catch(err) {}
+      slider.style.transition= "none";                          /* Follow the pointer directly while dragging */
+      function move(ev) { set(Math.max(0, Math.min(maxleft(), startLeft + (ev.clientX - startX) / zoom))); }
+      function up() {
+        slider.removeEventListener("pointermove", move);  slider.removeEventListener("pointerup", up);
+        slider.removeEventListener("pointercancel", up);  slider.removeEventListener("lostpointercapture", up);
+        slider.style.transition= "";
+        set(left >= maxleft() * 0.8 ? maxleft() : 0);           /* Released after 80 %: slides to the end - else back to the start */
+      }
+      slider.addEventListener("pointermove", move);  slider.addEventListener("pointerup", up);
+      slider.addEventListener("pointercancel", up);  slider.addEventListener("lostpointercapture", up);
     });
     slider.addEventListener("keydown", function(e) {      /* Keyboard: Enter, Space, right arrow or End solves it (was: mouse only - the form could not be sent) */
       if (["Enter", " ", "ArrowRight", "End"].indexOf(e.key) < 0) return;
@@ -3926,9 +3941,9 @@ function htm_Tab(# labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:'text-
     $name= preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$name);   # A safe id (it is used in onclick)
     if ($name === '') $name= 'p2hTab'.$tabNo;                      # Without a name: an id of its own (was id="" - the tab could not be opened)
     $GLOBALS['TabLabl'].= '
-        <button class="tablinks" type="button" id="tab_'.$name.'" aria-controls="'.$name.'" aria-expanded="false" title="'.lang('@Show this Tab-content').'" 
+        <button class="tablinks" type="button" id="tab_'.$name.'" aria-controls="'.$name.'" aria-expanded="false" 
         onclick="openTab(event, \''.$name.'\')" 
-        style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; "><'.$b.'>'.lang($labl).'</'.$b.'></button>';
+        style="background-color:'.$bclr.';border-bottom-color: '.$bclr.'; "><abbr class="hint p2hTabHint"><'.$b.'>'.lang($labl).'</'.$b.'><data-hint>'.lang('@Show this Tab-content').'</data-hint></abbr></button>';
         if ($dflt==true) $GLOBALS['TabDflt']= $name;          # Opened when the page has loaded (see htm_Tabs_end)
        
     $GLOBALS['TabBody'].= '
@@ -3944,8 +3959,8 @@ function htm_Tabs_end(# foot:'', styl:'', rtrn:false)
     $rtrn=false
     ) 
 {   $result=
-        $GLOBALS['TabLabl'].'<span style="float:right;" title="'.lang('@Hide the Tab-content').
-                            '" role="button" tabindex="0" aria-label="'.lang('@Hide the Tab-content').'" onclick="closeTabs(this)"><i class="far fa-window-close"></i>&nbsp;</span> </div>'.
+        $GLOBALS['TabLabl'].'<abbr class="hint p2hCtrlHint" role="button" tabindex="0" aria-label="'.lang('@Hide the Tab-content').'" onclick="closeTabs(this)"><i class="far fa-window-close"></i>&nbsp;'.
+                            '<data-hint>'.lang('@Hide the Tab-content').'</data-hint></abbr> </div>'.
         $GLOBALS['TabBody'].'</div>';
         if ($foot>'') $result.= '<span style="'.$styl.'">'.lang($foot).'</span>';
         $result.= '<hr style="border-top: 2px solid #aaa; margin-top: 0;">';
@@ -6637,9 +6652,9 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
     if ($hint>'')   // Page tip  (vertical text - left)
         $sideTxt.= '<div class="p2hSideTxt" style="position: fixed; width: min-content; line-height: 14px; bottom: -10px; left: 0px; z-index: 99;
             transform-origin: top left; transform: rotate(-90deg); white-space: nowrap; padding: 2px; background-color:#ddddddbd;" '.
-            'title="'.lang('@CTRL-Scroll UP/Down mousewheel to zoom window content.').'">'.
-    // '<data-hint>CTRL-Scroll UP/Down mousewheel to zoom window content</data-hint>'.
-            '<small>'.sys_enc(lang($hint)).'</small></div>';                   # Text (was raw)
+            '>'.
+            '<abbr class="hint p2hSideHint"><small>'.sys_enc(lang($hint)).'</small>'.
+            '<data-hint>'.lang('@CTRL-Scroll UP/Down mousewheel to zoom window content.').'</data-hint></abbr></div>';                   # Text (was raw)
     // echo '<div class="ver_right"; style="color:red;">[[[[[[[[[HHHHH__HHHHHH]]]]]]]]]]</div>';
 
     echo $javaScripts;
@@ -7761,6 +7776,11 @@ abbr.hint.p2hCtrlHint { float: right; position: relative; text-decoration: none;
 abbr.hint.p2hCtrlHint:hover data-hint, abbr.hint.p2hCtrlHint:focus-within data-hint { left: auto; right: -4px; top: 20px; }
 abbr.hint.p2hHelpHint { position: relative; text-decoration: none; }
 abbr.hint.p2hHelpHint:hover data-hint, abbr.hint.p2hHelpHint:focus-within data-hint { left: 0; top: 20px; }
+/* htm_Tab_(): the hint just below the tab label - htm_Page_(hint:): beside the vertical edge text (turned back to horizontal) */
+abbr.hint.p2hTabHint { position: relative; text-decoration: none; font-weight: inherit; }
+abbr.hint.p2hTabHint:hover data-hint, abbr.hint.p2hTabHint:focus-within data-hint { left: -6px; top: calc(100% + 8px); text-align: left; }
+abbr.hint.p2hSideHint { position: relative; text-decoration: none; }
+abbr.hint.p2hSideHint:hover data-hint, abbr.hint.p2hSideHint:focus-within data-hint { left: 0; top: calc(100% + 6px); transform: rotate(90deg) translateY(-100%); transform-origin: top left; white-space: normal; }
 .p2hMoveIc { touch-action: none; cursor: grab !important; opacity: 0.55; }
 .p2hMoveIc:hover, .p2hMoveIc:focus-visible { opacity: 1; }
 [data-p2h-move=header] [id^=chead], .p2hArrange [data-p2h-move=toggle] [id^=chead] { cursor: grab; }
