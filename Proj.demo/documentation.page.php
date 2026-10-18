@@ -64,6 +64,7 @@ htm_Page_(titl:'documentation.page.php', hint:$©, info:'File: '.$DocFile.' - ve
         then the function&#39;s own parameters, and <code>rtrn</code> last. 34 functions got the new order; a function without a heading text keeps its main content first.
         <b>Upgrading:</b> named arguments (<code>labl:&#39;...&#39;</code>) work as before. Positional calls: run <code>php tools/named_args.php &lt;folder&gt; --write</code>
         on your code before you replace the library - it rewrites them to named arguments (a copy is saved as *.bak).</li>
+    <li><b>1.7.4:</b> the hint of a card header icon is shown just below its own icon (it was placed from the card&#39;s corner, far away), and the &quot;Go up&quot; button of a file table gives no PHP notice.</li>
     <li><b>1.7.3:</b> the grips for changing a table column width are on the column lines (they were beside them in a centered card and with zoom).</li>
     <li><b>1.7.2:</b> <code>htm_TextArea()</code>, <code>htm_ActionButt()</code>, <code>htm_MultistateButt()</code> and <code>htm_ModalDialog()</code> echo by default,
         as all other functions (they returned the HTML). Where you use their result, add <code>rtrn:true</code> - <code>tools/named_args.php</code> does it.</li>

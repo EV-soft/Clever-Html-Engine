@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.3';    $DocRev='2026-10-15';      $DocIni='evs';  $ModNo=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.7.4';    $DocRev='2026-10-18';      $DocIni='evs';  $ModNo=0; ## File informative only
 defined('P2H_VERSION') or define('P2H_VERSION', $DocVer);   # The library version - $DocVer is overwritten by every file that is included later
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
@@ -1439,12 +1439,12 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
                 // if ($bdy[3]=='2d') $sort.= ' sorter-currency sorter-digit ';  // '3:OutFormat'
                 if (($bdy[6] ?? '') === '@The name of file or directory') // '6:ColTip' - goUp in file/folder explorers header:
                 {
-                    if ($bdy[4][3] ?? ''===false) $sort= ' sorter-false '; // '4:[td-style]
+                    if (($bdy[4][3] ?? '')===false) $sort= ' sorter-false '; // '4:[td-style]
                      if ($GLOBALS['goUp'] ?? '' !='')
                     $goUp= str_WithHint(
                         $labl='<a href="'.($GLOBALS['goUp'] ?? '').'" target="_self" style= "float: left; position: inherit; margin-top: 3px; font-size: 16px; z-index: 105;">
                                 <i class="fas fa-chevron-circle-left" style="color: blue; box-shadow: 3px 3px 1px lightgray;"></i><small>'.lang('@Up').'</small></a>',
-                        $hint= '@Go up to parent folder: '.end(explode('/',$GLOBALS['goUp'] ?? '')) );
+                        $hint= '@Go up to parent folder: '.sys_enc(basename(urldecode($GLOBALS['goUp'] ?? ''))) );   # (end(explode()) gave a notice)
                 else $goUp=str_WithHint(
                         $labl='<span style= "float: left; position: inherit; margin-top: 3px; font-size: 16px; z-index: 199;">
                                 <i class="fas fa-chevron-circle-left" style="color: lightgray; "></i></span>',
@@ -2124,32 +2124,32 @@ function htm_Card_(# capt:'', icon:'', hint:'tgl', mode:'2', form:'', acti:'', w
     // TOGGLE butt: Toggle max-height between vhgh and 999px 
     $buttstyl= 'width:12px; height:12px; margin:6px 2px 0 0; float:right; font-size: 12px; '.$fclr;
     if (($show==true) and ($mode>'0') /* and ($hint>'') */) // ???
-        $Card_contrl.=  '<abbr class= "hint">'.
+        $Card_contrl.=  '<abbr class="hint p2hCtrlHint">'.
             '<ic class="fa-solid fa-up-down" style="'.$buttstyl .' padding:0 4px 0 0; margin-left: 0; cursor:row-resize;" '.
             ' role="button" tabindex="0" onclick= CardHeight'.$gbl_CardIx.'(); ></ic> 
             <data-hint>'.lang('@<b>TOGGLE-height:</b> Click icon to toggle viewHeight for <i>this</i> card').' </data-hint></abbr>';
     // WIDE butt: this
     if (($show==true) and ($mode>'1'))  // ($mode== '4')
-        $Card_contrl.=  '<abbr class= "hint">
+        $Card_contrl.=  '<abbr class="hint p2hCtrlHint">
             <ic class="fa-solid fa-right-left" style="'.$buttstyl .' padding:0 0 0 4px; cursor:col-resize;" '.
             ' role="button" tabindex="0" onclick= CardWide'.$gbl_CardIx.'(); ></ic>
             <data-hint>'. lang('@<b>WIDE:</b> Click to maximize/normalize <i>this</i> card width').'</data-hint></abbr>';
     // HEIGHT butt: this
     if ($show==true) if (false) // if (class="wrapper") // ($mode== '4')
         // <script> const el = document.getElementById('card'.$gbl_CardIx.'');    el.closest('.wrapper');     el.find('.wrapper'): </script>
-        $Card_contrl.=  '<abbr class= "hint">
+        $Card_contrl.=  '<abbr class="hint p2hCtrlHint">
             <ic class="fa-solid fa-right-left fa-rotate-90" style="'.$buttstyl .' cursor:s-resize;"'.
             ' onclick= WrapperHeight'.$gbl_CardIx.'(); ></ic>
             <data-hint>'. lang('@<b>HEIGHT:</b> Click to maximize/normalize <i>this</i> View height (Table/WrapperCard)').'</data-hint></abbr>';
     // COLLAPSE butt: all
     if (($show==true) and ($mode>'1'))  // ($mode== '3')
-        $Card_contrl.=  '<abbr class= "hint">
+        $Card_contrl.=  '<abbr class="hint p2hCtrlHint">
             <ic class="fas fa-angle-double-up" style="'.$buttstyl .' cursor:zoom-out;" '.
             ' role="button" tabindex="0" onclick= CardMinimizeAll(); ></ic>
             <data-hint>'. lang('@<b>COLLAPSE:</b> Click to close <i>all</i> cards').' </data-hint></abbr>';
     // EXPAND butt: all
     if (($show==true) and ($mode>'1'))  // ($mode== '3')
-        $Card_contrl.=  '<abbr class= "hint">
+        $Card_contrl.=  '<abbr class="hint p2hCtrlHint">
             <ic class="fas fa-angle-double-down" style="'.$buttstyl .' cursor:zoom-in;" '.
             ' role="button" tabindex="0" onclick= CardMaximizeAll(); ></ic>
             <data-hint>'. lang('@<b>EXPAND:</b> Click to open <i>all</i> cards').' </data-hint></abbr>';
@@ -2163,7 +2163,7 @@ function htm_Card_(# capt:'', icon:'', hint:'tgl', mode:'2', form:'', acti:'', w
              (($mvMode=='toggle') ? ($hint>'' ? '<br>' : '').lang('@When "Arrange cards" is on in the view bar: drag the header to move the card.') : '');
     // CardHelp:
     if ($help>'') $Card_help=
-         '<abbr class= "hint">'.
+         '<abbr class="hint p2hHelpHint">'.
             '<ic class="fa-solid fa-question" style="'.$buttstyl .' float:none; cursor:help; padding: 0 6px;" '.
             ' role="button" tabindex="0" onclick="window.open(\''.$help.'\', \'_blank\')" >'.
             '</ic>
@@ -7756,6 +7756,11 @@ table.tablesorter > tbody > tr > td > input[type=date] { background-color: trans
 /* Card order (p2hCardMove): the handle, the card being moved, "Arrange cards" mode */
 abbr.hint.p2hMoveHint { position: absolute; left: 1px; top: 6px; z-index: 2; text-decoration: none; }
 abbr.hint.p2hMoveHint:hover data-hint, abbr.hint.p2hMoveHint:focus-within data-hint { left: 18px; top: 0; }
+/* Card control icons (right side of the header): the hint just below its own icon (was placed from the card corner) */
+abbr.hint.p2hCtrlHint { float: right; position: relative; text-decoration: none; }
+abbr.hint.p2hCtrlHint:hover data-hint, abbr.hint.p2hCtrlHint:focus-within data-hint { left: auto; right: -4px; top: 20px; }
+abbr.hint.p2hHelpHint { position: relative; text-decoration: none; }
+abbr.hint.p2hHelpHint:hover data-hint, abbr.hint.p2hHelpHint:focus-within data-hint { left: 0; top: 20px; }
 .p2hMoveIc { touch-action: none; cursor: grab !important; opacity: 0.55; }
 .p2hMoveIc:hover, .p2hMoveIc:focus-visible { opacity: 1; }
 [data-p2h-move=header] [id^=chead], .p2hArrange [data-p2h-move=toggle] [id^=chead] { cursor: grab; }
