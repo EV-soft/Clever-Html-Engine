@@ -3398,6 +3398,8 @@ function htm_PageHelp(# rtrn:false)
     # The texts: help_system.json (English) and help_system_<lang>.json, next to this library (or $gbl_HelpFile):
     #   { "Demo.page.php": ["<h3>Title</h3>", "<p>Text...</p>"], ... }   - one entry per page, HTML lines.
     #   A page without an entry gets a grey, disabled button. A missing translation shows the English text.
+    #   $gbl_PageHelp= false: no help button at all (as $gbl_NotePad for the notes).
+    if (!($GLOBALS['gbl_PageHelp'] ?? true)) return '';
     global $lang;
     $page= basename($_SERVER['SCRIPT_NAME'] ?? $_SERVER['PHP_SELF'] ?? '');
     $file= $GLOBALS['gbl_HelpFile'] ?? (__DIR__.'/help_system.json');
