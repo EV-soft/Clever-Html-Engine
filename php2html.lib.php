@@ -7804,6 +7804,7 @@ abbr.hint.p2hSideHint { position: relative; text-decoration: none; }
 abbr.hint.p2hSideHint:hover data-hint, abbr.hint.p2hSideHint:focus-within data-hint { left: 0; top: calc(100% + 6px); transform: rotate(90deg) translateY(-100%); transform-origin: top left; white-space: normal; }
 .p2hMoveIc { touch-action: none; cursor: grab !important; opacity: 0.55; }
 .p2hMoveIc:hover, .p2hMoveIc:focus-visible { opacity: 1; }
+[id^=chead] { cursor: row-resize; }                     /* The whole header folds the card (as the caption) - its tools keep their own cursor */
 [data-p2h-move=header] [id^=chead], .p2hArrange [data-p2h-move=toggle] [id^=chead] { cursor: grab; }
 .p2hArrange [data-p2h-move=toggle] { outline: 2px dashed var(--AccnColr, DarkGreen); outline-offset: 2px; }
 .p2hMoving { opacity: 0.6; outline: 2px dashed var(--AccnColr, DarkGreen) !important; outline-offset: 2px; }
