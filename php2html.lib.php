@@ -3219,8 +3219,8 @@ function htm_ThemeButt(# labl:'', hint:'@...', rtrn:false)
     $hint= '@Switch theme: light, dark, automatic (follows the system) or your own colors',
     $rtrn= false            # bool:   Return or echo result
 ) {
-    $result= '<button type="button" class="p2hThemeButt" onclick="p2hCycleTheme()" title="'.sys_enc(strip_tags(lang($hint))).'">'.
-             '<ic class="p2hThemeIc fa-solid fa-sun"></ic> '.($labl>'' ? lang($labl).' ' : '').'<span class="p2hThemeTx"></span></button>'.
+    $result= p2h_vbHint('<button type="button" class="p2hThemeButt" onclick="p2hCycleTheme()" aria-label="'.sys_enc(strip_tags(lang($hint))).'">'.
+             '<ic class="p2hThemeIc fa-solid fa-sun"></ic> '.($labl>'' ? lang($labl).' ' : '').'<span class="p2hThemeTx"></span></button>', lang($hint)).
              '<script>document.querySelectorAll(".p2hThemeButt").forEach(p2hThemeLabel);</script>';
     if (!$rtrn) echo $result; else return $result;
 }
@@ -3256,8 +3256,8 @@ function htm_LangSelect(# rtrn:false)
     $cur= isset($list[$lang]) ? $lang : 'en';
     $t= function($k) { return sys_enc(strip_tags(lang($k))); };
     $result= '<span class="p2hLang" data-csrf="'.sys_enc($_SESSION['csrf_token'] ?? '').'">'.
-             '<button type="button" class="p2hLangButt" aria-haspopup="true" aria-expanded="false" title="'.$t('@Language').': '.sys_enc($list[$cur]).'">'.
-                p2h_flag($cur).' <span class="p2hLangCode">'.strtoupper($cur).'</span></button>'.
+             p2h_vbHint('<button type="button" class="p2hLangButt" aria-haspopup="true" aria-expanded="false" aria-label="'.$t('@Language').': '.sys_enc($list[$cur]).'">'.
+                p2h_flag($cur).' <span class="p2hLangCode">'.strtoupper($cur).'</span></button>', $t('@Language').': '.sys_enc($list[$cur])).
              '<span class="p2hLangList" role="menu" aria-label="'.$t('@Choose language').'" hidden>';
     foreach ($list as $code=>$name)
         $result.= '<button type="button" role="menuitemradio" aria-checked="'.($code==$cur ? 'true' : 'false').'" data-lang="'.$code.'" lang="'.$code.'">'.
@@ -3309,20 +3309,20 @@ function htm_NotePad(# rtrn:false)
     # Plain text (a <textarea>) - the notes can never become code on the page. No server, no login: only this browser keeps them.
     if (!($GLOBALS['gbl_NotePad'] ?? true)) return '';
     $t= function($k) { return sys_enc(strip_tags(lang($k))); };
-    $butt= '<button type="button" class="p2hNoteButt" aria-haspopup="dialog" aria-controls="p2hNoteWin" title="'.$t('@My notes').'"><ic class="fa-solid fa-note-sticky"></ic></button>';
+    $butt= p2h_vbHint('<button type="button" class="p2hNoteButt" aria-haspopup="dialog" aria-controls="p2hNoteWin" aria-label="'.$t('@My notes').'"><ic class="fa-solid fa-note-sticky"></ic></button>', $t('@My notes'));
     static $winDone= false;                                     # One window and one script per page - more calls: only the button (was: a 2nd window with the same id)
     if ($winDone) { if (!$rtrn) echo $butt;  return $rtrn ? $butt : '';}
     $winDone= true;
     $result= $butt.
              '<div id="p2hNoteWin" class="p2hHelpWin p2hNoteWin" role="dialog" aria-labelledby="p2hNoteTtl" hidden>'.
-                '<div class="p2hNoteHead" title="'.$t('@Drag to move').'"><ic class="fa-solid fa-note-sticky" aria-hidden="true"></ic> '.
+                '<div class="p2hNoteHead"><abbr class="hint p2hHelpHint"><ic class="fa-solid fa-note-sticky" aria-hidden="true"></ic><data-hint>'.$t('@Drag to move').'</data-hint></abbr> '.
                     '<span id="p2hNoteTtl">'.$t('@My notes').'</span>'.
                     '<button type="button" class="p2hNoteClose" aria-label="'.$t('@Close').'">&times;</button></div>'.
                 '<textarea class="p2hNoteText" placeholder="'.$t('@Write your notes here...').'" aria-label="'.$t('@My notes').'"></textarea>'.
                 '<div class="p2hHelpFoot p2hNoteFoot">'.
                     '<span class="p2hNoteState" aria-live="polite"></span>'.
-                    '<button type="button" data-note="download" title="'.$t('@Save the notes as a text file').'"><ic class="fa-solid fa-download"></ic> '.$t('@Download').'</button>'.
-                    '<button type="button" data-note="clear" title="'.$t('@Delete all notes').'"><ic class="fa-solid fa-trash"></ic> '.$t('@Clear').'</button>'.
+                    p2h_vbHint('<button type="button" data-note="download"><ic class="fa-solid fa-download"></ic> '.$t('@Download').'</button>', $t('@Save the notes as a text file')).
+                    p2h_vbHint('<button type="button" data-note="clear"><ic class="fa-solid fa-trash"></ic> '.$t('@Clear').'</button>', $t('@Delete all notes')).
                 '</div>'.
              '</div>'.
              '<script>
@@ -3408,19 +3408,19 @@ function htm_PageHelp(# rtrn:false)
     $t= function($k) { return sys_enc(strip_tags(lang($k))); };
     static $winDone= false;                                     # One help window per page - more calls: only the button (as htm_NotePad)
     if ($lines and $winDone) {
-        $result= '<button type="button" class="p2hHelpButt" aria-haspopup="dialog" aria-controls="p2hHelpWin" title="'.$t('@Help for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
+        $result= p2h_vbHint('<button type="button" class="p2hHelpButt" aria-haspopup="dialog" aria-controls="p2hHelpWin" aria-label="'.$t('@Help for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>', $t('@Help for this page'));
         if (!$rtrn) echo $result; else return $result;
         return;
     }
     if ($lines) $winDone= true;
     if (!$lines) {
-        $result= '<button type="button" class="p2hHelpButt" disabled title="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>';
+        $result= p2h_vbHint('<button type="button" class="p2hHelpButt" disabled aria-label="'.$t('@No help text for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>', $t('@No help text for this page'));
         if (!$rtrn) echo $result; else return $result;
         return;
     }
-    $result= '<button type="button" class="p2hHelpButt" aria-haspopup="dialog" aria-controls="p2hHelpWin" title="'.$t('@Help for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>'.
+    $result= p2h_vbHint('<button type="button" class="p2hHelpButt" aria-haspopup="dialog" aria-controls="p2hHelpWin" aria-label="'.$t('@Help for this page').'"><ic class="fa-solid fa-circle-question"></ic></button>', $t('@Help for this page')).
              '<div id="p2hHelpWin" class="p2hHelpWin" role="dialog" aria-labelledby="p2hHelpTtl" hidden>'.
-                '<div class="p2hHelpHead" title="'.$t('@Drag to move').'"><ic class="fa-solid fa-circle-question" aria-hidden="true"></ic> '.
+                '<div class="p2hHelpHead"><abbr class="hint p2hHelpHint"><ic class="fa-solid fa-circle-question" aria-hidden="true"></ic><data-hint>'.$t('@Drag to move').'</data-hint></abbr> '.
                     '<span id="p2hHelpTtl">'.$t('@Help').'</span>'.
                     '<button type="button" class="p2hHelpClose" aria-label="'.$t('@Close').'">&times;</button></div>'.
                 '<div class="p2hHelpBody" tabindex="0">'.implode("\n", $lines).'</div>'.
@@ -3458,6 +3458,11 @@ function htm_PageHelp(# rtrn:false)
     if (!$rtrn) echo $result; else return $result;
 }
 
+# The hint of a button in the view bar (and its windows): just below it, right aligned - instead of the title tooltip of the browser
+function p2h_vbHint($html, $hint) {
+    return '<abbr class="hint p2hVbHint">'.$html.'<data-hint>'.$hint.'</data-hint></abbr>';
+}
+
 # A small floating, movable toolbar: zoom out/in (click the % to reset), full screen and theme.
 # Zoom and position are remembered in this browser. Drag the grip - double-click it (or Home) to put it back.
 function htm_ViewBar(# rtrn:false)
@@ -3466,15 +3471,15 @@ function htm_ViewBar(# rtrn:false)
     static $no= 0; $no++;  $id= 'p2hViewBar'.$no;
     $t= function($k) { return sys_enc(strip_tags(lang($k))); };
     $result= '<div id="'.$id.'" class="p2hViewBar" role="toolbar" aria-label="'.$t('@View').'">'.
-             '<span class="p2hVbGrip" tabindex="0" role="button" title="'.$t('@Drag to move (or use the arrow keys). Double-click or Home: back to the corner').'">&#10303;</span>'.
-             '<button type="button" data-vb="out"  title="'.$t('@Zoom out').'"><ic class="fa-solid fa-minus"></ic></button>'.
-             '<button type="button" data-vb="reset" class="p2hVbZoom" title="'.$t('@Zoom: click to reset to 100%').'">100%</button>'.
-             '<button type="button" data-vb="in"   title="'.$t('@Zoom in').'"><ic class="fa-solid fa-plus"></ic></button>'.
+             p2h_vbHint('<span class="p2hVbGrip" tabindex="0" role="button" aria-label="'.$t('@Drag to move (or use the arrow keys). Double-click or Home: back to the corner').'">&#10303;</span>', $t('@Drag to move (or use the arrow keys). Double-click or Home: back to the corner')).
+             p2h_vbHint('<button type="button" data-vb="out" aria-label="'.$t('@Zoom out').'"><ic class="fa-solid fa-minus"></ic></button>', $t('@Zoom out')).
+             p2h_vbHint('<button type="button" data-vb="reset" class="p2hVbZoom" aria-label="'.$t('@Zoom: click to reset to 100%').'">100%</button>', $t('@Zoom: click to reset to 100%')).
+             p2h_vbHint('<button type="button" data-vb="in" aria-label="'.$t('@Zoom in').'"><ic class="fa-solid fa-plus"></ic></button>', $t('@Zoom in')).
              '<span class="p2hVbSep"></span>'.
-             '<button type="button" data-vb="full" title="'.$t('@Full screen on/off').'"><ic class="fa-solid fa-expand"></ic></button>'.
-             '<button type="button" data-vb="cols" aria-pressed="false" title="'.$t('@Column view on/off').'"><ic class="fa-solid fa-table-columns"></ic></button>'.
+             p2h_vbHint('<button type="button" data-vb="full" aria-label="'.$t('@Full screen on/off').'"><ic class="fa-solid fa-expand"></ic></button>', $t('@Full screen on/off')).
+             p2h_vbHint('<button type="button" data-vb="cols" aria-pressed="false" aria-label="'.$t('@Column view on/off').'"><ic class="fa-solid fa-table-columns"></ic></button>', $t('@Column view on/off')).
              ((($GLOBALS['gbl_CardMove'] ?? 'icon') === 'toggle') ?                       # $gbl_CardMove= 'toggle': moving the cards is turned on here
-                '<button type="button" data-vb="arrange" aria-pressed="false" title="'.$t('@Arrange cards on/off (drag the card headers)').'"><ic class="fa-solid fa-up-down-left-right"></ic></button>' : '').
+                p2h_vbHint('<button type="button" data-vb="arrange" aria-pressed="false" aria-label="'.$t('@Arrange cards on/off (drag the card headers)').'"><ic class="fa-solid fa-up-down-left-right"></ic></button>', $t('@Arrange cards on/off (drag the card headers)')) : '').
              htm_LangSelect(rtrn:true).                                  # Language with flags ('' when only English)
              htm_NotePad(rtrn:true).                                     # My notes (saved in this browser)
              htm_PageHelp(rtrn:true).                                    # "?" - help for this page (grey when there is none)
@@ -8070,6 +8075,10 @@ $CSS_theme = '
 .p2hColview > span:not([id^=card]) { display: block; }          /* column-span works on blocks only (the menus are in a <span>) */
 .p2hColview > [id^=card] { column-span: none; display: block; width: auto !important; max-width: 100%;
     margin: 0 0 14px !important; break-inside: avoid; -webkit-column-break-inside: avoid; }
+abbr.hint.p2hVbHint { position: relative; display: inline-flex; text-decoration: none; }
+abbr.hint.p2hVbHint:hover data-hint, abbr.hint.p2hVbHint:focus-within data-hint { left: auto; right: 0; top: calc(100% + 6px); text-align: left; }
+abbr.hint.p2hVbHint:focus-within:not(:hover):not(:has(:focus-visible)) data-hint,               /* After a click: not left open by the focus */
+abbr.hint.p2hVbHint:has([aria-expanded=true]) data-hint, abbr.hint.p2hVbHint:has(:disabled):not(:hover) data-hint { display: none; }   /* The open language list */
 .p2hViewBar [aria-pressed=true] { background: rgba(79,195,247,0.30); }
 /* Skip links: hidden until they get keyboard focus */
 .p2hSkip { position: absolute; left: -9999px; top: 4px; z-index: 3000; padding: 8px 14px; background: #2c3e50; color: #fff !important; border-radius: 6px; font-weight: 600; }
