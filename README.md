@@ -70,6 +70,14 @@ A function without a heading text keeps its main content first: `htm_TextDiv(bod
 34 functions got a new order, e.g. `htm_Input(labl, icon, hint, plho, vrnt, name, valu, list, form, ...)` (plho was 2nd), `htm_Table(... note, list, data, wdth, vhgh, styl, filt, ...)`, `msg_System(capt, vrnt, ...)`, and `htm_SwitchButt()` / `htm_SwitchButton()` now have the same order.
 Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in its message, and its label no longer points to a missing field.
 
+# 🆕 What's new in 1.7.5 - hints, view bar user, card headers, session
+- **Hints instead of `title`:** tabs, the tab close icon, the vertical page tip, the view bar buttons, the notes and the help window show the library hint (theme-aware, placed at the element) instead of the browser tooltip.
+- **View bar:** `htm_ViewBar(user: '...', lout: '...')` shows the logged in user and a log out button at the end of the bar.
+- **Help button:** `$gbl_PageHelp= false;` hides the help button for the page (as `$gbl_NotePad` for the notes).
+- **Card headers:** a click on the empty part of a card header folds the card (as a click on the caption) - not after a drag, not on tools, fields or selected text; the fold cursor is shown over the whole header.
+- **Session:** `$gbl_SessionKeep= true;` - an open page keeps the session alive by itself (a light request every 5 minutes at most), without the "Still working?" dialog.
+- **Human test slider:** robust drag (reaches the end, snaps at 80 %, no text selection, zoom-aware).
+
 # 🆕 What's new in 1.7.4 - card icon hints
 - **Cards:** the hint of a card header icon (toggle height, wide, collapse / expand all, help) is shown just below its own icon. The icons float right inside an inline hint element, so the hint was placed from the card's corner - up to 1250 px away from the icon.
 - **Tables:** the "Go up" button of a file / folder table no longer gives a PHP notice (`end(explode())`), and a precedence error in its sorter check is fixed.
