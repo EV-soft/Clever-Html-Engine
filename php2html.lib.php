@@ -6776,11 +6776,15 @@ function htm_Page_end()
     htm_nl(2);
     # Session warning: the session ends after session.gc_maxlifetime without a request. While the user works, a light request keeps
     # it alive; after a pause a dialog asks 2 minutes before the end; after the end a notice says to reload (a POST would be refused).
+    # $gbl_SessionKeep= true: no dialog - the open page keeps the session alive by itself (a light request every 5 minutes at most,
+    # also without activity). The session then ends only when no page is open, or the computer sleeps longer than the lifetime.
     $life= (int)ini_get('session.gc_maxlifetime');
-    if (($GLOBALS['gbl_SessionWarn'] ?? true) and ($life >= 300))
+    $keep= !empty($GLOBALS['gbl_SessionKeep']);
+    if (($keep and ($life >= 60)) or (($GLOBALS['gbl_SessionWarn'] ?? true) and ($life >= 300)))
         echo '<script>(function(){
   if (!document.querySelector("input[name=csrf_token], [data-csrf]:not(.p2hLang)")) return;     /* Nothing to post on this page (the language button does not count) */
   var L= '.($life*1000).', W= 120000, KEY= "p2h-session-last", tWarn= null, tEnd= null, asking= false, last= Date.now();
+  var K= '.($keep ? 'Math.min(L / 3, 300000)' : '0').';                                    /* Keep alive: the time between the requests */
   function share() { try { localStorage.setItem(KEY, String(last)); } catch(e) {} }                  /* Every tab knows the last request */
   function newest() { var v= 0; try { v= +localStorage.getItem(KEY) || 0; } catch(e) {}  return Math.max(last, v); }
   var T= '.json_encode(['title'=>strip_tags(lang('@Still working?')), 'warn'=>strip_tags(lang('@Your session ends in 2 minutes. Continue?')),
@@ -6788,7 +6792,10 @@ function htm_Page_end()
                         'reload'=>strip_tags(lang('@Reload'))]).';
   function ping() { last= Date.now();  share();  fetch(location.pathname + "?p2h_keepalive=1", {credentials: "same-origin", cache: "no-store"}).catch(function(){});  plan(); }
   function plan() { last= newest();  var left= last + L - Date.now();  clearTimeout(tWarn);  clearTimeout(tEnd);
-                    tWarn= setTimeout(warn, Math.max(0, left - W));  tEnd= setTimeout(ended, Math.max(0, left)); }
+                    tWarn= K ? setTimeout(beat, Math.max(0, last + K - Date.now())) : setTimeout(warn, Math.max(0, left - W));
+                    tEnd= setTimeout(ended, Math.max(0, left)); }
+  function beat() { if (newest() > last) { plan(); return; }                           /* Another tab made a request: count from there */
+                    if (over()) ended(); else ping(); }
   var gone= false, dlg= null;
   function over() { return Date.now() - newest() >= L; }                             /* The session has ended (timers can sleep in a background tab) */
   function warn() { if (newest() > last) { plan(); return; }                           /* Another tab kept the session alive */
