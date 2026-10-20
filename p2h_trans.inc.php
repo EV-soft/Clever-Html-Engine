@@ -184,7 +184,7 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
                  '@<b>Copy for AI</b>: paste the text in an AI chat (ChatGPT, Claude ...), then its answer with <b>Paste the answer</b>. Or <b>Suggestions</b>: 50 at a time.',
                  '@Check the suggestions (dashed frame) and <b>Save the changes</b>.',
                  '@Reload the page: the language is in the language selector (the flag in the view bar) as soon as it has a translation.',
-                 '@Flag: 23 languages have one - other languages are shown with their code (ES), or the program adds the flag with $gbl_Flags.'])).'</ol></details>';
+                 '@Flag: 51 languages have one - other languages are shown with their code (ES), or the program adds the flag with $gbl_Flags.'])).'</ol></details>';
         echo '<form method="post" action="'.sys_enc($act).'" class="p2hTrForm" onsubmit="return p2hTrSend(this)">'.
              (function_exists('csrf_field') ? csrf_field(true) : '').
              '<input type="hidden" name="p2h_trans_lang" value="'.sys_enc($code).'"><input type="hidden" name="p2h_trans_changes" value="">'.
