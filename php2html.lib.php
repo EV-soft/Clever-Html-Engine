@@ -2732,7 +2732,8 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
 ## Function:
     $result=  '<span class="center" style="height:25px; display: inline-block;">';
     $result.= '<abbr class="hint'.($tsty > '' ? '' : ' p2hBtnHint').'">';     # Own placement (tsty): not the default above the button
-    $result.= '    <button class="acceptbutt buttstyl" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
+    $kcls= in_array($kind, ['save','navi','goon','eras','crea','home','get_','put_','spc1'], true) ? ' p2hKind p2hKind-'.rtrim($kind, '_') : (in_array($kind, ['spc2'], true) ? '' : ' p2hKind p2hKind-navi');   # (spc2: white - the input colour of the theme)
+    $result.= '    <button class="acceptbutt buttstyl'.$kcls.'" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
               '        style="min-height: 24px; padding-right: 6px; margin-bottom: 6px; '.$wdth. $colors.'" '.
                               ($acti > '' ? ('onclick=\''.$acti.'\' ') : 'onclick=\'location.reload();\' ') .
                               $akey.' '.$aktiv.'> '. 
@@ -8081,7 +8082,19 @@ $CSS_theme = '
 [data-p2h-vars] a.button, [data-p2h-vars] a.button:visited {   /* htm_LinkButt: white text on a darker green (not the link color) */
     color: #ffffff !important; background-color: #2e7d32 !important; }
 [data-p2h-vars] a.button:hover { background-color: #388e3c !important; }
-[data-p2h-vars] .buttstyl { background-color: var(--InptBgrd) !important; color: var(--TextColr) !important; border-color: #5a6370 !important; }
+[data-p2h-vars] .buttstyl:not(.p2hKind) { background-color: var(--InptBgrd) !important; color: var(--TextColr) !important; border-color: #5a6370 !important; }
+/* Buttons with a meaning (htm_AcceptButt kind): the same colours in every theme - darker and with white text in the dark themes */
+[data-theme="dark"] .buttstyl.p2hKind { color: #fff !important; border-color: rgba(255,255,255,0.28) !important; opacity: 1 !important; }
+[data-theme="dark"] .buttstyl.p2hKind-save { background-color: #2f6fb0 !important; }
+[data-theme="dark"] .buttstyl.p2hKind-navi, [data-theme="dark"] .buttstyl.p2hKind-home { background-color: #2e7d32 !important; }
+[data-theme="dark"] .buttstyl.p2hKind-goon { background-color: #2f8070 !important; }
+[data-theme="dark"] .buttstyl.p2hKind-eras { background-color: #c0394b !important; }
+[data-theme="dark"] .buttstyl.p2hKind-crea { background-color: #b86e10 !important; }
+[data-theme="dark"] .buttstyl.p2hKind-get { background-color: #85663d !important; }
+[data-theme="dark"] .buttstyl.p2hKind-put { background-color: #3b757b !important; }
+[data-theme="dark"] .buttstyl.p2hKind-spc1 { background-color: #a0521d !important; }
+[data-theme="dark"] .buttstyl.p2hKind:hover { filter: brightness(1.15); }
+[data-theme="dark"] .buttstyl.p2hKind:disabled, [data-theme="dark"] .buttstyl.p2hKind[disabled] { opacity: 0.45 !important; }
 [data-p2h-vars] input, [data-p2h-vars] textarea, [data-p2h-vars] select,
 [data-p2h-vars] .boxStyle, [data-p2h-vars] .inpField input {
     background-color: var(--InptBgrd) !important; color: var(--TextColr) !important; border-color: var(--grayColor); }
