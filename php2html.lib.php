@@ -2247,16 +2247,15 @@ else { # Clean and simple header output:
                .Pmnu_Item(labl:'@Large height',    icon:'fas fa-expand    colrgreen',         hint:'@Large height to all cards',   vrnt:'custom',    name:'m5', clck:'CardHeightAll(`gre`,330)', attr:'',rtrn:true)
                .Pmnu_Item(labl:'@Maximize height', icon:'fas fa-plus      colrgreen',         hint:'@Maximize all cards height',   vrnt:'plain',     name:'m8', clck:'CardHeightAll(`max`,330)', attr:'',rtrn:true)
                .Pmnu_Item(vrnt:'separator', rtrn:true)
-               .Pmnu_Item(labl:'@COLLAPSE body',   icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardMinimizeAll();', shrt:'', rtrn:true)
-               .Pmnu_Item(labl:'@EXPAND body',     icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardMaximizeAll();', shrt:'', rtrn:true);
+               .Pmnu_Item(labl:'@Collapse content', icon:'fas fa-angle-double-up   colrgreen', hint:'@Click to close <i>all</i> cards', vrnt:'plain', name:'m6', clck:'CardMinimizeAll();', shrt:'', rtrn:true)
+               .Pmnu_Item(labl:'@Expand content',  icon:'fas fa-angle-double-down colrgreen', hint:'@Click to open <i>all</i> cards',  vrnt:'plain', name:'m7', clck:'CardMaximizeAll();', shrt:'', rtrn:true);
         $mvOn= in_array(($GLOBALS['gbl_CardMove'] ?? 'icon') === true ? 'icon' : ($GLOBALS['gbl_CardMove'] ?? 'icon'), ['icon','header','toggle'], true);
         if ($mvOn) $mItems.= Pmnu_Item(labl:'@Original card order', icon:'fas fa-arrow-down-1-9 colrgreen', hint:'@Put the moved cards of this page back in their original order', vrnt:'plain', name:'m9', clck:'p2hCardMove.reset();', shrt:'', rtrn:true);
         echo '<script>document.addEventListener("contextmenu", function(event) {     /* Card headers with data-p2h-menu (htm_Card_ poup:true) */
     var h= event.target.closest && event.target.closest("[data-p2h-menu]");  if (!h) return;
     event.preventDefault();
     new ctxP_({ isSticky: false, width: "240px", top: "30%", left: "40%", items: [
-        {label: '.json_encode(lang('@Applies to all cards:')).', hint: "", cssicon: "fas fa-info", custAttr: " height: 14px;"},'.$mItems.'
-        {label: "", hint: ""} ] });
+        {type: "head", label: '.json_encode(rtrim(lang('@Applies to all cards:'), ': '), JSON_HEX_TAG | JSON_HEX_AMP).', cssIcon: "fas fa-layer-group"},'.$mItems.' ] });
 });</script>';
     }
     echo '<span id="HideBody'.$gbl_CardIx.'" style="'.$gbl_CardsBgrd.'; transition: max-height 1s;
@@ -4847,6 +4846,7 @@ $javaScripts.= "
         constructor(opts) {
             switch(opts.type) {
                 case 'separator':   this.separator();               break;
+                case 'head':        this.head(opts.label, opts.cssIcon || '');  break;
                 case 'custom':      this.custom(opts.markup);       break;
                 case 'multi':       this.multiButton(opts.items);   break;
                 case 'submenu':     this.subMenu(opts.label, opts.items, 
@@ -4900,6 +4900,12 @@ $javaScripts.= "
         
         custom(markup) {
             this.element = ctxP_Core.CreateEl(`<li class='ctxP_Js ctxP_CustomEl'>\${markup}</li>`);
+        }
+
+        head(label, cssIcon) {      /* The heading of the menu: what it applies to - not a button */
+            this.element = ctxP_Core.CreateEl(`<li class='ctxP_Js ctxP_Head' role='presentation'></li>`);
+            if (cssIcon) { let i = document.createElement('i');  i.className = 'ctxP_Js ' + cssIcon;  this.element.appendChild(i); }
+            this.element.appendChild(document.createTextNode(label || ''));
         }
         
         hoverMenu(label, items, icon = '', cssIcon = '', hint = '', enabled = true) {
@@ -4994,13 +5000,11 @@ $javaScripts.= "
                 menu.style.top = ((el.target.offsetTop + menu.offsetHeight) >= window.innerHeight) ?
                     (el.target.offsetTop - menu.offsetHeight)+\"px\"    
                         : (el.target.offsetHeight + el.target.offsetTop)+\"px\";
-            } else {
-                menu.style.left = ((el.clientX + menu.offsetWidth) >= window.innerWidth) ?
-                    ((el.clientX - menu.offsetWidth))+\"px\"
-                        : (el.clientX)+\"px\";
-                menu.style.top = ((el.clientY + menu.offsetHeight) >= window.innerHeight) ?
-                    (el.clientY - menu.offsetHeight)+\"px\"    
-                        : (el.clientY)+\"px\";
+            } else {      /* At the mouse - turned left / up at the edge, and never outside the window */
+                let x = (el.clientX + menu.offsetWidth >= window.innerWidth) ? el.clientX - menu.offsetWidth : el.clientX,
+                    y = (el.clientY + menu.offsetHeight >= window.innerHeight) ? el.clientY - menu.offsetHeight : el.clientY;
+                menu.style.left = Math.max(8, Math.min(x, window.innerWidth - menu.offsetWidth - 8))+\"px\";
+                menu.style.top  = Math.max(8, Math.min(y, window.innerHeight - menu.offsetHeight - 8))+\"px\";
             }
             }
         },
@@ -5670,66 +5674,80 @@ $sys_Style= "
     /* ctxP_ = Context Popup Menu system */
     
     .ctxP_Menu{              /* Main context menu outer */
-        /* font-size: 14px; */
-        position: fixed;  /* fixed absolute  */
-        padding: 4px 0;
-        margin: 2px;
+        position: fixed;
+        z-index: 3001;
         top: 40%;
         left: 50%;
-        background: var(--ctxP_MenuBg);
-        box-shadow: var(--ctxP_MenuShadow);
-        border-radius: var(--ctxP_MenuRadius);
-        margin:0;
+        margin: 0;
+        padding: 4px;
         list-style: none;
+        box-sizing: border-box;
+        text-align: left;
+        font: 13px/1.35 sans-serif;
+        background: var(--ctxP_MenuBg);
         color: var(--ctxP_MenuText);
+        border: 1px solid var(--ctxP_Border);
+        border-radius: var(--ctxP_MenuRadius);
+        box-shadow: var(--ctxP_MenuShadow);
     }
+    .ctxP_Head{              /* The heading of the menu */
+        padding: 3px 10px 5px;
+        margin-bottom: 3px;
+        border-bottom: 1px solid var(--ctxP_Separator);
+        font-weight: 600;
+        color: var(--ctxP_HeadText);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: default;
+    }
+    .ctxP_Head i{ width: 18px; margin-right: 6px; text-align: center; color: var(--ctxP_Icon); }
 
     .ctxP_MenuSeparator{     /* Menu separator item */
         display: block;
-        position: relative;
-        padding: 6px 5px;
+        margin: 4px 6px;
+        padding: 0;
     }
     .ctxP_MenuSeparator span{
         display: block;
-        width: 95%;
-        height: 2px;
+        width: 100%;
+        height: 1px;
         background: var(--ctxP_Separator);
     }
 
-    .ctxP_MenuItemOuter ,li:hover {    /* Default menu item */
-        /* position: relative; */
+    .ctxP_MenuItemOuter{     /* Default menu item (was also li:hover - every list item of the page got a padding under the mouse) */
         position: static;
-        padding: 6px 0;
-        width: 98%;
+        padding: 0;
     }
     .ctxP_MenuItem{
         display: block;
-        padding: 5px 8px;
-        cursor: default;
-        width: 92%;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
     }
-    .ctxP_MenuItem: hover{
+    .ctxP_MenuItem:hover{
         background: var(--ctxP_Hover);
-        width: 92%;
     }
+    .ctxP_MenuItem > abbr.hint, .ctxP_HoverMenuItem > abbr.hint{ display: flex; align-items: center; text-decoration: none; color: inherit; background: none; }   /* Not the colours of a label hint */
+    .ctxP_MenuSeparator hr{ display: none; }      /* The line is the span */
     .ctxP_MenuItemIcon{
-        float: left;
-        /* width:18px; */
-        /* height: 18px; */
+        flex: none;
+        width: 18px;
+        margin-right: 6px;
+        text-align: center;
     }
+    .ctxP_Menu .ctxP_MenuItemIcon{ color: var(--ctxP_Icon); }   /* One colour for the icons (was green - colrgreen) */
     .ctxP_MenuItemTitle{
+        flex: 1;
         text-align: left;
-        font-family: sans-serif;
-        float: left;
-        line-height: 16px;
-        display: inline-block;
-        padding: 0px 0px 0px 4px;
+        line-height: 18px;
+        white-space: nowrap;
     }
     .ctxP_MenuItemTip{
-        float: right;
-        padding: 0px 0px 0px 6px;
+        margin-left: 10px;
         text-align: right;
-        line-height: 16px;
+        line-height: 18px;
+        opacity: 0.6;
     }
     .ctxP_MenuItemOverflow{
         float: right;
@@ -5750,6 +5768,7 @@ $sys_Style= "
         
     .ctxP_MenuItem.disabled{
         opacity: 0.4;
+        cursor: default;
     }
     .ctxP_MenuItem.disabled:hover{
         background: none;
@@ -5766,7 +5785,7 @@ $sys_Style= "
         transition: max-height 0.5s;
         overflow: hidden;
     }
-    .ctxP_SubMenu .ctxP_MenuItem: hover{
+    .ctxP_SubMenu .ctxP_MenuItem:hover{
         background: var(--ctxP_Hover);
     }
 
@@ -5788,7 +5807,8 @@ $sys_Style= "
     }
     .ctxP_HoverMenuItem{
         display: block;
-        padding: 5px 8px;
+        padding: 5px 10px;
+        border-radius: 4px;
         cursor: default;
     }
     .ctxP_HoverMenuItem.disabled{
@@ -5815,8 +5835,10 @@ $sys_Style= "
         top: 0;
         background: var(--ctxP_MenuBg);
         box-shadow: var(--ctxP_MenuShadow);
+        border: 1px solid var(--ctxP_Border);
         border-radius: var(--ctxP_MenuRadius);
-        padding: 8px 0;
+        padding: 4px;
+        box-sizing: border-box;
         width: 100%;
         z-index: 1000;
         list-style: none;
@@ -7250,14 +7272,17 @@ $CSS_system = '
 
     --FldHeight: 32px;
 
-    --ctxP_MenuBg: GhostWhite;
-    --ctxP_MenuShadow: 1px 1px 10px #000;
-    --ctxP_MenuRadius: 5px;
-    --ctxP_MenuText: black;
-    --ctxP_SubMenuBg: snow;
-    --ctxP_Hover: #d7f1e5;
+    --ctxP_MenuBg: #ffffff;
+    --ctxP_MenuShadow: 0 4px 16px rgba(0,0,0,0.18);
+    --ctxP_MenuRadius: 6px;
+    --ctxP_MenuText: #222222;
+    --ctxP_SubMenuBg: #f6f8fa;
+    --ctxP_Hover: #e3eefc;
     --ctxP_OverflowIcon: #999;
-    --ctxP_Separator: #999;
+    --ctxP_Separator: #dddddd;
+    --ctxP_Border: #c9d1d9;
+    --ctxP_Icon: #4a6fa5;
+    --ctxP_HeadText: #333333;
     
     /* --ButtnShad: gray; */
     --HintsBgrd: Cornsilk;
@@ -8039,6 +8064,8 @@ fieldset>legend {
 $CSS_theme = '
 <style>
 [data-theme="dark"] {
+    --ctxP_MenuBg: #232a31;  --ctxP_MenuText: #e3e7eb;  --ctxP_SubMenuBg: #1c2228;  --ctxP_Hover: #2d4a6b;  --ctxP_Separator: #4a5560;
+    --ctxP_Border: #4a5560;  --ctxP_Icon: #8fb3e0;  --ctxP_HeadText: #aeb8c2;  --ctxP_MenuShadow: 0 4px 16px rgba(0,0,0,0.5);
     color-scheme: dark;
     --PageBcgrd: #15181c;  --CardsBgrd: #1f2328;  --Wall_Bgrd: #181b1f;  --TextColr: #e3e3e3;
     --InptBgrd: #2a2f36;   --LinkColr: #8ab4f8;   --lablColor: #f0c8a0;  --lablBgrnd: #20262c;
