@@ -3263,6 +3263,8 @@ function p2h_flag($code) {
         'hu' => ['0 0 6 3', '<rect width="6" height="3" fill="#477050"/><rect width="6" height="2" fill="#fff"/><rect width="6" height="1" fill="#ce2939"/>'],
         'ro' => ['0 0 3 2', '<rect width="3" height="2" fill="#ce1126"/><rect width="2" height="2" fill="#fcd116"/><rect width="1" height="2" fill="#002b7f"/>'],
         'ja' => ['0 0 3 2', '<rect width="3" height="2" fill="#fff"/><circle cx="1.5" cy="1" r="0.6" fill="#bc002d"/>'],
+        'kl' => ['0 0 18 12', '<rect width="18" height="12" fill="#c8102e"/><rect width="18" height="6" fill="#fff"/><path d="M3,6A4,4 0 0 1 11,6z" fill="#c8102e"/><path d="M3,6A4,4 0 0 0 11,6z" fill="#fff"/>'],     # Greenlandic
+        'fo' => ['0 0 22 16', '<rect width="22" height="16" fill="#fff"/><rect x="6" width="4" height="16" fill="#0065bd"/><rect y="6" width="22" height="4" fill="#0065bd"/><rect x="7" width="2" height="16" fill="#ef303e"/><rect y="7" width="22" height="2" fill="#ef303e"/>'],     # Faroese
     ];
     $c= strtolower(substr((string)$code, 0, 2));
     if ($c=='nb' or $c=='nn') $c= 'no';
