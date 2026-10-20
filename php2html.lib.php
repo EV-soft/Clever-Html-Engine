@@ -2732,7 +2732,7 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
     if ($acti=='') {$type='submit';} else {$type='button';}
 ## Function:
     $result=  '<span class="center" style="height:25px; display: inline-block;">';
-    $result.= '<abbr class="hint">';
+    $result.= '<abbr class="hint p2hBtnHint">';
     $result.= '    <button class="acceptbutt buttstyl" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
               '        style="min-height: 24px; padding-right: 6px; margin-bottom: 6px; '.$wdth. $colors.'" '.
                               ($acti > '' ? ('onclick=\''.$acti.'\' ') : 'onclick=\'location.reload();\' ') .
@@ -7753,6 +7753,8 @@ data-hint {
 abbr.hint:hover {
     cursor: pointer;
 }
+abbr.hint { position: relative; }     /* The hint opens at its own element (was: at the nearest positioned box - e.g. all button hints of a fieldset in one place) */
+abbr.hint.p2hBtnHint:hover data-hint, abbr.hint.p2hBtnHint:focus-within data-hint { left: 50%; top: auto; bottom: calc(100% + 6px); transform: translateX(-50%); }   /* A button: above it (often the last line of a card)*/
 [role=button][tabindex]:focus-visible { outline: 2px solid var(--AccnColr, DarkGreen); outline-offset: 2px; }   /* Keyboard focus */
 /* htm_Alert / htm_Banner / htm_Badge / htm_ConfirmPostLink / htm_TableTools (from NH-logistik) */
 .p2hAlert { margin: 10px auto; padding: 11px 15px; border: 1px solid; border-radius: 6px; text-align: left; column-span: all; }
