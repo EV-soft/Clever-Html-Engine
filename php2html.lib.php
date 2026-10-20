@@ -2732,7 +2732,7 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
     if ($acti=='') {$type='submit';} else {$type='button';}
 ## Function:
     $result=  '<span class="center" style="height:25px; display: inline-block;">';
-    $result.= '<abbr class="hint p2hBtnHint">';
+    $result.= '<abbr class="hint'.($tsty > '' ? '' : ' p2hBtnHint').'">';     # Own placement (tsty): not the default above the button
     $result.= '    <button class="acceptbutt buttstyl" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
               '        style="min-height: 24px; padding-right: 6px; margin-bottom: 6px; '.$wdth. $colors.'" '.
                               ($acti > '' ? ('onclick=\''.$acti.'\' ') : 'onclick=\'location.reload();\' ') .
