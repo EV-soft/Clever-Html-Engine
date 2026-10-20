@@ -2,6 +2,10 @@
 
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
+## Unreleased
+- **Numbers typed by people** (`sys_toFloat()`, used by number fields and number columns): the last of "." and "," is the decimal sign, so "1,234.50" is 1234.5 also with `DecimalSep` "," (was 1.2345); more of the same sign are thousands, "1.500.000" is 1500000 (was 1.5); a minus after the number, "1.234,50-" as in bank files, is negative; a Swiss "1'234.50" works. A single "." is still the decimal point.
+- **Hidden table columns** (`hidd`): their value is also an attribute of the row - fkey `id` gives `<tr data-id="17">` for links and scripts (`tr.dataset.id`); without Tablesorter the header of a hidden column was shown, so the headers stood over the wrong columns.
+
 ## 1.7.6 - Composer, new README, no false jQuery error
 - **No false error:** a page that does not ask for jQuery (`$needJquery= '0'`, as `world/first.page.php`) no longer shows "ERROR: jQuery is not loaded" - jQuery and jQuery UI are optional.
 - **Composer:** `composer.json` - install with `composer require ev-soft/clever-html-engine`; the old 1.4 copy in `latest/` is left out of the package.

@@ -1275,6 +1275,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
 )
 #    Every field of a row is posted as <fkey>[] - $_POST['fkey'][n] is row n (also new rows and the order after row actions).
 #    Hidden columns (hidd) are posted too - e.g. the record id. A new row has an empty id.
+#    The value of a hidden column is also an attribute of its row: fkey 'id' gives <tr data-id="17"> - for links and scripts (tr.dataset.id).
 
 { global $gbl_blueColor, $gbl_LineBrun, $gbl_RollTabl, $gbl_HeaderFont, $gbl_IconStyle, $gbl_CardIx, $gbl_TblIx, $gbl_rowCount, $gbl_novice, $rowHtml, $ordrTotal, $spool;
     if ($rtrn) ob_start();                                # rtrn: what is echoed on the way is returned too (see the end)
@@ -1408,7 +1409,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
         if ($bdy[2]=='hidd') // Hidden column: its filter cell is hidden by the CSS written after the header (was FIXIT: the filter fields were out of place)
             { array_push($filter_cellFilter, 'hidden');  $hiddCols[]= $colPos;
                 $hiddcount++;
-                spool( '<th class="filter-false sorter-false sortPrefix" style="width:0;" ></th>');
+                spool( '<th class="filter-false sorter-false sortPrefix" style="width:0; padding:0; border:none; display:none;" ></th>');   # Hidden like its cells (was shown: the headers stood over the wrong columns)
             } //  visibility:hidden;    //  columnSelector_columns : { 5 : false, 6 : false}
         else // Special behavior:
             { $cNo++; array_push($filter_cellFilter, '');
@@ -1522,6 +1523,9 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
             if (false) // ?? popMnu_
                 $extra= 'style= "cursor: alias;" title= "'.lang('@RightClick for table-row MENU').'"';
             else $extra= 'style="display: revert;"';
+            foreach ($body as $hx => $hb)                    # The values of hidden columns as data- attributes of the row: <tr data-id="17"> (links, scripts)
+                if (($hb[2] ?? '') === 'hidd' && ($hk= strtolower(preg_replace('/[^A-Za-z0-9_-]/', '', (string)($hb[5] ?? '')))) !== '' && is_array($DataRow))
+                    $extra.= ' data-'.$hk.'="'.sys_enc((string)($DataRow[$hx] ?? '')).'"';
             if (count($body)>0)
             spool( '<tr class="row" id="tabl'.$gbl_TblIx.'_row'.$RowIx.'" '.$extra.'>');   # Unique also with several tables on a page  //  Tablesorter with Zebra-striped background
             ## Fields before data-fields:
@@ -6927,12 +6931,17 @@ function toNum($test='')
 { return sys_toFloat($test); }
 
 # A number written as "1 234,50" / "1.234,50" / "1234.50" / "87 %" / "kr. 12,5" -> float  ((float)"1 234,50" gives 1)
-function sys_toFloat($v) {
+function sys_toFloat($v) {   # A number typed by a person: "1 234,50", "1.234,50", "1,234.50", "1.500.000", ",5", "1.234,50-" (banks), "kr 99,95"
     if (is_int($v) or is_float($v)) return (float)$v;
-    $s= str_replace([' ', "\u{00A0}", "\u{202F}"], '', (string)$v);   # Thousands separators: space, nbsp, narrow nbsp
-    if (DecimalSep !== ',') $s= str_replace([ThousandsSep, ','], '', $s);       # Decimal point (DecimalSep "."): commas are thousands
-    elseif (strpos($s, ',') !== false) $s= str_replace(['.', ','], ['', '.'], $s);  # Comma is the decimal sign: dots are thousands
-    return preg_match('/-?(\d+(\.\d+)?|\.\d+)/', $s, $m) ? (float)$m[0] : 0.0;     # Also ",5" and "-,75" (gave 5 and 75)
+    $s= str_replace([' ', "\u{00A0}", "\u{202F}", "'", '’'], '', trim((string)$v));   # Thousands separators: space, nbsp, narrow nbsp, ' (Swiss)
+    if (!in_array(ThousandsSep, ['.', ','], true)) $s= str_replace(ThousandsSep, '', $s);
+    $neg= (bool)preg_match('/^[^\d]*\d.*-\s*$/', $s) && !preg_match('/-\s*\d/', $s);       # "1.234,50-": a minus after the number
+    $c= substr_count($s, ',');  $d= substr_count($s, '.');
+    if ($c && $d)  $s= strrpos($s, ',') > strrpos($s, '.') ? str_replace(['.', ','], ['', '.'], $s) : str_replace(',', '', $s);   # Both: the last one is the decimal sign
+    elseif ($c)    $s= ($c === 1 && DecimalSep === ',') ? str_replace(',', '.', $s) : str_replace(',', '', $s);  # Only commas: one is the decimal sign (DecimalSep ","), more are thousands
+    elseif ($d > 1) $s= str_replace('.', '', $s);                                               # Only dots, more of them: thousands ("1.500.000") - one dot: the decimal point
+    $f= preg_match('/-?(\d+(\.\d+)?|\.\d+)/', $s, $m) ? (float)$m[0] : 0.0;              # Also ",5" and "-,75" (gave 5 and 75)
+    return $neg ? -abs($f) : $f;
 }
 
 function scannSource($prefix='$name=',$suffix="'",$files=[]) 
