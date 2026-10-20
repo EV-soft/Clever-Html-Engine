@@ -170,6 +170,14 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
              '<input type="search" class="p2hTrFind" placeholder="'.sys_enc(lang('@Search...')).'" aria-label="'.sys_enc(lang('@Search')).'" oninput="p2hTrFilter()"> '.
              '<label><input type="checkbox" class="p2hTrMiss" onchange="p2hTrFilter()"> '.sys_enc(lang('@Only missing')).' ('.$miss.')</label> '.
              '<span class="p2hTrCount"></span></div>';
+        # How to add a new language - shown folded (open when the language has no translations yet)
+        echo '<details class="p2hTrHow"'.(!$tr ? ' open' : '').'><summary><i class="fa-solid fa-circle-info"></i> '.sys_enc(lang('@How to add a new language')).'</summary><ol>'.
+             implode('', array_map(fn($t) => '<li>'.lang($t).'</li>', [
+                 '@Choose the language in the list - the languages without translations are at the bottom.',
+                 '@<b>Copy for AI</b>: paste the text in an AI chat (ChatGPT, Claude ...), then its answer with <b>Paste the answer</b>. Or <b>Suggestions</b>: 50 at a time.',
+                 '@Check the suggestions (dashed frame) and <b>Save the changes</b>.',
+                 '@Reload the page: the language is in the language selector (the flag in the view bar) as soon as it has a translation.',
+                 '@Flag: 21 languages have one - other languages are shown with their code (ES), or the program adds the flag with $gbl_Flags.'])).'</ol></details>';
         echo '<form method="post" action="'.sys_enc($act).'" class="p2hTrForm" onsubmit="return p2hTrSend(this)">'.
              (function_exists('csrf_field') ? csrf_field(true) : '').
              '<input type="hidden" name="p2h_trans_lang" value="'.sys_enc($code).'"><input type="hidden" name="p2h_trans_changes" value="">'.
@@ -217,6 +225,8 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
 .p2hTrTbl input.p2hTrChg { border-color: #2f6fb0; box-shadow: 0 0 0 2px rgba(47,111,176,0.25); }
 .p2hTrTbl input.p2hTrSug { border-style: dashed; border-color: #8a4fc4; box-shadow: 0 0 0 2px rgba(138,79,196,0.2); }     /* A suggestion: to be checked */
 .p2hTrSugSt { font-size: 12px; }
+.p2hTrHow { text-align: left; margin: 0 0 8px; padding: 4px 10px; border: 1px solid #b8c4d0; border-radius: 4px; background: rgba(47,111,176,0.06); font-size: 13px; }
+.p2hTrHow summary { cursor: pointer; font-weight: 600; }  .p2hTrHow ol { margin: 4px 0 2px; padding-left: 22px; }
 .p2hTrAiBox { margin: 6px 0; }  .p2hTrAiBox textarea { width: 98%; font: 12px monospace; }
 .p2hTrNote { color: #888; font-style: italic; }
 .p2hTrFoot { margin-top: 8px; text-align: left; }
