@@ -1,4 +1,4 @@
-<?php  $DocFileTrans='../p2h_trans.inc.php';    $DocVerTrans='1.8.0';    $DocRevTrans='2026-10-21';      $DocIni='evs';  ## File informative only
+<?php  $DocFileTrans='../p2h_trans.inc.php';    $DocVerTrans='1.8.0';    $DocRevTrans='2026-10-20';      $DocIni='evs';  ## File informative only
 # Maintenance of the translations of a program (_trans.sys.json) - in the program itself, for its administrators.
 # Optional: require it after php2html.lib.php. The program decides who may use it (like htm_AuditLog).
 #
