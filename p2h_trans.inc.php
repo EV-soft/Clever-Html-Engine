@@ -9,6 +9,8 @@
 #
 # Suggestions (sugg:true) - no key needed: the translator built into the browser (Chrome / Edge: on the PC, nothing is sent),
 # else MyMemory (api.mymemory.translated.net - free, about 5000 characters a day). Only empty fields are filled, marked to be checked.
+# Better: "Copy for AI" - the whole table (the missing texts shown + the translations made, as the words to use) with an instruction,
+# for an AI chat (ChatGPT, Claude ...): it sees the context and keeps the words the same. Its JSON answer is pasted back ("Paste the answer").
 #
 # Only the changed texts are sent (PHP's max_input_vars cuts a form of 2000 fields) - and written into the file line by line,
 # so its layout stays and a diff shows only the change. When that can not be done safely, the whole file is written again.
@@ -115,7 +117,7 @@ function p2h_trans_handle() {   # The POST of htm_TransEditor() - call it before
     return p2h_trans_set($code, $ch, $err) ? [true, lang('@Translations saved').': '.count($ch).' ('.$code.')'] : [false, $err];
 }
 
-function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hint:'', scan:[], code:'', acti:'', sugg:true, wdth:'98%', rtrn:false)
+function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hint:'', scan:[], code:'', acti:'', sugg:true, prog:'', wdth:'98%', rtrn:false)
     $capt= '@Translations',             # string: The caption of the card ('' : no card)
     $icon= 'fa-solid fa-language',      # string: The icon of the card
     $hint= '',                          # string: The hint of the card
@@ -123,6 +125,7 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
     $code= '',                          # string: The language shown ('' : ?tl= or the language of the user - never English)
     $acti= '',                          # string: The address the form is sent to ('' : this page) - add &tl= yourself to come back to the language
     $sugg= true,                        # bool:   The button "Suggestions" for the missing texts (the browser's translator - else MyMemory)
+    $prog= '',                          # string: The program for "Copy for AI" - what it is (e.g. 'Folder-explorer, a web file manager') - '' : the appName of the file
     $wdth= '98%',                       # string: The width of the table
     $rtrn= false                        # bool:   Return the HTML instead of echoing it
 ) {
@@ -166,10 +169,22 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
              ($sugg ? '<abbr class="hint"><button type="button" class="p2hTrSugBtn" data-lang="'.sys_enc($code).'" data-t="'.sys_enc(json_encode([
                      'none' => lang('@No empty missing texts are shown'), 'busy' => lang('@Suggesting...'), 'done' => lang('@suggestions - check them before you save'),
                      'quota' => lang('@The free daily amount of MyMemory is used - try again tomorrow'), 'err' => lang('@No suggestions could be fetched'),
-                     'browser' => lang('@the translator of the browser'), 'mm' => 'MyMemory'], JSON_UNESCAPED_UNICODE)).'" onclick="p2hTrSuggest(this)">'.
+                     'browser' => lang('@the translator of the browser'), 'mm' => 'MyMemory',
+                     'aiCopied' => lang('@texts copied for the AI - paste them in the AI chat, then its answer below'),
+                     'aiBad' => lang('@The answer is not JSON: {"English text": "translation", ...}'), 'aiSkip' => lang('@not used (unknown, empty or already translated)')], JSON_UNESCAPED_UNICODE)).'" onclick="p2hTrSuggest(this)">'.
                  '<i class="fa-solid fa-wand-magic-sparkles"></i> '.sys_enc(lang('@Suggestions')).'</button><data-hint>'.
                  sys_enc(lang('@Fills the empty missing texts shown (at most 50) - with the translator of the browser, or else MyMemory (the English texts are sent to translated.net). Check them before you save.')).
-                 '</data-hint></abbr> <span class="p2hTrSugSt"></span> ' : '').
+                 '</data-hint></abbr> <span class="p2hTrSugSt"></span> '.
+                 '<abbr class="hint"><button type="button" class="p2hTrAiBtn" onclick="p2hTrAiCopy(this)" data-app="'.sys_enc($prog !== '' ? $prog : (string)($data['appName'] ?? '')).'" '.
+                     'data-lname="'.sys_enc(($cur['name'] ?? $code).(($cur['native'] ?? '') > '' ? ' ('.$cur['native'].')' : '')).'">'.
+                     '<i class="fa-solid fa-robot"></i> '.sys_enc(lang('@Copy for AI')).'</button><data-hint>'.
+                     sys_enc(lang('@An AI (ChatGPT, Claude ...) translates better when it gets the whole table: the missing texts shown and the translations made (the words to use) - with an instruction. Paste it in the AI chat, and its answer below.')).
+                 '</data-hint></abbr> '.
+                 '<button type="button" class="p2hTrAiPasteBtn" onclick="var x= this.form.querySelector(\'.p2hTrAiBox\'); x.hidden= !x.hidden; if (!x.hidden) x.querySelector(\'textarea\').focus();">'.
+                     '<i class="fa-solid fa-paste"></i> '.sys_enc(lang('@Paste the answer')).'</button> '.
+                 '<div class="p2hTrAiBox" hidden><textarea rows="6" placeholder="'.sys_enc(lang('@The answer of the AI: {"English text": "translation", ...}')).'"></textarea><br>'.
+                     '<button type="button" onclick="p2hTrAiUse(this)"><i class="fa-solid fa-check"></i> '.sys_enc(lang('@Use the answer')).'</button> '.
+                     '<small>'.sys_enc(lang('@Only empty fields are filled - marked to be checked before you save.')).'</small></div>' : '').
              '<br><small>'.sys_enc(lang('@An empty field removes the translation - the English text is shown. Simple HTML (b, i, br, code) is allowed.')).'</small></div>'.
              '<noscript><p class="p2hAlert p2hAlert-error">'.sys_enc(lang('@The editor needs JavaScript')).'</p></noscript></form>';
         echo '<style>
@@ -186,6 +201,7 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
 .p2hTrTbl input.p2hTrChg { border-color: #2f6fb0; box-shadow: 0 0 0 2px rgba(47,111,176,0.25); }
 .p2hTrTbl input.p2hTrSug { border-style: dashed; border-color: #8a4fc4; box-shadow: 0 0 0 2px rgba(138,79,196,0.2); }     /* A suggestion: to be checked */
 .p2hTrSugSt { font-size: 12px; }
+.p2hTrAiBox { margin: 6px 0; }  .p2hTrAiBox textarea { width: 98%; font: 12px monospace; }
 .p2hTrNote { color: #888; font-style: italic; }
 .p2hTrFoot { margin-top: 8px; text-align: left; }
 [data-theme="dark"] .p2hTrTbl td { border-color: #3f4852; }  [data-theme="dark"] .p2hTrWrap { border-color: #4a5560; }
@@ -246,6 +262,40 @@ async function p2hTrSuggest(b) {    /* Suggestions for the empty missing texts s
     }
     if (st.textContent !== T.quota) st.textContent= n ? n + " " + T.done + " (" + engine + ")" : T.err;
     b.disabled= false;
+}
+function p2hTrAiCopy(b) {          /* The whole table for an AI chat: the missing texts shown - and the translations made, as the words to use */
+    var T= JSON.parse(b.form.querySelector(".p2hTrSugBtn").dataset.t), miss= {}, made= {}, nm= 0, nd= 0;
+    document.querySelectorAll(".p2hTrTbl tbody tr").forEach(function(tr) {
+        var i= tr.querySelector("input");
+        if (tr.classList.contains("p2hTrM") && !tr.hidden && !i.value) { miss[i.dataset.k]= "";  nm++; }
+        else if (i.value && nd < 600) { made[i.dataset.k]= i.value;  nd++; }
+    });
+    if (!nm) { b.parentNode.parentNode.querySelector(".p2hTrSugSt").textContent= T.none;  return; }
+    var txt= "Translate the user interface texts of the web program \"" + (b.dataset.app || "") + "\" from English to " + b.dataset.lname + ".\n" +
+        "Rules:\n- Short, natural texts as in a program (buttons, menus, messages) - the same words as in the translations already made (below).\n" +
+        "- Keep HTML tags (<b>, <br> ...), placeholders and the punctuation: a text ending with \":\" or a space ends so in the translation too.\n" +
+        "- Answer ONLY with one JSON object: {\"English text\": \"translation\", ...} - the English texts exactly as given.\n\n" +
+        "TEXTS TO TRANSLATE (" + nm + "):\n" + JSON.stringify(miss, null, 1) + "\n\n" +
+        "TRANSLATIONS ALREADY MADE - use the same words (" + nd + "):\n" + JSON.stringify(made, null, 1) + "\n";
+    var st= b.parentNode.parentNode.querySelector(".p2hTrSugSt"), box= b.form.querySelector(".p2hTrAiBox");
+    function done() { st.textContent= nm + " " + T.aiCopied;  box.hidden= false; }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, function() { box.hidden= false;  box.querySelector("textarea").value= txt; });
+    else { box.hidden= false;  box.querySelector("textarea").value= txt; }
+}
+function p2hTrAiUse(b) {           /* The JSON answer of the AI: the empty fields with these English texts are filled - marked as suggestions */
+    var T= JSON.parse(b.form.querySelector(".p2hTrSugBtn").dataset.t), ta= b.parentNode.querySelector("textarea"), st= b.form.querySelector(".p2hTrSugSt"), j= null;
+    var t= ta.value, a= t.indexOf("{"), z= t.lastIndexOf("}");
+    try { j= JSON.parse(t.slice(a, z + 1)); } catch (e) { j= null; }
+    if (!j || typeof j !== "object") { st.textContent= T.aiBad;  return; }
+    var inputs= {}, n= 0, skip= 0;
+    document.querySelectorAll(".p2hTrTbl tbody input").forEach(function(i) { inputs[i.dataset.k]= i; });
+    Object.keys(j).forEach(function(k) {
+        var i= inputs[k], v= typeof j[k] === "string" ? j[k] : "";
+        if (!i || !v.trim() || i.value) { skip++;  return; }
+        i.value= v;  p2hTrMark(i, true);  n++;
+    });
+    st.textContent= n + " " + T.done + " (AI)" + (skip ? " - " + skip + " " + T.aiSkip : "");
+    ta.value= "";  b.parentNode.hidden= true;
 }
 window.addEventListener("beforeunload", function(e) { if (!window.p2hTrSending && document.querySelector("input.p2hTrChg")) { e.preventDefault(); e.returnValue= ""; } });
 p2hTrFilter();
