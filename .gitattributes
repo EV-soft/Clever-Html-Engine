@@ -1,0 +1,6 @@
+# Left out of the Composer package (git archive / Packagist dist)
+/latest         export-ignore
+/_cache         export-ignore
+/_config.yml    export-ignore
+/index.md       export-ignore
+/.gitattributes export-ignore

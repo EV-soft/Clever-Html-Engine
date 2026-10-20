@@ -5107,7 +5107,7 @@ if (LIB_POLYFILL[0]==1) {
             echo '<script src="'.$path.'jquery.min.js"></script>';              //  topic="Tablesorter-system" and Topmenu-system      
         } 
     } else 
-    { $pageMess.= ' jQuery is not loaded - Some functions do not work!<br>'.($LIB_JQUERY[0] ?? '0'); $LIB_JQUERY=  [0, '', '']; }
+    { $LIB_JQUERY=  [0, '', '']; }                                  # Not asked for ($needJquery '0'): optional - no message
 
     if (isset($LIB_JQUERYUI[0]) and ($LIB_JQUERYUI[0] >=0)) { 
         if ($LIB_JQUERYUI[0]==3) $LIB_JQUERYUI[0]= $autoCDN;             # Auto: Local/CDN
@@ -5126,7 +5126,7 @@ if (LIB_POLYFILL[0]==1) {
         // echo '<link  href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.css" />';    // topic="jquery Dialog"> 
         } 
     } else 
-    { $pageMess.= ' jQuery-ui is not loaded  ! <br>'; $LIB_JQUERYUI=  [0, '', '']; }
+    { $LIB_JQUERYUI=  [0, '', '']; }                                # Not asked for: optional - no message
 ### ----------------------
 
 ### ----------------------Library-Tablesorter-------------------------

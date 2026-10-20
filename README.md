@@ -1,101 +1,89 @@
-# 🧠 Clever HTML Engine – Functional HTML with PHP
-A modern, semantic PHP library for generating HTML interfaces with compact code, multilingual support, and responsive layouts.
+# php2html – Clever HTML Engine
 
-# 🚀 Features
-- UI components like htm_Input(), htm_Table(), htm_Page_()
+[![Release](https://img.shields.io/github/v/release/EV-soft/Clever-Html-Engine)](https://github.com/EV-soft/Clever-Html-Engine/releases)
+[![PHP](https://img.shields.io/badge/PHP-8.1%2B-777bb4)](https://www.php.net/)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
-- Multilingual labels with internal translation engine (@Label)
+**Write your web pages in PHP – not in HTML.** php2html is one PHP file with 78 functions that turn short, readable calls
+into complete, valid HTML5: input fields with labels, hints and validation, sortable tables, collapsible cards, menus,
+dialogs and whole pages – with translation, light/dark themes and CSRF protection built in. No build step, no template
+language, no JavaScript framework.
 
-- Responsive layout with hints, tooltips, collapsible cards
+## In 30 seconds
 
-- Integration with Font Awesome, jQuery UI, TinyMCE, and more
+```php
+<?php
+$needFontawesome= '2';                                          // Icons from the CDN
+$GLOBALS['gbl_ProgRoot']= 'vendor/ev-soft/clever-html-engine/'; // Where the library is - seen from the page
+require 'vendor/ev-soft/clever-html-engine/php2html.lib.php';
 
-# 🆕 What's new in 1.6.0
+htm_Page_(titl:'@Hello');
+    htm_Card_(capt:'@Order', icon:'fa-solid fa-cart-shopping');
+        htm_Input(labl:'@Name',  vrnt:'text', name:'name', valu:'');
+        htm_Input(labl:'@Price', vrnt:'dec2', name:'price', valu:123.45, unit:'<$ ');
+        $rows= [['Apple', 3], ['Pear', 5]];
+        htm_Table(body:[['@Item', '60%', 'text', '', ['left'],  'item'],
+                        ['@Qty',  '40%', 'text', '', ['right'], 'qty']], data:$rows, vhgh:'auto');
+    htm_Card_end();
+htm_Page_end();
+```
 
-**For the user of a page**
-- **View bar:** a floating, movable bar with zoom, full screen, column view, language (with flags), personal notes, page help and theme.
-- **Column view:** the cards flow in columns that fit the window.
-- **Cards:** drag the corner grip to resize a card, and move cards to another place among their sibling cards. Size and order are remembered per page in the browser.
-- **Page help:** a "?" button opens the help text of the page in a movable window (`help_system.json`, one file per language).
-- **Session warning:** while you work, the session is kept alive. After a long pause you are asked before it ends, and if it has ended you are told to reload before you save.
-- **Print:** every page prints only the content (no menus, bars or buttons), and folded cards are printed open.
-- **Accessibility:** skip links, a page heading, card captions as headings, keyboard use of all card icons, hints on keyboard focus, and unique element ids.
-- **Install as an app:** `manifest.json` and icons.
+![The page made by the code above](docs/hello.png)
 
-**For the programmer**
-- New functions: `htm_Alert()`, `htm_Banner()`, `htm_Badge()`, `htm_ConfirmPostLink()`, `htm_TableTools()`, `htm_LangSelect()`, `htm_PageHelp()`, `htm_NotePad()` and `htm_QuickBar()`. There are 78 core functions in total.
-- `htm_Card_()`: `elem:` sets a semantic element (section/article/aside...), `fold:'closed'` makes the card start folded, and `move:false` keeps it in place.
-- **Customize without editing the library.** Set `$gbl_InitFile` in the page before `require` to use a project file outside the library folder. That file can set:
-  - `$gbl_CustomCss`, `$gbl_CustomLib` and `$gbl_CustomRules`;
-  - the number format constants `DecimalSep`, `ThousandsSep` and `DEBUG`;
-  - `$gbl_CardMove` (`'icon'`, `'header'`, `'toggle'` or `false`), plus `$gbl_CardResize`, `$gbl_NotePad` and `$gbl_SessionWarn`.
-- Output after `htm_Page_end()` now stays inside `<body>`.
-- Many fixes (XSS, CSRF, dark theme, number formats, duplicate ids). See the page *Documentation → What is new in version 1.6.0* in the demo.
+Every text that starts with `@` is translated (Danish, German, French and Swedish are included). The card can be
+folded, resized and moved by the user, the price field accepts only a number with 2 decimals, and the page follows
+the light or dark theme of the browser.
 
-# 🆕 What's new in 1.6.1 - 1.6.3
-- **Faster pages:** the CSS/JS of `<head>` is written once to cached files (`_cache/`, ~110 KB less per page); Tablesorter is loaded by the first `htm_Table()` and jQuery UI is no longer needed; preconnect to the CDN; one shared card menu; shorter table cell styles.
-- **Libraries:** TinyMCE 8.9.3 (security fixes), Font Awesome 7.3.1, jQuery UI 1.14.2, Tablesorter 2.32.0, pdf.js 6.4.299.
-- **Translations:** all texts of the library in Danish, German, French and Swedish; ~190 Danish machine-translation errors corrected.
-- **Fixes:** HTML5-valid output (nested forms, unclosed `<style>`, void elements, escaping), `msg_System()` layout, `msg_Dialog()` on the theme-aware dialog (deprecated), session warning after expiry, number formats, folded card widths, page zoom and card resize.
-- New settings: `$gbl_AssetCache`, `$gbl_LazyLibs` (see `project.init.php`).
+## Why php2html?
+- **Compact, readable code** – one call per element, named arguments with a fixed set of 4-character names (`labl`, `hint`, `vrnt`, `valu` ...).
+- **Front end and back end in one file** – no templates to keep in sync.
+- **Complete fields** – label, hint, placeholder, validation, unit and number format in one call.
+- **Advanced tables** – sort, filter, row actions, CSV export (Mottie Tablesorter) – or simple search and sort without jQuery.
+- **Cards and a view bar** – collapsible, resizable, movable cards; zoom, full screen, column view, language, notes, page help and theme.
+- **Multilingual** – every `@text` goes through the translation engine; the user picks the language with a flag.
+- **Secure by default** – escaped output, a CSRF token in every form, a session warning before the session ends.
+- **Accessible and printable** – keyboard use, ARIA names, skip links; printing shows only the content.
+- **No build step** – external libraries (Font Awesome, Tablesorter, TinyMCE, pdf.js) come from a CDN or a local folder, only when asked for.
 
-# 🆕 What's new in 1.6.4
-- **Reference pages:** `table.page.php` and `card.page.php` document `htm_Table()` and `htm_Card_()` / `htm_Card_end()` with live examples - the code shown is the code that runs, and the parameter lists are read from the library (so they cannot get out of date). Code examples are folded (`htm_CodeBox(fold:'closed')`).
-- **Tables:** row actions in the browser (`rowact`: delete, copy, move, undo), `calc` with your own formula (`fn($row) => ...`), rows with field names, short rows padded, the new row gets the row actions, a table no longer shakes when its rows are as high as its window.
-- **Uniform parameters:** `rtrn` in every function, the summary comments match the parameters, uniform names with the old ones still working (`valu`, `wdth`, `vhgh`, `disa`; `htm_Inbox(edit:)`).
-- **Cards:** a real footer (`htm_Card_end(foot:, subm:)`).
-- **Accessibility:** names for table fields, icon buttons and other fields, the password toggle and the captcha slider work with the keyboard, labels that point to the right element.
-- **Fixes:** about 100 bugs found in "find five bugs" rounds - e.g. escaping of names, placeholders and labels, dialogs inside card forms, the translation scanner, the tinyEditor upload, database helper errors (`filedata.inc.php`), PHP warnings without `_trans.sys.json`.
+## Install
 
-# 🆕 What's new in 1.6.5
-- **New function:** `htm_faq()` - a question with a folded answer (`<details>`), works without JavaScript; `grup` keeps only one answer open.
-- **Function overview:** the complete list of the 4-character parameter names; the description is shown as a hint, and only parameter names are marked.
-- **Security:** `calcHash()` no longer writes the clear-text password into the page; `LangCreate.php` reflected XSS closed; texts in popup menus, option lists and messages are escaped (new `p2h_jsStr()`).
-- **Accessibility:** names for dialogs and switches, tab state (`aria-expanded`), sortable table headers with Enter/Space, `msg_System()` closable with the keyboard, the captcha slider reports its value.
-- **Fixes:** about 50 bugs found in "find five bugs" rounds - e.g. `htm_Inbox(edit:true)` content was never posted, row copy in tables, `ddwn`/`opti` table cells, unique ids for switches, icon buttons, checkboxes and column blocks, `pbrd:true` page border, `htm_List_` numbered lists, `htm_TextDiv()` without `body`, CSV helpers in `filedata.inc.php`.
+**With Composer**
+```bash
+composer require ev-soft/clever-html-engine
+```
+Then `require 'vendor/ev-soft/clever-html-engine/php2html.lib.php';` in your page, and set `$GLOBALS['gbl_ProgRoot']` to the
+path of that folder seen from the page (as in the example above). The browser loads the library's CSS/JS from that folder,
+so it must be reachable on the web, and the web server must be able to write its `_cache/` folder.
 
-# 🆕 What's new in 1.7.0 - one parameter order
-The parameters of all functions now follow one order, so a call reads the same everywhere:
+**Without Composer**
+```bash
+git clone https://github.com/EV-soft/Clever-Html-Engine.git
+```
+or download a [release](https://github.com/EV-soft/Clever-Html-Engine/releases) and copy the folder to your web server.
+Requires PHP 8.1 or newer (named arguments).
 
-| Group | Parameters |
-|---|---|
-| 1. Texts | `capt` / `labl`, `icon`, `hint`, `plho` |
-| 2. Variant, name, value, content | `vrnt` / `type` / `kind` / `mode`, `name`, `valu`, `body` ..., `list`, `data` |
-| 3. Form and action | `form`, `acti`, `link`, `clck`, `evnt`, `targ` |
-| 4. Size and look | `wdth`, `vhgh`, `algn`, `marg`, `bord`, `font`, `fclr`, `bclr`, `colr`, `styl`, `attr` |
-| 5. The function's own parameters | e.g. `unit`, `rows`, `step` in `htm_Input()` |
-| 6. Return | `rtrn` - always last |
+## Built with php2html
+- **[Folder-explorer](https://github.com/EV-soft/folder-explorer)** – a file manager in one PHP file: folder sizes in a tree,
+  file preview (images, PDF, Office, Excel, e-books ...), upload, a transfer basket, ZIP, accounts and rights.
+  [Live demo](https://ev-soft.dk/foldexpl/folder-explorer.php) – a good real-world example of `htm_Table()`, cards and menus.
+- **The demo and documentation** in `Proj.demo/` – every function with live examples, e.g. the
+  [customer order](https://ev-soft.work/p2h/v1.7.x/Proj.demo/CustomerOrder.page.php) page.
 
-A function without a heading text keeps its main content first: `htm_TextDiv(body)`, `htm_Alert(body)`, `htm_Form_(name)`, `htm_TableTools(tabl)`.
-34 functions got a new order, e.g. `htm_Input(labl, icon, hint, plho, vrnt, name, valu, list, form, ...)` (plho was 2nd), `htm_Table(... note, list, data, wdth, vhgh, styl, filt, ...)`, `msg_System(capt, vrnt, ...)`, and `htm_SwitchButt()` / `htm_SwitchButton()` now have the same order.
-Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in its message, and its label no longer points to a missing field.
+Have you built something with php2html? Open an issue or a pull request, and it will be listed here.
 
-# 🆕 What's new in 1.7.5 - hints, view bar user, card headers, session
-- **Hints instead of `title`:** tabs, the tab close icon, the vertical page tip, the view bar buttons, the notes and the help window show the library hint (theme-aware, placed at the element) instead of the browser tooltip.
-- **View bar:** `htm_ViewBar(user: '...', lout: '...')` shows the logged in user and a log out button at the end of the bar.
-- **Help button:** `$gbl_PageHelp= false;` hides the help button for the page (as `$gbl_NotePad` for the notes).
-- **Card headers:** a click on the empty part of a card header folds the card (as a click on the caption) - not after a drag, not on tools, fields or selected text; the fold cursor is shown over the whole header.
-- **Session:** `$gbl_SessionKeep= true;` - an open page keeps the session alive by itself (a light request every 5 minutes at most), without the "Still working?" dialog.
-- **Human test slider:** robust drag (reaches the end, snaps at 80 %, no text selection, zoom-aware).
+## Documentation
+- Online demo and documentation: [ev-soft.work/p2h/v1.7.x](https://ev-soft.work/p2h/v1.7.x/Proj.demo/PHP2HTML-intro.page.php) (use the top menu)
+- Project page: [ev-soft.github.io/Clever-Html-Engine](https://ev-soft.github.io/Clever-Html-Engine/)
+- What is new in each version: [CHANGELOG.md](CHANGELOG.md)
+- Step by step: `Quick_Proj/quickstart.page.php` and the `*.page.php` files in `Proj.demo/`
 
-# 🆕 What's new in 1.7.4 - card icon hints
-- **Cards:** the hint of a card header icon (toggle height, wide, collapse / expand all, help) is shown just below its own icon. The icons float right inside an inline hint element, so the hint was placed from the card's corner - up to 1250 px away from the icon.
-- **Tables:** the "Go up" button of a file / folder table no longer gives a PHP notice (`end(explode())`), and a precedence error in its sorter check is fixed.
+## Contributing
+Ideas, bug reports and pull requests are welcome – open an [issue](https://github.com/EV-soft/Clever-Html-Engine/issues).
 
-# 🆕 What's new in 1.7.3 - column resize grips
-- **Tables:** the grips for changing a column width are on the column lines again. Tablesorter subtracted the table's offset in its wrapper (it must be added), so the grips were beside the lines when the table was not at the left edge - e.g. in a centered card - and with zoom. They are also placed again when the page has loaded and when the window is resized.
+## License
+GPL-3.0 – see [LICENSE](LICENSE). © 2019-2026 EV-soft.
 
-# 🆕 What's new in 1.7.2 - rtrn:false in every function
-- `htm_TextArea()`, `htm_ActionButt()`, `htm_MultistateButt()` and `htm_ModalDialog()` now **echo** the HTML by default, as all other functions (they returned it - called alone they showed nothing).
-- **Upgrading:** where you use the result of one of them (`echo htm_TextArea(...)`, `'...'.htm_ActionButt(...)`, `$x= ...`) without `rtrn`, add `rtrn:true` - or run `php tools/named_args.php <folder> --write`, which does it for you.
-
-# 🆕 What's new in 1.7.1 - fixes
-- **Tables:** number columns (`0d`, `1d`, `2d`, `2%`) are sorted as numbers (were sorted as text: "1 234,00" before "9,00") and can be filtered with e.g. `>9`; the number 0 is shown as 0,00 (was blank); the format `>0` also hides negative numbers; the CSV export (`expo`) writes the data as shown (it removed `@` and translated values).
-- **Fields:** a field without a label is named by its hint or placeholder; `intg` fields get an integer (a decimal value made every typed integer invalid); radio buttons and option values are escaped and get valid, unique ids; the group label of a checkbox/radio list points to its own first box.
-- **Upgrade tool:** `tools/named_args.php` also finds `\htm_Input(` and `HTM_INPUT(`, and has `--from=1.6.3` for code written for 1.6.3 or older.
-- **Other:** `sys_toFloat(",5")` is 0.5 (was 5); `csv_parse()` reads quoted field names and fields with line breaks; the function overview shows the library version (`P2H_VERSION`) and no stray ";"; more escaping (`htm_Output`, `htm_Humantest`, `htm_Menu_Leftout`); demo links point to v1.7.x.
-
-# ⬆️ Upgrading to 1.7
+## Upgrading to 1.7
 - **Named arguments** (`labl:'@Name', vrnt:'text'`) work as before - nothing to do. They are the recommended way to call the library.
 - **Positional arguments** (`htm_Input('@Name', '@Enter...', ...)`) must be checked: their meaning follows the position. Run the upgrade tool on your code **before** you replace the library:
   ```bash
@@ -108,59 +96,9 @@ Also: an unknown `vrnt` in `htm_Input()` / `htm_Output()` names the variant in i
 - The old alias names (`vlue`, `widt`, `heig`, `hght`) still work.
 - **1.7.2:** `htm_TextArea()`, `htm_ActionButt()`, `htm_MultistateButt()` and `htm_ModalDialog()` echo by default - the tool adds `rtrn: true` where their result is used.
 
-# 📦 Installation
-```bash
-git clone https://github.com/EV-soft/Clever-Html-Engine.git
-```
-Include the library in your PHP project (PHP 8.1+):
-```php
-require_once 'php2html.lib.php';
-```
-# 💡 Examples
-Input field with currency:
-```php
-htm_Input(
-    vrnt: 'dec2',
-    name: 'price',
-    valu: 123.45,
-    labl: '@Price',
-    hint: '@Enter amount with 2 decimals',
-    unit: 'US$'
-);
-```
-Simple table:
-```php
-$data = [
-    ['Alice',   30, 'alice@example.com'],
-    ['Bob',     42, 'bob@example.com'],
-    ['Charlie', 25, 'charlie@example.com']
-];
-htm_Table(
-    capt: [], pref: [],
-    body: [     # [0:label, 1:width, 2:type, 3:format, 4:[align], 5:field key]
-        ['@Name',  '40%', 'text', '', ['left'],   'f1'],
-        ['@Age',   '20%', 'text', '', ['right'],  'f2'],
-        ['@Email', '40%', 'text', '', ['center'], 'f3']
-    ],
-    suff: [], note: '',
-    data: $data
-);
-```
-# 🌐 Resources
-- Online demo and documentation: [ev-soft.work/p2h/v1.7.x](https://ev-soft.work/p2h/v1.7.x/Proj.demo/PHP2HTML-intro.page.php) (use the top menu)
-- Project page: [ev-soft.github.io/Clever-Html-Engine](https://ev-soft.github.io/Clever-Html-Engine/)
-- Source and releases: [github.com/EV-soft/Clever-Html-Engine](https://github.com/EV-soft/Clever-Html-Engine/releases)
-
-# 🤝 Community
-Got ideas or improvements? Contribute via GitHub Pull Requests or open an Issue. Collaboration is welcome!
-
-# 👨‍🚀 Users
-You are a php developer who wants to let php2html take over the trivial work of writing basic html code.
-
 ***
 
-
-# php2html.lib = Clever-Html-Engine
+## More about php2html
 Your tool to quickly program html code in your PHP web project.
 
 php2html.lib.php also called "HTML clever engine" consists of a PHP library, with 78 core functions that generate HTML code for standard html elements (INPUT / CHECKBOX / RADIO-GROUP / TABLE), as well as other useful functions.
