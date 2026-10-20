@@ -7279,7 +7279,7 @@ $CSS_system = '
     --ctxP_SubMenuBg: #f6f8fa;
     --ctxP_Hover: #e3eefc;
     --ctxP_OverflowIcon: #999;
-    --ctxP_Separator: #dddddd;
+    --ctxP_Separator: #a3adb8;
     --ctxP_Border: #c9d1d9;
     --ctxP_Icon: #4a6fa5;
     --ctxP_HeadText: #333333;
@@ -8064,7 +8064,7 @@ fieldset>legend {
 $CSS_theme = '
 <style>
 [data-theme="dark"] {
-    --ctxP_MenuBg: #232a31;  --ctxP_MenuText: #e3e7eb;  --ctxP_SubMenuBg: #1c2228;  --ctxP_Hover: #2d4a6b;  --ctxP_Separator: #4a5560;
+    --ctxP_MenuBg: #232a31;  --ctxP_MenuText: #e3e7eb;  --ctxP_SubMenuBg: #1c2228;  --ctxP_Hover: #2d4a6b;  --ctxP_Separator: #75828f;
     --ctxP_Border: #4a5560;  --ctxP_Icon: #8fb3e0;  --ctxP_HeadText: #aeb8c2;  --ctxP_MenuShadow: 0 4px 16px rgba(0,0,0,0.5);
     color-scheme: dark;
     --PageBcgrd: #15181c;  --CardsBgrd: #1f2328;  --Wall_Bgrd: #181b1f;  --TextColr: #e3e3e3;
