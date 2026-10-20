@@ -2,9 +2,10 @@
 
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
-## Unreleased
+## 1.7.6 - Composer, new README, no false jQuery error
 - **No false error:** a page that does not ask for jQuery (`$needJquery= '0'`, as `world/first.page.php`) no longer shows "ERROR: jQuery is not loaded" - jQuery and jQuery UI are optional.
 - **Composer:** `composer.json` - install with `composer require ev-soft/clever-html-engine`; the old 1.4 copy in `latest/` is left out of the package.
+- **README:** a short introduction, a tested 30-second example with a screenshot, install with Composer, "Built with php2html"; the version history moved to this file.
 
 ## 1.7.5 - hints, view bar user, card headers, session
 - **Hints instead of `title`:** tabs, the tab close icon, the vertical page tip, the view bar buttons, the notes and the help window show the library hint (theme-aware, placed at the element) instead of the browser tooltip.

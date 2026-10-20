@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.7.5';    $DocRev='2026-10-19';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFil= 'project.init.php';    $DocVers='1.7.6';    $DocRev='2026-10-20';     $DocIni='evs';  $ModulNr=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** 
 #  This file is included from start of php2html.lib.php 
 
