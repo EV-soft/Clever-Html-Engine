@@ -163,10 +163,17 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
     if (!$data) echo '<p class="p2hAlert p2hAlert-error">'.sys_enc(lang('@The translation file is missing or broken')).': '.sys_enc(p2h_trans_file()).'</p>';
     else {
         # Language - with the number of translations (the empty languages last)
-        usort($langs, fn($a, $b) => [empty($b['translation']), $a['name'] ?? ''] <=> [empty($a['translation']), $b['name'] ?? '']);
-        echo '<div class="p2hTrBar"><label>'.sys_enc(lang('@Language')).': <select onchange="p2hTrGo(this.value)">'.
-             implode('', array_map(fn($l) => '<option value="'.sys_enc($l['code']).'"'.($l['code'] === $code ? ' selected' : '').'>'.
-                 sys_enc($l['code'].' - '.($l['name'] ?? '').' ('.count((array)($l['translation'] ?? [])).')').'</option>', $langs)).'</select></label> '.
+        usort($langs, fn($a, $b) => [empty($a['translation']), $a['name'] ?? ''] <=> [empty($b['translation']), $b['name'] ?? '']);     # (was the other way round: the translated last)
+        $lname= fn($l) => sys_enc($l['code'].' - '.($l['name'] ?? '').' ('.count((array)($l['translation'] ?? [])).')');
+        $flag=  fn($c) => function_exists('p2h_flag') ? p2h_flag($c) : '';
+        echo '<div class="p2hTrBar">'.sys_enc(lang('@Language')).': <span class="p2hTrLang">'.      # A list with flags (an <option> can not show one)
+                 '<button type="button" class="p2hTrLangBtn" aria-haspopup="listbox" aria-expanded="false" onclick="p2hTrLangOpen(this)">'.
+                     $flag($code).' '.$lname($cur ?? ['code' => $code]).' <i class="fa-solid fa-caret-down"></i></button>'.
+                 '<div class="p2hTrLangList" role="listbox" aria-label="'.sys_enc(lang('@Language')).'" hidden>'.
+                     '<input type="search" class="p2hTrLangFind" placeholder="'.sys_enc(lang('@Find a language...')).'" aria-label="'.sys_enc(lang('@Find a language...')).'" oninput="p2hTrLangFind(this)">'.
+                     implode('', array_map(fn($l) => '<button type="button" role="option" data-c="'.sys_enc($l['code']).'" aria-selected="'.($l['code'] === $code ? 'true' : 'false').'"'.
+                         (empty($l['translation']) ? ' class="p2hTrLangEmpty"' : '').' onclick="p2hTrGo(this.dataset.c)">'.$flag($l['code']).' '.$lname($l).'</button>', $langs)).
+                 '</div></span> '.
              '<input type="search" class="p2hTrFind" placeholder="'.sys_enc(lang('@Search...')).'" aria-label="'.sys_enc(lang('@Search')).'" oninput="p2hTrFilter()"> '.
              '<label><input type="checkbox" class="p2hTrMiss" onchange="p2hTrFilter()"> '.sys_enc(lang('@Only missing')).' ('.$miss.')</label> '.
              '<span class="p2hTrCount"></span></div>';
@@ -213,6 +220,16 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
              '<noscript><p class="p2hAlert p2hAlert-error">'.sys_enc(lang('@The editor needs JavaScript')).'</p></noscript></form>';
         echo '<style>
 .p2hTrBar { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 8px; text-align: left; }
+.p2hTrLang { position: relative; display: inline-block; }
+.p2hTrLangBtn { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid #9aa5b1; border-radius: 4px; background: var(--InptBgrd, #fff); color: var(--TextColr, #222); font: inherit; cursor: pointer; }
+.p2hTrLangList { position: absolute; left: 0; top: calc(100% + 2px); z-index: 50; width: 300px; max-height: 340px; overflow-y: auto; padding: 4px;
+    background: var(--CardsBgrd, #fff); border: 1px solid #9aa5b1; border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.18); text-align: left; }
+.p2hTrLangList input { width: 100%; box-sizing: border-box; margin-bottom: 4px; }
+.p2hTrLangList button { display: flex; align-items: center; gap: 6px; width: 100%; padding: 3px 6px; border: 0; border-radius: 4px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.p2hTrLangList button:hover, .p2hTrLangList button:focus-visible { background: rgba(47,111,176,0.14); outline: none; }
+.p2hTrLangList button[aria-selected=true] { font-weight: 600; }
+.p2hTrLangList button.p2hTrLangEmpty { opacity: 0.7; }
+.p2hTrLang .p2hFlag { flex: none; border: 1px solid rgba(0,0,0,0.15); }
 .p2hTrBar select, .p2hTrFind, .p2hTrTbl input { padding: 3px 6px; border: 1px solid #9aa5b1; border-radius: 4px; font: inherit; background: var(--InptBgrd, #fff); color: var(--TextColr, #222); }
 .p2hTrFind { width: 220px; }
 .p2hTrWrap { max-height: 60vh; overflow: auto; border: 1px solid #c9d1d9; border-radius: 4px; }
@@ -233,6 +250,28 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
 [data-theme="dark"] .p2hTrTbl td { border-color: #3f4852; }  [data-theme="dark"] .p2hTrWrap { border-color: #4a5560; }
 </style><script>
 function p2hTrGo(c) { var u= new URL(location.href); u.searchParams.set("tl", c); location.href= u.toString(); }
+function p2hTrLangOpen(b) {         /* The list of languages with flags: open / close - search - arrows, Enter, Esc */
+    var l= b.nextElementSibling, open= l.hidden;
+    l.hidden= !open;  b.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) { var f= l.querySelector("input");  f.value= "";  p2hTrLangFind(f);  f.focus();
+                var sel= l.querySelector("[aria-selected=true]");  if (sel) sel.scrollIntoView({block: "nearest"}); }
+}
+function p2hTrLangFind(f) {
+    var q= f.value.trim().toLowerCase();
+    f.parentNode.querySelectorAll("button[role=option]").forEach(function(o) { o.hidden= q !== "" && o.textContent.toLowerCase().indexOf(q) < 0; });
+}
+document.addEventListener("click", function(e) {
+    document.querySelectorAll(".p2hTrLangList:not([hidden])").forEach(function(l) {
+        if (!l.parentNode.contains(e.target)) { l.hidden= true;  l.previousElementSibling.setAttribute("aria-expanded", "false"); }
+    });
+});
+document.addEventListener("keydown", function(e) {
+    var l= e.target.closest && e.target.closest(".p2hTrLangList");  if (!l) return;
+    var os= Array.prototype.filter.call(l.querySelectorAll("button[role=option]"), function(o) { return !o.hidden; }), i= os.indexOf(document.activeElement);
+    if (e.key === "Escape") { l.hidden= true;  l.previousElementSibling.setAttribute("aria-expanded", "false");  l.previousElementSibling.focus(); }
+    else if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault();  if (os.length) os[i < 0 ? (e.key === "ArrowDown" ? 0 : os.length - 1) : (i + (e.key === "ArrowDown" ? 1 : os.length - 1)) % os.length].focus(); }
+    else if (e.key === "Enter" && e.target.tagName === "INPUT" && os.length) { e.preventDefault();  p2hTrGo(os[0].dataset.c); }
+});
 function p2hTrMark(i, sug) {
     i.classList.toggle("p2hTrChg", i.value !== i.dataset.v);
     i.classList.toggle("p2hTrSug", !!sug && i.value !== i.dataset.v);       /* A suggestion until it is edited */
