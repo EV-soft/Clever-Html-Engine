@@ -3237,6 +3237,8 @@ function htm_ThemeButt(# labl:'', hint:'@...', rtrn:false)
 
 
 # A small flag (inline SVG - flag emojis are not shown on Windows). Unknown codes: the code as text.
+# A program adds its own (or replaces one) - the code of the language => [viewBox, the SVG inside]:
+#   $gbl_Flags= ['el' => ['0 0 3 2', '<rect width="3" height="2" fill="#0d5eaf"/>...']];
 function p2h_flag($code) {
     static $F= [
         'da' => ['0 0 20 14', '<rect width="20" height="14" fill="#c8102e"/><rect x="6" width="2" height="14" fill="#fff"/><rect y="6" width="20" height="2" fill="#fff"/>'],
@@ -3245,9 +3247,27 @@ function p2h_flag($code) {
         'de' => ['0 0 20 14', '<rect width="20" height="14" fill="#ffce00"/><rect width="20" height="9.33" fill="#dd0000"/><rect width="20" height="4.67" fill="#000"/>'],
         'fr' => ['0 0 20 14', '<rect width="20" height="14" fill="#ef4135"/><rect width="13.33" height="14" fill="#fff"/><rect width="6.67" height="14" fill="#0055a4"/>'],
         'en' => ['0 0 60 30', '<rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" stroke="#c8102e" stroke-width="2"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#c8102e" stroke-width="6"/>'],
+        # More languages (the code of the LANGUAGE - uk is Ukrainian, ja Japanese ...)
+        'es' => ['0 0 3 2', '<rect width="3" height="2" fill="#aa151b"/><rect y="0.5" width="3" height="1" fill="#f1bf00"/>'],
+        'it' => ['0 0 3 2', '<rect width="3" height="2" fill="#ce2b37"/><rect width="2" height="2" fill="#fff"/><rect width="1" height="2" fill="#009246"/>'],
+        'nl' => ['0 0 3 2', '<rect width="3" height="2" fill="#21468b"/><rect width="3" height="1.33" fill="#fff"/><rect width="3" height="0.67" fill="#ae1c28"/>'],
+        'pl' => ['0 0 8 5', '<rect width="8" height="5" fill="#dc143c"/><rect width="8" height="2.5" fill="#fff"/>'],
+        'fi' => ['0 0 18 11', '<rect width="18" height="11" fill="#fff"/><rect x="5" width="3" height="11" fill="#002f6c"/><rect y="4" width="18" height="3" fill="#002f6c"/>'],
+        'pt' => ['0 0 30 20', '<rect width="30" height="20" fill="#da291c"/><rect width="12" height="20" fill="#046a38"/><circle cx="12" cy="10" r="3.5" fill="#ffe900"/>'],
+        'uk' => ['0 0 3 2', '<rect width="3" height="2" fill="#ffd700"/><rect width="3" height="1" fill="#0057b7"/>'],
+        'is' => ['0 0 25 18', '<rect width="25" height="18" fill="#02529c"/><rect x="7" width="4" height="18" fill="#fff"/><rect y="7" width="25" height="4" fill="#fff"/><rect x="8" width="2" height="18" fill="#dc1e35"/><rect y="8" width="25" height="2" fill="#dc1e35"/>'],
+        'et' => ['0 0 33 21', '<rect width="33" height="21" fill="#fff"/><rect width="33" height="14" fill="#000"/><rect width="33" height="7" fill="#0072ce"/>'],
+        'lt' => ['0 0 5 3', '<rect width="5" height="3" fill="#c1272d"/><rect width="5" height="2" fill="#006a44"/><rect width="5" height="1" fill="#fdb913"/>'],
+        'lv' => ['0 0 20 10', '<rect width="20" height="10" fill="#9e3039"/><rect y="4" width="20" height="2" fill="#fff"/>'],
+        'cs' => ['0 0 6 4', '<rect width="6" height="4" fill="#d7141a"/><rect width="6" height="2" fill="#fff"/><path d="M0,0 3,2 0,4z" fill="#11457e"/>'],
+        'hu' => ['0 0 6 3', '<rect width="6" height="3" fill="#477050"/><rect width="6" height="2" fill="#fff"/><rect width="6" height="1" fill="#ce2939"/>'],
+        'ro' => ['0 0 3 2', '<rect width="3" height="2" fill="#ce1126"/><rect width="2" height="2" fill="#fcd116"/><rect width="1" height="2" fill="#002b7f"/>'],
+        'ja' => ['0 0 3 2', '<rect width="3" height="2" fill="#fff"/><circle cx="1.5" cy="1" r="0.6" fill="#bc002d"/>'],
     ];
     $c= strtolower(substr((string)$code, 0, 2));
     if ($c=='nb' or $c=='nn') $c= 'no';
+    $own= is_array($GLOBALS['gbl_Flags'] ?? null) ? array_change_key_case($GLOBALS['gbl_Flags'], CASE_LOWER) : [];
+    if (isset($own[$c][0], $own[$c][1]) && preg_match('/^[\d.\s-]+$/', (string)$own[$c][0])) $F[$c]= [(string)$own[$c][0], (string)$own[$c][1]];   # The program's own flag
     if (!isset($F[$c])) return '<span class="p2hFlagTx">'.sys_enc(strtoupper($c)).'</span>';
     return '<svg class="p2hFlag" width="20" height="14" viewBox="'.$F[$c][0].'" preserveAspectRatio="none" aria-hidden="true">'.$F[$c][1].'</svg>';
 }
