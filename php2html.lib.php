@@ -3376,26 +3376,34 @@ function htm_NotePad(# rtrn:false)
     if (!$rtrn) echo $result; else return $result;
 }
 
-# A fixed bar at the bottom of the window with shortcuts, e.g. "New invoice" (from TinyCash, the buttons given by the program)
+# A fixed bar at the bottom of the window: shortcuts (links / JavaScript) and buttons that submit a form - e.g. Save / Cancel of a long form,
+# always in reach (from TinyCash, the buttons given by the program)
 function htm_QuickBar(# list:[], rtrn:false)
-    $list= [],              # array:  The buttons: [[0:link, 1:labl, 2:icon, 3:hint, 4:colr (a small dot), 5:acti (JavaScript instead of the link)], ...]
+    $list= [],              # array:  The buttons: [[0:link, 1:labl, 2:icon, 3:hint, 4:colr (a small dot), 5:acti (JavaScript instead of the link),
+                            #                        6:form (the id of a form: a submit button of it - anywhere on the page), 7:name (the button's name, posted as name=1)], ...]
+                            #         e.g. ['', '@Save', 'fa-solid fa-floppy-disk', '@Save the order', '', '', 'orderForm', 'save']
     $rtrn= false            # bool:   Return or echo result
 ) {
     # The page gets room at the bottom, and the library's own fixed elements near the bottom are lifted above the bar
     # (in TinyCash a bottom bar hid the page end and other fixed buttons - see the CSS .p2hHasQuickBar).
+    # A hint opens above its button (the library hint - not the title tooltip of the browser).
     if (!$list) return '';
     $result= '<nav class="p2hQuickBar" aria-label="'.sys_enc(strip_tags(lang('@Quick actions'))).'">';
     foreach ($list as $b) {
-        $b= array_pad((array)$b, 6, '');
-        $lbl= lang($b[1]);
-        $result.= '<a class="p2hQbItem" href="'.sys_enc($b[0]>'' ? $b[0] : '#').'"'.
-                  ($b[5]>'' ? ' onclick="'.sys_enc($b[5]).'; return false;"' : '').
-                  ($b[3]>'' ? ' title="'.sys_enc(strip_tags(lang($b[3]))).'"' : '').
-                  ((trim(strip_tags($lbl)) > '') ? ' aria-label="'.sys_enc(trim(strip_tags($lbl))).'"' :                   # (an icon only got aria-label="": no name)
-                   (($b[3]>'') ? ' aria-label="'.sys_enc(strip_tags(lang($b[3]))).'"' : '')).'>'.
-                  ($b[4]>'' ? '<span class="p2hQbDot" style="background:'.sys_enc($b[4]).';"></span>' : '').
-                  ($b[2]>'' ? '<ic class="'.sys_enc($b[2]).'" aria-hidden="true"></ic>' : '').
-                  '<span class="p2hQbTxt">'.$lbl.'</span></a>';
+        $b= array_pad((array)$b, 8, '');
+        $lbl=  lang($b[1]);
+        $name= trim(strip_tags($lbl)) > '' ? trim(strip_tags($lbl)) : ($b[3] > '' ? strip_tags(lang($b[3])) : '');   # (an icon only got aria-label="": no name)
+        $inner= ($b[4]>'' ? '<span class="p2hQbDot" style="background:'.sys_enc($b[4]).';"></span>' : '').
+                ($b[2]>'' ? '<ic class="'.sys_enc($b[2]).'" aria-hidden="true"></ic>' : '').
+                '<span class="p2hQbTxt">'.$lbl.'</span>';
+        $attr= ($name > '' ? ' aria-label="'.sys_enc($name).'"' : '');
+        if ($b[6] > '')                                     # A submit button of the form with this id (the form attribute: the bar is outside the form)
+            $item= '<button type="submit" class="p2hQbItem" form="'.sys_enc($b[6]).'"'.($b[7]>'' ? ' name="'.sys_enc($b[7]).'" value="1"' : '').
+                   ($b[5]>'' ? ' onclick="'.sys_enc($b[5]).'"' : '').$attr.'>'.$inner.'</button>';
+        else
+            $item= '<a class="p2hQbItem" href="'.sys_enc($b[0]>'' ? $b[0] : '#').'"'.
+                   ($b[5]>'' ? ' onclick="'.sys_enc($b[5]).'; return false;"' : '').$attr.'>'.$inner.'</a>';
+        $result.= $b[3] > '' ? '<abbr class="hint p2hQbHint">'.$item.'<data-hint>'.lang($b[3]).'</data-hint></abbr>' : $item;
     }
     $result.= '</nav><script>document.documentElement.classList.add("p2hHasQuickBar");</script>';
     if (!$rtrn) echo $result; else return $result;
@@ -8149,10 +8157,15 @@ abbr.hint.p2hVbHint:has([aria-expanded=true]) data-hint, abbr.hint.p2hVbHint:has
 .p2hSessionEnd button { margin-left: 8px; }
 /* htm_QuickBar(): fixed at the bottom - the page gets room, and fixed elements near the bottom are lifted above the bar */
 .p2hQuickBar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; display: flex; justify-content: center; gap: 6px;
-    padding: 5px 8px; overflow-x: auto; background: rgba(40,44,52,0.96); border-top: 2px solid var(--AccnColr, DarkGreen);
+    padding: 5px 8px; flex-wrap: wrap; background: rgba(40,44,52,0.96); border-top: 2px solid var(--AccnColr, DarkGreen);
     box-shadow: 0 -2px 10px rgba(0,0,0,0.25); box-sizing: border-box; }
 .p2hQbItem { display: flex; align-items: center; gap: 7px; padding: 5px 13px; border-radius: 5px; white-space: nowrap;
     color: #fff !important; text-decoration: none; font: 600 13px/1.3 sans-serif; }
+button.p2hQbItem { background: transparent; border: 1px solid rgba(255,255,255,0.35); cursor: pointer; margin: 0; }   /* A form button: framed */
+abbr.hint.p2hQbHint { position: relative; display: inline-flex; text-decoration: none; }
+abbr.hint.p2hQbHint:hover data-hint, abbr.hint.p2hQbHint:focus-within data-hint { left: 50%; top: auto; bottom: calc(100% + 8px); transform: translateX(-50%);
+    width: max-content; max-width: 260px; text-align: left; }      /* The hint opens above the bar */
+abbr.hint.p2hQbHint:focus-within:not(:hover):not(:has(:focus-visible)) data-hint { display: none; }   /* After a click: not left open by the focus */
 .p2hQbItem:hover, .p2hQbItem:focus-visible { background: rgba(255,255,255,0.15); outline: none; }
 .p2hQbItem:focus-visible { box-shadow: inset 0 0 0 2px #4fc3f7; }
 .p2hQbDot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }

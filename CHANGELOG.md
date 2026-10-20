@@ -2,6 +2,10 @@
 
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
+## Unreleased
+- **Activity log** (from TinyCash): the new optional module `p2h_audit.inc.php` - `p2h_audit('@Upload', 'photos/a.jpg', '2 MB', $user)` writes who did what, when and from where (one JSON line per event in a PHP file that shows nothing in the browser, locked while it is written, renamed to `*.old.php` at `$gbl_AuditMax` bytes); `htm_AuditLog()` shows the newest events in a card with a sortable, filterable table. Settings: `$gbl_AuditFile`, `$gbl_AuditMax`, `$gbl_AuditUser`. The program decides who may see the log.
+- **`htm_QuickBar()`:** a button can submit a form (index 6: the id of the form, 7: the name of the button) - e.g. Save / Cancel of a long form always in reach; the hints are the library hints above the bar (were the title tooltip of the browser); many buttons wrap to a second line.
+
 ## 1.7.7 - numbers typed by people, hidden columns as row data
 - **Numbers typed by people** (`sys_toFloat()`, used by number fields and number columns): the last of "." and "," is the decimal sign, so "1,234.50" is 1234.5 also with `DecimalSep` "," (was 1.2345); more of the same sign are thousands, "1.500.000" is 1500000 (was 1.5); a minus after the number, "1.234,50-" as in bank files, is negative; a Swiss "1'234.50" works. A single "." is still the decimal point.
 - **Hidden table columns** (`hidd`): their value is also an attribute of the row - fkey `id` gives `<tr data-id="17">` for links and scripts (`tr.dataset.id`); without Tablesorter the header of a hidden column was shown, so the headers stood over the wrong columns.
