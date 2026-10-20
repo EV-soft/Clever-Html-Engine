@@ -44,6 +44,15 @@ function p2h_trans_scan($files) {   # The texts to translate in the source: '@En
     return $keys;
 }
 
+function p2h_trans_end($s, $open) {   # The "}" that ends the object starting at $open - the texts ("...") are skipped
+    for ($i= $open + 1, $n= strlen($s); $i < $n; $i++) {
+        $c= $s[$i];
+        if ($c === '"') { for ($i++; $i < $n && $s[$i] !== '"'; $i++) if ($s[$i] === '\\') $i++;  continue; }
+        if ($c === '}') return $i;
+    }
+    return false;
+}
+
 function p2h_trans_load(&$raw= null) {  # The decoded file - null when it is missing or broken
     $f= p2h_trans_file();
     $raw= is_readable($f) ? (string)file_get_contents($f) : '';
@@ -69,7 +78,7 @@ function p2h_trans_set($code, $changes, &$err= '') {   # Save [text => translati
         else {
             $tStart= strpos($raw, '"translation"', $cm[0][1]);
             $open=   $tStart === false ? false : strpos($raw, '{', $tStart);
-            $close=  $open === false ? false : strpos($raw, '}', $open);     # (a key or text with "}" makes the check below fail - then the whole file is written)
+            $close=  $open === false ? false : p2h_trans_end($raw, $open);    # The "}" of the block - not one in a text ("{n} files")
             if ($close === false) $byText= false;
         }
         foreach ($changes as $k => $v) {
@@ -83,6 +92,10 @@ function p2h_trans_set($code, $changes, &$err= '') {   # Save [text => translati
                 $new= $v === '' ? '' : $lm[1][0].json_encode($k, $jf).':'.json_encode($v, $jf).$lm[2][0].$lm[3][0];
                 $patch= substr($patch, 0, $at).$new.substr($patch, $at + $len);
                 $close+= strlen($new) - $len;
+                if ($v === '' && $lm[2][0] === '' && preg_match('/,([ \t]*\r?\n[ \t]*)$/', substr($patch, $open, $at - $open), $pm, PREG_OFFSET_CAPTURE)) {
+                    $patch= substr($patch, 0, $open + $pm[0][1]).substr($patch, $open + $pm[0][1] + 1);    # The last text removed: the line before is the last now - without its comma
+                    $close--;
+                }
             } elseif ($v !== '') {                     # A new text: first in the block (with a comma when more follow)
                 $more= trim(substr($patch, $open + 1, $close - $open - 1)) !== '';
                 preg_match('/\n([ \t]*)"/', substr($patch, $open, $close - $open), $im);
@@ -96,6 +109,7 @@ function p2h_trans_set($code, $changes, &$err= '') {   # Save [text => translati
         $check= json_decode($patch, true);
         if (!$byText || !is_array($check) || $check != $data) {      # The text could not be changed safely: the whole file - checked
             $patch= json_encode($data, $jf | JSON_PRETTY_PRINT);
+            if ($patch !== false && strpos($raw, "\r\n") !== false) $patch= str_replace("\n", "\r\n", $patch);     # The line endings of the file stay
             if ($patch === false || json_decode($patch, true) != $data) { $err= lang('@The translation file could not be written');  return false; }
         }
         @copy($f, preg_replace('/(\.json)?$/', '.bak.json', $f, 1));     # The file before - one backup
@@ -132,12 +146,14 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
     if ($rtrn) ob_start();
     $data= p2h_trans_load();
     $langs= $data ? array_values(array_filter($data['language'], fn($l) => isset($l['code']) && $l['code'] !== 'en')) : [];
-    $code= $code ?: (string)($_GET['tl'] ?? '') ?: (string)($GLOBALS['lang'] ?? '');
+    $code= $code ?: (is_string($_GET['tl'] ?? null) ? $_GET['tl'] : '') ?: (is_string($GLOBALS['lang'] ?? null) ? $GLOBALS['lang'] : '');
     if (!in_array($code, array_column($langs, 'code'), true)) $code= $langs[0]['code'] ?? '';
     foreach ($langs as $l) if ($l['code'] === $code) $cur= $l;
     $tr=   is_array($cur['translation'] ?? null) ? $cur['translation'] : [];
     $src=  $scan ? p2h_trans_scan($scan) : [];
-    $keys= array_keys($src + $tr);
+    $ref=  [];                                          # The texts of the most translated language: also those the scan can not find (lang('@'.$x))
+    foreach ($langs as $l) if ($l['code'] !== $code && count((array)($l['translation'] ?? [])) > count($ref)) $ref= (array)$l['translation'];
+    $keys= array_keys($src + $ref + $tr);
     $rows= [];
     foreach ($keys as $k) $rows[]= [$k, $tr[$k] ?? '', !isset($tr[$k]) || $tr[$k] === '', false];   # text, translation, missing - (a text that is not found in the source is not marked: a program may build its texts, as lang('@'.$x))
     usort($rows, fn($a, $b) => [$b[2], mb_strtolower($a[0])] <=> [$a[2], mb_strtolower($b[0])]);       # Missing first
@@ -287,10 +303,11 @@ function p2hTrAiUse(b) {           /* The JSON answer of the AI: the empty field
     var t= ta.value, a= t.indexOf("{"), z= t.lastIndexOf("}");
     try { j= JSON.parse(t.slice(a, z + 1)); } catch (e) { j= null; }
     if (!j || typeof j !== "object") { st.textContent= T.aiBad;  return; }
-    var inputs= {}, n= 0, skip= 0;
-    document.querySelectorAll(".p2hTrTbl tbody input").forEach(function(i) { inputs[i.dataset.k]= i; });
+    var inputs= {}, trimmed= {}, n= 0, skip= 0;
+    document.querySelectorAll(".p2hTrTbl tbody input").forEach(function(i) { inputs[i.dataset.k]= i;  trimmed[i.dataset.k.trim()]= i; });
     Object.keys(j).forEach(function(k) {
-        var i= inputs[k], v= typeof j[k] === "string" ? j[k] : "";
+        var i= inputs[k] || trimmed[k.trim()], v= typeof j[k] === "string" ? j[k] : "";     /* An AI may trim "Warning: " */
+        if (i && /\s$/.test(i.dataset.k) && !/\s$/.test(v)) v+= " ";
         if (!i || !v.trim() || i.value) { skip++;  return; }
         i.value= v;  p2hTrMark(i, true);  n++;
     });
