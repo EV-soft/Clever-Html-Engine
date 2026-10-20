@@ -7,6 +7,9 @@
 #
 #   $gbl_TransFile= __DIR__.'/_trans.sys.json';     # Before require: the file (default: as the library reads it)
 #
+# Suggestions (sugg:true) - no key needed: the translator built into the browser (Chrome / Edge: on the PC, nothing is sent),
+# else MyMemory (api.mymemory.translated.net - free, about 5000 characters a day). Only empty fields are filled, marked to be checked.
+#
 # Only the changed texts are sent (PHP's max_input_vars cuts a form of 2000 fields) - and written into the file line by line,
 # so its layout stays and a diff shows only the change. When that can not be done safely, the whole file is written again.
 # The file is checked before it is written, the old one is kept as *.bak.json, and the writing is locked.
@@ -112,13 +115,14 @@ function p2h_trans_handle() {   # The POST of htm_TransEditor() - call it before
     return p2h_trans_set($code, $ch, $err) ? [true, lang('@Translations saved').': '.count($ch).' ('.$code.')'] : [false, $err];
 }
 
-function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hint:'', scan:[], code:'', acti:'', wdth:'98%', rtrn:false)
+function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hint:'', scan:[], code:'', acti:'', sugg:true, wdth:'98%', rtrn:false)
     $capt= '@Translations',             # string: The caption of the card ('' : no card)
     $icon= 'fa-solid fa-language',      # string: The icon of the card
     $hint= '',                          # string: The hint of the card
     $scan= [],                          # array:  The source files with the texts ('@English text') - their missing translations are shown first
     $code= '',                          # string: The language shown ('' : ?tl= or the language of the user - never English)
     $acti= '',                          # string: The address the form is sent to ('' : this page) - add &tl= yourself to come back to the language
+    $sugg= true,                        # bool:   The button "Suggestions" for the missing texts (the browser's translator - else MyMemory)
     $wdth= '98%',                       # string: The width of the table
     $rtrn= false                        # bool:   Return the HTML instead of echoing it
 ) {
@@ -158,7 +162,15 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
                  '<td><input type="text" data-k="'.sys_enc($k).'" value="'.sys_enc($v).'" data-v="'.sys_enc($v).'" aria-label="'.sys_enc(mb_substr($k, 0, 80)).'" oninput="p2hTrMark(this)"></td></tr>';
         echo '</tbody></table></div>'.
              '<div class="p2hTrFoot"><button type="submit" class="p2hTrSave" disabled><i class="fa-solid fa-floppy-disk"></i> '.sys_enc(lang('@Save the changes')).
-             ' <span class="p2hTrN">0</span></button> <small>'.sys_enc(lang('@An empty field removes the translation - the English text is shown. Simple HTML (b, i, br, code) is allowed.')).'</small></div>'.
+             ' <span class="p2hTrN">0</span></button> '.
+             ($sugg ? '<abbr class="hint"><button type="button" class="p2hTrSugBtn" data-lang="'.sys_enc($code).'" data-t="'.sys_enc(json_encode([
+                     'none' => lang('@No empty missing texts are shown'), 'busy' => lang('@Suggesting...'), 'done' => lang('@suggestions - check them before you save'),
+                     'quota' => lang('@The free daily amount of MyMemory is used - try again tomorrow'), 'err' => lang('@No suggestions could be fetched'),
+                     'browser' => lang('@the translator of the browser'), 'mm' => 'MyMemory'], JSON_UNESCAPED_UNICODE)).'" onclick="p2hTrSuggest(this)">'.
+                 '<i class="fa-solid fa-wand-magic-sparkles"></i> '.sys_enc(lang('@Suggestions')).'</button><data-hint>'.
+                 sys_enc(lang('@Fills the empty missing texts shown (at most 50) - with the translator of the browser, or else MyMemory (the English texts are sent to translated.net). Check them before you save.')).
+                 '</data-hint></abbr> <span class="p2hTrSugSt"></span> ' : '').
+             '<br><small>'.sys_enc(lang('@An empty field removes the translation - the English text is shown. Simple HTML (b, i, br, code) is allowed.')).'</small></div>'.
              '<noscript><p class="p2hAlert p2hAlert-error">'.sys_enc(lang('@The editor needs JavaScript')).'</p></noscript></form>';
         echo '<style>
 .p2hTrBar { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin: 4px 0 8px; text-align: left; }
@@ -172,13 +184,16 @@ function htm_TransEditor(# capt:'@Translations', icon:'fa-solid fa-language', hi
 .p2hTrM td:first-child { border-left: 3px solid #d9822b; }
 .p2hTrU td:first-child { opacity: 0.6; }
 .p2hTrTbl input.p2hTrChg { border-color: #2f6fb0; box-shadow: 0 0 0 2px rgba(47,111,176,0.25); }
+.p2hTrTbl input.p2hTrSug { border-style: dashed; border-color: #8a4fc4; box-shadow: 0 0 0 2px rgba(138,79,196,0.2); }     /* A suggestion: to be checked */
+.p2hTrSugSt { font-size: 12px; }
 .p2hTrNote { color: #888; font-style: italic; }
 .p2hTrFoot { margin-top: 8px; text-align: left; }
 [data-theme="dark"] .p2hTrTbl td { border-color: #3f4852; }  [data-theme="dark"] .p2hTrWrap { border-color: #4a5560; }
 </style><script>
 function p2hTrGo(c) { var u= new URL(location.href); u.searchParams.set("tl", c); location.href= u.toString(); }
-function p2hTrMark(i) {
+function p2hTrMark(i, sug) {
     i.classList.toggle("p2hTrChg", i.value !== i.dataset.v);
+    i.classList.toggle("p2hTrSug", !!sug && i.value !== i.dataset.v);       /* A suggestion until it is edited */
     var f= i.form, n= f.querySelectorAll("input.p2hTrChg").length;
     f.querySelector(".p2hTrN").textContent= n;  f.querySelector(".p2hTrSave").disabled= !n;
 }
@@ -198,6 +213,39 @@ function p2hTrSend(f) {     /* Only the changed texts: one field (a form with 20
     f.querySelector("[name=p2h_trans_changes]").value= JSON.stringify(ch);
     window.p2hTrSending= true;
     return true;
+}
+async function p2hTrSuggest(b) {    /* Suggestions for the empty missing texts shown: the translator of the browser - else MyMemory (free, no key) */
+    var T= JSON.parse(b.dataset.t), code= b.dataset.lang, st= b.parentNode.parentNode.querySelector(".p2hTrSugSt");
+    var rows= Array.prototype.filter.call(document.querySelectorAll(".p2hTrTbl tbody tr.p2hTrM"), function(tr) {
+        return !tr.hidden && !tr.querySelector("input").value; }).slice(0, 50);
+    if (!rows.length) { st.textContent= T.none;  return; }
+    b.disabled= true;  st.textContent= T.busy;
+    var tl= null, engine= T.mm, n= 0, fail= 0;
+    try {                                           /* The browser (on the PC - nothing is sent) */
+        if (self.Translator) {
+            var av= await Translator.availability({sourceLanguage: "en", targetLanguage: code});
+            if (av && av !== "unavailable") { tl= await Translator.create({sourceLanguage: "en", targetLanguage: code});  engine= T.browser; }
+        }
+    } catch (e) { tl= null; }
+    function plain(h) { var d= document.createElement("textarea");  d.innerHTML= h;  return d.value; }
+    async function mm(q) {
+        var r= await fetch("https://api.mymemory.translated.net/get?q=" + encodeURIComponent(q) + "&langpair=en|" + encodeURIComponent(code));
+        var j= await r.json(), t= j && j.responseData ? String(j.responseData.translatedText || "") : "";
+        if (j.quotaFinished || /MYMEMORY WARNING/i.test(t) || r.status === 429) throw "quota";
+        return plain(t);
+    }
+    for (var i= 0; i < rows.length; i++) {
+        var inp= rows[i].querySelector("input"), k= inp.dataset.k, out= "";
+        try { out= tl ? await tl.translate(k) : await mm(k); }
+        catch (e) { if (e === "quota") { st.textContent= T.quota;  break; }  fail++;  continue; }
+        out= String(out || "").trim();
+        if (out && !/[.!?]$/.test(k.trim())) out= out.replace(/\.$/, "");      /* No full stop the English text does not have */
+        if (out && /\s$/.test(k)) out+= " ";                                   /* "Warning: " keeps its space */
+        if (out.trim() && out !== k && !inp.value) { inp.value= out;  p2hTrMark(inp, true);  n++; }
+        st.textContent= T.busy + " " + (i + 1) + " / " + rows.length;
+    }
+    if (st.textContent !== T.quota) st.textContent= n ? n + " " + T.done + " (" + engine + ")" : T.err;
+    b.disabled= false;
 }
 window.addEventListener("beforeunload", function(e) { if (!window.p2hTrSending && document.querySelector("input.p2hTrChg")) { e.preventDefault(); e.returnValue= ""; } });
 p2hTrFilter();
