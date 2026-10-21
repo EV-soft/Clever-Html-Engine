@@ -4,6 +4,7 @@ What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6
 
 ## Unreleased
 - **Libraries loaded automatically:** a library whose `$needX` is not set is loaded only when the page uses it - jQuery (a table with sorting / filter, or a script of the page that uses jQuery), Tablesorter (the first `htm_Table()`), Font Awesome (an icon), TinyMCE (`tinymce.init`). Decided when the page is sent: an output handler puts them into `<head>` - or, when `<head>` was sent before (`ob_flush()`), where they are first met. The page tells what it chose and why (`<!-- p2h libraries (automatic): ... -->`); a safety net fetches a missing Font Awesome and names the `$needX` to set in the console. A set `$needX` always wins; `$gbl_LibSource` (where from), `$gbl_AutoLibs= false` (the old way). The scripts of the library that need jQuery come with it - a page without jQuery has no errors.
+- **`$gbl_ProgRoot` found automatically:** the path from the page to the library (for its CSS/JS cache, favicon, local libraries) is found from the files - a page no longer sets `$sys= $GLOBALS['gbl_ProgRoot']= '../';` (without it there was a PHP warning, and `'../'` for every page). Set it only when the address in the browser is not the path on the server (a symbolic link, rewritten addresses).
 - `CustHelp()` asked jQuery without it: an error on a page without jQuery.
 
 ## 1.8.0 - in the program itself: activity log, translations, flags of Europe

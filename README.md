@@ -13,7 +13,6 @@ language, no JavaScript framework.
 
 ```php
 <?php
-$GLOBALS['gbl_ProgRoot']= 'vendor/ev-soft/clever-html-engine/'; // Where the library is - seen from the page
 require 'vendor/ev-soft/clever-html-engine/php2html.lib.php';
 
 htm_Page_(titl:'@Hello');
@@ -68,9 +67,10 @@ The page says what it chose and why: `<!-- p2h libraries (automatic): jquery (a 
 ```bash
 composer require ev-soft/clever-html-engine
 ```
-Then `require 'vendor/ev-soft/clever-html-engine/php2html.lib.php';` in your page, and set `$GLOBALS['gbl_ProgRoot']` to the
-path of that folder seen from the page (as in the example above). The browser loads the library's CSS/JS from that folder,
-so it must be reachable on the web, and the web server must be able to write its `_cache/` folder.
+Then `require 'vendor/ev-soft/clever-html-engine/php2html.lib.php';` in your page. The library finds its own folder seen from
+the page (`$GLOBALS['gbl_ProgRoot']` - set it yourself only when the address in the browser is not the path on the server: a
+symbolic link, or rewritten addresses). The browser loads the library's CSS/JS from that folder, so it must be reachable on the
+web, and the web server must be able to write its `_cache/` folder.
 
 **Without Composer**
 ```bash
@@ -201,12 +201,11 @@ Create project-folder '/world' and create the file: '{public-URL}/hello/world/fi
 #   Getting started:
 #   How to output your first page...
 
-$sys= $GLOBALS["gbl_ProgRoot"]= '../';     // a system variable: path to the system folder
 
 ## Libraries (jQuery, Tablesorter, Font Awesome, TinyMCE): loaded automatically - only what the page uses (see "Libraries - automatic" above).
 ## To force one: $needJquery= '2';  0:off  1:local  2:CDN  3:local when the CDN does not answer
 
-require_once ($sys.'php2html.lib.php');    // the system library
+require_once (__DIR__.'/../php2html.lib.php');    // the system library - it finds its own folder seen from the page
 
 ### PAGE-START:
 htm_Page_(titl:'@DEMO', hint:'', info:lang('@PHP2HTML: My first page'), inis:'',

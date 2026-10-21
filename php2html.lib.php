@@ -171,11 +171,28 @@ $javaScripts= '';                                 # Empty buffer
 if (is_null($rowHtml ?? '')) $rowHtml= '';
 
 # PATHS:
-# $gbl_ProgRoot is set in *.page.php files. 
-
-if (!is_null($GLOBALS["gbl_ProgRoot"])) 
-        $gbl_ProgRoot= $GLOBALS["gbl_ProgRoot"]; 
-else    $gbl_ProgRoot=  './../';    # $gbl_ProgRoot= "./../";  // "../";  Relative in 1. subniveau    #-$gbl_ProgRoot= "./../../";   //  Relative in 2. subniveau
+# $gbl_ProgRoot: the path from the page to this library, as the browser sees it ('./' the same folder, '../', 'vendor/ev-soft/clever-html-engine/').
+# Not set: found from the files (p2h_progRoot). Set it only when the path on the server is not the address in the browser:
+# a library folder that is a symbolic link, or rewritten addresses (one PHP file answers many addresses).
+if (!function_exists('p2h_progRoot')) {
+function p2h_progRoot() {   # From the folder of the page to the folder of this library - './../' when it can not be found (as before)
+    $lib=  str_replace('\\', '/', (string)(realpath(__DIR__) ?: __DIR__));
+    $file= (string)($_SERVER['SCRIPT_FILENAME'] ?? '');
+    $page= $file !== '' ? realpath(dirname($file)) : false;
+    if ($page === false) return './../';
+    $page= str_replace('\\', '/', $page);
+    $a= array_values(array_filter(explode('/', $page), 'strlen'));
+    $b= array_values(array_filter(explode('/', $lib), 'strlen'));
+    $same= DIRECTORY_SEPARATOR === '\\' ? fn($x, $y) => strcasecmp($x, $y) === 0 : fn($x, $y) => $x === $y;     # Windows: not case sensitive
+    $i= 0;
+    while ($i < count($a) && $i < count($b) && $same($a[$i], $b[$i])) $i++;
+    if ($i === 0) return './../';                               # Another drive: no relative path
+    $rel= str_repeat('../', count($a) - $i).implode('/', array_slice($b, $i));
+    return $rel === '' ? './' : rtrim($rel, '/').'/';
+}
+}
+$gbl_ProgRoot= (isset($GLOBALS['gbl_ProgRoot']) && is_string($GLOBALS['gbl_ProgRoot']) && $GLOBALS['gbl_ProgRoot'] !== '') ? $GLOBALS['gbl_ProgRoot'] : p2h_progRoot();
+$GLOBALS['gbl_ProgRoot']= $gbl_ProgRoot;                        # (was a PHP warning when the page did not set it - and '../' for every page)
 
 $_assets=     $gbl_ProgRoot.'_assets/';
 $_base=   '';
