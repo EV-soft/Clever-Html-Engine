@@ -13,7 +13,6 @@ language, no JavaScript framework.
 
 ```php
 <?php
-$needFontawesome= '2';                                          // Icons from the CDN
 $GLOBALS['gbl_ProgRoot']= 'vendor/ev-soft/clever-html-engine/'; // Where the library is - seen from the page
 require 'vendor/ev-soft/clever-html-engine/php2html.lib.php';
 
@@ -33,6 +32,24 @@ htm_Page_end();
 Every text that starts with `@` is translated (Danish, German, French and Swedish are included). The card can be
 folded, resized and moved by the user, the price field accepts only a number with 2 decimals, and the page follows
 the light or dark theme of the browser.
+
+## Libraries - automatic
+
+A page loads only the libraries it uses - decided when the page is sent:
+
+| Library | Loaded when |
+|---|---|
+| jQuery | a table with sorting / filter, or a script of the page uses jQuery |
+| Tablesorter | the first `htm_Table()` |
+| Font Awesome | an icon (`fa-...`) |
+| TinyMCE | `tinymce.init` |
+
+The page says what it chose and why: `<!-- p2h libraries (automatic): jquery (a table with sorting / filter), fontawesome (icons) -->`. If something is missed, the browser console says which `$needX` to set; a missing Font Awesome is fetched at once.
+
+- **Force one:** `$needJquery= '2';` before the `require` (`'0'` off, `'1'` local `_assets`, `'2'` CDN, `'3'` local when the CDN does not answer) - a set `$needX` always wins.
+- **Where from:** `$gbl_LibSource= '1';` (default `'2'`, the CDN).
+- **The old way:** `$gbl_AutoLibs= false;` - only the libraries that are set.
+- The dialog polyfill and the PDF viewer are never automatic: `$needPolyfill`, `$needPdfview`.
 
 ## Why php2html?
 - **Compact, readable code** – one call per element, named arguments with a fixed set of 4-character names (`labl`, `hint`, `vrnt`, `valu` ...).
@@ -186,12 +203,8 @@ Create project-folder '/world' and create the file: '{public-URL}/hello/world/fi
 
 $sys= $GLOBALS["gbl_ProgRoot"]= '../';     // a system variable: path to the system folder
 
-## Activate needed libraries: Set 0:deactive  1:Local-source  2:WEB-source-CDN  3:Auto: Local/CDN
-$needJquery=      '0';
-$needTablesorter= '0';
-$needPolyfill=    '0';
-$needFontawesome= '2';
-$needTinymce=     '0';
+## Libraries (jQuery, Tablesorter, Font Awesome, TinyMCE): loaded automatically - only what the page uses (see "Libraries - automatic" above).
+## To force one: $needJquery= '2';  0:off  1:local  2:CDN  3:local when the CDN does not answer
 
 require_once ($sys.'php2html.lib.php');    // the system library
 

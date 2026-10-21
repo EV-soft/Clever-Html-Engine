@@ -55,6 +55,18 @@ $isOnline = fsockopen("cdnjs.cloudflare.com", 80, $errno, $errstr, 30);
 if ($isOnline) { $autoCDN= '2'; fclose($isOnline); }
 else             $autoCDN= '1'; // $autoCDN can be used to auto switch between - 1:Local-source  2:WEB-source-CDN
  */
+# AUTOMATIC LIBRARIES: a library whose $needX is not set is loaded only when the page uses it - decided when the page is sent (p2h_autoLibsOut):
+#   jQuery (a table with sorting / filter, or a script of the page that uses jQuery), Tablesorter (the first htm_Table), Font Awesome (an icon),
+#   TinyMCE (tinymce.init). The page tells what it chose and why: <!-- p2h libraries (automatic): ... -->.
+#   $needX set: as before ('0' off, '1' local, '2' CDN, '3' auto). $gbl_AutoLibs= false: the old way - only what is set.
+#   $gbl_LibSource: where the automatic ones come from ('2' CDN - default, '1' local _assets, '3' local when the CDN does not answer).
+#   The dialog polyfill and the PDF viewer are never automatic (set $needPolyfill / $needPdfview).
+$p2hAuto= [];
+if (($gbl_AutoLibs ?? true) !== false)
+    foreach (['needJquery' => 'jquery', 'needTablesorter' => 'tablesorter', 'needFontawesome' => 'fontawesome', 'needTinymce' => 'tinymce'] as $nv => $ln)
+        if (!isset($$nv)) { $$nv= (string)($gbl_LibSource ?? '2');  $p2hAuto[$ln]= true; }
+$GLOBALS['p2hAuto']= $p2hAuto;
+
 # Is the CDN reachable? Only asked when a library uses '3' (Auto: Local/CDN) - and the answer is shared by all visitors for 5 minutes
 # (was: a network call for every new session, also on pages without '3'; up to 1 second when the CDN is slow)
 $autoCDN= '2';                                                   # $autoCDN: 1:Local-source  2:WEB-source-CDN (used by the '3' libraries)
@@ -1120,10 +1132,49 @@ function p2h_assetFiles($html) {
 }
 
 # The script/link tags of a library that is loaded where it is first used (htm_Page_ prepares them; $gbl_LazyLibs= false: in <head> as before)
+function p2h_autoLibsOut($buf, $phase) {   # The automatic libraries: what the page uses - into <head> (or where first met, when <head> was sent before)
+    static $sent= [], $head= false;
+    $auto= $GLOBALS['p2hAuto'] ?? [];  $tags= $GLOBALS['p2hAutoTags'] ?? [];
+    $need= [];
+    $ts=   !empty($GLOBALS['p2hUsed']['p2hTsTags']) || strpos($buf, 'jquery.tablesorter') !== false;
+    if (!empty($auto['jquery']) && !isset($sent['jquery'])) {
+        if ($ts) $need['jquery']= 'a table with sorting / filter';
+        elseif (preg_match_all('/<script\b[^>]*>(.*?)<\/script>/s', $buf, $sm))       # A script of the page that uses jQuery - not one that asks for it first (window.jQuery)
+            foreach ($sm[1] as $js)
+                if (strpos($js, 'window.jQuery') === false && preg_match('/\bjQuery\s*[(.]|(?<![\w$])\$\s*\(|(?<![\w$])\$\.[a-zA-Z]/', $js)) { $need['jquery']= 'a script uses jQuery';  break; }
+    }
+    if (!empty($auto['tablesorter']) && $ts && !isset($sent['tablesorter'])) $need['tablesorter']= 'htm_Table';      # (its tags are written by the first table)
+    if (!empty($auto['fontawesome']) && !isset($sent['fontawesome']) && preg_match('/\bfa-[a-z0-9]/', $buf)) $need['fontawesome']= 'icons';
+    if (!empty($auto['tinymce']) && !isset($sent['tinymce']) && strpos($buf, 'tinymce.init') !== false) $need['tinymce']= 'tinymce.init';
+    $mark= '<!--p2h-auto-libs-->';
+    $p= strpos($buf, $mark);
+    if (!$head && $p === false) return $buf;                    # (<head> not reached in this part: nothing to do yet)
+    $ins= '';
+    foreach ($need as $l => $w) {
+        $ins.= $tags[$l] ?? '';
+        if ($l === 'jquery') $ins.= function_exists('p2h_assetFiles') ? p2h_assetFiles($GLOBALS['p2hAutoJqJs'] ?? '') : ($GLOBALS['p2hAutoJqJs'] ?? '');
+        $sent[$l]= $w;
+    }
+    if (!$head) {
+        $head= true;
+        $list= $sent ? implode(', ', array_map(fn($l, $w) => $l.' ('.$w.')', array_keys($sent), $sent)) : 'none';
+        $fa= preg_match('/href="([^"]+)"/', $tags['fontawesome'] ?? '', $fm) ? $fm[1] : '';
+        $net= '<script>(function(){    /* The safety net: an icon without Font Awesome - fetched now; jQuery / Tablesorter missing - said in the console */'.
+              'addEventListener("error", function(e){ if (/\\$ is not defined|jQuery is not defined/.test(e.message || "")) console.warn("p2h: jQuery is missing on this page - set $needJquery= \'2\' before php2html.lib.php"); });'.
+              'addEventListener("load", function(){'.
+                ($fa !== '' && !isset($sent['fontawesome']) ? 'if (document.querySelector("[class*=\"fa-\"]")) { var l= document.createElement("link");  l.rel= "stylesheet";  l.href= '.json_encode($fa).';  document.head.appendChild(l); }' : '').
+                'if (document.querySelector("table.tablesorter") && !(window.jQuery && jQuery.fn.tablesorter)) console.warn("p2h: Tablesorter is missing on this page - set $needTablesorter= \'2\'");'.
+              '}); })();</script>';
+        return substr_replace($buf, '<!-- p2h libraries (automatic): '.$list.' -->'.$ins.$net, $p, strlen($mark));
+    }
+    return $ins.$buf;                                           # Found after <head> was sent: here, where it is first met
+}
+
 function p2h_libTags($key) {
     static $done= [];
     if (isset($done[$key])) return '';
     $done[$key]= true;
+    if (($GLOBALS[$key] ?? '') !== '') $GLOBALS['p2hUsed'][$key]= true;     # (p2h_autoLibsOut: Tablesorter needs jQuery)
     return $GLOBALS[$key] ?? '';
 }
 
@@ -2350,7 +2401,7 @@ function CardInit($cardCount) {     // JS functions to handle Cards:
         function CardMaximizeAll() { p2hCardsAll(true); }       /* As CardMaximizeN(): the open width, the saved size, the tables */
             function CustHelp() {';
         // for ($Ix=1; $Ix<=$cardCount; $Ix++) { echo ' No help for this card yet '; }
-        echo ' $("table").trigger("applyWidgets"); }
+        echo ' if (window.jQuery) jQuery("table").trigger("applyWidgets"); }     /* (Tablesorter tables - without jQuery nothing to do: it gave an error) */
         </script>';   # Reinit table "zebra": https://mottie.github.io/tablesorter/docs/example-widget-zebra.html
 }
 
@@ -5102,6 +5153,7 @@ function htm_Page_(# titl:'', hint:'', algn:'center', attr:'', info:'', inis:'',
     foreach ([$LIB_JQUERY, $LIB_JQUERYUI, $LIB_TABLESORTER, $LIB_FONTAWESOME, $LIB_TINYMCE, $LIB_PDFVIEW, $LIB_POLYFILL] as $lb)
         if (is_array($lb) and ((($lb[0] ?? 0)==2) or ((($lb[0] ?? 0)==3) and (($autoCDN ?? '')=='2')))) $cdnUse= true;
 // <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    if (!empty($GLOBALS['p2hAuto']) && empty($GLOBALS['p2hAutoOn'])) { $GLOBALS['p2hAutoOn']= true;  ob_start('p2h_autoLibsOut'); }   # The automatic libraries: decided when the page is sent
     $headBuf= (($GLOBALS['gbl_AssetCache'] ?? true) !== false);  if ($headBuf) ob_start();   # The <head>: big CSS/JS blocks to cached files (p2h_assetFiles)
     echo '<!DOCTYPE html>
     <html lang="'.sys_enc(preg_match('/^[a-z]{2}(-[A-Za-z]{2})?$/', $GLOBALS['lang'] ?? '') ? $GLOBALS['lang'] : 'en').'" dir="ltr">
@@ -5171,7 +5223,8 @@ if (LIB_POLYFILL[0]==1) {
             case 2 : $path=               $LIB_JQUERY[2];   break;  # CDN-server  :https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery.min.js
            default : { $pageMess.= 'LIB_JQUERY: illegal index ! '.$LIB_JQUERY[0]; }
         }
-        if ($path > '') {
+        if ($path > '' && !empty($GLOBALS['p2hAuto']['jquery'])) $GLOBALS['p2hAutoTags']['jquery']= '<script src="'.$path.'jquery.min.js"></script>';   # Automatic: when it is used
+        elseif ($path > '') {
             echo '<script src="'.$path.'jquery.min.js"></script>';              //  topic="Tablesorter-system" and Topmenu-system      
         } 
     } else 
@@ -5233,6 +5286,7 @@ if (LIB_POLYFILL[0]==1) {
 //    echo "//    echo "
 
 
+$jsMark= strlen($javaScripts);                                  # From here: the scripts that need jQuery (kept with an automatic jQuery)
 // if (!(isset($LIB_TABLESORTER[0]) && array_key_exists(0, $LIB_TABLESORTER) && ($LIB_TABLESORTER[0]==0) )) 
 if (isset($LIB_TABLESORTER) and ($LIB_TABLESORTER[0]>0))
 {   
@@ -5556,6 +5610,10 @@ if ((int)($LIB_JQUERY[0] ?? 0) != 0)    # This script needs jQuery (was: tested 
     }
 
 </script>"; // LIB_FONTAWESOME $javaScripts
+if (!empty($GLOBALS['p2hAuto']['jquery'])) {                     # Automatic jQuery: these scripts come with it - or not at all (they need it)
+    $GLOBALS['p2hAutoJqJs']= substr($javaScripts, $jsMark);
+    $javaScripts= substr($javaScripts, 0, $jsMark);
+}
 ### ----------------------
 
 if (isset($LIB_PDFVIEW) and ($LIB_PDFVIEW[0]>0)) {  
@@ -6619,7 +6677,8 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
                 if ($LIB_FONTAWESOME[0]==3) $LIB_FONTAWESOME[0]= $autoCDN;              # Auto: Local/CDN
                 if ($LIB_FONTAWESOME[0]==1) $path= $gbl_ProgRoot.$LIB_FONTAWESOME[1];   # Local-folder
                 else                        $path=               $LIB_FONTAWESOME[2];   # CDN-server 
-            echo '<link  href="'.$path.'css/all.min.css" rel="stylesheet" />';      // topic="fontawesome-system" (choose a theme file)
+            if (!empty($GLOBALS['p2hAuto']['fontawesome'])) $GLOBALS['p2hAutoTags']['fontawesome']= '<link  href="'.$path.'css/all.min.css" rel="stylesheet" />';
+            else echo '<link  href="'.$path.'css/all.min.css" rel="stylesheet" />';      // topic="fontawesome-system" (choose a theme file)
         } else {
             $pageMess.= ' Fontawesome is not loaded - Icons do not work!<br>';
         }
@@ -6634,7 +6693,8 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
             if ($LIB_TINYMCE[0]==3) $LIB_TINYMCE[0]= $autoCDN;               # Auto: Local/CDN
             if ($LIB_TINYMCE[0]==1) $path= $gbl_ProgRoot.$LIB_TINYMCE[1];    # Local-folder
             else                    $path=               $LIB_TINYMCE[2];    # CDN-server 
-            echo '<script src="'.   $path.'tinymce.min.js" referrerpolicy="origin"> </script>';
+            if (!empty($GLOBALS['p2hAuto']['tinymce'])) $GLOBALS['p2hAutoTags']['tinymce']= '<script src="'.$path.'tinymce.min.js" referrerpolicy="origin"></script>';
+            else echo '<script src="'.   $path.'tinymce.min.js" referrerpolicy="origin"> </script>';
     }} 
     ## Be aware tinyMCE has its own translate system !
 ### ----------------------
@@ -6764,6 +6824,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
             '<data-hint>'.lang('@CTRL-Scroll UP/Down mousewheel to zoom window content.').'</data-hint></abbr></div>';                   # Text (was raw)
     // echo '<div class="ver_right"; style="color:red;">[[[[[[[[[HHHHH__HHHHHH]]]]]]]]]]</div>';
 
+    if (!empty($GLOBALS['p2hAuto'])) echo '<!--p2h-auto-libs-->';      # The automatic libraries come here (p2h_autoLibsOut)
     echo $javaScripts;
     
     echo $sys_Style;
