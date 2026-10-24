@@ -28,7 +28,10 @@ htm_Page_( titl:'functions.page.php', hint:'', info:'', inis:'', algn:'center', 
                 hint: '', form: '', acti: '', clas: 'cardW800', wdth: '', styl: 'background-color: white;', attr: '',head:'background-color: white;');
         htm_TextDiv(styl: 'padding: 5px;', body: '<big>FUNCTIONS - vers. '.P2H_VERSION.' - '.date("Y-m-d").':</big><br>'.
             file_get_contents('Functions.html'));
-        echo 'Total: '.substr_count(file_get_contents('Functions.html'), '<pre>'),' htm_Functions<br>';   # One <pre> per function (was counted from the lines: one too few)
+        $fh= file_get_contents('Functions.html');  $nAll= substr_count($fh, '<pre>');  $nJs= substr_count($fh, '(JavaScript)</small>');   # One <pre> per function
+        $nApi= is_readable('../php2html.api.md') ? preg_match_all('~^#### ~m', file_get_contents('../php2html.api.md')) : 0;   # All public functions: the API reference
+        echo 'Total: '.$nAll.' htm_ functions ('.($nAll - $nJs).' PHP + '.$nJs.' JavaScript) in the library and its modules'.
+             ($nApi ? ' - all '.$nApi.' public functions of the library (also sys_, str_, csrf_ and lang): <a href="https://github.com/EV-soft/Clever-Html-Engine/blob/master/php2html.api.md" target="_blank" rel="noopener">php2html.api.md</a>' : '').'<br>';
         echo 'Tip: Hovering the mouse over function names (or tabbing to them) displays a short description.';
 htm_nl(2);
     htm_Card_end();

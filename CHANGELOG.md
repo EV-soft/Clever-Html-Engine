@@ -3,6 +3,7 @@
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
 ## Unreleased
+- **The function overview** (Proj.demo/functions.page.php) counts right: only functions whose name starts with `htm_` (`csrf_field` came with because its comment names htm_Card_), the 2 functions of the modules too, `htm_Toast` marked as JavaScript - and it links to `php2html.api.md` for all public functions. The menu note of the demo shows the version only.
 
 ## 1.9.1 - the Caps Lock warning only while Caps Lock is on
 - **Fixed:** the Caps Lock warning of password fields (new in 1.9.0) was always shown - its style overruled `hidden`. Now it shows only while Caps Lock is on.

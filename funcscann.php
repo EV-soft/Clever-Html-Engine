@@ -1,4 +1,4 @@
-<?php   $DocFileInc= '.\funcscann.php';    $DocVersInc='1.6.0';    $DocRev='2026-10-11';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFileInc= '.\funcscann.php';    $DocVersInc='1.7.0';    $DocRev='2026-10-24';     $DocIni='evs';  $ModulNr=0; ## File informative only
 
     # (Was: $d = dir("../../") - not used)
     // $paths = glob('../../*/*.{htm,php}',GLOB_BRACE); 
@@ -49,7 +49,9 @@
     $total= 0;    $buff= array();   $fraser= array(); $d = null;  $html= ''; $arrFunctions= [];      $keyList=[];
     # Scan the library next to this file - and only when it is newer than the overview (not on every page view)
     $libDir= dirname(__FILE__);
-    $needScan= !is_readable('Functions.html') || (filemtime($libDir.'/php2html.lib.php') > filemtime('Functions.html'));
+    $scanFiles= ['php2html.lib.php', 'p2h_audit.inc.php', 'p2h_trans.inc.php'];      # The library and its modules
+    $newest= max(array_map(fn($sf) => is_file($libDir.'/'.$sf) ? filemtime($libDir.'/'.$sf) : 0, $scanFiles));
+    $needScan= !is_readable('Functions.html') || $newest > filemtime('Functions.html') || filemtime(__FILE__) > filemtime('Functions.html');
     foreach (($needScan ? [$libDir] : []) as $entry)
     {
     //if (false !== ($entry = $d->read())) {
@@ -58,11 +60,11 @@
       $files = scandir($dir);
       if ($files)
       foreach ($files as $sourceFile) { 
-        $count= 0;  $searchWord= 'function ';   $arrFunctions= [];      $nn= 0;
+        $count= 0;  $searchWord= 'function ';   $nn= 0;
         if ( ($sourceFile!=='.') and ($sourceFile!=='..') 
              and (!strpos($sourceFile,'.bak'))   //  Filter:
-             and (in_array($sourceFile,[
-                'php2html.lib.php'  /* ,
+             and (in_array($sourceFile, $scanFiles) or in_array($sourceFile,[
+                '-'  /* ,
                 'customLib.inc.php',
                 'translate.inc.php',
                 'menu.inc.php',
@@ -112,8 +114,8 @@
             }
             // if (strpos(' '.$line,'$DocFil')>0) echo "<pre>".$line."</pre>";
             if ($p=strpos(' '.$line,$searchWord)) { 
-            if (($p<6) and               // PLACED at start of line!
-            (strpos($line,'htm_')>0)) {  // is an html_ function
+            if (($p<6) and preg_match('~^\s{0,4}(#\s*)?function\s+htm_\w+\s*\(~', $line, $fm)) {   // At the start of the line, and the name is htm_... ("# function htm_": a JavaScript function, described)
+                $isJs= ($fm[1] ?? '') !== '';
                 if (strpos(' '.$prevLine,'# ') > 0)        # The comment line above the function: shown as a hint (was a title)
                      $hint= '<data-hint style="left: 0; top: 24px; width: 380px; white-space: normal; text-align: left; font-family: Arial, sans-serif; font-size: 13px; font-weight: normal; z-index: 5;">'.
                             htmlspecialchars(trim(str_replace('# ', '', $prevLine)), ENT_QUOTES, 'UTF-8').'</data-hint>';
@@ -134,7 +136,7 @@ if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   #
                 $lno= str_pad($lno,5,' ',STR_PAD_LEFT);
                 $str= "<pre>
 ".'  '.$sourceFile.str_repeat(" ",max(16-strlen($dir.$sourceFile),0)).
-' <small><i>'.$lno.':</i></small> '.$funcN.'</pre>';      # ($funcN closes its <i> itself)
+' <small><i>'.$lno.':</i></small> '.$funcN.($isJs ? ' <small style="color:#888;">(JavaScript)</small>' : '').'</pre>';      # ($funcN closes its <i> itself)
                 $nn++;
               //_// echo $str; //.' '.substr($str,42);
               $arrFunctions[]= [
@@ -166,19 +168,14 @@ if ($s=strpos($line,"{")) $funcN= ' '.rtrim(substr($line,$p,$s-$p)).PHP_EOL;   #
               } $count++; $total++;
             } $prevLine= $line; }
             
-            usort($arrFunctions, 'sortByKey');
-            $capt = '<div style="background-color:#fffff0; padding:8px;">Sorted by name:<br>';
-            //_// echo $capt; 
-            $html= $capt;
-            foreach ($arrFunctions as $elem) { //_// echo $elem['val']; 
-                //_// 
-                $html.= $elem['val']; 
-                }
-            $html.= '</div>';                                    # (was never closed)
             
           $count= substr('000'.$count,-3); 
           if ($count>0) $buff[] = '<br>Ialt: '.$count.' '.$nn.' forekomst(er) af: "<font color=red>'.$searchWord.'</font>" i <i>'.$dir.'</i><b>'.$sourceFile.'</b>';
       } } 
+      usort($arrFunctions, 'sortByKey');                    # All the files together, sorted by name
+      $html= '<div style="background-color:#fffff0; padding:8px;">Sorted by name:<br>';
+      foreach ($arrFunctions as $elem) $html.= $elem['val'];
+      $html.= '</div>';
       file_put_contents('Functions.html',$html, LOCK_EX);
       file_put_contents('Functions.list',implode('/', $keyList), LOCK_EX);
       /* 
