@@ -4,6 +4,10 @@ What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6
 
 ## Unreleased
 
+## 1.9.1 - the Caps Lock warning only while Caps Lock is on
+- **Fixed:** the Caps Lock warning of password fields (new in 1.9.0) was always shown - its style overruled `hidden`. Now it shows only while Caps Lock is on.
+- **Documented right:** the language of the library texts is the one of `htm_LangSelect()` (`$_SESSION['p2h_lang']`), else `$lang` set by the page before the require (`$lang= 'da';`), else English - `$_SESSION['proglang']` is not used for them.
+
 ## 1.9.0 - log in, charts, Post/Redirect/Get, a check before each release
 - **Log in, more:** `htm_Login(list:, labl:, valu:)` lets the user choose what to log in to, e.g. an account (posted as `p2h_list`; one choice: no field) - check on the server that the user may open it. `sys_login()` and `sys_logout()` write *Log in*, *Login failed*, *Login blocked* and *Log out* in the activity log when `p2h_audit.inc.php` is included. `sys_loginRequired(link:)` remembers the page a user wanted and `sys_loginBack()` returns to it after the login - only a path on this site.
 - **Caps Lock warning** in every password field (`htm_Input(vrnt:'pass')`) while Caps Lock is on.

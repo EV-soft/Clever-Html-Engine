@@ -81,7 +81,9 @@ $md= "# php2html $ver - API reference\n\n".
 "- **Output:** most `htm_*` functions **echo** their HTML. With `rtrn:true` they **return** it as a string instead.\n".
 "  Functions without `rtrn` always echo (see the table).\n".
 "- **Texts are translated:** a text that starts with `@` is a translation key - `'@Save'` is shown via `lang()` in the language of the session\n".
-"  (`\$_SESSION['proglang']`, translations in `_trans.sys.json`). Texts without `@` are shown as they are.\n".
+"  (translations in `_trans.sys.json`). Texts without `@` are shown as they are. **The language:** the one chosen in `htm_LangSelect()`\n".
+"  (`\$_SESSION['p2h_lang']`), else `\$lang` set by the page **before** the require (`\$lang= 'da';`), else English.\n".
+"  (`\$_SESSION['proglang']` is not used for the translations.)\n".
 "- **Pairs:** `htm_Page_` ... `htm_Page_end`, `htm_Card_` ... `htm_Card_end`, `htm_Form_` ... `htm_Form_end`, `htm_Tabs_` / `htm_Tab` ... `htm_Tabs_end`,\n".
 "  `htm_RowCol_` / `htm_RowCol_next` ... `htm_RowCol_end`, `htm_List_` / `htm_List_item` ... `htm_List_end`. Always close what you open.\n".
 "- **Session:** the library starts the session (httponly, SameSite=Lax, secure on HTTPS) unless the page has started it already.\n".

@@ -1,4 +1,4 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVerFile='1.9.0';    $DocRevFile='2026-10-24';      $DocIniFile='evs';  $ModNoFile=0; ## File informative only
+<?php  $DocFileLib='../php2html.lib.php';    $DocVerFile='1.9.1';    $DocRevFile='2026-10-24';      $DocIniFile='evs';  $ModNoFile=0; ## File informative only
 defined('P2H_VERSION') or define('P2H_VERSION', $DocVerFile);   # The library version. The library sets none of the page's own $DocVer / $DocRev / $DocFil / $©
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
@@ -460,7 +460,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                                              $btnfclr='green', $btnbclr='white; padding-right:3px; padding-bottom:1px; margin-top:1px; width:28px;',
                                              $btnakey='', $btnrtrn=true ).
                             '</div>'.
-                            '<small class="p2hCaps" role="status" hidden style="display: block; color: #b36b00; font-weight: 600;">'.   # Shown by p2hCaps() while Caps Lock is on
+                            '<small class="p2hCaps" role="status" hidden style="color: #b36b00; font-weight: 600;">'.     # (no display: in style - it overrules hidden)   # Shown by p2hCaps() while Caps Lock is on
                                 '<ic class="fa-solid fa-triangle-exclamation" aria-hidden="true"></ic> '.lang('@Caps Lock is on').'</small>';
                             $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
                             if ($rows!='0')
