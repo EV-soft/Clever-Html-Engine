@@ -1,4 +1,4 @@
-<?php   $DocFil= 'project.init.php';    $DocVers='1.8.0';    $DocRev='2026-10-20';     $DocIni='evs';  $ModulNr=0; ## File informative only
+<?php   $DocFileInc= 'project.init.php';    $DocVerFile='1.8.0';    $DocRevFile='2026-10-20';     $DocIniFile='evs';  $ModNoFile=0; ## File informative only
 ## 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** 
 #  This file is included from start of php2html.lib.php 
 
@@ -72,7 +72,7 @@
     // $headEndScript= '...';  $bodyEndScript= '...';  $gbl_novice= true;
     // $gbl_LazyLibs= false;                                 # Tablesorter / jQuery UI in <head> on every page (default: Tablesorter by the first htm_Table(); jQuery UI is not used by the library)
     // $gbl_AssetCache= false;                               # CSS/JS of <head> inline in every page (default: cached files in _cache/ next to the library)
-    $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.$DocVers.': 78 core functions.</small>';
+    $menunote= '@<small>Test site and documentation for Clever html engine • Errors may occur and future news may be shown • ver.'.P2H_VERSION.': 78 core functions.</small>';
 
 ## Quickstart:
     $menudata_quick= [ // Data(0:vrnt='', 1;icon='', 2:labl='', 3:hint='', 4:desc='', 5:link='', 6:subm=[], 7:styl='', 8:$widt)

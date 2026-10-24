@@ -13,7 +13,7 @@ $lib= $argv[1] ?? dirname(__DIR__).'/php2html.lib.php';
 $out= $argv[2] ?? dirname($lib).'/php2html.api.md';
 $src= file_get_contents($lib);
 if ($src === false) exit("Can not read $lib\n");
-preg_match("/\\\$DocVer\s*=\s*'([^']+)'/", $src, $m);   $ver= $m[1] ?? '?';
+preg_match("/\\\$DocVer(?:File)?\s*=\s*'([^']+)'/", $src, $m);   $ver= $m[1] ?? '?';     // ($DocVerFile since 1.8.2)
 $lines= explode("\n", str_replace("\r\n", "\n", $src));
 
 $tok= token_get_all($src);
@@ -88,6 +88,13 @@ $md= "# php2html $ver - API reference\n\n".
 "- **Forms and CSRF:** `htm_Card_(form:'f_x')` wraps the card body in a POST form **with the CSRF token**. In your own forms echo `csrf_field()`.\n".
 "  **Every POST is checked when the library is included:** a missing or wrong token stops the request (HTTP 403, *CSRF-validating failed*)\n".
 "  before your code runs - so the page needs no `csrf_verify()` of its own (calling it again does no harm).\n".
+"- **POST from JavaScript:** `p2hPost(url, {id: 7}).then(r => r.json())` (every page of `htm_Page_` has it) sends the CSRF token along.\n".
+"  A plain `fetch()` POST without the token gets 403.\n".
+"- **Log in:** `htm_Login()` shows the form; `sys_login(hash:\$hash, pass:\$_POST['p2h_pass'])` checks it (a growing wait after wrong tries,\n".
+"  for all browsers together) and returns '' when it is right; `sys_loginUser()` is '' when nobody is logged in; `sys_logout()`.\n".
+"  Logins, failed and blocked tries and log-outs go to the activity log when `p2h_audit.inc.php` is included. A page behind the login:\n".
+"  `if (!sys_loginRequired(link:'login.php')) exit;` - after the login `sys_redirect('', link: sys_loginBack('/'))` returns to that page.\n".
+"  `htm_Login(list:[...])` lets the user choose what to log in to (posted as p2h_list) - **check on the server** that the user may open it.\n".
 "- **Quotes:** `'` for PHP strings, `\"` for HTML attributes.\n\n".
 "## Pitfalls\n\n".
 "- **Several actions in one form:** give each `htm_AcceptButt` its own `valu:` (`valu:'save'`, `valu:'delete'`) and read `\$_POST['act']`\n".
@@ -95,8 +102,8 @@ $md= "# php2html $ver - API reference\n\n".
 "  but the button posts no value of its own.\n".
 "- **After a POST** answer with `sys_redirect('@Saved')` - not with HTML: the page is loaded again with GET (a reload does not post again)\n".
 "  and `htm_Page_` shows the message once (`htm_Flash`). An error: `sys_redirect('@Not saved', 'error')`.\n".
-"- Including the library overwrites the globals `\$DocVer`, `\$DocRev` and `\$©` of the page - copy them to constants **before** the require\n".
-"  if you need them (the library version is `P2H_VERSION`).\n".
+"- The library version is the constant `P2H_VERSION`. Since 1.8.2 the library leaves the page's own `\$DocVer`, `\$DocRev`, `\$DocFil` and `\$©`\n".
+"  alone (1.8.1 and older overwrote them when included).\n".
 "- No nested forms: a card with `form:` must not be inside another card with `form:`.\n".
 "- A script that must accept a POST **without** a token (a webhook, a JSON API, a callback from another site) must not include the library -\n".
 "  it would answer 403. Put such endpoints in their own file.\n".
@@ -118,6 +125,8 @@ $groups= [
     'Buttons and links'     => '/^htm_(AcceptButt|ActionButt|IconButt|SubmitButt|LinkButt|ConfirmPostLink)$/',
     'Messages and dialogs'  => '/^(htm_(Alert|Flash|Badge|Dialog|ModalDialog|TextTip|TextHint|MiniNote)|sys_redirect)$/',
     'Tables and data'       => '/^(htm_(Table|TableTools|DataGroup)|sys_csvCell)$/',
+    'Charts'                => '/^htm_Chart$/',
+    'Log in'                => '/^(htm_Login|sys_login|sys_loginUser|sys_logout|sys_loginRequired|sys_loginBack)$/',
     'Text and content'      => '/^(htm_(Caption|TextDiv|TextPre|TextVer|List_|List_item|List_end|CodeBox|faq|Figure|iFrame|Embed|Ihead)|str_WithHint|str_Synt\w*)$/',
     'Menus'                 => '/^htm_(Pmnu_|Pmnu_Item|Pmnu_end|Menu_\w+)$/',
     'Small HTML and text helpers' => '/^(htm_(hr|br|nl|lf|sp|space)|str_\w+)$/',

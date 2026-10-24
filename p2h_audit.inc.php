@@ -1,4 +1,4 @@
-<?php  $DocFileAudit='../p2h_audit.inc.php';    $DocVerAudit='1.8.0';    $DocRevAudit='2026-10-20';      $DocIni='evs';  ## File informative only
+<?php  $DocFileAudit='../p2h_audit.inc.php';    $DocVerAudit='1.8.0';    $DocRevAudit='2026-10-20';      $DocIniFile='evs';  ## File informative only
 # The activity log (audit log) of a program: who did what, when and from where - from TinyCash.
 # Optional: require it after php2html.lib.php. No database: one JSON line per event in a PHP file, that shows nothing in the browser.
 #

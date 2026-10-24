@@ -39,12 +39,15 @@ The rest of the repository is demo pages, translations, optional modules and too
   (`if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());`).
 - **User-visible texts are English** and translated with `lang('@Text')`; add the Danish (`da`) text to `_trans.sys.json` for new texts.
 - `'` for PHP strings, `"` for HTML attributes. Comments in English (some old ones are Danish).
-- Version header on line 1 of each file (`$DocVer`, `$DocRev`) - bump it with substantive changes; the library version is `P2H_VERSION`.
+- Version header on line 1 of each file - bump it with substantive changes. The library and the files it includes use **their own names**
+  (`$DocVerFile`, `$DocRevFile`, `$DocIniFile` - the modules `$DocVerAudit`, `$DocVerTrans`): never set a page's `$DocVer`, `$DocRev`, `$DocFil` or `$©`.
+  The library version is `P2H_VERSION`.
 - The library starts the session and **rejects every POST without a valid CSRF token** when it is included (403) - keep it that way.
 
 ## Checking a change
 
-There is no test suite. For every change:
+There is no test suite - `php tools/check_pages.php` checks it all (lint, every demo page without PHP messages, the API reference)
+and must say ALL OK before a commit. What it covers:
 1. `php -l php2html.lib.php` (and every changed file).
 2. Run a demo page: `php -S localhost:8000` in the repo, open `world/first.page.php` or a page in `Proj.demo/`, and check
    that the page has no PHP warnings or notices.

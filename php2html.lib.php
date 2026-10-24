@@ -1,5 +1,5 @@
-<?php  $DocFileLib='../php2html.lib.php';    $DocVer='1.8.1';    $DocRev='2026-10-24';      $DocIni='evs';  $ModNo=0; ## File informative only
-defined('P2H_VERSION') or define('P2H_VERSION', $DocVer);   # The library version - $DocVer is overwritten by every file that is included later
+<?php  $DocFileLib='../php2html.lib.php';    $DocVerFile='1.8.1';    $DocRevFile='2026-10-24';      $DocIniFile='evs';  $ModNoFile=0; ## File informative only
+defined('P2H_VERSION') or define('P2H_VERSION', $DocVerFile);   # The library version. The library sets none of the page's own $DocVer / $DocRev / $DocFil / $©
 { ## Group ******************** System HEAD: **************************
 #   PHP to HTML generator - "Clever-Html-Engine" for front-end design, with lots of advanced features.
 #
@@ -21,10 +21,10 @@ defined('P2H_VERSION') or define('P2H_VERSION', $DocVer);   # The library versio
  *           | |____   \  /       \__ \ (_) ) | | |_
  *           |______|   \/        (___)\___/|_|  \__)
  *
- */ $©= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE'; /*
+ */ $© ??= 'Open source - 𝘓𝘐𝘊𝘌𝘕𝘚𝘌 & 𝘊𝘰𝘱𝘺𝘳𝘪𝘨𝘩𝘵 ©  2019-2026 EV-soft *** See the file: LICENSE'; /*   (only when the page has none)
 
     Created: 2020-02-29 evs - EV-soft
-    Latest revision: see file 1. line: $DocRev
+    Latest revision: see file 1. line: $DocRevFile
     R𝖾𝗏𝗂𝗌𝗂𝗈𝗇𝗌 𝗅𝗈𝗀:
     2020-00-00 - evs  Initial
  */
@@ -451,7 +451,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                             '<span class="fieldContent boxStyle" style="'.$bord.' text-align: left; '.($rows!='0' ? 'height: 36px; ':'').'padding-right: 20px;">'.
                             '<div style="white-space: nowrap;">'.
                                 '<input type= "password" '. $inpIdNm. /* $inpStyle. */' style="font-weight: 600; height: 8px; width: 75%; margin-top: -1px; 
-                                    box-shadow: none;" value="'. $valu.'" '.$eventInvalid. $aktiv. $plh. $attr.' onkeyup="pw_strength(this)" 
+                                    box-shadow: none;" value="'. $valu.'" '.$eventInvalid. $aktiv. $plh. $attr.' onkeyup="p2hCaps(event, this); pw_strength(this)" onkeydown="p2hCaps(event, this)"
                                  />'.
                                  # labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'gray' bclr:'white', akey:'', rtrn:false)
                                 htm_IconButt($btnlabl='', $btnicon='far fa-eye fa-fw colrgreen',$btnhint= lang('@Show/Hide password'),
@@ -459,7 +459,9 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                                              $btnevnt='onclick=\'togglePassword(document.getElementById("'.$iid.'"),this)\'', $wdth='', $btnfont='14px;',   # (was onmousedown: not with the keyboard)
                                              $btnfclr='green', $btnbclr='white; padding-right:3px; padding-bottom:1px; margin-top:1px; width:28px;',
                                              $btnakey='', $btnrtrn=true ).
-                            '</div>';
+                            '</div>'.
+                            '<small class="p2hCaps" role="status" hidden style="display: block; color: #b36b00; font-weight: 600;">'.   # Shown by p2hCaps() while Caps Lock is on
+                                '<ic class="fa-solid fa-triangle-exclamation" aria-hidden="true"></ic> '.lang('@Caps Lock is on').'</small>';
                             $str= ' <span id="mtPoint'.$name.'"> 0</span>'. '/10';
                             if ($rows!='0')
                                 $result.= '<meter id= "pwPoint_'.$iid.'" style="position:relative; height:12px; width:100%; top: -10px;" '. 
@@ -2107,16 +2109,16 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token']= bin2hex(random_bytes(32));
 }
 
-function csrf_field($rtrn=false) // Genererer et skjult input-felt med CSRF-token
+function csrf_field($rtrn=false) // A hidden field with the CSRF token of the session - for your own forms (htm_Card_ form: and htm_Form_ add it themselves)
 {   $result= '<input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8').'" />';
     if (!$rtrn) echo $result; else return $result;
 }
 
-function csrf_verify() // Kaldes ved håndtering af POST - return true/false
-{   if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') return true; // Kun relevant ved POST
-    if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token'])) return false;
-    if (!is_string($_POST['csrf_token']) || !is_string($_SESSION['csrf_token'])) return false;
-    return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+function csrf_verify() // A POST must carry the token of the session: the field csrf_token, or the header X-CSRF-Token (p2hPost / fetch) - true / false
+{   if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') return true; // Only POST is checked
+    $tok= $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+    if (!is_string($tok) || $tok === '' || empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) return false;
+    return hash_equals($_SESSION['csrf_token'], $tok);
 }
 
 /*
@@ -4319,6 +4321,149 @@ function htm_Flash(# wdth:'700px', rtrn:false)
     if (!$rtrn) echo $result; else return $result;
 }
 
+# A bar or line chart as plain SVG (no JavaScript library) - e.g. prices per hour, sales per month. Charts with the same ymin / ymax share one scale
+function htm_Chart(# capt:'', vrnt:'bar', data:[], mark:[], curr:null, unit:'', deci:2, ymin:null, ymax:null, colr:['#7f9bb5','#2fa84f'], wdth:'760px', vhgh:'220px', rtrn:false)
+    $capt= '',              # string: A caption above the chart (translated with lang()) - also the name a screen reader says
+    $vrnt= 'bar',           # string: bar / line
+    $data= [],              # array:  The values in order: ['label' => number, ...] - the labels are shown below (as many as there is room for) and in the hints
+    $mark= [],              # array:  Labels drawn in the second colour of colr, e.g. the chosen hours: ['03:00', '03:15'] (line: a dot)
+    $curr= null,            # string: The label of the current point - outlined in red ("now")
+    $unit= '',              # string: The unit after the values in the hints, e.g. 'kr/kWh'
+    $deci= 2,               # int:    Decimals of the values in the hints
+    $ymin= null,            # float:  The bottom of the scale - null: 0, or the lowest value when it is negative
+    $ymax= null,            # float:  The top of the scale - null: the highest value
+    $colr= ['#7f9bb5','#2fa84f'], # array: [the colour of the values, the colour of mark]
+    $wdth= '760px',         # string: Max width - the chart scales down on small screens
+    $vhgh= '220px',         # string: The height of the drawing area
+    $rtrn= false            # bool:   Return or echo result
+) {
+    $vals= [];  foreach ((array)$data as $k => $v) if (is_numeric($v)) $vals[(string)$k]= (float)$v;
+    if (!$vals) { $result= '';  if (!$rtrn) echo $result;  return $result; }
+    $W= 760;  $H= max(60, (int)$vhgh);  $L= 46;  $T= 8;  $B= 20;
+    $max= $ymax ?? max(max($vals), 0.0);  $min= $ymin ?? min(0.0, min($vals));
+    if ($max <= $min) $max= $min + 1;
+    $n= count($vals);  $bw= ($W - $L) / $n;  $fmt= fn($v, $d) => number_format($v, $d, DecimalSep, ThousandsSep);
+    $raw= ($max - $min) / 5;  $mag= 10 ** floor(log10($raw));  $step= 10 * $mag;               # About 5 grid lines at a round step
+    foreach ([1, 2, 2.5, 5] as $f) if ($raw <= $f * $mag) { $step= $f * $mag;  break; }
+    if ($ymax === null) $max= ceil($max / $step - 1e-9) * $step;                                # A scale of its own: from grid line to grid line
+    if ($ymin === null) $min= floor($min / $step + 1e-9) * $step;
+    $sc= $H / ($max - $min);  $yOf= fn($v) => round($T + ($max - $v) * $sc, 2);
+    $ad= 0;  while ($ad < 4 && abs(round($step * 10 ** $ad) - $step * 10 ** $ad) > 1e-9) $ad++;   # Decimals of the step: 0.25 - 2
+    $svg= '';
+    for ($v= ceil($min / $step - 1e-9) * $step; $v <= $max + $step * 1e-6; $v+= $step) {
+        $y= $yOf($v);
+        $svg.= '<line x1="'.$L.'" x2="'.$W.'" y1="'.$y.'" y2="'.$y.'" stroke="'.(abs($v) < 1e-9 ? '#888' : '#8884').'" stroke-width="'.(abs($v) < 1e-9 ? 1 : 0.6).'"/>'.
+               '<text x="'.($L - 5).'" y="'.($y + 4).'" text-anchor="end" fill="currentColor" opacity="0.75">'.$fmt($v, $ad).'</text>';
+    }
+    $every= max(1, (int)ceil($n / (($W - $L) / 48)));                                          # A label for every n'th point - about 48 px apart
+    $mark= array_flip(array_map('strval', (array)$mark));
+    $pts= [];  $i= 0;  $y0= $yOf(max($min, min(0, $max)));
+    foreach ($vals as $k => $v) {
+        $x= $L + $i * $bw;  $tip= '<title>'.sys_enc($k).': '.$fmt($v, $deci).($unit > '' ? ' '.sys_enc($unit) : '').'</title>';
+        $isMark= isset($mark[$k]);  $isCurr= ($curr !== null && (string)$curr === $k);
+        if ($vrnt === 'line') {
+            $pts[]= round($x + $bw / 2, 2).','.$yOf($v);
+            $svg.= '<rect x="'.round($x, 2).'" y="'.$T.'" width="'.round($bw, 2).'" height="'.$H.'" fill="transparent">'.$tip.'</rect>';   # The hint of the point
+            if ($isMark) $svg.= '<circle cx="'.round($x + $bw / 2, 2).'" cy="'.$yOf($v).'" r="3" fill="'.sys_enc($colr[1] ?? '#2fa84f').'">'.$tip.'</circle>';
+            if ($isCurr) $svg.= '<line x1="'.round($x + $bw / 2, 2).'" x2="'.round($x + $bw / 2, 2).'" y1="'.$T.'" y2="'.($T + $H).'" stroke="#d33" stroke-dasharray="3,3"/>';
+        } else {
+            $y= min($yOf($v), $y0);  $h= max(abs($yOf($v) - $y0), 0.5);
+            $svg.= '<rect x="'.round($x, 2).'" y="'.$y.'" width="'.round($n > 150 ? $bw + 0.3 : max($bw - 0.8, 0.4), 2).'" height="'.round($h, 2).'" fill="'.sys_enc($isMark ? ($colr[1] ?? '#2fa84f') : ($colr[0] ?? '#7f9bb5')).'"'.($n > 150 ? ' shape-rendering="crispEdges"' : '').
+                    ($isCurr ? ' stroke="#d33" stroke-width="1.5"' : '').'>'.$tip.'</rect>';
+        }
+        if ($i % $every === 0) $svg.= '<text x="'.round($x + ($vrnt === 'line' ? $bw / 2 : 0), 2).'" y="'.($T + $H + 14).'" fill="currentColor" opacity="0.75">'.sys_enc($k).'</text>';
+        $i++;
+    }
+    if ($vrnt === 'line') $svg.= '<polyline points="'.implode(' ', $pts).'" fill="none" stroke="'.sys_enc($colr[0] ?? '#7f9bb5').'" stroke-width="2" stroke-linejoin="round"/>';
+    $name= sys_enc(strip_tags(lang($capt)));
+    $result= '<div class="p2hChart" style="max-width:'.sys_enc($wdth).'; margin: 4px auto; text-align: left;">'.
+             ($capt > '' ? '<div style="font-weight: 600; margin: 2px 8px;">'.lang($capt).'</div>' : '').
+             '<svg viewBox="0 0 '.$W.' '.($T + $H + $B).'" role="img"'.($name > '' ? ' aria-label="'.$name.'"' : '').' style="width: 100%; height: auto; font: 11px sans-serif;">'.
+             $svg.'</svg></div>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# Log in with a password - a growing wait after wrong tries (5 s, 10 s, 20 s ... at most 15 min), for all browsers together. '' = logged in, else the reason
+function sys_login(# hash:'', pass:'', user:'', file:'')
+    $hash= '',              # string: password_hash() of the right password (of this user) - '' : no password is set, never logged in
+    $pass= '',              # string: The password that was typed
+    $user= '',              # string: The user name - kept in the session (sys_loginUser()); the wait counts per user name
+    $file= ''               # string: The file that keeps the wrong tries (JSON) - '' : in the temp folder of the server, one per program folder
+) {
+    $file= $file > '' ? $file : sys_get_temp_dir().'/p2h_login_'.md5(dirname($_SERVER['SCRIPT_FILENAME'] ?? __DIR__)).'.json';
+    $fp= @fopen($file, 'c+');
+    if ($fp) flock($fp, LOCK_EX);
+    $all= $fp ? (json_decode((string)stream_get_contents($fp), true) ?: []) : [];
+    $key= md5(mb_strtolower($user));  $me= $all[$key] ?? ['f' => 0, 'w' => 0];  $now= time();
+    if (($me['w'] ?? 0) > $now)                                   { $res= sprintf(lang('@Locked after wrong passwords - try again at %s'), date('H:i:s', $me['w']));
+                                                                    $ev= ['@Login blocked - too many failed logins', 'until '.date('H:i:s', $me['w'])]; }
+    elseif ($hash > '' && password_verify((string)$pass, $hash))  { $me= ['f' => 0, 'w' => 0];  $res= '';  $ev= ['@Log in', '']; }
+    else { $me['f']= ($me['f'] ?? 0) + 1;  $me['w']= $now + min(900, 5 * 2 ** min($me['f'] - 1, 8));  $res= lang('@Wrong user name or password');
+           $ev= ['@Login failed', 'try '.$me['f']]; }
+    if (function_exists('p2h_audit')) p2h_audit($ev[0], '', $ev[1], $user > '' ? $user : '-');    # The activity log - when p2h_audit.inc.php is included
+    $all[$key]= $me;
+    foreach ($all as $k => $v) if (empty($v['f']) || ($v['w'] ?? 0) < $now - 86400) unset($all[$k]);   # Only the recent wrong tries are kept
+    if ($fp) { ftruncate($fp, 0);  rewind($fp);  fwrite($fp, json_encode($all));  flock($fp, LOCK_UN);  fclose($fp); }
+    if ($res === '') { session_regenerate_id(true);  $_SESSION['p2h_user']= $user > '' ? $user : '-';  $_SESSION['p2h_since']= $now; }
+    return $res;
+}
+
+# The user name of the session after sys_login() - '' : not logged in ('-' : logged in without a user name)
+function sys_loginUser() { return (string)($_SESSION['p2h_user'] ?? ''); }
+
+# Log out: forget the login of the session (a new session id) - written in the activity log when p2h_audit.inc.php is included
+function sys_logout() {
+    if (function_exists('p2h_audit') && sys_loginUser() > '') p2h_audit('@Log out', '', '', sys_loginUser());
+    unset($_SESSION['p2h_user'], $_SESSION['p2h_since'], $_SESSION['p2h_list']);
+    if (session_status() === PHP_SESSION_ACTIVE) session_regenerate_id(true);
+}
+
+# A page that needs a login: true when logged in. Else it remembers this address (a GET) for sys_loginBack() and - with link - goes to the log-in page
+function sys_loginRequired(# link:'')
+    $link= ''               # string: The log-in page - '' : stay here (the page shows htm_Login() itself) and return false
+) {
+    if (sys_loginUser() > '') return true;
+    $here= (string)($_SERVER['REQUEST_URI'] ?? '');
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && preg_match('~^/(?![/\\\\])~', $here)) $_SESSION['p2h_back']= $here;   # Only a path on this site
+    if ($link > '') sys_redirect('', 'info', $link);
+    return false;
+}
+
+# After sys_login(): the address sys_loginRequired() remembered (once) - else $dflt. Only a path on this site (never another site)
+function sys_loginBack(# dflt:'')
+    $dflt= ''               # string: Where to go when nothing was remembered - '' : the same address
+) {
+    $back= (string)($_SESSION['p2h_back'] ?? '');
+    unset($_SESSION['p2h_back']);
+    return (preg_match('~^/(?![/\\\\])~', $back) && !preg_match('~[\r\n]~', $back)) ? $back : $dflt;
+}
+
+# A log-in card: password (and user name, and what to log in to) - it posts p2h_act=login, p2h_user, p2h_pass, p2h_list. Check them with sys_login()
+# What to log in to (list:) is only a wish of the user: check on the server that the user may open it - then keep it in $_SESSION['p2h_list']
+function htm_Login(# capt:'@Log in', icon:'fa-solid fa-right-to-bracket', hint:'', labl:'@Choose', list:[], valu:'', user:false, wdth:'cardW320', rtrn:false)
+    $capt= '@Log in',       # string: The caption of the card
+    $icon= 'fa-solid fa-right-to-bracket', # string: The icon of the caption
+    $hint= '',              # string: A text above the fields (HTML, translated) - e.g. how to get a password
+    $labl= '@Choose',       # string: The label of list: e.g. '@Accounts', '@Shop', '@Department'
+    $list= [],              # array:  What to log in to: [[value, '@Label'], ...] - posted as p2h_list. One: posted without a field. None: no field
+    $valu= '',              # string: The chosen one of list: at the start - e.g. the one of the last login
+    $user= false,           # bool:   Ask for a user name too
+    $wdth= 'cardW320',      # string: The width class of the card (see htm_Card_ clas)
+    $rtrn= false            # bool:   Return the HTML instead of echoing it
+) { if ($rtrn) return p2h_capture(__FUNCTION__, get_defined_vars());   # rtrn:true - the HTML as a string
+    htm_Card_(capt:$capt, icon:$icon, hint:'', form:'f_p2hLogin', clas:$wdth, show:false, poup:false, move:false);
+    if ($hint > '') echo '<p style="margin: 6px 10px;">'.lang($hint).'</p>';
+    $list= array_values(array_filter((array)$list, 'is_array'));
+    if (count($list) === 1) echo '<input type="hidden" name="p2h_list" value="'.sys_enc((string)($list[0][0] ?? '')).'">';
+    elseif ($list) htm_Input(labl:$labl, plho:'', vrnt:'opti', name:'p2h_list', valu:$valu, list:$list, attr:'required');
+    if ($user) htm_Input(labl:'@User name', plho:'', vrnt:'text', name:'p2h_user', valu:'', attr:'autocomplete="username" required autofocus');
+    htm_Input(labl:'@Password', plho:'', vrnt:'pass', name:'p2h_pass', valu:'', rows:'0', attr:'autocomplete="current-password" required'.($user ? '' : ' autofocus'));
+    echo '<div style="text-align: center; margin: 8px;">';
+    htm_AcceptButt(labl:'@Log in', icon:'fa-solid fa-right-to-bracket', kind:'save', form:'f_p2hLogin', name:'p2h_act', valu:'login');
+    echo '</div>';
+    htm_Card_end();
+}
+
 # A banner across the page: a short notice with a colored edge, e.g. "Demo data" or "Read only" (from NH-logistik)
 function htm_Banner(# body:'', kind:'warning', rtrn:false)
     $body= '',              # string: The text (HTML allowed, translated with lang())
@@ -5223,7 +5368,36 @@ function htm_Page_(# titl:'', hint:'', algn:'center', attr:'', info:'', inis:'',
    (is_readable(__DIR__.'/manifest.json') ? '<link rel="manifest" href="'.sys_enc($gbl_ProgRoot.'manifest.json').'">' : '').      # Install on the home screen (PWA)
    (is_readable(__DIR__.'/favicon.svg')   ? '<link rel="icon" href="'.sys_enc($gbl_ProgRoot.'favicon.svg').'" type="image/svg+xml">'.
                                             '<link rel="apple-touch-icon" href="'.sys_enc($gbl_ProgRoot.'_accessories/icon-192.png').'">' : '').
-   '<meta name="theme-color" content="#2c3e50">'."\n";  
+   '<meta name="theme-color" content="#2c3e50">'."\n".
+   '<meta name="csrf-token" content="'.sys_enc($_SESSION['csrf_token'] ?? '').'">'."\n".     # For p2hPost() - a POST from JavaScript
+   '<script>function p2hPost(url, data) {   /* POST from JavaScript with the CSRF token: p2hPost("save.php", {id: 7}).then(r => r.json()) */
+        var fd= (data instanceof FormData) ? data : new FormData(),  t= (document.querySelector("meta[name=csrf-token]") || {}).content || "";
+        if (!(data instanceof FormData) && data) Object.keys(data).forEach(function(k) { fd.append(k, data[k]); });
+        fd.append("csrf_token", t);
+        return fetch(url || location.href, {method: "POST", body: fd, credentials: "same-origin", headers: {"X-CSRF-Token": t}});
+    }
+    function pw_strength(input) {   /* A password field: its strength 0..10 in the meter below it (none with rows:0) */
+        var text= input.value,  point= 0;
+        if (text.length >= 6)  point += 1;
+        if (text.length >= 8)  point += 1;
+        if (text.length >= 10) point += 2;
+        if (text.length >= 12) point += 2;
+        if (/[a-zæøå]/.test(text)) point += 1;
+        if (/[A-ZÆØÅ]/.test(text)) point += 1;
+        if (/[0-9]/.test(text))    point += 1;
+        if (/[^A-Za-z0-9æøåÆØÅ\s]/.test(text)) point += 1;     /* A sign */
+        var m= document.getElementById("pwPoint_" + input.id);  if (m) m.value= point;
+    }
+    function togglePassword(input, butt) {   /* The eye button of a password field: show / hide the password */
+        var show= (input.type == "password");
+        input.type= show ? "text" : "password";
+        butt.innerHTML= show ? "<i class=\"far fa-eye-slash fa-fw colrred\"></i>" : "<i class=\"far fa-eye fa-fw colrgreen\"></i>";
+    }
+    function p2hCaps(e, inp) {   /* A password field: the warning "Caps Lock is on" while it is on */
+        if (!e || !e.getModifierState) return;
+        var box= inp.closest(".fieldContent"),  w= box ? box.querySelector(".p2hCaps") : null;
+        if (w) w.hidden= !e.getModifierState("CapsLock");
+    }</script>'."\n";  
     dvl_pretty('htm_Page_');
 
 
@@ -5625,28 +5799,9 @@ if ((int)($LIB_JQUERY[0] ?? 0) != 0)    # This script needs jQuery (was: tested 
     };
 
 
-    function pw_strength(input) {
-        var text =      input.value;
-        var point = 0;
-        if ( text.length >= 6 )     {point += 1};
-        if ( text.length >= 8 )     {point += 1};
-        if ( text.length >= 10 )    {point += 2};
-        if ( text.length >= 12 )    {point += 2};
-        if (/[a-zæøå]/.test(text) ) {point += 1};
-        if (/[A-ZÆØÅ]/.test(text) ) {point += 1};
-        if (/[0-9]/.test(text) )    {point += 1};
-        if (/[~`!@#$£€¤%?()\^&*+=\-\[\]\\\';,/{}|\\":<>\?]/g.test(text) ) {point += 1};
-        document.getElementById("pwPoint_" + input.id).value = point;
-    }
+    /* pw_strength() and togglePassword(): in the script of htm_Page_ - they need no jQuery (here they were missing on pages without it) */
 '.
-"   function togglePassword(input,butt) {
-        var passInput = input;
-        var togglePW  = butt;
-        if (passInput.type  == 'password')
-            { passInput.type = 'text';      togglePW.innerHTML = '<i class=\'far fa-eye-slash fa-fw colrred\'>'; } else
-            { passInput.type = 'password';  togglePW.innerHTML = '<i class=\'far fa-eye fa-fw colrgreen\'>'; }
-    }
-
+"
 ".  // https://stackoverflow.com/questions/40905372/how-to-ensure-a-tooltip-stays-within-the-browser-visible-area
 '   $(".hint").on( "mouseenter", function() {
         var $this = $(this);
@@ -7110,13 +7265,21 @@ function htm_space(# wdth, rtrn:false)
     echo '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
 
 // String-functions:
+# Returns $source in bold: $result.'<b>'.$source.'</b>'.$tail (default tail: two non-breaking spaces)
 function str_bold($source,$result='',$tail='&nbsp;&nbsp;') {return $result.'<b>'.$source.'</b>'.$tail;}
+# Returns a line break and $source in italics - a small heading inside a text
 function str_Ihead($source)         {return '<br /><i>'.$source.'</i> ';}
+# Returns a horizontal line (<hr>) in the colour $c, with extra style $attr
 function str_hr($c='#0',$attr='')   {return '<hr style=\'color:'.$c.';'.$attr.'\'/>';}
+# Returns $rept line breaks (<br />) - the same as str_nl()
 function str_br($rept=1)            {return str_repeat('<br />',$rept);}
+# Returns $rept line breaks (<br />) - the same as str_br()
 function str_nl($rept=1)            {return str_repeat('<br />',$rept);}
+# Returns $rept line feeds as &#xa; - a new line inside an attribute, e.g. a title= hint
 function str_lf($rept=1)            {return str_repeat(' &#xa;',$rept);}  //  LineFeed in strings:  &#010;  &#xa;  \n \u000A  \x0A  &#13;  %10%13  %0D%0A    PHP_EOL
+# Returns $rept non-breaking spaces (&nbsp;)
 function str_sp($rept=1)            {return str_repeat('&nbsp;',$rept);}
+# Returns an empty space $wdth wide (e.g. '20px') - to line up texts
 function str_space($wdth)           {return '<span style="width:'.$wdth.'; display:inline-block; ">&nbsp;</span>';}
 
 function markFirstChar($str='',$tag='u',$att='') 
@@ -7165,6 +7328,7 @@ function scannSource($prefix='$name=',$suffix="'",$files=[])
  * @param int $transTable
  * @return array
  */
+# Reads _trans.sys.json once: a list of the languages (code, name, native, author, note, translation) - the library calls it; English only without the file
 function sys_get_translations($transTable=[])  
 { global $gbl_ProgRoot, $arrLang;
     if (isset($_POST['alllang']))  $alllang = $_POST['alllang']; else $alllang = '';
@@ -7340,8 +7504,11 @@ function menuButt ($h='32',$w='120',$label='',$link='',$Hint='') // Icon ?
         .synt-number    {color: lightgreen; }
         .synt-default   {color: white;      }
 */
+        # Returns <pre class="synt"> - starts a block of program code coloured with str_Synt() (dark background)
         function str_Synt_()  {return '<pre class="synt">';}
+        # Returns </pre> - ends the block of str_Synt_()
         function str_Synt_end() {return '</pre>';}
+        # Returns $elem coloured as program code: $type variable / string / attribute / comment / literal / constant / operator / word / number / default
         function str_Synt($elem='',$type='default') { return '<span class="synt-'.$type.'">'.$elem.'</span>'; }
         
 /* 

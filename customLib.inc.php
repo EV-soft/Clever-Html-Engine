@@ -1,4 +1,4 @@
-<?php  $DocFileInc='../customLib.inc.php';   $DocVers='1.5.0';  $DocRev='2026-10-09';   $DocIni='evs';  $ModulNo=0; ## File informative only
+<?php  $DocFileInc='../customLib.inc.php';   $DocVerFile='1.5.0';  $DocRevFile='2026-10-09';   $DocIniFile='evs';  $ModNoFile=0; ## File informative only
     # In this file you can add your global custom rules and values, for all pages in your project.
     # The file will be read by a require_once() in php2html.lib.php and html added to all page headers:
 
