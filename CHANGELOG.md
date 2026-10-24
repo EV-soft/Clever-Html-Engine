@@ -3,6 +3,8 @@
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
 ## Unreleased
+
+## 1.9.0 - log in, charts, Post/Redirect/Get, a check before each release
 - **Log in, more:** `htm_Login(list:, labl:, valu:)` lets the user choose what to log in to, e.g. an account (posted as `p2h_list`; one choice: no field) - check on the server that the user may open it. `sys_login()` and `sys_logout()` write *Log in*, *Login failed*, *Login blocked* and *Log out* in the activity log when `p2h_audit.inc.php` is included. `sys_loginRequired(link:)` remembers the page a user wanted and `sys_loginBack()` returns to it after the login - only a path on this site.
 - **Caps Lock warning** in every password field (`htm_Input(vrnt:'pass')`) while Caps Lock is on.
 - **Fixed:** the strength meter and the eye button (show / hide) of password fields did nothing on pages without jQuery (since the libraries are loaded automatically) - `pw_strength()` and `togglePassword()` need no jQuery and now come with every page; without a meter (`rows:'0'`) every key gave a script error.
