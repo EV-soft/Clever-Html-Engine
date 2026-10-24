@@ -88,6 +88,9 @@ Requires PHP 8.1 or newer (named arguments).
 - **[Ladestyring](https://github.com/EV-soft/ladestyring)** – turns a charger relay on in the cheapest hours of the Danish electricity
   prices (spot price + net tariff): local control of a Tuya relay, a price chart, a week history, login – in Docker on a Synology.
   An example of cards, an SVG chart and forms with buttons of their own (Danish only).
+- **[TinyCash](https://github.com/EV-soft/TinyCash)** – bookkeeping and invoicing for small Danish businesses: invoices, VAT,
+  bank reconciliation, a double-entry ledger, OIOUBL and SAF-T export, MySQL or SQLite. The largest program built with php2html
+  (an early, own variant of the library – `inc/php2htm.lib.php`).
 - **The demo and documentation** in `Proj.demo/` – every function with live examples, e.g. the
   [customer order](https://ev-soft.work/p2h/v1.7.x/Proj.demo/CustomerOrder.page.php) page.
 
