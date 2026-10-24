@@ -2140,13 +2140,13 @@ function htm_Card_(# capt:'', icon:'', hint:'tgl', mode:'2', form:'', acti:'', w
     $mode = '2',                        # string: The buttons: '0' none / '1' toggle the height / '2' also: toggle the width, close all, open all
     $form = '',                         # string: The name (and id) of a form around the card body - '' no form. Not inside a card that has a form (no nested forms)
     $acti = '',                         # string: The action of the form ('' this page). The form is POST, multipart, with the CSRF token
-                                        #         cardW960, cardW800, cardW720, cardW640, cardW560, cardW480, cardW400, cardW320, cardW280, cardW240, cardW160
     $wdth = '',                         # string: The width of the folded card (a number is px), e.g. '240px' - '' the same width
     $vhgh = '600px',                    # string: The max height of the body - more content scrolls ('none': no limit)
     $fclr = '',                         # string: Extra style of the header icons and text, e.g. 'color:snow;'
     $styl = 'background-color: white;', # string: Style of the card body
     $attr = 'margin-bottom: 8px;',      # string: Style of the card itself (the outer element)
     $clas = 'cardWmax',                 # string: The width class: cardWmax (full), cardWaut (the content), cardW120 (1200px), cardW110, cardW100,
+                                        #         cardW960, cardW800, cardW720, cardW640, cardW560, cardW480, cardW400, cardW320, cardW280, cardW240, cardW160
     $show = true,                       # bool:   Show the buttons at the right in the header
     $poup = true,                       # bool:   Right-click the header: a menu for all cards (heights, close / open all, original order)
     $head = 'background-color: white;', # string: Style of the header
