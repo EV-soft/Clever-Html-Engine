@@ -25,9 +25,11 @@
 
 ## Pitfalls
 
-- `htm_AcceptButt` (also the submit button of `htm_Card_end(subm:true)`) gets `onclick='location.reload();'` when `acti` is empty.
-  The form is still posted (the post replaces the reload - tested in Edge), but the button can not carry a value of its own:
-  for several actions in one form write plain buttons, `<button type="submit" name="act" value="save">`, and read `$_POST['act']`.
+- **Several actions in one form:** give each `htm_AcceptButt` its own `valu:` (`valu:'save'`, `valu:'delete'`) and read `$_POST['act']`
+  (another name with `name:`). Without `valu` and `acti` the button gets `onclick='location.reload();'` - the form is still posted,
+  but the button posts no value of its own.
+- **After a POST** answer with `sys_redirect('@Saved')` - not with HTML: the page is loaded again with GET (a reload does not post again)
+  and `htm_Page_` shows the message once (`htm_Flash`). An error: `sys_redirect('@Not saved', 'error')`.
 - Including the library overwrites the globals `$DocVer`, `$DocRev` and `$©` of the page - copy them to constants **before** the require
   if you need them (the library version is `P2H_VERSION`).
 - No nested forms: a card with `form:` must not be inside another card with `form:`.
@@ -42,14 +44,17 @@
 require_once __DIR__.'/php2html.lib.php';     // starts the session - and stops a POST without a valid CSRF token
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // ... save $_POST['name'] ...
-    header('Location: '.$_SERVER['PHP_SELF']);  exit;           // PRG: no re-post on reload
+    if (($_POST['act'] ?? '') === 'save')  { /* ... save $_POST['name'] ... */  sys_redirect('@Saved'); }
+    if (($_POST['act'] ?? '') === 'reset') { /* ... */                         sys_redirect('@Reset', 'info'); }
+    sys_redirect('@Unknown action', 'warning');                  // Post/Redirect/Get: the message is shown by htm_Page_
 }
 
 htm_Page_(titl:'My page');
 htm_Card_(capt:'@Settings', icon:'fas fa-sliders', form:'f_set', clas:'cardW800');
     htm_Input(labl:'@Name', name:'name', valu:'', wdth:'300px');
-htm_Card_end(labl:'@Save', subm:true);
+    htm_AcceptButt(labl:'@Save',  icon:'fas fa-floppy-disk', kind:'save', form:'f_set', valu:'save');
+    htm_AcceptButt(labl:'@Reset', icon:'fas fa-rotate-left', kind:'eras', form:'f_set', valu:'reset');
+htm_Card_end();
 htm_Page_end();
 ```
 
@@ -61,7 +66,7 @@ htm_Page_end();
 - **Cards and layout**: [htm_Details](#htm_details), [htm_Fieldset](#htm_fieldset), [htm_Fieldset_end](#htm_fieldset_end), [htm_Row_](#htm_row_), [htm_Row_end](#htm_row_end), [htm_Card_](#htm_card_) ★, [htm_Card_end](#htm_card_end), [htm_Wrapp_](#htm_wrapp_), [htm_Wrapp_end](#htm_wrapp_end), [htm_RowCol_](#htm_rowcol_), [htm_RowCol_next](#htm_rowcol_next), [htm_RowCol_end](#htm_rowcol_end), [htm_Tabs_](#htm_tabs_), [htm_Tab](#htm_tab) ★, [htm_Tabs_end](#htm_tabs_end)
 - **Forms and input**: [htm_Input](#htm_input) ★, [htm_Inbox](#htm_inbox), [htm_Output](#htm_output) ★, [htm_Field](#htm_field), [csrf_field](#csrf_field), [csrf_verify](#csrf_verify), [htm_DataList](#htm_datalist), [htm_Form_](#htm_form_), [htm_Form_end](#htm_form_end), [htm_NotePad](#htm_notepad), [sys_switchIsOn](#sys_switchison), [htm_SwitchButt](#htm_switchbutt), [htm_SwitchButton](#htm_switchbutton), [htm_MultistateButt](#htm_multistatebutt), [htm_Humantest](#htm_humantest), [htm_TextArea](#htm_textarea), [sys_toFloat](#sys_tofloat)
 - **Buttons and links**: [htm_AcceptButt](#htm_acceptbutt) ★, [htm_ActionButt](#htm_actionbutt), [htm_IconButt](#htm_iconbutt) ★, [htm_SubmitButt](#htm_submitbutt), [htm_LinkButt](#htm_linkbutt), [htm_ConfirmPostLink](#htm_confirmpostlink)
-- **Messages and dialogs**: [htm_MiniNote](#htm_mininote), [htm_TextTip](#htm_texttip), [htm_TextHint](#htm_texthint), [htm_ModalDialog](#htm_modaldialog), [htm_Alert](#htm_alert), [htm_Badge](#htm_badge), [htm_Dialog](#htm_dialog) ★
+- **Messages and dialogs**: [htm_MiniNote](#htm_mininote), [htm_TextTip](#htm_texttip), [htm_TextHint](#htm_texthint), [htm_ModalDialog](#htm_modaldialog), [htm_Alert](#htm_alert), [sys_redirect](#sys_redirect), [htm_Flash](#htm_flash), [htm_Badge](#htm_badge), [htm_Dialog](#htm_dialog) ★
 - **Tables and data**: [sys_csvCell](#sys_csvcell), [htm_Table](#htm_table) ★, [htm_DataGroup](#htm_datagroup), [htm_TableTools](#htm_tabletools)
 - **Text and content**: [htm_Caption](#htm_caption), [htm_TextDiv](#htm_textdiv), [htm_TextPre](#htm_textpre), [htm_List_](#htm_list_), [htm_List_item](#htm_list_item), [htm_List_end](#htm_list_end), [htm_CodeBox](#htm_codebox), [htm_TextVer](#htm_textver), [htm_faq](#htm_faq), [htm_Figure](#htm_figure), [htm_iFrame](#htm_iframe), [htm_Embed](#htm_embed), [str_WithHint](#str_withhint), [htm_Ihead](#htm_ihead), [str_Synt_](#str_synt_), [str_Synt_end](#str_synt_end), [str_Synt](#str_synt)
 - **Menus**: [htm_Pmnu_](#htm_pmnu_), [htm_Pmnu_Item](#htm_pmnu_item), [htm_Pmnu_end](#htm_pmnu_end), [htm_Menu_TopDown](#htm_menu_topdown), [htm_Menu_Leftout](#htm_menu_leftout)
@@ -74,7 +79,7 @@ htm_Page_end();
 
 Special buttons for going to top/middle/bottom of page
 
-`htm_GoTopButt(labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to page top', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2925
+`htm_GoTopButt(labl:'@Top', icon:'fa-solid fa-arrow-up', hint:'@Go to page top', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2935
 
 | Param | Default | Description |
 |---|---|---|
@@ -88,7 +93,7 @@ Special buttons for going to top/middle/bottom of page
 
 A button that cycles the page theme: light -> dark -> auto (follows the operating system) -> custom. The choice is remembered.
 
-`htm_ThemeButt(labl:'', hint:'@Switch theme: light, dark, automatic (follows the system) or your own colors', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3295
+`htm_ThemeButt(labl:'', hint:'@Switch theme: light, dark, automatic (follows the system) or your own colors', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3305
 
 | Param | Default | Description |
 |---|---|---|
@@ -100,7 +105,7 @@ A button that cycles the page theme: light -> dark -> auto (follows the operatin
 
 Language selector with flags (used in the view bar): the languages that have translations, plus English
 
-`htm_LangSelect(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3375
+`htm_LangSelect(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3385
 
 | Param | Default | Description |
 |---|---|---|
@@ -110,7 +115,7 @@ Language selector with flags (used in the view bar): the languages that have tra
 
 always in reach (from TinyCash, the buttons given by the program)
 
-`htm_QuickBar(list:[], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3500
+`htm_QuickBar(list:[], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3510
 
 | Param | Default | Description |
 |---|---|---|
@@ -121,7 +126,7 @@ always in reach (from TinyCash, the buttons given by the program)
 
 Help for the page: a "?" button (in the view bar) and a movable window with the help text of this page (from TinyCash)
 
-`htm_PageHelp(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3532
+`htm_PageHelp(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3542
 
 | Param | Default | Description |
 |---|---|---|
@@ -131,7 +136,7 @@ Help for the page: a "?" button (in the view bar) and a movable window with the 
 
 user: the logged in user is shown at the end of the bar - lout: the address that logs out (a sign-out button beside the name)
 
-`htm_ViewBar(user:'', lout:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3608
+`htm_ViewBar(user:'', lout:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3618
 
 | Param | Default | Description |
 |---|---|---|
@@ -143,7 +148,7 @@ user: the logged in user is shown at the end of the bar - lout: the address that
 
 Editor for the user's own theme: pick a few base colors, see the result live, save it in this browser.
 
-`htm_ThemeEditor(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3729
+`htm_ThemeEditor(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3739
 
 | Param | Default | Description |
 |---|---|---|
@@ -153,7 +158,7 @@ Editor for the user's own theme: pick a few base colors, see the result live, sa
 
 A banner across the page: a short notice with a colored edge, e.g. "Demo data" or "Read only" (from NH-logistik)
 
-`htm_Banner(body:'', kind:'warning', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4287
+`htm_Banner(body:'', kind:'warning', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4323
 
 | Param | Default | Description |
 |---|---|---|
@@ -167,7 +172,7 @@ A banner across the page: a short notice with a colored edge, e.g. "Demo data" o
 
 Start creating a page
 
-`htm_Page_(titl:'', hint:'', algn:'center', attr:'', info:'', inis:'', imag:'', pbrd:true)` - line 5150
+`htm_Page_(titl:'', hint:'', algn:'center', attr:'', info:'', inis:'', imag:'', pbrd:true)` - line 5186
 
 | Param | Default | Description |
 |---|---|---|
@@ -184,7 +189,7 @@ Start creating a page
 
 A paragraf with border, can be used as a page-footer, or separator on a page.
 
-`htm_Page_Sect(body, styl:'border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 6878
+`htm_Page_Sect(body, styl:'border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 6915
 
 | Param | Default | Description |
 |---|---|---|
@@ -196,7 +201,7 @@ A paragraf with border, can be used as a page-footer, or separator on a page.
 
 Finalize the htm_Page_()
 
-`htm_Page_end()` - line 6888
+`htm_Page_end()` - line 6925
 
 ### Cards and layout
 
@@ -204,7 +209,7 @@ Finalize the htm_Page_()
 
 A summery list with collapsible details
 
-`htm_Details(capt:'', labl:'', hint:'', type:'h1', mode:'', body:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1044
+`htm_Details(capt:'', labl:'', hint:'', type:'h1', mode:'', body:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1051
 
 | Param | Default | Description |
 |---|---|---|
@@ -221,7 +226,7 @@ A summery list with collapsible details
 
 Start a bordered area with a caption, icon ant hint (Remaned from: htm_Fieldset_)
 
-`htm_Fieldset(capt:'', icon:'', hint:'', wdth:'', marg:'', styl:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1978
+`htm_Fieldset(capt:'', icon:'', hint:'', wdth:'', marg:'', styl:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1985
 
 | Param | Default | Description |
 |---|---|---|
@@ -238,19 +243,19 @@ Start a bordered area with a caption, icon ant hint (Remaned from: htm_Fieldset_
 
 End a bordered area
 
-`htm_Fieldset_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2000
+`htm_Fieldset_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2007
 
 #### htm_Row_
 
 Prepare a span with inline-block output
 
-`htm_Row_(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2083
+`htm_Row_(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2090
 
 #### htm_Row_end
 
 Finalize the span
 
-`htm_Row_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2090
+`htm_Row_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2097
 
 #### htm_Card_
 
@@ -258,7 +263,7 @@ Finalize the span
 
 An advanced span with lots of functionality
 
-`htm_Card_(capt:'', icon:'', hint:'tgl', mode:'2', form:'', acti:'', wdth:'', vhgh:'600px', fclr:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', clas:'cardWmax', show:true, poup:true, head:'background-color: white;', help:'', frst:'', last:'', simp:false, fold:'', elem:'span', move:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2136
+`htm_Card_(capt:'', icon:'', hint:'tgl', mode:'2', form:'', acti:'', wdth:'', vhgh:'600px', fclr:'', styl:'background-color: white;', attr:'margin-bottom: 8px;', clas:'cardWmax', show:true, poup:true, head:'background-color: white;', help:'', frst:'', last:'', simp:false, fold:'', elem:'span', move:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2143
 
 | Param | Default | Description |
 |---|---|---|
@@ -290,7 +295,7 @@ An advanced span with lots of functionality
 
 Finalize htm_Card_()
 
-`htm_Card_end(labl:'', icon:'', hint:'', kind:'save', name:'', form:'', attr:'', subm:false, akey:'', simu:false, foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2337
+`htm_Card_end(labl:'', icon:'', hint:'', kind:'save', name:'', form:'', attr:'', subm:false, akey:'', simu:false, foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2344
 
 | Param | Default | Description |
 |---|---|---|
@@ -311,7 +316,7 @@ Finalize htm_Card_()
 
 Start a span with scrolling content in a fixed-height window
 
-`htm_Wrapp_(vhgh:'400px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2589
+`htm_Wrapp_(vhgh:'400px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2596
 
 | Param | Default | Description |
 |---|---|---|
@@ -322,31 +327,31 @@ Start a span with scrolling content in a fixed-height window
 
 Finalize a wrapper window
 
-`htm_Wrapp_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2596
+`htm_Wrapp_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2603
 
 #### htm_RowCol_
 
 Start a first column in a div
 
-`htm_RowCol_(wdth:240, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2704
+`htm_RowCol_(wdth:240, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2711
 
 #### htm_RowCol_next
 
 Create the next column
 
-`htm_RowCol_next(wdth:320, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2715
+`htm_RowCol_next(wdth:320, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2722
 
 #### htm_RowCol_end
 
 Create the last column
 
-`htm_RowCol_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2723
+`htm_RowCol_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2730
 
 #### htm_Tabs_
 
 Start a tab-object with multibly tabs
 
-`htm_Tabs_(head:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4064
+`htm_Tabs_(head:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4074
 
 #### htm_Tab
 
@@ -354,7 +359,7 @@ Start a tab-object with multibly tabs
 
 Create a tab in the htm_Tabs_() object
 
-`htm_Tab(labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:, dflt:false)` - line 4080
+`htm_Tab(labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:, dflt:false)` - line 4090
 
 | Param | Default | Description |
 |---|---|---|
@@ -370,7 +375,7 @@ Create a tab in the htm_Tabs_() object
 
 Finalize a htm_Tabs_() object
 
-`htm_Tabs_end(foot:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4108
+`htm_Tabs_end(foot:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4118
 
 ### Forms and input
 
@@ -388,10 +393,10 @@ An advanced object rel. in-output of data
 | `icon` | `''` | string: The icon left of the label (label prefix) |
 | `hint` | `''` | string: Translated description for the field |
 | `plho` | `'@Enter...'` | string: Translated placeholder shown when field is empty. Default: Enter... |
-| `vrnt` | `'text'` | string: Input Variant - text, date, ... Look at source ! |
+| `vrnt` | `'text'` | string: The variant: text (default) - area (several lines, rows:) - html (formatted text, editable) - pass (password, show / hide and a strength meter; rows:'0' no meter) - mail - link (URL) - phon - sear (search) - intg (whole number, step:) - num0 / num1 / num2 / num3 (number with 0-3 decimals) - dec0 / dec1 / dec2 (amount with thousands separator; unit: '<kr' prefix, 'kr' suffix) - date - time - week - mont (month) - rang (slider) - colr (colour) - file (upload: the form needs enctype multipart/form-data, as htm_Card_ form: and htm_Form_ have) - imag (image button) - barc (text in a bar code font) - chck (checkboxes) / rado (radio buttons) / opti (select list): the choices in list: - hidd (hidden) - butt (plain button, no action) / subm (submit button) |
 | `name` | `''` | string: Set the fields name (and id) |
 | `valu` | `''` | string: The current content in input field |
-| `list` | `[]` | array:  Data for subitems in "multi-list" (eg. options, checkbox, radiolist) {opti:value,label,hint,attr} |
+| `list` | `[]` | array:  The choices of chck / rado / opti: [[value, '@Label', '@Hint', 'checked' or 'selected', attributes], ...] (chck: the value is the name of each checkbox in $_POST) |
 | `form` | `''` | string: With Local form given, click on showed OK-butt to submit |
 | `wdth` | `'100%'` | string: Width of the field-container |
 | `algn` | `'left'` | string: The alignment of input content Default: left |
@@ -410,7 +415,7 @@ An advanced object rel. in-output of data
 
 A ontainer with: Border, Label, Hint, (Placeholder)
 
-`htm_Inbox(labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'noUse', name:'Body_div', valu:'', list:['noUse'], form:'noUse', wdth:'200px', algn:'left', bord:'1px solid var(--grayColor);', attr:'', unit:'noUse', disa:false, rows:'noUse', step:'noUse', llgn:'R', ftop:'', edit:null, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 570
+`htm_Inbox(labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'noUse', name:'Body_div', valu:'', list:['noUse'], form:'noUse', wdth:'200px', algn:'left', bord:'1px solid var(--grayColor);', attr:'', unit:'noUse', disa:false, rows:'noUse', step:'noUse', llgn:'R', ftop:'', edit:null, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 577
 
 | Param | Default | Description |
 |---|---|---|
@@ -442,7 +447,7 @@ A ontainer with: Border, Label, Hint, (Placeholder)
 
 General output for pt. Progress etc.
 
-`htm_Output(labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', valu:'', form:'', bclr:'white', attr:'', vmax:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 657
+`htm_Output(labl:'', icon:'', hint:'', vrnt:'pgrs', name:'', valu:'', form:'', bclr:'white', attr:'', vmax:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 664
 
 | Param | Default | Description |
 |---|---|---|
@@ -462,7 +467,7 @@ General output for pt. Progress etc.
 
 Make a box like htm_input() with label, icon and hint
 
-`htm_Field(labl:'', icon:'', hint:'', name:'fld', body:'', wdth:'', styl:'', attr:'', llgn:'C', ftop:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2041
+`htm_Field(labl:'', icon:'', hint:'', name:'fld', body:'', wdth:'', styl:'', attr:'', llgn:'C', ftop:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2048
 
 | Param | Default | Description |
 |---|---|---|
@@ -482,19 +487,19 @@ Make a box like htm_input() with label, icon and hint
 
 Genererer et skjult input-felt med CSRF-token
 
-`csrf_field(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2103
+`csrf_field(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2110
 
 #### csrf_verify
 
 Kaldes ved håndtering af POST - return true/false
 
-`csrf_verify()` - line 2108
+`csrf_verify()` - line 2115
 
 #### htm_DataList
 
 An input field with a list of values to pick from (HTML datalist)
 
-`htm_DataList(capt:'@Choose here from the list:', icon:'fas fa-database', hint:'@Use datalist to pick a value from list', plho:'@Type or pick a value', name:'', data:['Itm1','Itm2','Itm3','Itm4'], form:'', acti:'', wdth:'220px', bord:'1px solid black; border-radius: 5px;', fclr:'color: green;', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2474
+`htm_DataList(capt:'@Choose here from the list:', icon:'fas fa-database', hint:'@Use datalist to pick a value from list', plho:'@Type or pick a value', name:'', data:['Itm1','Itm2','Itm3','Itm4'], form:'', acti:'', wdth:'220px', bord:'1px solid black; border-radius: 5px;', fclr:'color: green;', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2481
 
 | Param | Default | Description |
 |---|---|---|
@@ -516,7 +521,7 @@ An input field with a list of values to pick from (HTML datalist)
 
 Start creating a form
 
-`htm_Form_(name:'', type:'multipart/form-data', mode:'POST', acti:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2603
+`htm_Form_(name:'', type:'multipart/form-data', mode:'POST', acti:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2610
 
 | Param | Default | Description |
 |---|---|---|
@@ -531,13 +536,13 @@ Start creating a form
 
 Finalixe a form
 
-`htm_Form_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2629
+`htm_Form_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2636
 
 #### htm_NotePad
 
 A personal notepad: plain text, saved automatically in this browser (the same notes on all pages of the site) - from TinyCash
 
-`htm_NotePad(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3435
+`htm_NotePad(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3445
 
 | Param | Default | Description |
 |---|---|---|
@@ -547,13 +552,13 @@ A personal notepad: plain text, saved automatically in this browser (the same no
 
 Is a switch value "on"? Accepts 1/true/on/yes/checked/pressed (and the old spelling "presssed")
 
-`sys_switchIsOn(valu)` - line 3758
+`sys_switchIsOn(valu)` - line 3768
 
 #### htm_SwitchButt
 
 A button with switch layout
 
-`htm_SwitchButt(labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3764
+`htm_SwitchButt(labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3774
 
 | Param | Default | Description |
 |---|---|---|
@@ -571,7 +576,7 @@ A button with switch layout
 
 Another button with switch layout
 
-`htm_SwitchButton(labl, hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3802
+`htm_SwitchButton(labl, hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3812
 
 | Param | Default | Description |
 |---|---|---|
@@ -589,7 +594,7 @@ Another button with switch layout
 
 A special button to switch between many states
 
-`htm_MultistateButt(name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3862
+`htm_MultistateButt(name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3872
 
 | Param | Default | Description |
 |---|---|---|
@@ -603,7 +608,7 @@ A special button to switch between many states
 
 Button for test human or robot
 
-`htm_Humantest(capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', form:'form-id', wdth:'200px', vhgh:'24px', bclr:'#1bd441', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO', rtrn:false, hght:null)` - echoes; `rtrn:true` returns the HTML - line 3905
+`htm_Humantest(capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', form:'form-id', wdth:'200px', vhgh:'24px', bclr:'#1bd441', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO', rtrn:false, hght:null)` - echoes; `rtrn:true` returns the HTML - line 3915
 
 | Param | Default | Description |
 |---|---|---|
@@ -625,7 +630,7 @@ Button for test human or robot
 
 Create a HTML-textarea with multibly lines
 
-`htm_TextArea(labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:false, widt:null)` - echoes; `rtrn:true` returns the HTML - line 4140
+`htm_TextArea(labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:false, widt:null)` - echoes; `rtrn:true` returns the HTML - line 4150
 
 | Param | Default | Description |
 |---|---|---|
@@ -645,7 +650,7 @@ Create a HTML-textarea with multibly lines
 
 A number written as "1 234,50" / "1.234,50" / "1234.50" / "87 %" / "kr. 12,5" -> float  ((float)"1 234,50" gives 1)
 
-`sys_toFloat(v)` - line 7094
+`sys_toFloat(v)` - line 7131
 
 ### Buttons and links
 
@@ -655,7 +660,7 @@ A number written as "1 234,50" / "1.234,50" / "1234.50" / "87 %" / "kr. 12,5" ->
 
 A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submit
 
-`htm_AcceptButt(labl:'', icon:'', hint:'', kind:'home', form:'', acti:'', wdth:'', attr:'', akey:'', tplc:'LblTip_text', tsty:'', idix:'', disa:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2732
+`htm_AcceptButt(labl:'', icon:'', hint:'', kind:'home', form:'', acti:'', wdth:'', attr:'', akey:'', tplc:'LblTip_text', tsty:'', idix:'', disa:false, name:'', valu:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2739
 
 | Param | Default | Description |
 |---|---|---|
@@ -672,13 +677,15 @@ A button for different purposes with colors according to purpose: Delete/Create/
 | `tsty` | `''` | string: Style for Placement of the tooltip |
 | `idix` | `''` | string: ix-suffix on name/id |
 | `disa` | `false` | bolean: 'disabled' to deactivate the button |
+| `name` | `''` | string: With valu: the name the value is posted under (default 'act') |
+| `valu` | `''` | string: The value this button posts - several actions in one form: read $_POST['act'] (name:). No reload on click |
 | `rtrn` | `false` | bool:   Act as procedure: Echo result, or as function: Return string |
 
 #### htm_ActionButt
 
 A generel action button
 
-`htm_ActionButt(labl:'', icon:'', hint:'', type:'button', name:'', form:'', acti:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2817
+`htm_ActionButt(labl:'', icon:'', hint:'', type:'button', name:'', form:'', acti:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2827
 
 | Param | Default | Description |
 |---|---|---|
@@ -698,7 +705,7 @@ A generel action button
 
 A generel botton with icon and label
 
-`htm_IconButt(labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'#555', bclr:'white', akey:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2854
+`htm_IconButt(labl:'', icon:'', hint:'', type:'submit', name:'', link:'', evnt:'', wdth:'', font:'32px', fclr:'#555', bclr:'white', akey:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2864
 
 | Param | Default | Description |
 |---|---|---|
@@ -720,7 +727,7 @@ A generel botton with icon and label
 
 Submit button with hint
 
-`htm_SubmitButt(labl:'', hint:'', type:'submit', wdth:'', font:'32px', fclr:'#555', bclr:'white', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2900
+`htm_SubmitButt(labl:'', hint:'', type:'submit', wdth:'', font:'32px', fclr:'#555', bclr:'white', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2910
 
 | Param | Default | Description |
 |---|---|---|
@@ -737,7 +744,7 @@ Submit button with hint
 
 A general link-button
 
-`htm_LinkButt(labl:'', hint:'', link:'', targ:'_blank', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4126
+`htm_LinkButt(labl:'', hint:'', link:'', targ:'_blank', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4136
 
 | Param | Default | Description |
 |---|---|---|
@@ -752,7 +759,7 @@ A general link-button
 
 A button for an action that changes data (e.g. Delete): asks "Are you sure?" and then POSTs with the CSRF token (from NH-logistik)
 
-`htm_ConfirmPostLink(labl:'', icon:'', hint:'', kind:'danger', mess:'@Are you sure?', data:[], acti:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4311
+`htm_ConfirmPostLink(labl:'', icon:'', hint:'', kind:'danger', mess:'@Are you sure?', data:[], acti:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4347
 
 | Param | Default | Description |
 |---|---|---|
@@ -771,7 +778,7 @@ A button for an action that changes data (e.g. Delete): asks "Are you sure?" and
 
 A very small text line
 
-`htm_MiniNote(note:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 952
+`htm_MiniNote(note:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 959
 
 | Param | Default | Description |
 |---|---|---|
@@ -782,7 +789,7 @@ A very small text line
 
 A text with a caption on colored line
 
-`htm_TextTip(capt:'TIP', body:'', wdth:'', algn:'center', colr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 961
+`htm_TextTip(capt:'TIP', body:'', wdth:'', algn:'center', colr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 968
 
 | Param | Default | Description |
 |---|---|---|
@@ -797,7 +804,7 @@ A text with a caption on colored line
 
 A div containing a text with a hidden hint
 
-`htm_TextHint(text:'Visibly Text', hint:'Hidden description', styl:'background-color: white; ', attr:, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 999
+`htm_TextHint(text:'Visibly Text', hint:'Hidden description', styl:'background-color: white; ', attr:, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1006
 
 | Param | Default | Description |
 |---|---|---|
@@ -811,7 +818,7 @@ A div containing a text with a hidden hint
 
 Create a modal popup window with color-coded background
 
-`htm_ModalDialog(capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['$type','$icon','$labl','$hint','$link'], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4182
+`htm_ModalDialog(capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['$type','$icon','$labl','$hint','$link'], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4192
 
 | Param | Default | Description |
 |---|---|---|
@@ -826,7 +833,7 @@ Create a modal popup window with color-coded background
 
 A message box in the page: success / error / warning / info - theme colors, also in the dark theme (from NH-logistik)
 
-`htm_Alert(body:'', kind:'success', wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4272
+`htm_Alert(body:'', kind:'success', wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4282
 
 | Param | Default | Description |
 |---|---|---|
@@ -835,11 +842,34 @@ A message box in the page: success / error / warning / info - theme colors, also
 | `wdth` | `'700px'` | string: Max width |
 | `rtrn` | `false` | bool:   Return or echo result |
 
+#### sys_redirect
+
+After a POST: remember a message and load the page again with GET (Post/Redirect/Get) - the next htm_Page_ shows it (htm_Flash)
+
+`sys_redirect(mess:'', kind:'success', link:'')` - line 4297
+
+| Param | Default | Description |
+|---|---|---|
+| `mess` | `''` | string: The message on the next page (HTML, translated with lang()) - '' none. Escape user data with sys_enc() |
+| `kind` | `'success'` | string: success / error / warning / info |
+| `link` | `''` | string: Where to go - '' the same address again (with its query string) |
+
+#### htm_Flash
+
+The messages of sys_redirect(): each shown once. htm_Page_ calls it ($gbl_Flash= false: not) - call it yourself to show them elsewhere
+
+`htm_Flash(wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4311
+
+| Param | Default | Description |
+|---|---|---|
+| `wdth` | `'700px'` | string: Max width of each message |
+| `rtrn` | `false` | bool:   Return or echo result |
+
 #### htm_Badge
 
 A small label: a status, a count or "New" - e.g. in tables and menus (from NH-logistik)
 
-`htm_Badge(labl:'', hint:'', kind:'secondary', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4299
+`htm_Badge(labl:'', hint:'', kind:'secondary', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4335
 
 | Param | Default | Description |
 |---|---|---|
@@ -854,7 +884,7 @@ A small label: a status, a count or "New" - e.g. in tables and menus (from NH-lo
 
 Create a Dialog with alternative buttons to select between
 
-`htm_Dialog(capt:'CAPTION', labl:'@Open dialog', body:'', bclr:'lightyellow', butt:[ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4411
+`htm_Dialog(capt:'CAPTION', labl:'@Open dialog', body:'', bclr:'lightyellow', butt:[ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4447
 
 | Param | Default | Description |
 |---|---|---|
@@ -871,7 +901,7 @@ Create a Dialog with alternative buttons to select between
 
 so Excel/LibreOffice does not execute it as a formula (CSV injection). Real numbers like -12.50 are left alone.
 
-`sys_csvCell(v)` - line 1304
+`sys_csvCell(v)` - line 1311
 
 #### htm_Table
 
@@ -879,7 +909,7 @@ so Excel/LibreOffice does not execute it as a formula (CSV injection). Real numb
 
 A table with records: sort, filter, edit, add rows and export to CSV
 
-`htm_Table(capt:[], pref:[], body:[], suff:[], note:'', list:['',''], data:[], wdth:'98%', vhgh:'400px', styl:'', filt:true, sort:true, crea:true, modi:true, from:__FILE__, expo:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1311
+`htm_Table(capt:[], pref:[], body:[], suff:[], note:'', list:['',''], data:[], wdth:'98%', vhgh:'400px', styl:'', filt:true, sort:true, crea:true, modi:true, from:__FILE__, expo:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1318
 
 | Param | Default | Description |
 |---|---|---|
@@ -905,7 +935,7 @@ A table with records: sort, filter, edit, add rows and export to CSV
 
 A span/group with a set of labels and data
 
-`htm_DataGroup(capt:'', icon:'', hint:'', data:[['Label0','Data0','Lstyl','Dstyl']], wdth:'', vhgh:'600px', bord:'3px solid black;', fclr:'', styl:'', attr:'', head:'', foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2427
+`htm_DataGroup(capt:'', icon:'', hint:'', data:[['Label0','Data0','Lstyl','Dstyl']], wdth:'', vhgh:'600px', bord:'3px solid black;', fclr:'', styl:'', attr:'', head:'', foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 2434
 
 | Param | Default | Description |
 |---|---|---|
@@ -927,7 +957,7 @@ A span/group with a set of labels and data
 
 Search and sort for a table - without jQuery: a search field with "x of y rows", and sorting by clicking a column header (from NH-logistik)
 
-`htm_TableTools(tabl:'', plho:'@Search...', srch:true, sort:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4343
+`htm_TableTools(tabl:'', plho:'@Search...', srch:true, sort:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4379
 
 | Param | Default | Description |
 |---|---|---|
@@ -943,7 +973,7 @@ Search and sort for a table - without jQuery: a search field with "x of y rows",
 
 A caption with icon, label and hint
 
-`htm_Caption(labl:'', icon:'', hint:'', algn:'', styl:, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 728
+`htm_Caption(labl:'', icon:'', hint:'', algn:'', styl:, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 735
 
 | Param | Default | Description |
 |---|---|---|
@@ -958,7 +988,7 @@ A caption with icon, label and hint
 
 Text formatted in a div
 
-`htm_TextDiv(body:'', algn:'left', marg:'8px', styl:, attr:, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 747
+`htm_TextDiv(body:'', algn:'left', marg:'8px', styl:, attr:, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 754
 
 | Param | Default | Description |
 |---|---|---|
@@ -973,7 +1003,7 @@ Text formatted in a div
 
 Text displayed in a fixed-width font, and preserves both spaces and line breaks
 
-`htm_TextPre(body, algn:'left', marg:'8px', font:'', attr:'', code:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 762
+`htm_TextPre(body, algn:'left', marg:'8px', font:'', attr:'', code:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 769
 
 | Param | Default | Description |
 |---|---|---|
@@ -989,7 +1019,7 @@ Text displayed in a fixed-width font, and preserves both spaces and line breaks
 
 Starting various types ef text list
 
-`htm_List_(capt:'', vrnt:'ul', type:'disc', styl:'text-align:left;', strt:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 793
+`htm_List_(capt:'', vrnt:'ul', type:'disc', styl:'text-align:left;', strt:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 800
 
 | Param | Default | Description |
 |---|---|---|
@@ -1004,7 +1034,7 @@ Starting various types ef text list
 
 A single item in a text list
 
-`htm_List_item(labl:'', body:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 817
+`htm_List_item(labl:'', body:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 824
 
 | Param | Default | Description |
 |---|---|---|
@@ -1016,7 +1046,7 @@ A single item in a text list
 
 Ending a text list
 
-`htm_List_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 831
+`htm_List_end(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 838
 
 | Param | Default | Description |
 |---|---|---|
@@ -1026,7 +1056,7 @@ Ending a text list
 
 A span containing syntax formattet php-code
 
-`htm_CodeBox(code:'', valu:'', synt:true, repl:false, fmat:'', fold:'', rtrn:false, vlue:null)` - echoes; `rtrn:true` returns the HTML - line 908
+`htm_CodeBox(code:'', valu:'', synt:true, repl:false, fmat:'', fold:'', rtrn:false, vlue:null)` - echoes; `rtrn:true` returns the HTML - line 915
 
 | Param | Default | Description |
 |---|---|---|
@@ -1043,7 +1073,7 @@ A span containing syntax formattet php-code
 
 Vertical orientated text
 
-`htm_TextVer(body, algn:'left', marg:'auto', font:'', attr:'', code:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 934
+`htm_TextVer(body, algn:'left', marg:'auto', font:'', attr:'', code:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 941
 
 | Param | Default | Description |
 |---|---|---|
@@ -1059,7 +1089,7 @@ Vertical orientated text
 
 A question with a folded answer (FAQ) - one at a time when they share a grup
 
-`htm_faq(ques:'', answ:'', wdth:'', open:false, grup:'', code:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 981
+`htm_faq(ques:'', answ:'', wdth:'', open:false, grup:'', code:false, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 988
 
 | Param | Default | Description |
 |---|---|---|
@@ -1075,7 +1105,7 @@ A question with a folded answer (FAQ) - one at a time when they share a grup
 
 A image with caption, label and a hint
 
-`htm_Figure(capt:'', labl:'', hint:'', type:'h1', styl:'', imag:'', info:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1020
+`htm_Figure(capt:'', labl:'', hint:'', type:'h1', styl:'', imag:'', info:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 1027
 
 | Param | Default | Description |
 |---|---|---|
@@ -1092,7 +1122,7 @@ A image with caption, label and a hint
 
 Output external content in a local frame
 
-`htm_iFrame(titl:'', srce:'', wdth:'300px', vhgh:'200px', styl:'', rtrn:false, heig:null)` - echoes; `rtrn:true` returns the HTML - line 2007
+`htm_iFrame(titl:'', srce:'', wdth:'300px', vhgh:'200px', styl:'', rtrn:false, heig:null)` - echoes; `rtrn:true` returns the HTML - line 2014
 
 | Param | Default | Description |
 |---|---|---|
@@ -1108,7 +1138,7 @@ Output external content in a local frame
 
 View a container with a external resource
 
-`htm_Embed(name:'', type:'application/pdf', wdth:'800px', vhgh:'2100px', bord:'0', rtrn:false, heig:null)` - echoes; `rtrn:true` returns the HTML - line 2022
+`htm_Embed(name:'', type:'application/pdf', wdth:'800px', vhgh:'2100px', bord:'0', rtrn:false, heig:null)` - echoes; `rtrn:true` returns the HTML - line 2029
 
 | Param | Default | Description |
 |---|---|---|
@@ -1124,7 +1154,7 @@ View a container with a external resource
 
 Create a text with hidden hint/title
 
-`str_WithHint(labl:'', hint:'', icon:'', styl:'')` - line 4167
+`str_WithHint(labl:'', hint:'', icon:'', styl:'')` - line 4177
 
 | Param | Default | Description |
 |---|---|---|
@@ -1137,19 +1167,19 @@ Create a text with hidden hint/title
 
 String function: make italic-text
 
-`htm_Ihead(html, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7047
+`htm_Ihead(html, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7084
 
 #### str_Synt_
 
-`str_Synt_()` - line 7306
+`str_Synt_()` - line 7343
 
 #### str_Synt_end
 
-`str_Synt_end()` - line 7307
+`str_Synt_end()` - line 7344
 
 #### str_Synt
 
-`str_Synt(elem:'', type:'default')` - line 7308
+`str_Synt(elem:'', type:'default')` - line 7345
 
 ### Menus
 
@@ -1157,25 +1187,25 @@ String function: make italic-text
 
 Init popup context menu group
 
-`htm_Pmnu_(capt:'', icon:'', wdth:'210px', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', elem:'id', stck:'false', cntx:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4649
+`htm_Pmnu_(capt:'', icon:'', wdth:'210px', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', elem:'id', stck:'false', cntx:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4685
 
 #### htm_Pmnu_Item
 
 Add a popup context menu item
 
-`htm_Pmnu_Item(labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false, disa:null)` - echoes; `rtrn:true` returns the HTML - line 4655
+`htm_Pmnu_Item(labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false, disa:null)` - echoes; `rtrn:true` returns the HTML - line 4691
 
 #### htm_Pmnu_end
 
 Finish a popup context menu group
 
-`htm_Pmnu_end(labl:'', hint:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4661
+`htm_Pmnu_end(labl:'', hint:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4697
 
 #### htm_Menu_TopDown
 
 A page-menu on top of the page
 
-`htm_Menu_TopDown(capt:'Clever html engine', note:'', data:[], wdth:'150px', styl:'', foot:'PHP2HTML', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4691
+`htm_Menu_TopDown(capt:'Clever html engine', note:'', data:[], wdth:'150px', styl:'', foot:'PHP2HTML', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4727
 
 | Param | Default | Description |
 |---|---|---|
@@ -1196,7 +1226,7 @@ A page-menu on top of the page
 
 A page-menu to the left of the page
 
-`htm_Menu_Leftout(capt:'Clever html engine', data:[], wdth:'180px', styl:'', foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4808
+`htm_Menu_Leftout(capt:'Clever html engine', data:[], wdth:'180px', styl:'', foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4844
 
 | Param | Default | Description |
 |---|---|---|
@@ -1213,25 +1243,25 @@ A page-menu to the left of the page
 
 String function: make horisontal line/ruler
 
-`htm_hr(colr:'#0', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7051
+`htm_hr(colr:'#0', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7088
 
 #### htm_br
 
 String function: Add one or more line-breaks
 
-`htm_br(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7055
+`htm_br(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7092
 
 #### htm_nl
 
 String function: Add one ore more new line(s)
 
-`htm_nl(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7059
+`htm_nl(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7096
 
 #### htm_lf
 
 String function: Add one or more linefeed
 
-`htm_lf(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7063
+`htm_lf(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7100
 
 #### htm_sp
 
@@ -1239,57 +1269,57 @@ String function: Add one or more linefeed
 
 String function: Add one ore more nobreaking spaces
 
-`htm_sp(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7067
+`htm_sp(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7104
 
 #### htm_space
 
 String function: Make a span with given width
 
-`htm_space(wdth, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7071
+`htm_space(wdth, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7108
 
 #### str_bold
 
-`str_bold(source, result:'', tail:'&nbsp;&nbsp;')` - line 7076
+`str_bold(source, result:'', tail:'&nbsp;&nbsp;')` - line 7113
 
 #### str_Ihead
 
-`str_Ihead(source)` - line 7077
+`str_Ihead(source)` - line 7114
 
 #### str_hr
 
-`str_hr(c:'#0', attr:'')` - line 7078
+`str_hr(c:'#0', attr:'')` - line 7115
 
 #### str_br
 
-`str_br(rept:1)` - line 7079
+`str_br(rept:1)` - line 7116
 
 #### str_nl
 
-`str_nl(rept:1)` - line 7080
+`str_nl(rept:1)` - line 7117
 
 #### str_lf
 
-`str_lf(rept:1)` - line 7081
+`str_lf(rept:1)` - line 7118
 
 #### str_sp
 
-`str_sp(rept:1)` - line 7082
+`str_sp(rept:1)` - line 7119
 
 #### str_space
 
-`str_space(wdth)` - line 7083
+`str_space(wdth)` - line 7120
 
 ### Translation and system
 
 #### sys_get_translations
 
-`sys_get_translations(transTable:[])` - line 7131
+`sys_get_translations(transTable:[])` - line 7168
 
 #### lang
 
 lang() is used to translate all hard-coded user interface
 
-`lang(text)` - line 7197
+`lang(text)` - line 7234
 
 | Param | Default | Description |
 |---|---|---|
@@ -1299,13 +1329,13 @@ lang() is used to translate all hard-coded user interface
 
 A unique element id on the page: the first keeps its id, repeats get _2, _3... (fields in loops, table rows)
 
-`sys_uid(id)` - line 7214
+`sys_uid(id)` - line 7251
 
 #### sys_enc
 
 Make valid HTML string
 
-`sys_enc(text)` - line 7223
+`sys_enc(text)` - line 7260
 
 ## Internal and helper functions
 

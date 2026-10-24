@@ -90,9 +90,11 @@ $md= "# php2html $ver - API reference\n\n".
 "  before your code runs - so the page needs no `csrf_verify()` of its own (calling it again does no harm).\n".
 "- **Quotes:** `'` for PHP strings, `\"` for HTML attributes.\n\n".
 "## Pitfalls\n\n".
-"- `htm_AcceptButt` (also the submit button of `htm_Card_end(subm:true)`) gets `onclick='location.reload();'` when `acti` is empty.\n".
-"  The form is still posted (the post replaces the reload - tested in Edge), but the button can not carry a value of its own:\n".
-"  for several actions in one form write plain buttons, `<button type=\"submit\" name=\"act\" value=\"save\">`, and read `\$_POST['act']`.\n".
+"- **Several actions in one form:** give each `htm_AcceptButt` its own `valu:` (`valu:'save'`, `valu:'delete'`) and read `\$_POST['act']`\n".
+"  (another name with `name:`). Without `valu` and `acti` the button gets `onclick='location.reload();'` - the form is still posted,\n".
+"  but the button posts no value of its own.\n".
+"- **After a POST** answer with `sys_redirect('@Saved')` - not with HTML: the page is loaded again with GET (a reload does not post again)\n".
+"  and `htm_Page_` shows the message once (`htm_Flash`). An error: `sys_redirect('@Not saved', 'error')`.\n".
 "- Including the library overwrites the globals `\$DocVer`, `\$DocRev` and `\$©` of the page - copy them to constants **before** the require\n".
 "  if you need them (the library version is `P2H_VERSION`).\n".
 "- No nested forms: a card with `form:` must not be inside another card with `form:`.\n".
@@ -100,8 +102,13 @@ $md= "# php2html $ver - API reference\n\n".
 "  it would answer 403. Put such endpoints in their own file.\n".
 "- Global settings are `\$gbl_*` variables (colours, card moving, flags, the program root) - set them **before** the require.\n\n".
 "## A minimal page\n\n".
-"```php\n<?php\nrequire_once __DIR__.'/php2html.lib.php';     // starts the session - and stops a POST without a valid CSRF token\n\nif (\$_SERVER['REQUEST_METHOD'] === 'POST') {\n    // ... save \$_POST['name'] ...\n    header('Location: '.\$_SERVER['PHP_SELF']);  exit;           // PRG: no re-post on reload\n}\n\n".
-"htm_Page_(titl:'My page');\nhtm_Card_(capt:'@Settings', icon:'fas fa-sliders', form:'f_set', clas:'cardW800');\n    htm_Input(labl:'@Name', name:'name', valu:'', wdth:'300px');\nhtm_Card_end(labl:'@Save', subm:true);\nhtm_Page_end();\n```\n\n";
+"```php\n<?php\nrequire_once __DIR__.'/php2html.lib.php';     // starts the session - and stops a POST without a valid CSRF token\n\nif (\$_SERVER['REQUEST_METHOD'] === 'POST') {\n".
+"    if ((\$_POST['act'] ?? '') === 'save')  { /* ... save \$_POST['name'] ... */  sys_redirect('@Saved'); }\n".
+"    if ((\$_POST['act'] ?? '') === 'reset') { /* ... */                         sys_redirect('@Reset', 'info'); }\n".
+"    sys_redirect('@Unknown action', 'warning');                  // Post/Redirect/Get: the message is shown by htm_Page_\n}\n\n".
+"htm_Page_(titl:'My page');\nhtm_Card_(capt:'@Settings', icon:'fas fa-sliders', form:'f_set', clas:'cardW800');\n    htm_Input(labl:'@Name', name:'name', valu:'', wdth:'300px');\n".
+"    htm_AcceptButt(labl:'@Save',  icon:'fas fa-floppy-disk', kind:'save', form:'f_set', valu:'save');\n".
+"    htm_AcceptButt(labl:'@Reset', icon:'fas fa-rotate-left', kind:'eras', form:'f_set', valu:'reset');\nhtm_Card_end();\nhtm_Page_end();\n```\n\n";
 
 // Groups by use (the groups in the library are few and large) - the first pattern that fits
 $groups= [
@@ -109,7 +116,7 @@ $groups= [
     'Cards and layout'      => '/^htm_(Card_|Card_end|Wrapp_|Wrapp_end|RowCol_|RowCol_next|RowCol_end|Row_|Row_end|Fieldset|Fieldset_end|Tabs_|Tab|Tabs_end|Details)$/',
     'Forms and input'       => '/^(htm_(Form_|Form_end|Input|Inbox|Output|Field|TextArea|DataList|Humantest|SwitchButt|SwitchButton|MultistateButt|NotePad)|csrf_\w+|sys_switchIsOn|sys_toFloat)$/',
     'Buttons and links'     => '/^htm_(AcceptButt|ActionButt|IconButt|SubmitButt|LinkButt|ConfirmPostLink)$/',
-    'Messages and dialogs'  => '/^htm_(Alert|Badge|Dialog|ModalDialog|TextTip|TextHint|MiniNote)$/',
+    'Messages and dialogs'  => '/^(htm_(Alert|Flash|Badge|Dialog|ModalDialog|TextTip|TextHint|MiniNote)|sys_redirect)$/',
     'Tables and data'       => '/^(htm_(Table|TableTools|DataGroup)|sys_csvCell)$/',
     'Text and content'      => '/^(htm_(Caption|TextDiv|TextPre|TextVer|List_|List_item|List_end|CodeBox|faq|Figure|iFrame|Embed|Ihead)|str_WithHint|str_Synt\w*)$/',
     'Menus'                 => '/^htm_(Pmnu_|Pmnu_Item|Pmnu_end|Menu_\w+)$/',

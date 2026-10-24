@@ -3,6 +3,9 @@
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
 ## Unreleased
+- **Post/Redirect/Get in one call:** `sys_redirect('@Saved')` after a POST remembers the message and loads the page again with GET (303) - a reload does not post again. `htm_Page_` shows the message once at the top (`htm_Flash()`; `$gbl_Flash= false` to place it yourself).
+- **Several actions in one form:** `htm_AcceptButt(valu:'save')` posts `act=save` (another name with `name:`) - read `$_POST['act']`. A button with a value does not reload the page on click.
+- **`htm_Input(vrnt:)` documented:** all the variants (text, area, html, pass, mail, link, phon, sear, intg, num0-3, dec0-2, date, time, week, mont, rang, colr, file, imag, barc, chck, rado, opti, hidd, butt, subm) and the format of `list:` - also in `php2html.api.md`.
 
 ## 1.8.1 - libraries loaded automatically, an API reference for AI assistants
 - **API reference for people and AI assistants:** `php2html.api.md` - conventions, pitfalls, a minimal page and all public functions with their parameters, generated from the parameter comments by `tools/make_api_md.php` (run it after a change of the library). `CLAUDE.md` tells AI assistants how to work in the repository.

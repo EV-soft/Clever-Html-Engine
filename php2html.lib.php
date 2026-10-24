@@ -292,10 +292,17 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
     $hint= '',              # string: Translated description for the field
     $plho= '@Enter...',     # string: Translated placeholder shown when field is empty. Default: Enter...
     
-    $vrnt= 'text',          # string: Input Variant - text, date, ... Look at source ! 
+    $vrnt= 'text',          # string: The variant: text (default) - area (several lines, rows:) - html (formatted text, editable) - pass (password,
+                            #         show / hide and a strength meter; rows:'0' no meter) - mail - link (URL) - phon - sear (search) -
+                            #         intg (whole number, step:) - num0 / num1 / num2 / num3 (number with 0-3 decimals) - dec0 / dec1 / dec2 (amount with
+                            #         thousands separator; unit: '<kr' prefix, 'kr' suffix) - date - time - week - mont (month) - rang (slider) - colr (colour) -
+                            #         file (upload: the form needs enctype multipart/form-data, as htm_Card_ form: and htm_Form_ have) - imag (image button) -
+                            #         barc (text in a bar code font) - chck (checkboxes) / rado (radio buttons) / opti (select list): the choices in list: -
+                            #         hidd (hidden) - butt (plain button, no action) / subm (submit button)
     $name= '',              # string: Set the fields name (and id)
     $valu= '',              # string: The current content in input field
-    $list= [],              # array:  Data for subitems in "multi-list" (eg. options, checkbox, radiolist) {opti:value,label,hint,attr}
+    $list= [],              # array:  The choices of chck / rado / opti: [[value, '@Label', '@Hint', 'checked' or 'selected', attributes], ...]
+                            #         (chck: the value is the name of each checkbox in $_POST)
     
     $form= '',              # string: With Local form given, click on showed OK-butt to submit
     $wdth= '100%',          # string: Width of the field-container
@@ -2729,7 +2736,7 @@ function htm_RowCol_end(# rtrn:false)
 ## Importent: $RowColWdth - Only use defined width ! (See CSS: @media screen)
 
 # A button for different purposes with colors according to purpose: Delete/Create/Navigate/Continue/Submit  [Necessary basic element]
-function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:'', wdth:'', attr:'', akey:'', tplc:'LblTip_text', tsty:'', idix:'', disa:false, rtrn:false)
+function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:'', wdth:'', attr:'', akey:'', tplc:'LblTip_text', tsty:'', idix:'', disa:false, name:'', valu:'', rtrn:false)
     $labl='',           # string: The caption on the button
     $icon='',           # string: The iconclass ('<i class="fas fa-plus"> </i> ';)
     $hint='',           # string: hint about the button function
@@ -2743,6 +2750,8 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
     $tsty='',           # string: Style for Placement of the tooltip
     $idix='',           # string: ix-suffix on name/id
     $disa=false,        # bolean: 'disabled' to deactivate the button
+    $name='',           # string: With valu: the name the value is posted under (default 'act')
+    $valu='',           # string: The value this button posts - several actions in one form: read $_POST['act'] (name:). No reload on click
     $rtrn=false         # bool:   Act as procedure: Echo result, or as function: Return string
     )
 {   global $gbl_ShortKeys, $gbl_ButtnBgrd, $gbl_BtLnkBgrd, $gbl_TextLight, $gbl_TextDark, $gbl_BtDelBgrd, 
@@ -2762,7 +2771,8 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
 */
  
     // Initiate:
-    if ($form>'') {$name= $form; $form=' form="'.$form.'" ';} 
+    $post= ($valu !== '') ? ' name="'.sys_enc($name > '' ? $name : 'act').'" value="'.sys_enc($valu).'"' : '';   # A value of its own: posted as name=value
+    if ($form>'') {$name= $form; $form=' form="'.$form.'" ';}
     else          {$name= '_none'; }
     if ($wdth) $wdth= ' width: '.$wdth.';';
     if ($icon==='') $iconClass=''; 
@@ -2801,9 +2811,9 @@ function htm_AcceptButt(# labl:'', icon:'', hint:'', kind:'home', form:'', acti:
     $result=  '<span class="center" style="height:25px; display: inline-block;">';
     $result.= '<abbr class="hint'.($tsty > '' ? '' : ' p2hBtnHint').'">';     # Own placement (tsty): not the default above the button
     $kcls= in_array($kind, ['save','navi','goon','eras','crea','home','get_','put_','spc1'], true) ? ' p2hKind p2hKind-'.rtrim($kind, '_') : (in_array($kind, ['spc2'], true) ? '' : ' p2hKind p2hKind-navi');   # (spc2: white - the input colour of the theme)
-    $result.= '    <button class="acceptbutt buttstyl'.$kcls.'" '.$form.' type= "'.$type.'" name="btn_'.$midn.$name.'" id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
+    $result.= '    <button class="acceptbutt buttstyl'.$kcls.'" '.$form.' type= "'.$type.'"'.($post > '' ? $post : ' name="btn_'.$midn.$name.'"').' id="'.sys_uid('btn_'.$midn.$name.$idix).'" '.$attr.
               '        style="min-height: 24px; padding-right: 6px; margin-bottom: 6px; '.$wdth. $colors.'" '.
-                              ($acti > '' ? ('onclick=\''.$acti.'\' ') : 'onclick=\'location.reload();\' ') .
+                              ($acti > '' ? ('onclick=\''.$acti.'\' ') : ($post > '' ? '' : 'onclick=\'location.reload();\' ')) .
                               $akey.' '.$aktiv.'> '. 
                               $iconClass .$Label.
               '    </button>';
@@ -4280,6 +4290,32 @@ function htm_Alert(# body:'', kind:'success', wdth:'700px', rtrn:false)
     $icon= ['success'=>'fa-circle-check', 'error'=>'fa-circle-exclamation', 'warning'=>'fa-triangle-exclamation', 'info'=>'fa-circle-info'][$kind];
     $result= '<div class="p2hAlert p2hAlert-'.$kind.'" role="'.(in_array($kind, ['error','warning']) ? 'alert' : 'status').'" style="max-width:'.sys_enc($wdth).';">'.
              '<ic class="fa-solid '.$icon.'" aria-hidden="true"></ic> '.lang($body).'</div>';
+    if (!$rtrn) echo $result; else return $result;
+}
+
+# After a POST: remember a message and load the page again with GET (Post/Redirect/Get) - the next htm_Page_ shows it (htm_Flash)
+function sys_redirect(# mess:'', kind:'success', link:'')
+    $mess= '',              # string: The message on the next page (HTML, translated with lang()) - '' none. Escape user data with sys_enc()
+    $kind= 'success',       # string: success / error / warning / info
+    $link= ''               # string: Where to go - '' the same address again (with its query string)
+) {
+    if ($mess > '') $_SESSION['p2h_flash'][]= [$mess, $kind];
+    $to= str_replace(["\r", "\n"], '', $link > '' ? $link : ($_SERVER['REQUEST_URI'] ?? ''));
+    if ($to === '' || preg_match('~^\s*(javascript|data|vbscript):~i', $to)) $to= $_SERVER['PHP_SELF'] ?? './';
+    if (!headers_sent()) header('Location: '.$to, true, 303);       # 303: the browser asks again with GET - a reload does not post again
+    else echo '<script>location.replace('.json_encode($to).');</script><a href="'.sys_enc($to).'">'.sys_enc($to).'</a>';
+    exit;
+}
+
+# The messages of sys_redirect(): each shown once. htm_Page_ calls it ($gbl_Flash= false: not) - call it yourself to show them elsewhere
+function htm_Flash(# wdth:'700px', rtrn:false)
+    $wdth= '700px',         # string: Max width of each message
+    $rtrn= false            # bool:   Return or echo result
+) {
+    $list= $_SESSION['p2h_flash'] ?? [];
+    unset($_SESSION['p2h_flash']);
+    $result= '';
+    foreach ((array)$list as $m) if (is_array($m)) $result.= htm_Alert(body:(string)($m[0] ?? ''), kind:(string)($m[1] ?? 'success'), wdth:$wdth, rtrn:true);
     if (!$rtrn) echo $result; else return $result;
 }
 
@@ -6872,6 +6908,7 @@ run_Script("function htm_Toast(text, bclr='#333', fclr='#fff', tout=5000) {
     # applied right here, before the cards are drawn (no jump).
     echo '<script>(function(){ var c= document.getElementById("p2hMain"); if ('.($pbrd ? 'true' : 'false').') c= c.lastElementChild;
           c.setAttribute("data-p2h-cols", "1");  try { if (localStorage.getItem("p2h-colview")==="1") c.classList.add("p2hColview"); } catch(e) {} })();</script>';
+    if (($GLOBALS['gbl_Flash'] ?? true) !== false) htm_Flash();      # The message of sys_redirect() (Post/Redirect/Get) - at the top of the page
 } // htm_Page_()
 
 # A paragraf with border, can be used as a page-footer, or separator on a page.
