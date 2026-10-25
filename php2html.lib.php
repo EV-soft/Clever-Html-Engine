@@ -358,12 +358,12 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
     $fldName= trim(strip_tags(lang($labl))) ?: (trim(strip_tags(lang($hint))) ?: (trim(strip_tags(lang($plho))) ?: $name));   # No label: the hint, placeholder or name
     $eventInvalid= ' oninvalid="this.setCustomValidity('.sys_enc(json_encode(lang('@Wrong or missing data in ').$fldName.' !', JSON_UNESCAPED_UNICODE)).')" oninput="setCustomValidity(\'\')" ';   # (a ' in the label was a script error)
     $pattern= '';
-    $numPattern= ' pattern="^[^0-9\-]{0,4}\s?-?\d[\d\s.,]*\s?[^0-9]{0,4}$" ';   # Formatted numbers: "$ 1 234,50", "87 %", "-12.5"
+    $numPattern= ' pattern="^[^0-9\-]{0,15}\s?-?\d[\d\s.,]*\s?[^0-9]{0,15}$" ';   # Formatted numbers: "$ 1 234,50", "87 %", "-12.5", "1 234,50 kr/md" (a unit up to 15 characters - was 4: " kr/md" made the field's own value invalid)
 
     if ($disa==true) $aktiv=' disabled '; else $aktiv= '';
     # Number fields (dec0..2, num0..3): the value as formatted number - empty stays empty, a non-number is shown as typed
     $numVal= function($dec) use ($valu) {
-        $v= trim((string)$valu);
+        $v= trim(html_entity_decode((string)$valu, ENT_QUOTES, 'UTF-8'));    # $valu is escaped above - sys_enc() below once more gave "a&amp;amp;b"
         if ($v === '') return '';
         if (!preg_match('/\d/', $v)) return sys_enc($v);
         return number_format(sys_toFloat($v), $dec, DecimalSep, ThousandsSep);
@@ -489,7 +489,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                             $i=0;
                             foreach ($list as $rec) { // $list= [['name','@Label','@ToolTip'], ['0:name',1:'@Label',2:'@ToolTip',3:state:'checked/selected',4:otherAttr (id="idxx")], ['@Label','@ToolTip'],...]
                                 $rec = array_pad($rec, 4, null); // Ensures that there are always at least 4 elements
-                                $on= isset($_POST[$rec[0]]) || ($valu == $rec[0]) || ($valu == 'checked') ||
+                                $on= isset($_POST[$rec[0]]) || ($valu === sys_enc((string)$rec[0])) || ($valu === 'checked') ||
                                      (is_string($rec[3]) && (stripos(' '.$rec[3], 'checked') > 0));
                                 $chk= $on ? ' checked ' : ' ';
                                 array_push($rec, '', '');   # Prevent error on $rec[3] / $rec[4]
@@ -504,8 +504,9 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                              // $result.= '<input type= "checkbox" id="'.$rec[0].'" name="'.$rec[0].'" value="checked" '.$aktiv. (is_array($rec[3]) ? $rec[3][$i++][1] : $rec[3]).' '. $rec[4]. ' '.$valu.' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
                                 $cid= sys_uid(preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$rec[0]) ?: 'chk');    # A unique, safe id (was the value itself)
                                 if (!isset($lblFirst)) $lblFirst= $cid;          # The group label points to the first box
-                                $result.= '<input type= "checkbox" id="'.$cid.'" name="'.sys_enc((string)$rec[0]).'" value="checked" '.$aktiv. $chk. $rec[4]. ' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
-                                   '<label for="'.$cid.'" style="position: relative; top: 0px; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
+                                $attrCss= (strpos($attr, ':') !== false && strpos($attr, '=') === false);      # attr: attributes of each box (as documented) - CSS ("padding:0") styles the label, as before
+                                $result.= '<input type= "checkbox" id="'.$cid.'" name="'.sys_enc((string)$rec[0]).'" value="checked" '.$aktiv. $chk. $rec[4]. ($attrCss ? '' : ' '.$attr).' style="width: 20px; box-shadow: none; scale:1.3;"/>'.
+                                   '<label for="'.$cid.'" style="position: relative; top: 0px; width: min-content;'.$lpos.'">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.($attrCss ? $attr : '')).'</label>';   # (was always in the label style: onchange="..." broke it)
                                  //  '<label for="'.$rec[0].'"                                              ">'.Lbl_Tip($rec[1],$rec[2],'','12px; box-shadow: none; '.$attr).'</label>';
                                 $result.= '</span>';
                              //   if ($rows=='1') $result.= '&nbsp;'; else $result.= '<br>';
@@ -514,7 +515,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
         case 'rado' : $result.= ## RADIO:
                             '<span class="fieldContent boxStyle" style="'.$bord.'"><small>';
                             foreach ($list as $rec) { // $list= [[0:'value',1:'Label',2:'@ToolTip',3:state:'checked/selected'], ['Label','@ToolTip'],...]
-                                if ($valu==$rec[0]) $chk= ' checked '; else $chk= ' ';
+                                if ($valu === sys_enc((string)($rec[0] ?? ''))) $chk= ' checked '; else $chk= ' ';   # $valu is escaped: "R&D" never matched - and == made "1" match "1.0"
                                     $rid= sys_uid($iid.'_'.(preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$rec[0]) ?: 'opt'));   # A unique, safe id (was the raw value)
                                     if (!isset($lblFirst)) $lblFirst= $rid;      # The group label points to the first button
                                     $result.= '<input type= "radio" id="'.$rid.'" name="'.$name.'" value="'.sys_enc((string)$rec[0]).'" '.
@@ -530,7 +531,7 @@ function htm_Input(# labl:'', icon:'', hint:'', plho:'@Enter...', vrnt:'text', n
                             foreach ($list as $rec) { # $list= [[0:value, 1:name, 2:@ToolTip, 3:state:'checked/selected', [...]]
                                 $ov= sys_enc((string)($rec[0] ?? ''));                 # Escaped like $valu (a " in a value or text broke the list)
                                 $result.= '<option '. 'title="'.sys_enc(strip_tags(lang($rec[2] ?? ''))).'" value="'.$ov.'" '.($rec[3] ?? '').' '.($rec[4] ?? ''); //  Firefox does not support Label !
-                                if ($ov==$valu) $result.= ' selected ';
+                                if ($ov === $valu) $result.= ' selected ';     # As strings: == selected "01" for "1" too (the browser showed the last one)
                                 $result.= '>'.sys_enc(strip_tags(lang($rec[1] ?? ''))).'</option> ';
                             }   $result.= '</select></small>'.($subm ?? '').'</span>';  break;
                             

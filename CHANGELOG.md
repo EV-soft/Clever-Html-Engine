@@ -3,6 +3,11 @@
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
 ## Unreleased
+- **Fixed `htm_Input()` number fields with a unit:** a unit longer than 4 characters (`unit:' kr/md'`, `' timer'`) made the field's own value fail its pattern - the browser would not send the form. Now up to 15 characters.
+- **Fixed `htm_Input()` rado / chck:** a value with `&` or `'` (`"R&D"`, `"O'Neil"`) was never checked - the escaped value was compared with the raw one.
+- **Fixed `htm_Input()` rado / opti:** the values were compared as numbers - `"1"` also checked / selected `"1.0"` and `"01"` (the list showed the last one). Now as strings.
+- **Fixed `htm_Input()` number fields:** a value that is not a number was escaped twice - `a&b` was shown as `a&amp;b`.
+- **Fixed `htm_Input()` chck:** `attr:` went into the style of the label (`onchange="..."` broke it) - now on each checkbox, as documented. CSS in attr (`padding:0`) still styles the label.
 - **Fixed `sys_toFloat()` / `toNum()`:** a word with a dot before the number was read as a decimal point - `"kr. 99"` gave 0.99, `"ca. 3"` 0.3, `"kr. 12.50"` 1250. Now 99, 3 and 12.5.
 - **Fixed `sys_login()`:** when the file of the wrong tries could not be opened (e.g. `file:` in a folder that does not exist) there was no wait at all - unlimited guessing. Now the temp folder is used, and without any file the log-in is refused. A login also gives a new CSRF token.
 - **Fixed `htm_Chart()`:** a value NAN / INF (e.g. a division by 0) drew NAN into the SVG - no chart. Such values are left out.
