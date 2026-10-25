@@ -2,7 +2,7 @@
 
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
-## Unreleased
+## 1.9.2 - ten fixes: numbers, log in, charts, notes, fields
 - **Fixed `htm_Input()` number fields with a unit:** a unit longer than 4 characters (`unit:' kr/md'`, `' timer'`) made the field's own value fail its pattern - the browser would not send the form. Now up to 15 characters.
 - **Fixed `htm_Input()` rado / chck:** a value with `&` or `'` (`"R&D"`, `"O'Neil"`) was never checked - the escaped value was compared with the raw one.
 - **Fixed `htm_Input()` rado / opti:** the values were compared as numbers - `"1"` also checked / selected `"1.0"` and `"01"` (the list showed the last one). Now as strings.
