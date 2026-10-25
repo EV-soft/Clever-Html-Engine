@@ -3,6 +3,11 @@
 What is new in each version of php2html (Clever-Html-Engine). Upgrading from 1.6: see [README.md](README.md#upgrading-to-17).
 
 ## Unreleased
+- **Fixed `sys_toFloat()` / `toNum()`:** a word with a dot before the number was read as a decimal point - `"kr. 99"` gave 0.99, `"ca. 3"` 0.3, `"kr. 12.50"` 1250. Now 99, 3 and 12.5.
+- **Fixed `sys_login()`:** when the file of the wrong tries could not be opened (e.g. `file:` in a folder that does not exist) there was no wait at all - unlimited guessing. Now the temp folder is used, and without any file the log-in is refused. A login also gives a new CSRF token.
+- **Fixed `htm_Chart()`:** a value NAN / INF (e.g. a division by 0) drew NAN into the SVG - no chart. Such values are left out.
+- **Fixed `htm_NotePad()`:** the notes were kept under one name for the whole site - other programs on the same domain (and other users of the browser) saw them. Now per program folder (and per user after `sys_login()`); the notes of before move to the first program that opens them.
+- **Fixed `htm_Table()` format `0d`:** an empty value was shown as 0 (1d / 2d show it blank) - a missing value looked like a real 0.
 - **The function overview** (Proj.demo/functions.page.php) counts right: only functions whose name starts with `htm_` (`csrf_field` came with because its comment names htm_Card_), the 2 functions of the modules too, `htm_Toast` marked as JavaScript - and it links to `php2html.api.md` for all public functions. The menu note of the demo shows the version only.
 
 ## 1.9.1 - the Caps Lock warning only while Caps Lock is on

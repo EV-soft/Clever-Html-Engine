@@ -126,7 +126,7 @@ Language selector with flags (used in the view bar): the languages that have tra
 
 always in reach (from TinyCash, the buttons given by the program)
 
-`htm_QuickBar(list:[], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3512
+`htm_QuickBar(list:[], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3514
 
 | Param | Default | Description |
 |---|---|---|
@@ -137,7 +137,7 @@ always in reach (from TinyCash, the buttons given by the program)
 
 Help for the page: a "?" button (in the view bar) and a movable window with the help text of this page (from TinyCash)
 
-`htm_PageHelp(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3544
+`htm_PageHelp(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3546
 
 | Param | Default | Description |
 |---|---|---|
@@ -147,7 +147,7 @@ Help for the page: a "?" button (in the view bar) and a movable window with the 
 
 user: the logged in user is shown at the end of the bar - lout: the address that logs out (a sign-out button beside the name)
 
-`htm_ViewBar(user:'', lout:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3620
+`htm_ViewBar(user:'', lout:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3622
 
 | Param | Default | Description |
 |---|---|---|
@@ -159,7 +159,7 @@ user: the logged in user is shown at the end of the bar - lout: the address that
 
 Editor for the user's own theme: pick a few base colors, see the result live, save it in this browser.
 
-`htm_ThemeEditor(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3741
+`htm_ThemeEditor(rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3743
 
 | Param | Default | Description |
 |---|---|---|
@@ -169,7 +169,7 @@ Editor for the user's own theme: pick a few base colors, see the result live, sa
 
 A banner across the page: a short notice with a colored edge, e.g. "Demo data" or "Read only" (from NH-logistik)
 
-`htm_Banner(body:'', kind:'warning', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4468
+`htm_Banner(body:'', kind:'warning', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4477
 
 | Param | Default | Description |
 |---|---|---|
@@ -183,7 +183,7 @@ A banner across the page: a short notice with a colored edge, e.g. "Demo data" o
 
 Start creating a page
 
-`htm_Page_(titl:'', hint:'', algn:'center', attr:'', info:'', inis:'', imag:'', pbrd:true)` - line 5331
+`htm_Page_(titl:'', hint:'', algn:'center', attr:'', info:'', inis:'', imag:'', pbrd:true)` - line 5340
 
 | Param | Default | Description |
 |---|---|---|
@@ -200,7 +200,7 @@ Start creating a page
 
 A paragraf with border, can be used as a page-footer, or separator on a page.
 
-`htm_Page_Sect(body, styl:'border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7070
+`htm_Page_Sect(body, styl:'border: 1px solid #888; border-radius: 8px; overflow: hidden; margin: auto; background-color:white;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7079
 
 | Param | Default | Description |
 |---|---|---|
@@ -212,7 +212,7 @@ A paragraf with border, can be used as a page-footer, or separator on a page.
 
 Finalize the htm_Page_()
 
-`htm_Page_end()` - line 7080
+`htm_Page_end()` - line 7089
 
 ### Cards and layout
 
@@ -362,7 +362,7 @@ Create the last column
 
 Start a tab-object with multibly tabs
 
-`htm_Tabs_(head:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4076
+`htm_Tabs_(head:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4078
 
 #### htm_Tab
 
@@ -370,7 +370,7 @@ Start a tab-object with multibly tabs
 
 Create a tab in the htm_Tabs_() object
 
-`htm_Tab(labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:, dflt:false)` - line 4092
+`htm_Tab(labl:'', name:'', body:'', vhgh:'', bclr:'white', styl:, dflt:false)` - line 4094
 
 | Param | Default | Description |
 |---|---|---|
@@ -386,7 +386,7 @@ Create a tab in the htm_Tabs_() object
 
 Finalize a htm_Tabs_() object
 
-`htm_Tabs_end(foot:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4120
+`htm_Tabs_end(foot:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4122
 
 ### Forms and input
 
@@ -563,13 +563,13 @@ A personal notepad: plain text, saved automatically in this browser (the same no
 
 Is a switch value "on"? Accepts 1/true/on/yes/checked/pressed (and the old spelling "presssed")
 
-`sys_switchIsOn(valu)` - line 3770
+`sys_switchIsOn(valu)` - line 3772
 
 #### htm_SwitchButt
 
 A button with switch layout
 
-`htm_SwitchButt(labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3776
+`htm_SwitchButt(labl:'', hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3778
 
 | Param | Default | Description |
 |---|---|---|
@@ -587,7 +587,7 @@ A button with switch layout
 
 Another button with switch layout
 
-`htm_SwitchButton(labl, hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3814
+`htm_SwitchButton(labl, hint:'', name:'switchbox_id', valu:'', list:[], wdth:'', bclr:'', styl:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3816
 
 | Param | Default | Description |
 |---|---|---|
@@ -605,7 +605,7 @@ Another button with switch layout
 
 A special button to switch between many states
 
-`htm_MultistateButt(name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3874
+`htm_MultistateButt(name:'ROWyCOLx', valu:'', acti:true, styl:'padding:1px;', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 3876
 
 | Param | Default | Description |
 |---|---|---|
@@ -619,7 +619,7 @@ A special button to switch between many states
 
 Button for test human or robot
 
-`htm_Humantest(capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', form:'form-id', wdth:'200px', vhgh:'24px', bclr:'#1bd441', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO', rtrn:false, hght:null)` - echoes; `rtrn:true` returns the HTML - line 3917
+`htm_Humantest(capt:'@Are you human? ', icon:'fa-solid fa-arrow-right-to-bracket', hint:'@Grab and slide to right to change state', form:'form-id', wdth:'200px', vhgh:'24px', bclr:'#1bd441', yclr:'lightgray', nclr:'white', xytx:'@YES', ntxt:'@NO', rtrn:false, hght:null)` - echoes; `rtrn:true` returns the HTML - line 3919
 
 | Param | Default | Description |
 |---|---|---|
@@ -641,7 +641,7 @@ Button for test human or robot
 
 Create a HTML-textarea with multibly lines
 
-`htm_TextArea(labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:false, widt:null)` - echoes; `rtrn:true` returns the HTML - line 4152
+`htm_TextArea(labl:'', hint:'', plho:'?', name:'area', valu:'', form:'', wdth:'', attr:'', rows:'1', rtrn:false, widt:null)` - echoes; `rtrn:true` returns the HTML - line 4154
 
 | Param | Default | Description |
 |---|---|---|
@@ -661,7 +661,7 @@ Create a HTML-textarea with multibly lines
 
 A number written as "1 234,50" / "1.234,50" / "1234.50" / "87 %" / "kr. 12,5" -> float  ((float)"1 234,50" gives 1)
 
-`sys_toFloat(v)` - line 7294
+`sys_toFloat(v)` - line 7303
 
 ### Buttons and links
 
@@ -755,7 +755,7 @@ Submit button with hint
 
 A general link-button
 
-`htm_LinkButt(labl:'', hint:'', link:'', targ:'_blank', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4138
+`htm_LinkButt(labl:'', hint:'', link:'', targ:'_blank', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4140
 
 | Param | Default | Description |
 |---|---|---|
@@ -770,7 +770,7 @@ A general link-button
 
 A button for an action that changes data (e.g. Delete): asks "Are you sure?" and then POSTs with the CSRF token (from NH-logistik)
 
-`htm_ConfirmPostLink(labl:'', icon:'', hint:'', kind:'danger', mess:'@Are you sure?', data:[], acti:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4492
+`htm_ConfirmPostLink(labl:'', icon:'', hint:'', kind:'danger', mess:'@Are you sure?', data:[], acti:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4501
 
 | Param | Default | Description |
 |---|---|---|
@@ -829,7 +829,7 @@ A div containing a text with a hidden hint
 
 Create a modal popup window with color-coded background
 
-`htm_ModalDialog(capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['$type','$icon','$labl','$hint','$link'], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4194
+`htm_ModalDialog(capt:'@Voilà!', type:'none', mess:'', html:'CSS-based Modal Dialog', butt:['$type','$icon','$labl','$hint','$link'], rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4196
 
 | Param | Default | Description |
 |---|---|---|
@@ -844,7 +844,7 @@ Create a modal popup window with color-coded background
 
 A message box in the page: success / error / warning / info - theme colors, also in the dark theme (from NH-logistik)
 
-`htm_Alert(body:'', kind:'success', wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4284
+`htm_Alert(body:'', kind:'success', wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4286
 
 | Param | Default | Description |
 |---|---|---|
@@ -857,7 +857,7 @@ A message box in the page: success / error / warning / info - theme colors, also
 
 After a POST: remember a message and load the page again with GET (Post/Redirect/Get) - the next htm_Page_ shows it (htm_Flash)
 
-`sys_redirect(mess:'', kind:'success', link:'')` - line 4299
+`sys_redirect(mess:'', kind:'success', link:'')` - line 4301
 
 | Param | Default | Description |
 |---|---|---|
@@ -869,7 +869,7 @@ After a POST: remember a message and load the page again with GET (Post/Redirect
 
 The messages of sys_redirect(): each shown once. htm_Page_ calls it ($gbl_Flash= false: not) - call it yourself to show them elsewhere
 
-`htm_Flash(wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4313
+`htm_Flash(wdth:'700px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4315
 
 | Param | Default | Description |
 |---|---|---|
@@ -880,7 +880,7 @@ The messages of sys_redirect(): each shown once. htm_Page_ calls it ($gbl_Flash=
 
 A small label: a status, a count or "New" - e.g. in tables and menus (from NH-logistik)
 
-`htm_Badge(labl:'', hint:'', kind:'secondary', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4480
+`htm_Badge(labl:'', hint:'', kind:'secondary', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4489
 
 | Param | Default | Description |
 |---|---|---|
@@ -895,7 +895,7 @@ A small label: a status, a count or "New" - e.g. in tables and menus (from NH-lo
 
 Create a Dialog with alternative buttons to select between
 
-`htm_Dialog(capt:'CAPTION', labl:'@Open dialog', body:'', bclr:'lightyellow', butt:[ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4592
+`htm_Dialog(capt:'CAPTION', labl:'@Open dialog', body:'', bclr:'lightyellow', butt:[ ['confirmBtn','default','@Confirm','fas fa-check','green','@Accept and go on'],, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4601
 
 | Param | Default | Description |
 |---|---|---|
@@ -968,7 +968,7 @@ A span/group with a set of labels and data
 
 Search and sort for a table - without jQuery: a search field with "x of y rows", and sorting by clicking a column header (from NH-logistik)
 
-`htm_TableTools(tabl:'', plho:'@Search...', srch:true, sort:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4524
+`htm_TableTools(tabl:'', plho:'@Search...', srch:true, sort:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4533
 
 | Param | Default | Description |
 |---|---|---|
@@ -984,7 +984,7 @@ Search and sort for a table - without jQuery: a search field with "x of y rows",
 
 A bar or line chart as plain SVG (no JavaScript library) - e.g. prices per hour, sales per month. Charts with the same ymin / ymax share one scale
 
-`htm_Chart(capt:'', vrnt:'bar', data:[], mark:[], curr:null, unit:'', deci:2, ymin:null, ymax:null, colr:['#7f9bb5','#2fa84f'], wdth:'760px', vhgh:'220px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4325
+`htm_Chart(capt:'', vrnt:'bar', data:[], mark:[], curr:null, unit:'', deci:2, ymin:null, ymax:null, colr:['#7f9bb5','#2fa84f'], wdth:'760px', vhgh:'220px', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4327
 
 | Param | Default | Description |
 |---|---|---|
@@ -1008,7 +1008,7 @@ A bar or line chart as plain SVG (no JavaScript library) - e.g. prices per hour,
 
 Log in with a password - a growing wait after wrong tries (5 s, 10 s, 20 s ... at most 15 min), for all browsers together. '' = logged in, else the reason
 
-`sys_login(hash:'', pass:'', user:'', file:'')` - line 4387
+`sys_login(hash:'', pass:'', user:'', file:'')` - line 4389
 
 | Param | Default | Description |
 |---|---|---|
@@ -1021,19 +1021,19 @@ Log in with a password - a growing wait after wrong tries (5 s, 10 s, 20 s ... a
 
 The user name of the session after sys_login() - '' : not logged in ('-' : logged in without a user name)
 
-`sys_loginUser()` - line 4412
+`sys_loginUser()` - line 4421
 
 #### sys_logout
 
 Log out: forget the login of the session (a new session id) - written in the activity log when p2h_audit.inc.php is included
 
-`sys_logout()` - line 4415
+`sys_logout()` - line 4424
 
 #### sys_loginRequired
 
 A page that needs a login: true when logged in. Else it remembers this address (a GET) for sys_loginBack() and - with link - goes to the log-in page
 
-`sys_loginRequired(link:'')` - line 4422
+`sys_loginRequired(link:'')` - line 4431
 
 | Param | Default | Description |
 |---|---|---|
@@ -1043,7 +1043,7 @@ A page that needs a login: true when logged in. Else it remembers this address (
 
 After sys_login(): the address sys_loginRequired() remembered (once) - else $dflt. Only a path on this site (never another site)
 
-`sys_loginBack(dflt:'')` - line 4433
+`sys_loginBack(dflt:'')` - line 4442
 
 | Param | Default | Description |
 |---|---|---|
@@ -1053,7 +1053,7 @@ After sys_login(): the address sys_loginRequired() remembered (once) - else $dfl
 
 What to log in to (list:) is only a wish of the user: check on the server that the user may open it - then keep it in $_SESSION['p2h_list']
 
-`htm_Login(capt:'@Log in', icon:'fa-solid fa-right-to-bracket', hint:'', labl:'@Choose', list:[], valu:'', user:false, wdth:'cardW320', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4443
+`htm_Login(capt:'@Log in', icon:'fa-solid fa-right-to-bracket', hint:'', labl:'@Choose', list:[], valu:'', user:false, wdth:'cardW320', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4452
 
 | Param | Default | Description |
 |---|---|---|
@@ -1254,7 +1254,7 @@ View a container with a external resource
 
 Create a text with hidden hint/title
 
-`str_WithHint(labl:'', hint:'', icon:'', styl:'')` - line 4179
+`str_WithHint(labl:'', hint:'', icon:'', styl:'')` - line 4181
 
 | Param | Default | Description |
 |---|---|---|
@@ -1267,25 +1267,25 @@ Create a text with hidden hint/title
 
 String function: make italic-text
 
-`htm_Ihead(html, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7239
+`htm_Ihead(html, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7248
 
 #### str_Synt_
 
 Returns <pre class="synt"> - starts a block of program code coloured with str_Synt() (dark background)
 
-`str_Synt_()` - line 7508
+`str_Synt_()` - line 7518
 
 #### str_Synt_end
 
 Returns </pre> - ends the block of str_Synt_()
 
-`str_Synt_end()` - line 7510
+`str_Synt_end()` - line 7520
 
 #### str_Synt
 
 Returns $elem coloured as program code: $type variable / string / attribute / comment / literal / constant / operator / word / number / default
 
-`str_Synt(elem:'', type:'default')` - line 7512
+`str_Synt(elem:'', type:'default')` - line 7522
 
 ### Menus
 
@@ -1293,25 +1293,25 @@ Returns $elem coloured as program code: $type variable / string / attribute / co
 
 Init popup context menu group
 
-`htm_Pmnu_(capt:'', icon:'', wdth:'210px', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', elem:'id', stck:'false', cntx:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4830
+`htm_Pmnu_(capt:'', icon:'', wdth:'210px', attr:'background-color:lightcyan; height: 26px; border: 2px solid lightgray; border-radius: 4px; margin-left: 1px;', elem:'id', stck:'false', cntx:true, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4839
 
 #### htm_Pmnu_Item
 
 Add a popup context menu item
 
-`htm_Pmnu_Item(labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false, disa:null)` - echoes; `rtrn:true` returns the HTML - line 4836
+`htm_Pmnu_Item(labl:'', icon:'', hint:'', vrnt:'plain', name:'', clck:'', attr:'', shrt:'', enbl:'true', rtrn:false, disa:null)` - echoes; `rtrn:true` returns the HTML - line 4845
 
 #### htm_Pmnu_end
 
 Finish a popup context menu group
 
-`htm_Pmnu_end(labl:'', hint:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4842
+`htm_Pmnu_end(labl:'', hint:'', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4851
 
 #### htm_Menu_TopDown
 
 A page-menu on top of the page
 
-`htm_Menu_TopDown(capt:'Clever html engine', note:'', data:[], wdth:'150px', styl:'', foot:'PHP2HTML', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4872
+`htm_Menu_TopDown(capt:'Clever html engine', note:'', data:[], wdth:'150px', styl:'', foot:'PHP2HTML', niv0:'', niv1:'', niv2:'', them:true, view:null, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4881
 
 | Param | Default | Description |
 |---|---|---|
@@ -1332,7 +1332,7 @@ A page-menu on top of the page
 
 A page-menu to the left of the page
 
-`htm_Menu_Leftout(capt:'Clever html engine', data:[], wdth:'180px', styl:'', foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4989
+`htm_Menu_Leftout(capt:'Clever html engine', data:[], wdth:'180px', styl:'', foot:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 4998
 
 | Param | Default | Description |
 |---|---|---|
@@ -1349,25 +1349,25 @@ A page-menu to the left of the page
 
 String function: make horisontal line/ruler
 
-`htm_hr(colr:'#0', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7243
+`htm_hr(colr:'#0', attr:'', rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7252
 
 #### htm_br
 
 String function: Add one or more line-breaks
 
-`htm_br(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7247
+`htm_br(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7256
 
 #### htm_nl
 
 String function: Add one ore more new line(s)
 
-`htm_nl(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7251
+`htm_nl(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7260
 
 #### htm_lf
 
 String function: Add one or more linefeed
 
-`htm_lf(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7255
+`htm_lf(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7264
 
 #### htm_sp
 
@@ -1375,61 +1375,61 @@ String function: Add one or more linefeed
 
 String function: Add one ore more nobreaking spaces
 
-`htm_sp(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7259
+`htm_sp(rept:1, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7268
 
 #### htm_space
 
 String function: Make a span with given width
 
-`htm_space(wdth, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7263
+`htm_space(wdth, rtrn:false)` - echoes; `rtrn:true` returns the HTML - line 7272
 
 #### str_bold
 
 Returns $source in bold: $result.'<b>'.$source.'</b>'.$tail (default tail: two non-breaking spaces)
 
-`str_bold(source, result:'', tail:'&nbsp;&nbsp;')` - line 7269
+`str_bold(source, result:'', tail:'&nbsp;&nbsp;')` - line 7278
 
 #### str_Ihead
 
 Returns a line break and $source in italics - a small heading inside a text
 
-`str_Ihead(source)` - line 7271
+`str_Ihead(source)` - line 7280
 
 #### str_hr
 
 Returns a horizontal line (<hr>) in the colour $c, with extra style $attr
 
-`str_hr(c:'#0', attr:'')` - line 7273
+`str_hr(c:'#0', attr:'')` - line 7282
 
 #### str_br
 
 Returns $rept line breaks (<br />) - the same as str_nl()
 
-`str_br(rept:1)` - line 7275
+`str_br(rept:1)` - line 7284
 
 #### str_nl
 
 Returns $rept line breaks (<br />) - the same as str_br()
 
-`str_nl(rept:1)` - line 7277
+`str_nl(rept:1)` - line 7286
 
 #### str_lf
 
 Returns $rept line feeds as &#xa; - a new line inside an attribute, e.g. a title= hint
 
-`str_lf(rept:1)` - line 7279
+`str_lf(rept:1)` - line 7288
 
 #### str_sp
 
 Returns $rept non-breaking spaces (&nbsp;)
 
-`str_sp(rept:1)` - line 7281
+`str_sp(rept:1)` - line 7290
 
 #### str_space
 
 Returns an empty space $wdth wide (e.g. '20px') - to line up texts
 
-`str_space(wdth)` - line 7283
+`str_space(wdth)` - line 7292
 
 ### Translation and system
 
@@ -1437,13 +1437,13 @@ Returns an empty space $wdth wide (e.g. '20px') - to line up texts
 
 Reads _trans.sys.json once: a list of the languages (code, name, native, author, note, translation) - the library calls it; English only without the file
 
-`sys_get_translations(transTable:[])` - line 7332
+`sys_get_translations(transTable:[])` - line 7342
 
 #### lang
 
 lang() is used to translate all hard-coded user interface
 
-`lang(text)` - line 7398
+`lang(text)` - line 7408
 
 | Param | Default | Description |
 |---|---|---|
@@ -1453,13 +1453,13 @@ lang() is used to translate all hard-coded user interface
 
 A unique element id on the page: the first keeps its id, repeats get _2, _3... (fields in loops, table rows)
 
-`sys_uid(id)` - line 7415
+`sys_uid(id)` - line 7425
 
 #### sys_enc
 
 Make valid HTML string
 
-`sys_enc(text)` - line 7424
+`sys_enc(text)` - line 7434
 
 ## Internal and helper functions
 

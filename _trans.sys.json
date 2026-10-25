@@ -352,6 +352,7 @@
     "DateTime":"2022-06-17",
     "AppName":"PHP to HTML",
     "translation":{
+      "The log-in can not be checked now - try again later":"Log-ind kan ikke kontrolleres lige nu - prøv igen senere",
       "The strings to translate (JSON)":"Strengene der skal oversættes (JSON)",
       "The 4 character name":"Navnet på 4 tegn",
       "What the name means":"Hvad navnet betyder",

@@ -1643,7 +1643,7 @@ function htm_Table(# capt:[ ], pref:[ ], body:[ ], suff:[ ], note:'', list:['','
             ## Special Output formats:
                 if (!($GLOBALS["Øshow"] ?? '')>0)
                     switch ($bdy[3]) { # OutFormat
-                        case '0d': if ($valu==null) $valu= 0;       else $valu= number_format(sys_toFloat($valu), 0,DecimalSep,ThousandsSep); break;
+                        case '0d': if ($valu===null or $valu==='') $valu='';  else $valu= number_format(sys_toFloat($valu), 0,DecimalSep,ThousandsSep); break;  # Empty: blank, as 1d / 2d (was 0: a missing value looked like a real 0)
                         case '1d': if ($valu===null or $valu==='') $valu='';  else $valu= number_format(sys_toFloat($valu), 1,DecimalSep,ThousandsSep); break;
                         case '2d': if ($valu==' ')  $valu= $valu;   else
                                         if ($valu===null or $valu==='') $valu='';  else $valu= number_format(sys_toFloat($valu), 2,DecimalSep,ThousandsSep); break;  //  88 888 888,88  (0 was shown blank: 0==null)
@@ -3468,13 +3468,15 @@ function htm_NotePad(# rtrn:false)
              '</div>'.
              '<script>
 (function(){    /* Notepad: auto-save (localStorage), "saved" state, download, clear; movable like the help window */
-  var KEY= "p2h-notepad", T= '.json_encode(['saved'=>strip_tags(lang('@Saved in this browser')), 'nostore'=>strip_tags(lang('@The notes cannot be saved in this browser')),
+  var OLD= "p2h-notepad", KEY= OLD + ":" + location.pathname.replace(/[^\/]*$/, "")'.(sys_loginUser() > '' ? ' + ":" + '.json_encode(substr(md5(sys_loginUser()), 0, 12)) : '').',     /* Per program folder (and user) - was one for the whole site: other programs and users saw the notes */
+      T= '.json_encode(['saved'=>strip_tags(lang('@Saved in this browser')), 'nostore'=>strip_tags(lang('@The notes cannot be saved in this browser')),
                                           'ask'=>strip_tags(lang('@Delete all notes?')), 'chars'=>strip_tags(lang('@characters'))]).';
   var win= document.getElementById("p2hNoteWin"), ta= win.querySelector(".p2hNoteText"), st= win.querySelector(".p2hNoteState"), timer= null, opener= null;
   function get()  { try { return localStorage.getItem(KEY) || ""; } catch(e) { return ""; } }
   function put(v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); return true; } catch(e) { return false; } }
   function mark() { document.querySelectorAll(".p2hNoteButt").forEach(function(b) { b.classList.toggle("hasNotes", get() !== ""); }); }
   function save() { st.textContent= put(ta.value) ? T.saved + " - " + ta.value.length + " " + T.chars : T.nostore;  mark(); }
+  try { if (!localStorage.getItem(KEY) && localStorage.getItem(OLD)) { localStorage.setItem(KEY, localStorage.getItem(OLD));  localStorage.removeItem(OLD); } } catch(e) {}     /* The notes of before: to the first program that opens them */
   ta.value= get();  mark();
   ta.addEventListener("input", function() { clearTimeout(timer);  timer= setTimeout(save, 400); });
   function show(b) { if (win.parentNode !== document.documentElement) document.documentElement.appendChild(win);
@@ -4337,7 +4339,7 @@ function htm_Chart(# capt:'', vrnt:'bar', data:[], mark:[], curr:null, unit:'', 
     $vhgh= '220px',         # string: The height of the drawing area
     $rtrn= false            # bool:   Return or echo result
 ) {
-    $vals= [];  foreach ((array)$data as $k => $v) if (is_numeric($v)) $vals[(string)$k]= (float)$v;
+    $vals= [];  foreach ((array)$data as $k => $v) if (is_numeric($v) && is_finite((float)$v)) $vals[(string)$k]= (float)$v;     # (NAN / INF - e.g. a division by 0 - drew NAN in the SVG: no chart at all)
     if (!$vals) { $result= '';  if (!$rtrn) echo $result;  return $result; }
     $W= 760;  $H= max(60, (int)$vhgh);  $L= 46;  $T= 8;  $B= 20;
     $max= $ymax ?? max(max($vals), 0.0);  $min= $ymin ?? min(0.0, min($vals));
@@ -4390,9 +4392,12 @@ function sys_login(# hash:'', pass:'', user:'', file:'')
     $user= '',              # string: The user name - kept in the session (sys_loginUser()); the wait counts per user name
     $file= ''               # string: The file that keeps the wrong tries (JSON) - '' : in the temp folder of the server, one per program folder
 ) {
-    $file= $file > '' ? $file : sys_get_temp_dir().'/p2h_login_'.md5(dirname($_SERVER['SCRIPT_FILENAME'] ?? __DIR__)).'.json';
-    $fp= @fopen($file, 'c+');
-    if ($fp) flock($fp, LOCK_EX);
+    $tmp=  sys_get_temp_dir().'/p2h_login_'.md5(dirname($_SERVER['SCRIPT_FILENAME'] ?? __DIR__)).'.json';
+    $fp= @fopen($file > '' ? $file : $tmp, 'c+');
+    if (!$fp && $file > '') { error_log('php2html sys_login: '.$file.' can not be opened - the temp folder is used');  $fp= @fopen($tmp, 'c+'); }
+    if (!$fp) { error_log('php2html sys_login: no file for the wrong tries - log-in refused');       # Without it there would be no wait at all (unlimited guessing)
+                return lang('@The log-in can not be checked now - try again later'); }
+    flock($fp, LOCK_EX);
     $all= $fp ? (json_decode((string)stream_get_contents($fp), true) ?: []) : [];
     $key= md5(mb_strtolower($user));  $me= $all[$key] ?? ['f' => 0, 'w' => 0];  $now= time();
     if (($me['w'] ?? 0) > $now)                                   { $res= sprintf(lang('@Locked after wrong passwords - try again at %s'), date('H:i:s', $me['w']));
@@ -4403,8 +4408,12 @@ function sys_login(# hash:'', pass:'', user:'', file:'')
     if (function_exists('p2h_audit')) p2h_audit($ev[0], '', $ev[1], $user > '' ? $user : '-');    # The activity log - when p2h_audit.inc.php is included
     $all[$key]= $me;
     foreach ($all as $k => $v) if (empty($v['f']) || ($v['w'] ?? 0) < $now - 86400) unset($all[$k]);   # Only the recent wrong tries are kept
-    if ($fp) { ftruncate($fp, 0);  rewind($fp);  fwrite($fp, json_encode($all));  flock($fp, LOCK_UN);  fclose($fp); }
-    if ($res === '') { session_regenerate_id(true);  $_SESSION['p2h_user']= $user > '' ? $user : '-';  $_SESSION['p2h_since']= $now; }
+    ftruncate($fp, 0);  rewind($fp);  fwrite($fp, json_encode($all));  flock($fp, LOCK_UN);  fclose($fp);
+    if ($res === '') {
+        if (!headers_sent()) session_regenerate_id(true);                                        # A new session id (fixation) - and a new CSRF token: the one of the page before the log-in is no longer valid
+        $_SESSION['csrf_token']= bin2hex(random_bytes(32));
+        $_SESSION['p2h_user']= $user > '' ? $user : '-';  $_SESSION['p2h_since']= $now;
+    }
     return $res;
 }
 
@@ -7295,6 +7304,7 @@ function sys_toFloat($v) {   # A number typed by a person: "1 234,50", "1.234,50
     if (is_int($v) or is_float($v)) return (float)$v;
     $s= str_replace([' ', "\u{00A0}", "\u{202F}", "'", '’'], '', trim((string)$v));   # Thousands separators: space, nbsp, narrow nbsp, ' (Swiss)
     if (!in_array(ThousandsSep, ['.', ','], true)) $s= str_replace(ThousandsSep, '', $s);
+    $s= preg_replace('/^[^\d,.\-]*\p{L}\./u', '', $s) ?? $s;                                  # "kr. 99", "ca. 3": the dot of the word is not a decimal point (gave 0.99 / 0.3)
     $neg= (bool)preg_match('/^[^\d]*\d.*-\s*$/', $s) && !preg_match('/-\s*\d/', $s);       # "1.234,50-": a minus after the number
     $c= substr_count($s, ',');  $d= substr_count($s, '.');
     if ($c && $d)  $s= strrpos($s, ',') > strrpos($s, '.') ? str_replace(['.', ','], ['', '.'], $s) : str_replace(',', '', $s);   # Both: the last one is the decimal sign
